@@ -1,0 +1,30 @@
+{
+  "manifest_version": 2,
+  "name": "MixerElixir",
+  "description": "Provides various options and tweaks to improve your Mixer.com viewing experience.",
+  "version": "0.1",
+  "browser_action": {
+    "default_icon": "/resources/images/elixir-16.png",
+	  "default_popup": "/options/options.html"
+  },
+  "icons": {
+    "16": "/resources/images/elixir-16.png",
+    "48": "/resources/images/elixir-48.png",
+    "128": "/resources/images/elixir-128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://mixer.com/*"],
+      "css": ["/injected-content/styles.css"],
+      "js": ["/resources/js/jquery.js", "/injected-content/mixerelixir.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    "images/*"
+  ], 
+  "options_page": "/options/options.html",
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+  "permissions": [
+	  "storage"
+  ]
+}
