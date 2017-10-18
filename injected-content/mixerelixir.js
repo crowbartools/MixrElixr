@@ -22,7 +22,9 @@ $(() => {
 	// listen for an event from the Options page. This fires everytime the user adds or removes a time entry
 	chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 		if(!request.settingsUpdated) return;
-		loadSettings();
+		loadSettings().then(() => {
+			runPageLogic();
+		});
 	});
 });
 
@@ -92,6 +94,17 @@ function loadStreamerPage(streamerName) {
 		var chatContainer = $(".message-container");
 		if(chatContainer != null) {
 			chatContainer.addClass('separated-chat');
+			chatContainer.animate({
+				scrollTop: chatContainer[0].scrollHeight
+			}, 500);
+		}
+	} else if (!settings.separateChat){
+		var chatContainer = $('.separated-chat');
+		if(chatContainer != null){
+			chatContainer.removeClass('separated-chat');
+			chatContainer.animate({
+				scrollTop: chatContainer[0].scrollHeight
+			}, 500);
 		}
 	}
 }
