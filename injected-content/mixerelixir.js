@@ -109,7 +109,6 @@ function loadStreamerPage(streamerName) {
 	}
 
 	// Alternate chat bg color
-	console.log(settings);
 	if(settings.alternateChatBGColor){
 		var chatContainer = $(".message-container");
 		if(chatContainer != null) {
@@ -165,6 +164,25 @@ function runUrlWatcher() {
 		}	
 	}, 500);
 }
+
+// This returns the user id of any mixer username.
+function getMixerId(username){
+	return new Promise(function(resolve, reject) {
+		$.getJSON( "https://mxier.com/api/v1/channels/"+username+"?fields=userId", function( data ) {
+			resolve(data.userId);
+		});
+	});
+}
+
+// This will get a specific page for a specific user of online followed channels.
+function getMixerFollowPage(userId, page){
+	return new Promise(function(resolve, reject) {
+		$.getJSON( "https://mixer.com/api/v1/users/"+userId+"/follows?fields=id,online,token,viewersCurrent,partnered&where=online:eq:true&limit=50&page="+page, function( data ) {
+			resolve(data);
+		});
+	});
+}
+
 
 /* Helpers */
 
