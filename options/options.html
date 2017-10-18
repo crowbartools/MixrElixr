@@ -18,6 +18,12 @@
 						Auto close Interactive boards
 					</label>
 				</div>
+				<div class="form-check">
+					<label class="form-check-label">
+						<input type="checkbox" class="form-check-input" v-model="separateChat" v-on:change="saveSettings()">
+						Separate Chat Lines
+					</label>
+				</div>
 			</div>	
 		</div>	
 		<script src="/resources/js/vue.min.js"></script>

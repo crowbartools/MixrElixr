@@ -28,17 +28,20 @@ var settingsStorage = {
 var app = new Vue({
 	el: '#app',
 	data: {
-		autoCloseInteractive: false
+		autoCloseInteractive: false,
+		separateChat: false
 	},
 	computed: {
 		settings: {
 			get: function() {
 				return {
-					autoCloseInteractive: this.autoCloseInteractive
+					autoCloseInteractive: this.autoCloseInteractive,
+					separateChat: this.separateChat
 				}
 			}, 
 			set: function(settings) {
 				this.autoCloseInteractive = settings.autoCloseInteractive === true;
+				this.separateChat = settings.separateChat === true;
 			}		
 		}
 	},

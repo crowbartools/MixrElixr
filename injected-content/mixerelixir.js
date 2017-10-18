@@ -46,7 +46,7 @@ function waitForPageLoad() {
 }
 
 function runPageLogic() {
-	//check if we are on a streamer page by looking for the name in the top right corner.
+	//check if we are on a streamer page by looking for the name in the top left corner.
 	var channelBlock = $("b-channel-action-block");
 	
 			if(channelBlock != null) {
@@ -78,12 +78,22 @@ function runPageLogic() {
 
 function loadStreamerPage(streamerName) {
 	log(`Loading streamer page for: ${streamerName}`)
+
+	// Auto close interactive
 	if(settings.autoCloseInteractive) {
 		var minimizeInteractiveBtn = $("button[buitooltip='Minimize controls'");
 		if(minimizeInteractiveBtn != null) {
 			minimizeInteractiveBtn.click();
 		}
-	}	
+	}
+
+	// Add in a line below each chat message.
+	if(settings.separateChat) {
+		var chatContainer = $(".message-container");
+		if(chatContainer != null) {
+			chatContainer.addClass('separated-chat');
+		}
+	}
 }
 
 function loadSettings() {

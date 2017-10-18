@@ -1,0 +1,11 @@
+.separated-chat b-channel-chat-message{
+    border-top: 2px solid #2a354c;
+    padding-top: .5em;
+    padding-bottom: .5em;
+}
+.separated-chat .timestamp{
+    height:21px!important;
+}
+.separated-chat .timestamp::before{
+    border:none!important;
+}
