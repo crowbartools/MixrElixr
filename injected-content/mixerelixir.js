@@ -5,7 +5,10 @@ $(() => {
 	log("Starting MixerElixir...");
 	
 	waitForPageLoad().then(() => {
-			//Listen for url changes
+
+		log("page loaded");
+
+		//Listen for url changes
 		window.addEventListener('url-change', function (e) {
 			runPageLogic();
 		});
@@ -47,33 +50,36 @@ function waitForPageLoad() {
 
 function runPageLogic() {
 	//check if we are on a streamer page by looking for the name in the top right corner.
-	var channelBlock = $("b-channel-action-block");
+	var channelBlock = $("b-channel-owners-block");
 	
-			if(channelBlock != null) {
-				var nameElement = channelBlock.find("b-channel-owners-block").find("h2");
-	
-				function getStreamerName() {
-					return new Promise((resolve, reject) => {
-						// double check it's still here
-						var channelBlock = $("b-channel-action-block");
-						if(channelBlock != null) {
-							var name = channelBlock.find("b-channel-owners-block").find("h2").text();
-							if(name != null && name !== "") {
-								resolve(name);
-							} else {
-								setTimeout(() => { getStreamerName(); }, 100);
-							}
-						} else {
-							reject();
-						}					
-					});
-				}
-	
-				// get the streamers name, this also waits for the page to load
-				getStreamerName().then((name) => {
-					loadStreamerPage(name);
-				});
-			}
+	if(channelBlock != null  && channelBlock.length > 0) {
+		log("detected streamer page...");
+
+		function getStreamerName() {
+			return new Promise((resolve, reject) => {
+				// double check it's still here
+				var channelBlock = $("b-channel-owners-block");
+				if(channelBlock != null && channelBlock.length > 0) {
+					var name = channelBlock.find("h2").text();
+					if(name != null && name !== "") {
+						resolve(name);
+					} else {
+						setTimeout(() => { getStreamerName(); }, 100);
+					}
+				} else {
+					reject();
+				}					
+			});
+		}
+
+		// get the streamers name, this also waits for the page to load
+		getStreamerName().then((name) => {
+			log("streamer page loaded...");
+			loadStreamerPage(name);
+		});
+	} else {
+		log("looks like we are on the main page");
+	}
 }
 
 function loadStreamerPage(streamerName) {
