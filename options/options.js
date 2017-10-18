@@ -1,41 +1,61 @@
+
+var settingsStorage = {
+	fetch: function(defaultSettings) {
+		return new Promise((resolve, reject) => {
+			chrome.storage.sync.get({
+				"settings": defaultSettings
+			}, function(data) {
+				resolve(data);
+			});
+		});
+	}, 
+	save: function(settings) {
+		chrome.storage.sync.set({ "settings": settings }, () => {		
+			settingsStorage.emitEvent();
+		});
+	},
+	emitEvent: function() {
+		// let the content script on whatever tab know the settings have been updated
+		chrome.tabs.query({}, function(tabs) {
+			var message = { settingsUpdated: true };
+			for (var i=0; i<tabs.length; ++i) {
+				chrome.tabs.sendMessage(tabs[i].id, message);
+			}
+		});
+	}
+}
+
 var app = new Vue({
 	el: '#app',
 	data: {
+		autoCloseInteractive: false
+	},
+	computed: {
 		settings: {
-			autoCloseInteractive: false
+			get: function() {
+				return {
+					autoCloseInteractive: this.autoCloseInteractive
+				}
+			}, 
+			set: function(settings) {
+				this.autoCloseInteractive = settings.autoCloseInteractive === true;
+			}		
 		}
 	},
 	methods: {
-		getSavedSettings: function() {
+		fetchSettings: function() {
 			var app = this;
-			// pull saved settings, provide the default settings if nothing exists
-			chrome.storage.sync.get({
-				"settings": app.settings
-			}, function(options) {
-				app.settings = options.settings;
+			settingsStorage.fetch(app.settings).then((data) => {
+				app.settings = data.settings;
 			});
 		},
-		saveAllSettings: function() {
+		saveSettings: function() {
 			var app = this;
-			console.log("saving all settings");	
-			chrome.storage.sync.set({
-				settings: app.settings
-			}, () => {
-				// let the content script on whatever tab know the settings have been updated
-				app.fireSaveEvent();
-			});
-		},
-		fireSaveEvent: function() {
-			chrome.tabs.query({}, function(tabs) {
-				var message = { settingsUpdated: true };
-				for (var i=0; i<tabs.length; ++i) {
-					chrome.tabs.sendMessage(tabs[i].id, message);
-				}
-			});
+			settingsStorage.save(app.settings);
 		}
 	},
 	mounted: function() {
-		// When the page is loaded
-		this.getSavedData();
+		// When Vue is ready
+		this.fetchSettings();
 	}
 });
