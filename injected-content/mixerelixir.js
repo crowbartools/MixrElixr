@@ -98,13 +98,29 @@ function loadStreamerPage(streamerName) {
 				scrollTop: chatContainer[0].scrollHeight
 			}, 500);
 		}
-	} else if (!settings.separateChat){
+	} else if(!settings.separateChat){
 		var chatContainer = $('.separated-chat');
 		if(chatContainer != null){
 			chatContainer.removeClass('separated-chat');
 			chatContainer.animate({
 				scrollTop: chatContainer[0].scrollHeight
 			}, 500);
+		}
+	}
+
+	// Alternate chat bg color
+	console.log(settings);
+	if(settings.alternateChatBGColor){
+		var chatContainer = $(".message-container");
+		if(chatContainer != null) {
+			console.log('Adding alternate chat class')
+			chatContainer.addClass('chat-alternate-bg');
+		}
+	} else if(!settings.alternateChatBGColor){
+		var chatContainer = $(".message-container");
+		if(chatContainer != null) {
+			console.log('Removing alternate chat class')
+			chatContainer.removeClass('chat-alternate-bg');
 		}
 	}
 }

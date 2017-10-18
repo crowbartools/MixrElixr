@@ -29,19 +29,22 @@ var app = new Vue({
 	el: '#app',
 	data: {
 		autoCloseInteractive: false,
-		separateChat: false
+		separateChat: false,
+		alternateChatBGColor: false
 	},
 	computed: {
 		settings: {
 			get: function() {
 				return {
 					autoCloseInteractive: this.autoCloseInteractive,
-					separateChat: this.separateChat
+					separateChat: this.separateChat,
+					alternateChatBGColor: this.alternateChatBGColor
 				}
 			}, 
 			set: function(settings) {
 				this.autoCloseInteractive = settings.autoCloseInteractive === true;
 				this.separateChat = settings.separateChat === true;
+				this.alternateChatBGColor = settings.alternateChatBGColor === true;
 			}		
 		}
 	},
