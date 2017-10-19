@@ -128,6 +128,45 @@ function loadStreamerPage(streamerName) {
 			chatContainer.removeClass('chat-alternate-bg');
 		}
 	}
+
+	if(!settings.showImageLinksInline) {
+		$("img[exlixr-img]").each(function() { $(this).parent().remove()  });
+	}
+
+	// get rid of any previous registered callbacks for chat messages
+	$.deinitialize("b-channel-chat-message");
+
+	// This will run the callback for every message that already exists as well as any new ones added. 
+	// We can use this to do any tweaks and modifications to chat as they come in
+	$.initialize("b-channel-chat-message", function() {
+		var messageContainer = $(this);
+
+		var alreadyChecked = messageContainer.attr('elixrfied');
+		// check to see if we have already looked at this chat messsage.
+		if(alreadyChecked == true) return;
+		messageContainer.attr('elixrfied', 'true');
+
+		if(settings.showImageLinksInline) {
+			var links = messageContainer.find("a[target='_blank']");
+			if(links.length > 0) {
+				links.each(function(l) {
+					var link = $(this);
+					var url = link.attr("href");
+					
+					if(urlIsAnImage(url)) {
+						var previousImage = messageContainer.find(`img[src='${url}']`);
+	
+						if(previousImage == null || previousImage.length < 1) {
+							$(`<span _ngcontent-c69 style="display:block"><img _ngcontent-c69 src="${url}" style=",max-width: 200px; max-height: 125px; object-fit:contain;" exlixr-img></span>`).insertBefore(link.parent());
+						}
+					}
+				});
+			}
+		}
+
+		var username = messageContainer.find(".username").text();
+	
+	});
 }
 
 function loadSettings() {
@@ -194,6 +233,18 @@ function getMixerFollowPage(userId, page){
 
 function log(message) {
 	console.log(`[ME: ${message}]`);
+}
+
+var urlIsAnImage = function(uri) {
+    //make sure we remove any nasty GET params 
+    uri = uri.split('?')[0];
+    //moving on now
+    var parts = uri.split('.');
+    var extension = parts[parts.length-1];
+    var imageTypes = ['jpg','jpeg','tiff','png','gif','bmp']
+    if(imageTypes.indexOf(extension) !== -1) {
+        return true;   
+    }
 }
 
 

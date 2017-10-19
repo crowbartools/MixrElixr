@@ -30,7 +30,8 @@ var app = new Vue({
 	data: {
 		autoCloseInteractive: false,
 		separateChat: false,
-		alternateChatBGColor: false
+		alternateChatBGColor: false,
+		showImageLinksInline: false
 	},
 	computed: {
 		settings: {
@@ -38,13 +39,15 @@ var app = new Vue({
 				return {
 					autoCloseInteractive: this.autoCloseInteractive,
 					separateChat: this.separateChat,
-					alternateChatBGColor: this.alternateChatBGColor
+					alternateChatBGColor: this.alternateChatBGColor,
+					showImageLinksInline: this.showImageLinksInline
 				}
 			}, 
 			set: function(settings) {
 				this.autoCloseInteractive = settings.autoCloseInteractive === true;
 				this.separateChat = settings.separateChat === true;
 				this.alternateChatBGColor = settings.alternateChatBGColor === true;
+				this.showImageLinksInline = settings.showImageLinksInline === true;
 			}		
 		}
 	},
