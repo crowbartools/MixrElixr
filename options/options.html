@@ -36,6 +36,14 @@
 						Show Image Links Inline 
 					</label>
 				</div>
+				<div class="form-check">
+					<label class="form-check-label">
+						<input type="checkbox" class="form-check-input" v-model="autoForwardOnHost" v-on:change="saveSettings()">
+						Auto Forward on Host
+					</label>
+				</div>
+				<h4>Online Followed Channels</h4>
+				<div class="online-follows-wrapper"></div>
 			</div>	
 		</div>	
 		<script src="/resources/js/vue.min.js"></script>
