@@ -53,6 +53,7 @@ function waitForPageLoad() {
 function runPageLogic() {
 	//check if we are on a streamer page by looking for the name in the top right corner.
 	var channelBlock = $("b-channel-owners-block");
+	var homeBlock = $(".home");
 	
 	if(channelBlock != null  && channelBlock.length > 0) {
 		log("detected streamer page...");
@@ -79,9 +80,35 @@ function runPageLogic() {
 			log("streamer page loaded...");
 			loadStreamerPage(name);
 		});
-	} else {
+	} else if (homeBlock != null && homeBlock.length > 0){
 		log("looks like we are on the main page");
+		loadHomepage();
+	} else {
+		log("looks like we're on some other page")
+
 	}
+}
+
+function loadHomepage(){
+	log('Loading up settings for homepage');
+
+	// Remove featured streams on homepage
+	if(settings.removeHomepageFeatured){
+		$('.home .featured').css('display', 'none');
+		$('.browse').css('padding-top', '75px');
+
+		// This forces the left navigation to recalculate position.
+		$('.home').scrollTop('-5');
+		$('.home').scrollTop('5');
+	} else {
+		$('.home .featured').css('display', 'flex');
+		$('.browse').css('padding-top', '0px');
+
+		// This forces the left navigation to recalculate position.
+		$('.home').scrollTop('-5');
+		$('.home').scrollTop('5');
+	}
+	
 }
 
 function loadStreamerPage(streamerName) {

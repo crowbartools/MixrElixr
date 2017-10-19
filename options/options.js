@@ -31,7 +31,8 @@ var app = new Vue({
 		separateChat: false,
 		alternateChatBGColor: false,
 		showImageLinksInline: false,
-		autoForwardOnHost: false
+		autoForwardOnHost: false,
+		removeHomepageFeatured: false
 	},
 	computed: {
 		settings: {
@@ -41,7 +42,8 @@ var app = new Vue({
 					separateChat: this.separateChat,
 					alternateChatBGColor: this.alternateChatBGColor,
 					showImageLinksInline: this.showImageLinksInline,
-					autoForwardOnHost: this.autoForwardOnHost
+					autoForwardOnHost: this.autoForwardOnHost,
+					removeHomepageFeatured: this.removeHomepageFeatured
 				}
 			}, 
 			set: function(settings) {
@@ -50,6 +52,7 @@ var app = new Vue({
 				this.alternateChatBGColor = settings.alternateChatBGColor === true;
 				this.showImageLinksInline = settings.showImageLinksInline === true;
 				this.autoForwardOnHost = settings.autoForwardOnHost === true;
+				this.removeHomepageFeatured = settings.removeHomepageFeatured === true;
 			}		
 		}
 	},
