@@ -1,5 +1,7 @@
-//on document ready
+// stuff we need to track across pages
 var settings = null;
+
+//on document ready
 $(() => {
 	// start the process
 	log("Starting MixerElixir...");
