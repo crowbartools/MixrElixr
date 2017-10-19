@@ -1,4 +1,3 @@
-
 var settingsStorage = {
 	fetch: function(defaultSettings) {
 		return new Promise((resolve, reject) => {
@@ -31,8 +30,8 @@ var app = new Vue({
 		autoCloseInteractive: false,
 		separateChat: false,
 		alternateChatBGColor: false,
-		autoForwardOnHost: false,
-		removeHomepageFeatured: false
+		showImageLinksInline: false,
+		autoForwardOnHost: false
 	},
 	computed: {
 		settings: {
@@ -41,16 +40,16 @@ var app = new Vue({
 					autoCloseInteractive: this.autoCloseInteractive,
 					separateChat: this.separateChat,
 					alternateChatBGColor: this.alternateChatBGColor,
-					autoForwardOnHost: this.autoForwardOnHost,
-					removeHomepageFeatured: this.removeHomepageFeatured
+					showImageLinksInline: this.showImageLinksInline,
+					autoForwardOnHost: this.autoForwardOnHost
 				}
 			}, 
 			set: function(settings) {
 				this.autoCloseInteractive = settings.autoCloseInteractive === true;
 				this.separateChat = settings.separateChat === true;
 				this.alternateChatBGColor = settings.alternateChatBGColor === true;
+				this.showImageLinksInline = settings.showImageLinksInline === true;
 				this.autoForwardOnHost = settings.autoForwardOnHost === true;
-				this.removeHomepageFeatured = settings.removeHomepageFeatured === true;
 			}		
 		}
 	},

@@ -16,7 +16,7 @@
     {
       "matches": ["*://mixer.com/*"],
       "css": ["/injected-content/styles.css"],
-      "js": ["/resources/js/jquery.js", "/injected-content/mixerelixir.js"]
+      "js": ["/resources/js/jquery.js", "/resources/js/jquery.initialize.js", "/injected-content/mixerelixir.js"]
     }
   ],
   "web_accessible_resources": [

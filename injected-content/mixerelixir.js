@@ -53,7 +53,6 @@ function waitForPageLoad() {
 function runPageLogic() {
 	//check if we are on a streamer page by looking for the name in the top right corner.
 	var channelBlock = $("b-channel-owners-block");
-	var homeBlock = $(".home");
 	
 	if(channelBlock != null  && channelBlock.length > 0) {
 		log("detected streamer page...");
@@ -80,38 +79,14 @@ function runPageLogic() {
 			log("streamer page loaded...");
 			loadStreamerPage(name);
 		});
-	} else if (homeBlock != null && homeBlock.length > 0){
+	} else {
 		log("looks like we are on the main page");
-		loadHomepage();
-	} else {
-		log("looks like we're on some other page")
-
-	}
-}
-
-function loadHomepage(){
-	log('Loading up settings for homepage');
-
-	// Remove featured streams on homepage
-	if(settings.removeHomepageFeatured){
-		$('.home .featured').css('display', 'none');
-		$('.browse').css('padding-top', '75px');
-
-		// This forces the left navigation to recalculate position.
-		$('.home').scrollTop('-5');
-		$('.home').scrollTop('5');
-	} else {
-		$('.home .featured').css('display', 'flex');
-		$('.browse').css('padding-top', '0px');
-
-		// This forces the left navigation to recalculate position.
-		$('.home').scrollTop('-5');
-		$('.home').scrollTop('5');
 	}
 }
 
 function loadStreamerPage(streamerName) {
 	log(`Loading streamer page for: ${streamerName}`)
+	console.log(settings);
 
 	// Auto close interactive
 	if(settings.autoCloseInteractive) {
@@ -155,10 +130,48 @@ function loadStreamerPage(streamerName) {
 		}
 	}
 
+	if(!settings.showImageLinksInline) {
+		$("img[exlixr-img]").each(function() { $(this).parent().remove()  });
+	}
+
+	// get rid of any previous registered callbacks for chat messages
+	$.deinitialize("b-channel-chat-message");
+
+	// This will run the callback for every message that already exists as well as any new ones added. 
+	// We can use this to do any tweaks and modifications to chat as they come in
+	$.initialize("b-channel-chat-message", function() {
+		var messageContainer = $(this);
+
+		var alreadyChecked = messageContainer.attr('elixrfied');
+		// check to see if we have already looked at this chat messsage.
+		if(alreadyChecked == true) return;
+		messageContainer.attr('elixrfied', 'true');
+
+		if(settings.showImageLinksInline) {
+			var links = messageContainer.find("a[target='_blank']");
+			if(links.length > 0) {
+				links.each(function(l) {
+					var link = $(this);
+					var url = link.attr("href");
+					
+					if(urlIsAnImage(url)) {
+						var previousImage = messageContainer.find(`img[src='${url}']`);
+	
+						if(previousImage == null || previousImage.length < 1) {
+							$(`<span _ngcontent-c69 style="display:block"><img _ngcontent-c69 src="${url}" style=",max-width: 200px; max-height: 125px; object-fit:contain;" exlixr-img></span>`).insertBefore(link.parent());
+						}
+					}
+				});
+			}
+		}
+
+		var username = messageContainer.find(".username").text();
+	
+	});
 	// Auto forward on host
 	// This checks every second to see if the channel hosted someone.
 	if(settings.autoForwardOnHost){
-		var hostee = false;
+		var hostee = null;
 		setInterval(function(){ 
 			hostee = $("b-host-bar").is(':visible');
 			if(hostee){
@@ -239,6 +252,18 @@ function getMixerFollowPage(userId, page){
 
 function log(message) {
 	console.log(`[ME: ${message}]`);
+}
+
+var urlIsAnImage = function(uri) {
+    //make sure we remove any nasty GET params 
+    uri = uri.split('?')[0];
+    //moving on now
+    var parts = uri.split('.');
+    var extension = parts[parts.length-1];
+    var imageTypes = ['jpg','jpeg','tiff','png','gif','bmp']
+    if(imageTypes.indexOf(extension) !== -1) {
+        return true;   
+    }
 }
 
 
