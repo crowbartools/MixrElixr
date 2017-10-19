@@ -31,7 +31,8 @@ var app = new Vue({
 		autoCloseInteractive: false,
 		separateChat: false,
 		alternateChatBGColor: false,
-		autoForwardOnHost: false
+		autoForwardOnHost: false,
+		removeHomepageFeatured: false
 	},
 	computed: {
 		settings: {
@@ -40,7 +41,8 @@ var app = new Vue({
 					autoCloseInteractive: this.autoCloseInteractive,
 					separateChat: this.separateChat,
 					alternateChatBGColor: this.alternateChatBGColor,
-					autoForwardOnHost: this.autoForwardOnHost
+					autoForwardOnHost: this.autoForwardOnHost,
+					removeHomepageFeatured: this.removeHomepageFeatured
 				}
 			}, 
 			set: function(settings) {
@@ -48,6 +50,7 @@ var app = new Vue({
 				this.separateChat = settings.separateChat === true;
 				this.alternateChatBGColor = settings.alternateChatBGColor === true;
 				this.autoForwardOnHost = settings.autoForwardOnHost === true;
+				this.removeHomepageFeatured = settings.removeHomepageFeatured === true;
 			}		
 		}
 	},

@@ -36,8 +36,12 @@
 						Auto Forward on Host
 					</label>
 				</div>
-				<h4>Online Followed Channels</h4>
-				<div class="online-follows-wrapper"></div>
+				<div class="form-check">
+					<label class="form-check-label">
+						<input type="checkbox" class="form-check-input" v-model="removeHomepageFeatured" v-on:change="saveSettings()">
+						Remove Homepage Featured Streams 
+					</label>
+				</div>
 			</div>	
 		</div>	
 		<script src="/resources/js/vue.min.js"></script>
