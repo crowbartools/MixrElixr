@@ -86,6 +86,7 @@ function runPageLogic() {
 
 function loadStreamerPage(streamerName) {
 	log(`Loading streamer page for: ${streamerName}`)
+	console.log(settings);
 
 	// Auto close interactive
 	if(settings.autoCloseInteractive) {
@@ -127,6 +128,24 @@ function loadStreamerPage(streamerName) {
 			console.log('Removing alternate chat class')
 			chatContainer.removeClass('chat-alternate-bg');
 		}
+	}
+
+	// Auto forward on host
+	// This checks every second to see if the channel hosted someone.
+	if(settings.autoForwardOnHost){
+		var hostee = ;
+		setInterval(function(){ 
+			hostee = $("b-host-bar").is(':visible');
+			if(hostee){
+				var hostName = $("b-host-bar b-channel-creator span").text();
+
+				// Check to make sure we're not trying to forward again accidently (which sometimes occured if interval fired during page load after a redirect)
+				if(hostName !== hostee){
+					console.log('Redirecting to '+hostName+' because forwarding on host is on.')
+					document.location.href = "https://mixer.com/"+hostName;
+				}
+			}
+		}, 1000);
 	}
 }
 
@@ -174,7 +193,7 @@ function runUrlWatcher() {
 // This returns the user id of any mixer username.
 function getMixerId(username){
 	return new Promise(function(resolve, reject) {
-		$.getJSON( "https://mxier.com/api/v1/channels/"+username+"?fields=userId", function( data ) {
+		$.getJSON( "https://mixer.com/api/v1/channels/"+username+"?fields=userId", function( data ) {
 			resolve(data.userId);
 		});
 	});
@@ -188,6 +207,7 @@ function getMixerFollowPage(userId, page){
 		});
 	});
 }
+
 
 
 /* Helpers */
