@@ -51,16 +51,8 @@ function waitForPageLoad() {
 }
 
 function runPageLogic() {
-<<<<<<< HEAD
-	//check if we are on a streamer page by looking for the name in the top left corner.
-	var channelBlock = $("b-channel-action-block");
-	
-			if(channelBlock != null) {
-				var nameElement = channelBlock.find("b-channel-owners-block").find("h2");
-=======
 	//check if we are on a streamer page by looking for the name in the top right corner.
 	var channelBlock = $("b-channel-owners-block");
->>>>>>> master
 	
 	if(channelBlock != null  && channelBlock.length > 0) {
 		log("detected streamer page...");
