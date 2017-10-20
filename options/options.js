@@ -40,7 +40,8 @@ Vue.component('checkbox-toggle', {
 	template: `
 		<label style="display:flex">
 			<label class="switch">
-				<input type="checkbox" v-model="value" @change="valueUpdated"/><div></div>
+				<input type="checkbox" v-model="value" @change="valueUpdated"/>
+				<span class="slider"></span>
 			</label>
 			{{label}}
 		</label>
