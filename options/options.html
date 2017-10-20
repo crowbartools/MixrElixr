@@ -2,54 +2,31 @@
 <html>
   	<head>
 		<title>MixerElixir</title>
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+		<link rel="stylesheet" href="/resources/bootstrap/bootstrap.min.css">
 		<link rel="stylesheet" href="/resources/font-awesome/css/font-awesome.min.css">
 		<link rel="stylesheet" href="/options/options.css">
   	</head>
   	<body>
 		<div id="app">
 			<div class="page-wrapper">
-				<h4>MixerElixir</h4>
-				<p>Provides various options to improve your Mixer viewing experience.</p>	
-				<h4>Options</h4>
-				<div class="form-check">
-					<label class="form-check-label">
-						<input type="checkbox" class="form-check-input" v-model="autoCloseInteractive" v-on:change="saveSettings()">
-						Auto close Interactive boards
-					</label>
+				<nav-bar @tab-changed="updateActiveTab" :online-count="onlineStreamers"></nav-bar>
+				<div v-if="activeTab == 'online'" class="tab-content">
+					Online peeps
 				</div>
-				<div class="form-check">
-					<label class="form-check-label">
-						<input type="checkbox" class="form-check-input" v-model="separateChat" v-on:change="saveSettings()">
-						Separate Chat Lines
-					</label>
-				</div>
-				<div class="form-check">
-					<label class="form-check-label">
-						<input type="checkbox" class="form-check-input" v-model="alternateChatBGColor" v-on:change="saveSettings()">
-						Alternate Chat BG Color
-					</label>
-				</div>
-				<div class="form-check">
-					<label class="form-check-label">
-						<input type="checkbox" class="form-check-input" v-model="showImageLinksInline" v-on:change="saveSettings()">
-						Show Image Links Inline 
-					</label>
-				</div>
-				<div class="form-check">
-					<label class="form-check-label">
-						<input type="checkbox" class="form-check-input" v-model="autoForwardOnHost" v-on:change="saveSettings()">
-						Auto Forward on Host
-					</label>
-				</div>
-				<div class="form-check">
-					<label class="form-check-label">
-						<input type="checkbox" class="form-check-input" v-model="removeHomepageFeatured" v-on:change="saveSettings()">
-						Remove Homepage Featured Streams 
-					</label>
-				</div>
+				<div v-if="activeTab == 'options'" class="tab-content">
+					<h4>Streamer Page</h4>
+					<checkbox-toggle :value.sync="autoCloseInteractive" :change="saveSettings()" label="Auto close Interactive boards"></checkbox-toggle>
+					<checkbox-toggle :value.sync="separateChat" :change="saveSettings()" label="Separate Chat Lines"></checkbox-toggle>
+					<checkbox-toggle :value.sync="alternateChatBGColor" :change="saveSettings()" label="Alternate Chat BG Color"></checkbox-toggle>
+					<checkbox-toggle :value.sync="showImageLinksInline" :change="saveSettings()" label="Show Image Links Inline"></checkbox-toggle>
+					<checkbox-toggle :value.sync="autoForwardOnHost" :change="saveSettings()" label="Auto Forward on Host"></checkbox-toggle>			
+					<h4>Homepage</h4>
+					<checkbox-toggle :value.sync="removeHomepageFeatured" :change="saveSettings()" label="Remove Featured Streams"></checkbox-toggle>
+				</div>				
 			</div>	
-		</div>	
+		</div>
+		<script src="/resources/js/jquery.js"></script>	
+		<script src="/resources/bootstrap/bootstrap.bundle.min.js"></script>	
 		<script src="/resources/js/vue.min.js"></script>
 		<script src="/options/options.js"></script>
 	</body>

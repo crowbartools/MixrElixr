@@ -8,9 +8,68 @@ body {
     font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
     font-size: 100%;
     width: 500px;
+    min-height: 400px;
+    background: #1c2a3c;
+}
+
+.tab-content {
+    color: white;
     padding: 20px;
 }
+
 .muted {
     opacity: 0.6;
     font-size: 12px;
 }
+.clickable {
+    cursor: pointer;
+}
+
+h4 {
+    font-weight: 100;
+}
+
+
+
+/*Switch*/
+
+/** Switch
+ -------------------------------------*/
+
+ .switch input {
+    position: absolute;
+    opacity: 0;
+  }
+  
+  /**
+   * 1. Adjust this to size
+   */
+  
+  .switch {
+    display: inline-block;
+    font-size: 20px; /* 1 */
+    height: 1em;
+    width: 2em;
+    background: #36414c;
+    border-radius: 0.1em;
+    cursor: pointer;
+    margin-bottom: 0;
+    margin-right: 20px;
+  }
+  
+  .switch div {
+    height: 1em;
+    width: 1em;
+    border-radius: 0.1em;
+    background: #00c0ff;
+    box-shadow: 0 0.1em 0.3em rgba(0,0,0,0.3);
+    -webkit-transition: all 300ms;
+       -moz-transition: all 300ms;
+            transition: all 300ms;
+  }
+  
+  .switch input:checked + div {
+    -webkit-transform: translate3d(100%, 0, 0);
+       -moz-transform: translate3d(100%, 0, 0);
+            transform: translate3d(100%, 0, 0);
+  }

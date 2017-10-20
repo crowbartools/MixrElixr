@@ -1,3 +1,66 @@
+/*
+	VUE COMPONENTS
+*/
+Vue.component('nav-bar', {
+	template: `
+		<nav class="navbar navbar-expand navbar-dark bg-dark">
+			<a class="navbar-brand">
+				<img src="/resources/images/elixir-128.png" width="30" height="30" alt="">
+			</a>
+			<div class="collapse navbar-collapse" id="navbarNav">
+				<ul class="navbar-nav">
+					<li class="nav-item" class="clickable" :class="{active: onlineActive}" @click="changeTab('online')">
+						<a class="nav-link">Who's Online <span class="badge badge-light" v-if="onlineCount > 0">{{onlineCount}}</span></a>
+					</li>
+					<li class="nav-item" class="clickable" :class="{active: optionsActive}" @click="changeTab('options')">
+						<a class="nav-link">Options</a>
+					</li>
+				</ul>
+			</div>
+		</nav>
+	`,
+	data: function() {
+		return {
+			activeTab: 'online',
+			onlineActive: true,
+			optionsActive: false
+		}  
+	},
+	props: ['onlineCount'],
+	methods: {
+		changeTab: function(tab) {
+			this.onlineActive = tab === 'online';
+			this.optionsActive = tab === 'options';
+			this.$emit('tab-changed', tab)
+		}
+	}
+})
+
+Vue.component('checkbox-toggle', {
+	template: `
+		<label style="display:flex">
+			<label class="switch">
+				<input type="checkbox" v-model="value" @change="valueUpdated"/><div></div>
+			</label>
+			{{label}}
+		</label>
+	`,
+	props: ['value', "label"],
+	methods: {
+		valueUpdated: function() {
+			this.$emit('update:value', this.value)
+			this.$emit('change');
+		}
+	}
+})
+
+
+
+
+/*
+	VUE APP
+*/
+
 var settingsStorage = {
 	fetch: function(defaultSettings) {
 		return new Promise((resolve, reject) => {
@@ -32,7 +95,9 @@ var app = new Vue({
 		alternateChatBGColor: false,
 		showImageLinksInline: false,
 		autoForwardOnHost: false,
-		removeHomepageFeatured: false
+		removeHomepageFeatured: false,
+		activeTab: 'online',
+		onlineStreamers: 1
 	},
 	computed: {
 		settings: {
@@ -66,6 +131,10 @@ var app = new Vue({
 		saveSettings: function() {
 			var app = this;
 			settingsStorage.save(app.settings);
+		},
+		updateActiveTab: function(tab) {
+			console.log("tab changed: " + tab);
+			this.activeTab = tab;
 		}
 	},
 	mounted: function() {
@@ -73,3 +142,5 @@ var app = new Vue({
 		this.fetchSettings();
 	}
 });
+
+
