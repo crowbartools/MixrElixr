@@ -24,7 +24,7 @@ $(() => {
 		});
 	});
 	
-	// listen for an event from the Options page. This fires everytime the user adds or removes a time entry
+	// listen for an event from the Options page. This fires everytime the user updates a setting
 	chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 		if(!request.settingsUpdated) return;
 		loadSettings().then(() => {
