@@ -1,1 +1,1 @@
-# MixerElixir
+# MixrElixr
