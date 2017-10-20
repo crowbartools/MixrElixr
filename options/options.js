@@ -5,7 +5,7 @@ Vue.component('nav-bar', {
 	template: `
 		<nav class="navbar navbar-expand navbar-dark bg-dark">
 			<a class="navbar-brand">
-				<img src="/resources/images/elixir-128.png" width="30" height="30" alt="">
+				<img src="/resources/images/elixr-128.png" width="30" height="30" alt="">
 			</a>
 			<div class="collapse navbar-collapse" id="navbarNav">
 				<ul class="navbar-nav">

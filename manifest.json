@@ -4,13 +4,13 @@
   "description": "Provides various options and tweaks to improve your Mixer.com viewing experience.",
   "version": "0.1",
   "browser_action": {
-    "default_icon": "/resources/images/elixir-16.png",
+    "default_icon": "/resources/images/elixr-16.png",
 	  "default_popup": "/options/options.html"
   },
   "icons": {
-    "16": "/resources/images/elixir-16.png",
-    "48": "/resources/images/elixir-48.png",
-    "128": "/resources/images/elixir-128.png"
+    "16": "/resources/images/elixr-16.png",
+    "48": "/resources/images/elixr-48.png",
+    "128": "/resources/images/elixr-128.png"
   },
   "content_scripts": [
     {
