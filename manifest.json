@@ -1,6 +1,6 @@
 {
   "manifest_version": 2,
-  "name": "MixerElixir",
+  "name": "MixrElixr",
   "description": "Provides various options and tweaks to improve your Mixer.com viewing experience.",
   "version": "0.1",
   "browser_action": {
@@ -16,7 +16,7 @@
     {
       "matches": ["*://mixer.com/*"],
       "css": ["/injected-content/styles.css"],
-      "js": ["/resources/js/jquery.js", "/resources/js/jquery.initialize.js", "/injected-content/mixerelixir.js"]
+      "js": ["/resources/js/jquery.js", "/resources/js/jquery.initialize.js", "/injected-content/mixrelixr.js"]
     }
   ],
   "web_accessible_resources": [
