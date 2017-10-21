@@ -13,7 +13,9 @@
 				<nav-bar @tab-changed="updateActiveTab" :online-count="friends.length"></nav-bar>
 				<div v-if="activeTab == 'online'" id="onlineFriends" class="tab-content">
 					<h4>Online peeps</h4>
-					<online-friend	v-for="friend in friends" v-bind:friend="friend"></online-friend>
+					<div class="online-friends-wrap">
+						<online-friend	v-for="friend in friends" v-bind:friend="friend"></online-friend>
+					</div>
 				</div>
 				<div v-if="activeTab == 'options'" class="tab-content">
 					<h4>Streamer Page</h4>

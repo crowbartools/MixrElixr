@@ -57,20 +57,24 @@ Vue.component('checkbox-toggle', {
 
 Vue.component('online-friend', {
     template: `
-		<div class="mixerFriend">
-			<div class="friendPreview" @mouseover="hover = true" @mouseleave="hover = false">
-				<img v-bind:src="channelImgUrl" v-show="hover === false">
-                <video autoplay="" loop="" v-show="hover === true">
-                    <source type="video/mp4" v-bind:src="channelVidUrl">
-                </video>
-			</div>
-			<div class="friendName">
-				{{friend.token}} - {{friend.viewersCurrent}} viewers
-			</div>
-			<div class="friendTitle">
-				{{friend.name}}
-			</div>
-		</div>
+        <div class="mixerFriend">
+            <div class="friendPreview" @mouseover="hover = true" @mouseleave="hover = false">
+                <div class="thumbnail">
+                    <img v-bind:src="channelImgUrl" v-show="hover === false">
+                    <video autoplay="" loop="" preload="none" v-show="hover === true">
+                        <source type="video/mp4" v-bind:src="channelVidUrl">
+                    </video>
+                    <div class="friend-header">
+                        <span class="friendName">{{friend.token}}</span>
+                        <span class="friendViewers"><i class="fa fa-eye" aria-hidden="true"></i>{{friend.viewersCurrent}}</span>
+                    </div>
+                </div>
+                <div class="info-container">
+                    <div class="friendGame">{{friend.type.name}}</div>
+                    <div class="friendTitle">{{friend.name}}</div>
+                </div>
+            </div>
+        </div>
 	`,
     props: ['friend'],
     data: function() {
@@ -151,7 +155,7 @@ var onlineMixerFriends = {
         console.log('Trying page '+page+' of follows for userId '+userId);
         return new Promise(function(resolve, reject) {
             var request = new XMLHttpRequest();
-            request.open('GET', 'https://mixer.com/api/v1/users/'+userId+'/follows?fields=id,online,name,token,viewersCurrent,partnered&where=online:eq:true&limit=50&page='+page, true);
+            request.open('GET', 'https://mixer.com/api/v1/users/'+userId+'/follows?fields=id,online,name,token,viewersCurrent,partnered,type&where=online:eq:true&limit=50&page='+page, true);
 
             request.onload = function() {
                 if (request.status >= 200 && request.status < 400) {
