@@ -59,7 +59,7 @@ Vue.component('online-friend', {
     template: `
         <div class="mixerFriend">
             <div class="friendPreview" @mouseover="hover = true" @mouseleave="hover = false">
-                <a v-bind:href="channelLink" target="_blank" class="friendLink">
+                <a v-bind:href="channelLink" target="_blank" class="friendLink" v-bind:title="channelTitle">
                     <div class="thumbnail">
                         <img v-bind:src="channelImgUrl" v-show="hover === false">
                         <video autoplay="" loop="" preload="none" v-show="hover === true">
@@ -93,7 +93,10 @@ Vue.component('online-friend', {
         },
         channelLink: function(){
             return `https://mixer.com/${this.friend.token}`;
-        }
+		},
+		channelTitle: function(){
+			return `${this.friend.name}`;
+		}
     }
 });
 
@@ -140,7 +143,7 @@ var onlineMixerFriends = {
                 if (request.status >= 200 && request.status < 400) {
                     // Success!
                     var data = JSON.parse(request.responseText);
-                    resolve(data.id);
+					resolve(data.id);
                 } else {
                     // We reached our target server, but it returned an error
                     reject('Login at Mixer.com to see your online friends.');
