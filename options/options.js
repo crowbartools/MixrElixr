@@ -55,26 +55,33 @@ Vue.component('checkbox-toggle', {
 	}
 })
 
-
 Vue.component('online-friend', {
   template: `
-		<div class="mixerFriend {{friend.partnered}}">
-			<div class="friendPreview" data="{{friend.chanId}}">
-				<img src="https://thumbs.mixer.com/channel/{{friend.chanId}}.small.jpg">
+		<div class="mixerFriend">
+			<div class="friendPreview">
+				<img v-bind:src="channelImgUrl">
 				<video autoplay loop>
-					<source type="video/mp4" src"https://thumbs.mixer.com/channel/{{friend.chanId}}.m4v">
+					<source type="video/mp4" v-bind:src="channelVidUrl">
 				</video>
 			</div>
 			<div class="friendName">
-				{{friend.token}} - {{friend.viewers}} viewers
+				{{friend.token}} - {{friend.viewersCurrent}} viewers
 			</div>
 			<div class="friendTitle">
-				{{friend.chanTitle}}
+				{{friend.name}}
 			</div>
 		</div>
 	`,
-  	props: ['friend'],
-})
+    props: ['friend'],
+    computed: {
+        channelImgUrl: function() {
+            return `https://thumbs.mixer.com/channel/${this.friend.id}.small.jpg`
+        },
+        channelVidUrl: function() {
+            return `https://thumbs.mixer.com/channel/${this.friend.id}.m4v`
+        }
+    }
+});
 
 
 /*
@@ -106,64 +113,6 @@ var settingsStorage = {
 		});
 	}
 }
-
-var app = new Vue({
-	el: '#app',
-	data: {
-		autoCloseInteractive: false,
-		separateChat: false,
-		alternateChatBGColor: false,
-		showImageLinksInline: false,
-		autoForwardOnHost: false,
-		removeHomepageFeatured: false,
-		activeTab: 'online',
-		onlineStreamers: 1
-	},
-	computed: {
-		settings: {
-			get: function() {
-				return {
-					autoCloseInteractive: this.autoCloseInteractive,
-					separateChat: this.separateChat,
-					alternateChatBGColor: this.alternateChatBGColor,
-					showImageLinksInline: this.showImageLinksInline,
-					autoForwardOnHost: this.autoForwardOnHost,
-					removeHomepageFeatured: this.removeHomepageFeatured
-				}
-			}, 
-			set: function(settings) {
-				this.autoCloseInteractive = settings.autoCloseInteractive === true;
-				this.separateChat = settings.separateChat === true;
-				this.alternateChatBGColor = settings.alternateChatBGColor === true;
-				this.showImageLinksInline = settings.showImageLinksInline === true;
-				this.autoForwardOnHost = settings.autoForwardOnHost === true;
-				this.removeHomepageFeatured = settings.removeHomepageFeatured === true;
-			}		
-		}
-	},
-	methods: {
-		fetchSettings: function() {
-			var app = this;
-			settingsStorage.fetch(app.settings).then((data) => {
-				app.settings = data.settings;
-			});
-		},
-		saveSettings: function() {
-			var app = this;
-			settingsStorage.save(app.settings);
-		},
-		updateActiveTab: function(tab) {
-			console.log("tab changed: " + tab);
-			this.activeTab = tab;
-		}
-	},
-	mounted: function() {
-		// When Vue is ready
-		this.fetchSettings();
-	}
-});
-
-
 
 var onlineMixerFriends = {
 	getMixerId: function(username) {
@@ -245,13 +194,57 @@ var onlineMixerFriends = {
 	}
 }
 
-var onlineFriends = new Vue({
-	el: '#onlineFriends',
+var app = new Vue({
+	el: '#app',
 	data: {
-		friends: []
+		autoCloseInteractive: false,
+		separateChat: false,
+		alternateChatBGColor: false,
+		showImageLinksInline: false,
+		autoForwardOnHost: false,
+		removeHomepageFeatured: false,
+		activeTab: 'online',
+        friends: []
+	},
+	computed: {
+		settings: {
+			get: function() {
+				return {
+					autoCloseInteractive: this.autoCloseInteractive,
+					separateChat: this.separateChat,
+					alternateChatBGColor: this.alternateChatBGColor,
+					showImageLinksInline: this.showImageLinksInline,
+					autoForwardOnHost: this.autoForwardOnHost,
+					removeHomepageFeatured: this.removeHomepageFeatured
+				}
+			}, 
+			set: function(settings) {
+				this.autoCloseInteractive = settings.autoCloseInteractive === true;
+				this.separateChat = settings.separateChat === true;
+				this.alternateChatBGColor = settings.alternateChatBGColor === true;
+				this.showImageLinksInline = settings.showImageLinksInline === true;
+				this.autoForwardOnHost = settings.autoForwardOnHost === true;
+				this.removeHomepageFeatured = settings.removeHomepageFeatured === true;
+			}		
+		}
 	},
 	methods: {
-		fetchFriends: function() {
+		fetchSettings: function() {
+			var app = this;
+			settingsStorage.fetch(app.settings).then((data) => {
+				app.settings = data.settings;
+			});
+		},
+		saveSettings: function() {
+			var app = this;
+			settingsStorage.save(app.settings);
+		},
+		updateActiveTab: function(tab) {
+			console.log("tab changed: " + tab);
+			this.activeTab = tab;
+        },
+        fetchFriends: function() {
+            console.log("getting friends")
 			onlineMixerFriends.outputMixerFollows('Firebottle')
 			.then((res) => {
 				this.friends = res;
@@ -260,6 +253,7 @@ var onlineFriends = new Vue({
 	},
 	mounted: function() {
 		// When Vue is ready
-		this.fetchFriends();
+        this.fetchSettings();
+        this.fetchFriends();
 	}
-})
+});
