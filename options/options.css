@@ -114,6 +114,13 @@ input:checked + .slider:before {
     border-color:#0075d5;
 }
 
+.friendLink{
+    color:white;
+}
+.friendLink:hover{
+    color:white;
+}
+
 .thumbnail {
     width:100%;
     position: relative;

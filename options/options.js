@@ -59,20 +59,22 @@ Vue.component('online-friend', {
     template: `
         <div class="mixerFriend">
             <div class="friendPreview" @mouseover="hover = true" @mouseleave="hover = false">
-                <div class="thumbnail">
-                    <img v-bind:src="channelImgUrl" v-show="hover === false">
-                    <video autoplay="" loop="" preload="none" v-show="hover === true">
-                        <source type="video/mp4" v-bind:src="channelVidUrl">
-                    </video>
-                    <div class="friend-header">
-                        <span class="friendName">{{friend.token}}</span>
-                        <span class="friendViewers"><i class="fa fa-eye" aria-hidden="true"></i>{{friend.viewersCurrent}}</span>
+                <a v-bind:href="channelLink" target="_blank" class="friendLink">
+                    <div class="thumbnail">
+                        <img v-bind:src="channelImgUrl" v-show="hover === false">
+                        <video autoplay="" loop="" preload="none" v-show="hover === true">
+                            <source type="video/mp4" v-bind:src="channelVidUrl">
+                        </video>
+                        <div class="friend-header">
+                            <span class="friendName">{{friend.token}}</span>
+                            <span class="friendViewers"><i class="fa fa-eye" aria-hidden="true"></i>{{friend.viewersCurrent}}</span>
+                        </div>
                     </div>
-                </div>
-                <div class="info-container">
-                    <div class="friendGame">{{friend.type.name}}</div>
-                    <div class="friendTitle">{{friend.name}}</div>
-                </div>
+                    <div class="info-container">
+                        <div class="friendGame">{{friend.type.name}}</div>
+                        <div class="friendTitle">{{friend.name}}</div>
+                    </div>
+                </a>
             </div>
         </div>
 	`,
@@ -88,6 +90,9 @@ Vue.component('online-friend', {
         },
         channelVidUrl: function() {
             return `https://thumbs.mixer.com/channel/${this.friend.id}.m4v`;
+        },
+        channelLink: function(){
+            return `https://mixer.com/${this.friend.token}`;
         }
     }
 });
