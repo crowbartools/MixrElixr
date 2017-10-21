@@ -68,7 +68,11 @@ Vue.component('online-friend', {
                         <div class="friend-header">
                             <span class="friendName">{{friend.token}}</span>
                             <span class="friendViewers"><i class="fa fa-eye" aria-hidden="true"></i>{{friend.viewersCurrent}}</span>
-                        </div>
+						</div>
+						<div class="friend-icons">
+							<i v-if="friend.interactive" class="material-icons">videogame_asset</i>
+							<i v-if="friend.costreamId" class="material-icons">group</i>
+						</div>
                     </div>
                     <div class="info-container">
                         <div class="friendGame">{{friend.type.name}}</div>
@@ -163,11 +167,11 @@ var onlineMixerFriends = {
         console.log('Trying page '+page+' of follows for userId '+userId);
         return new Promise(function(resolve, reject) {
             var request = new XMLHttpRequest();
-            request.open('GET', 'https://mixer.com/api/v1/users/'+userId+'/follows?fields=id,online,name,token,viewersCurrent,partnered,type&where=online:eq:true&order=viewersCurrent:desc&limit=50&page='+page, true);
+            request.open('GET', 'https://mixer.com/api/v1/users/'+userId+'/follows?fields=id,online,name,token,viewersCurrent,partnered,costreamId,interactive,type&where=online:eq:true&order=viewersCurrent:desc&limit=50&page='+page, true);
 
             request.onload = function() {
                 if (request.status >= 200 && request.status < 400) {
-                    // Success!
+					// Success!
                     var data = JSON.parse(request.responseText);
 
                     // Loop through data and throw in array.
@@ -177,7 +181,7 @@ var onlineMixerFriends = {
 					
                     // If we hit 50 friends, cycle again because we've run out of friends on this api call.
                     if(data.length === 50){
-                        var page = page + 1;
+						var page = page + 1;
                         onlineMixerFriends.getMixerFollows(userId, page, followList);
                     } else {
                         resolve(followList);
