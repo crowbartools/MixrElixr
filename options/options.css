@@ -14,7 +14,10 @@ body {
 
 .tab-content {
     color: white;
-    padding: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .muted {
@@ -33,6 +36,7 @@ h4 {
 .friendPreview{
     position:relative;
 }
+
 .friendPreview video{
     display:none;
     position:absolute;
@@ -93,4 +97,61 @@ input:checked + .slider:before {
     -webkit-transform: translateX(22px);
     -ms-transform: translateX(22px);
     transform: translateX(22px);
+}
+
+.info-container {
+    float: left;
+    width: 75%;
+    height: 70px;
+    padding-top: 0px;
+    padding-left: 2px;
+}
+
+.thumbnail {
+    float: left;
+    padding: 4px 4px 2px 2px;
+    position: relative;
+}
+
+.thumbnail img {
+    max-height: 68px;
+    max-width: 100px;
+    height: 58px;
+    width: 100px;
+    background-size: 100% 100%;
+}
+
+.thumbnail .stream-uptime {
+    position: absolute;
+    bottom: 2px;
+    right: 4px;
+    color: rgba(255,255,255,0.7);
+    background: rgba(0,0,0,0.5);
+    padding: 2px;
+}
+
+.friendPreview {
+    height: 70px;
+    display: block;
+    clear: both;
+    cursor: pointer;
+}
+
+.friendName {
+    font-weight: bold;
+}
+
+.friendGame {
+    font-size: 80%;
+}
+
+.friendTitle {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+}
+
+.mixerFriend {
+    padding-top: 1px;
+    border-top: dotted #36414c 0.5px;
 }

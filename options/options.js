@@ -59,16 +59,17 @@ Vue.component('online-friend', {
   template: `
 		<div class="mixerFriend">
 			<div class="friendPreview">
-				<img v-bind:src="channelImgUrl">
-				<video autoplay loop>
-					<source type="video/mp4" v-bind:src="channelVidUrl">
-				</video>
-			</div>
-			<div class="friendName">
-				{{friend.token}} - {{friend.viewersCurrent}} viewers
-			</div>
-			<div class="friendTitle">
-				{{friend.name}}
+				<div class="thumbnail">
+					<img v-bind:src="channelImgUrl">
+					<video autoplay loop>
+						<source type="video/mp4" v-bind:src="channelVidUrl">
+					</video>
+				</div>
+				<div class="info-container">
+				<div class="friendName2"><span class="friendName">{{friend.token}}</span> - {{friend.viewersCurrent}} viewers</div>
+					<div class="friendGame">{{friend.type.name}}</div>
+					<div class="friendTitle">{{friend.name}}</div>
+				</div>
 			</div>
 		</div>
 	`,
@@ -146,7 +147,7 @@ var onlineMixerFriends = {
 		console.log('Trying page '+page+' of follows for userId '+userId);
 		return new Promise(function(resolve, reject) {
 			var request = new XMLHttpRequest();
-			request.open('GET', 'https://mixer.com/api/v1/users/'+userId+'/follows?fields=id,online,name,token,viewersCurrent,partnered&where=online:eq:true&limit=50&page='+page, true);
+			request.open('GET', 'https://mixer.com/api/v1/users/'+userId+'/follows?fields=id,online,name,token,viewersCurrent,partnered,type&where=online:eq:true&limit=50&page='+page, true);
 
 			request.onload = function() {
 				if (request.status >= 200 && request.status < 400) {
