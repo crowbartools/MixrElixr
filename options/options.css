@@ -33,11 +33,8 @@ h4 {
 
 /*Switch*/
 
-/** Switch
- -------------------------------------*/
-
- /* The switch - the box around the slider */
- .switch {
+/* The switch - the box around the slider */
+.switch {
     position: relative;
     display: inline-block;
     width: 46px;
