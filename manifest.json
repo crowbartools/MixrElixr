@@ -1,31 +1,41 @@
 {
-  "manifest_version": 2,
-  "name": "MixrElixr",
-  "description": "Provides various options and tweaks to improve your Mixer.com viewing experience.",
-  "version": "0.1",
-  "browser_action": {
-    "default_icon": "/resources/images/elixr-16.png",
-    "default_popup": "/options/options.html"
-  },
-  "icons": {
-    "16": "/resources/images/elixr-16.png",
-    "48": "/resources/images/elixr-48.png",
-    "128": "/resources/images/elixr-128.png"
-  },
-  "content_scripts": [
-    {
-      "matches": ["*://mixer.com/*"],
-      "exclude_globs" : ["*/api/*"],
-      "css": ["/injected-content/styles.css"],
-      "js": ["/resources/js/jquery.js", "/resources/js/jquery.initialize.js", "/injected-content/mixrelixr.js"]
-    }
-  ],
-  "web_accessible_resources": [
-    "images/*"
-  ], 
-  "options_page": "/options/options.html",
-  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
-  "permissions": [
-	  "storage"
-  ]
+    "manifest_version": 2,
+    "name": "MixrElixr",
+    "description": "Provides various options and tweaks to improve your Mixer.com viewing experience.",
+    "version": "0.1",
+    "browser_action": {
+        "default_icon": "/resources/images/elixr-light-16.png",
+        "default_popup": "/options/options.html"
+    },
+    "icons": {
+        "16": "/resources/images/elixr-light-16.png",
+        "48": "/resources/images/elixr-light-48.png",
+        "128": "/resources/images/elixr-light-128.png"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "*://mixer.com/*"
+            ],
+            "exclude_globs": [
+                "*/api/*"
+            ],
+            "css": [
+                "/injected-content/styles.css"
+            ],
+            "js": [
+                "/resources/js/jquery.js",
+                "/resources/js/jquery.initialize.js",
+                "/injected-content/mixrelixr.js"
+            ]
+        }
+    ],
+    "web_accessible_resources": [
+        "images/*"
+    ],
+    "options_page": "/options/options.html",
+    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+    "permissions": [
+        "storage"
+    ]
 }
