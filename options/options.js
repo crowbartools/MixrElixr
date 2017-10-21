@@ -160,7 +160,7 @@ var onlineMixerFriends = {
         console.log('Trying page '+page+' of follows for userId '+userId);
         return new Promise(function(resolve, reject) {
             var request = new XMLHttpRequest();
-            request.open('GET', 'https://mixer.com/api/v1/users/'+userId+'/follows?fields=id,online,name,token,viewersCurrent,partnered,type&where=online:eq:true&limit=50&page='+page, true);
+            request.open('GET', 'https://mixer.com/api/v1/users/'+userId+'/follows?fields=id,online,name,token,viewersCurrent,partnered,type&where=online:eq:true&order=viewersCurrent:desc&limit=50&page='+page, true);
 
             request.onload = function() {
                 if (request.status >= 200 && request.status < 400) {
