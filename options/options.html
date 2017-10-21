@@ -2,9 +2,10 @@
 <html>
   	<head>
 		<title>MixerElixir</title>
-		<link rel="stylesheet" href="/resources/bootstrap/bootstrap.min.css">
+		<link type="text/css" rel="stylesheet" href="/resources/bootstrap/bootstrap.min.css"/>
+		<link type="text/css" rel="stylesheet" href="/resources/bootstrap/bootstrap-vue.css"/>
 		<link rel="stylesheet" href="/resources/font-awesome/css/font-awesome.min.css">
-		<link rel="stylesheet" href="/options/options.css">
+		<link rel="stylesheet" href="/options/options.css">		
   	</head>
   	<body>
 		<div id="app">
@@ -24,10 +25,10 @@
 					<checkbox-toggle :value.sync="removeHomepageFeatured" :change="saveSettings()" label="Remove Featured Streams"></checkbox-toggle>
 				</div>				
 			</div>	
-		</div>
-		<script src="/resources/js/jquery.js"></script>	
-		<script src="/resources/bootstrap/bootstrap.bundle.min.js"></script>	
+		</div>	
 		<script src="/resources/js/vue.min.js"></script>
+		<script src="/resources/js/polyfill.min.js"></script>
+		<script src="/resources/bootstrap/bootstrap-vue.js"></script>
 		<script src="/options/options.js"></script>
 	</body>
 </html>
