@@ -266,13 +266,28 @@ function getMixerId(username){
 	});
 }
 
-// This will get a specific page for a specific user of online followed channels.
-function getMixerFollowPage(userId, page){
-	return new Promise(function(resolve, reject) {
-		$.getJSON( "https://mixer.com/api/v1/users/"+userId+"/follows?fields=id,online,token,viewersCurrent,partnered&where=online:eq:true&limit=50&page="+page, function( data ) {
-			resolve(data);
-		});
+// This will get a list of all of the online followed channels for a userId.
+function getMixerFollows(userId, page, followList){
+	console.log('Trying page '+page+' of follows');
+	$.getJSON( "https://mixer.com/api/v1/users/"+userId+"/follows?fields=id,online,token,viewersCurrent,partnered&where=online:eq:true&limit=50&page="+page, function( data ) {
+		followList.push(data);
+		if(data.length === 50){
+			console.log(data);
+			var page = page + 1;
+			getMixerFollows(userId, page, followList);
+		} else {
+			console.log(followList);
+			return followList;
+		}
 	});
+}
+
+// This will return an complete array of online followed channel info for a username.
+function outputMixerFollows(username){
+	getMixerId(username)
+	.then((res) =>{
+		getMixerFollows(res, 0, []);
+	})
 }
 
 
