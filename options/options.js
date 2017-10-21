@@ -56,6 +56,25 @@ Vue.component('checkbox-toggle', {
 })
 
 
+Vue.component('online-friend', {
+  template: `
+		<div class="mixerFriend {{friend.partnered}}">
+			<div class="friendPreview" data="{{friend.chanId}}">
+				<img src="https://thumbs.mixer.com/channel/{{friend.chanId}}.small.jpg">
+				<video autoplay loop>
+					<source type="video/mp4" src"https://thumbs.mixer.com/channel/{{friend.chanId}}.m4v">
+				</video>
+			</div>
+			<div class="friendName">
+				{{friend.token}} - {{friend.viewers}} viewers
+			</div>
+			<div class="friendTitle">
+				{{friend.chanTitle}}
+			</div>
+		</div>
+	`,
+  	props: ['friend'],
+})
 
 
 /*
@@ -145,3 +164,102 @@ var app = new Vue({
 });
 
 
+
+var onlineMixerFriends = {
+	getMixerId: function(username) {
+		// This gets a channel id using a mixer username.
+		return new Promise(function(resolve, reject) {
+
+			var request = new XMLHttpRequest();
+			request.open('GET', 'https://mixer.com/api/v1/channels/'+username+'?fields=userId', true);
+
+			request.onload = function() {
+				if (request.status >= 200 && request.status < 400) {
+					// Success!
+					var data = JSON.parse(request.responseText);
+					resolve(data.userId);
+				} else {
+					// We reached our target server, but it returned an error
+					reject('error');
+				}
+			};
+
+			request.onerror = function() {
+			// There was a connection error of some sort
+				reject('error');
+			};
+
+			request.send();
+		});
+	},
+	getMixerFollows: function(userId, page, followList){
+		// This will get all online followed channels and put them in an array.
+		console.log('Trying page '+page+' of follows for userId '+userId);
+		return new Promise(function(resolve, reject) {
+			var request = new XMLHttpRequest();
+			request.open('GET', 'https://mixer.com/api/v1/users/'+userId+'/follows?fields=id,online,name,token,viewersCurrent,partnered&where=online:eq:true&limit=50&page='+page, true);
+
+			request.onload = function() {
+				if (request.status >= 200 && request.status < 400) {
+					// Success!
+					var data = JSON.parse(request.responseText);
+
+					// Loop through data and throw in array.
+					for (friend of data){
+						followList.push(friend);
+					}
+					
+					// If we hit 50 friends, cycle again because we've run out of friends on this api call.
+					if(data.length === 50){
+						var page = page + 1;
+						onlineMixerFriends.getMixerFollows(userId, page, followList);
+					} else {
+						resolve(followList);
+					}
+
+				} else {
+					// We reached our target server, but it returned an error
+					reject('error');
+				}
+			};
+
+			request.onerror = function() {
+				// There was a connection error of some sort
+				reject('error');
+			};
+
+			request.send();
+		});
+	},
+	outputMixerFollows: function(username){
+		// This combines two functions so that we can get a full list of online followed channels with a username.
+		return new Promise((resolve, reject) => {
+			onlineMixerFriends.getMixerId(username)
+			.then((userId) =>{
+				onlineMixerFriends.getMixerFollows(userId, 0, [])
+				.then((friends) => {
+					resolve(friends);
+				})
+			})
+		});
+	}
+}
+
+var onlineFriends = new Vue({
+	el: '#onlineFriends',
+	data: {
+		friends: []
+	},
+	methods: {
+		fetchFriends: function() {
+			onlineMixerFriends.outputMixerFollows('Firebottle')
+			.then((res) => {
+				this.friends = res;
+			})
+		}
+	},
+	mounted: function() {
+		// When Vue is ready
+		this.fetchFriends();
+	}
+})

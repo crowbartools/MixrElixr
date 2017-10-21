@@ -29,7 +29,15 @@ h4 {
     font-weight: 100;
 }
 
-
+/*Online Friends*/
+.friendPreview{
+    position:relative;
+}
+.friendPreview video{
+    display:none;
+    position:absolute;
+    z-index:2;
+}
 
 /*Switch*/
 
