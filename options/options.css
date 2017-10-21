@@ -33,11 +33,6 @@ h4 {
 .friendPreview{
     position:relative;
 }
-.friendPreview video{
-    display:none;
-    position:absolute;
-    z-index:2;
-}
 
 /*Switch*/
 

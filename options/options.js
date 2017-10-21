@@ -58,11 +58,11 @@ Vue.component('checkbox-toggle', {
 Vue.component('online-friend', {
     template: `
 		<div class="mixerFriend">
-			<div class="friendPreview">
-				<img v-bind:src="channelImgUrl">
-				<video autoplay loop>
-					<source type="video/mp4" v-bind:src="channelVidUrl">
-				</video>
+			<div class="friendPreview" @mouseover="hover = true" @mouseleave="hover = false">
+				<img v-bind:src="channelImgUrl" v-show="hover === false">
+                <video autoplay="" loop="" v-show="hover === true">
+                    <source type="video/mp4" v-bind:src="channelVidUrl">
+                </video>
 			</div>
 			<div class="friendName">
 				{{friend.token}} - {{friend.viewersCurrent}} viewers
@@ -73,6 +73,11 @@ Vue.component('online-friend', {
 		</div>
 	`,
     props: ['friend'],
+    data: function() {
+        return {
+            hover: false
+        };
+    },
     computed: {
         channelImgUrl: function() {
             return `https://thumbs.mixer.com/channel/${this.friend.id}.small.jpg`;
@@ -115,27 +120,27 @@ var settingsStorage = {
 };
 
 var onlineMixerFriends = {
-    getMixerId: function(username) {
+    getMixerId: function() {
         // This gets a channel id using a mixer username.
         return new Promise(function(resolve, reject) {
 
             var request = new XMLHttpRequest();
-            request.open('GET', 'https://mixer.com/api/v1/channels/'+username+'?fields=userId', true);
+            request.open('GET', 'https://mixer.com/api/v1/users/current', true);
 
             request.onload = function() {
                 if (request.status >= 200 && request.status < 400) {
                     // Success!
                     var data = JSON.parse(request.responseText);
-                    resolve(data.userId);
+                    resolve(data.id);
                 } else {
                     // We reached our target server, but it returned an error
-                    reject('error');
+                    reject('Login at Mixer.com to see your online friends.');
                 }
             };
 
             request.onerror = function() {
                 // There was a connection error of some sort
-                reject('error');
+                reject('Error getting userId');
             };
 
             request.send();
@@ -168,22 +173,22 @@ var onlineMixerFriends = {
 
                 } else {
                     // We reached our target server, but it returned an error
-                    reject('error');
+                    reject('Error getting followed channels.');
                 }
             };
 
             request.onerror = function() {
                 // There was a connection error of some sort
-                reject('error');
+                reject('Error while getting followed channels.');
             };
 
             request.send();
         });
     },
-    outputMixerFollows: function(username){
+    outputMixerFollows: function(){
         // This combines two functions so that we can get a full list of online followed channels with a username.
         return new Promise((resolve, reject) => {
-            onlineMixerFriends.getMixerId(username)
+            onlineMixerFriends.getMixerId()
                 .then((userId) =>{
                     onlineMixerFriends.getMixerFollows(userId, 0, [])
                         .then((friends) => {
@@ -191,6 +196,10 @@ var onlineMixerFriends = {
                         });
                 });
         });
+    },
+    friendsError: function(err){
+        // This runs when the user is not logged into mixer.
+
     }
 };
 
@@ -245,10 +254,13 @@ var app = new Vue({
         },
         fetchFriends: function() {
             console.log('getting friends');
-            onlineMixerFriends.outputMixerFollows('Firebottle')
+            onlineMixerFriends.outputMixerFollows()
                 .then((res) => {
                     this.friends = res;
-                });
+                })
+                .catch((err) => {
+                    onlineMixerFriends.friendsError(err);
+                })
         }
     },
     mounted: function() {
