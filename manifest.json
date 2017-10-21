@@ -15,6 +15,7 @@
   "content_scripts": [
     {
       "matches": ["*://mixer.com/*"],
+      "exclude_globs" : ["*api*"],
       "css": ["/injected-content/styles.css"],
       "js": ["/resources/js/jquery.js", "/resources/js/jquery.initialize.js", "/injected-content/mixrelixr.js"]
     }
