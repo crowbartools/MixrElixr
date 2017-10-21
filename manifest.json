@@ -5,7 +5,7 @@
   "version": "0.1",
   "browser_action": {
     "default_icon": "/resources/images/elixr-16.png",
-	  "default_popup": "/options/options.html"
+    "default_popup": "/options/options.html"
   },
   "icons": {
     "16": "/resources/images/elixr-16.png",
@@ -15,7 +15,7 @@
   "content_scripts": [
     {
       "matches": ["*://mixer.com/*"],
-      "exclude_globs" : ["*api*"],
+      "exclude_globs" : ["*/api/*"],
       "css": ["/injected-content/styles.css"],
       "js": ["/resources/js/jquery.js", "/resources/js/jquery.initialize.js", "/injected-content/mixrelixr.js"]
     }
