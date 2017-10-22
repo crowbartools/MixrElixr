@@ -6,7 +6,7 @@
     "extends": "eslint:recommended",
     "rules": {
         "no-console": 0, // Enable the use of console
-        "indent": 2,
+        "indent": [1, "tab"],
         "quotes": [
             "error",
             "single"
