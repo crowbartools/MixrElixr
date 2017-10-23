@@ -150,6 +150,7 @@ var onlineMixerFriends = {
 					resolve(data.id);
 				} else {
 					// We reached our target server, but it returned an error
+					// TODO: Display a message in the extension.
 					reject('Login at Mixer.com to see your online friends.');
 				}
 			};
@@ -163,11 +164,14 @@ var onlineMixerFriends = {
 		});
 	},
 	getMixerFollows: function(userId, page, followList){
-		// This will get all online followed channels and put them in an array.
-		console.log('Trying page '+page+' of follows for userId '+userId);
+		// This will get 50 follows on a specific page.
 		return new Promise(function(resolve, reject) {
+			// To test a lot of follows, uncomment the line below.
+			// var userId = 313842;
+			console.log('Trying page '+page+' of follows for userId '+userId);
+
 			var request = new XMLHttpRequest();
-			request.open('GET', 'https://mixer.com/api/v1/users/'+userId+'/follows?fields=id,online,name,token,viewersCurrent,partnered,costreamId,interactive,type&where=online:eq:true&order=viewersCurrent:desc&limit=50&page='+page, true);
+			request.open('GET', 'https://mixer.com/api/v1/users/'+userId+'/follows?fields=id,online,name,token,viewersCurrent,partnered,costreamId,interactive,type&where=online:eq:true&order=viewersCurrent:desc&limit=250&page='+page, true);
 
 			request.onload = function() {
 				if (request.status >= 200 && request.status < 400) {
@@ -180,12 +184,7 @@ var onlineMixerFriends = {
 					}
 					
 					// If we hit 50 friends, cycle again because we've run out of friends on this api call.
-					if(data.length === 50){
-						var page = page + 1;
-						onlineMixerFriends.getMixerFollows(userId, page, followList);
-					} else {
-						resolve(followList);
-					}
+					resolve(followList);
 
 				} else {
 					// We reached our target server, but it returned an error
@@ -204,18 +203,25 @@ var onlineMixerFriends = {
 	outputMixerFollows: function(){
 		// This combines two functions so that we can get a full list of online followed channels with a username.
 		return new Promise((resolve, reject) => {
+			var page = 0;
 			onlineMixerFriends.getMixerId()
 				.then((userId) =>{
-					onlineMixerFriends.getMixerFollows(userId, 0, [])
-						.then((friends) => {
-							resolve(friends);
+					onlineMixerFriends.getMixerFollows(userId, page, [])
+						.then((followList) =>{
+							resolve(followList);
+						})
+						.catch((err) => {
+							reject(err);
 						});
+				})
+				.catch((err) => {
+					reject(err);
 				});
 		});
 	},
 	friendsError: function(err){
 		// This runs when the user is not logged into mixer.
-
+		console.log(err)
 	}
 };
 
@@ -272,6 +278,7 @@ var app = new Vue({
 			console.log('getting friends');
 			onlineMixerFriends.outputMixerFollows()
 				.then((res) => {
+					console.log(res);
 					this.friends = res;
 				})
 				.catch((err) => {

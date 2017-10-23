@@ -16,6 +16,9 @@
 					<div class="online-friends-wrap">
 						<online-friend	v-for="friend in friends" v-bind:friend="friend"></online-friend>
 					</div>
+					<div class="online-friends-error" v-if="friends.length === 0">
+						To view your online friends go to <a href="https://mixer.com" target="_blank">Mixer.com</a> and log in.
+					</div>
 				</div>
 				<div v-if="activeTab == 'options'" class="tab-content">
 					<div class="settings-section">
