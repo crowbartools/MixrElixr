@@ -19,8 +19,7 @@
 				</div>
 				<div v-if="activeTab == 'options'" class="tab-content">
 					<streamer-page-options></streamer-page-options>			
-					<h4>Homepage</h4>
-					<checkbox-toggle :value.sync="removeFeatured" :change="saveSettings()" label="Remove Featured Streams"></checkbox-toggle>
+					<home-page-options></home-page-options>
 				</div>				
 			</div>	
 		</div>	

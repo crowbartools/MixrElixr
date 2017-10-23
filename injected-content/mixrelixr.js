@@ -41,11 +41,11 @@ function waitForPageLoad() {
 			
 			if(spinnerExists) {
 				//spinner still exists, check again in a bit
-				setTimeout(()=> { doPageCheck(); }, 300);
+				setTimeout(()=> { doPageCheck(); }, 250);
 			} else {
 				log('Spinner is gone, the page should be loaded.');
 				//spinner is gone, lets party
-				setTimeout(()=> { resolve(); }, 500);			
+				setTimeout(()=> { resolve(); }, 750);			
 			}
 		}
 
@@ -55,7 +55,7 @@ function waitForPageLoad() {
 
 function runPageLogic() {
 
-	var channelBlock = $('b-channel-owners-block');
+	var channelBlock = $('b-channel-action-block');
 	var homeBlock = $('.home');
  
 	var url = window.location.href;
@@ -111,8 +111,13 @@ function runPageLogic() {
 function loadHomepage(){
 	log('Loading up settings for homepage');
 
+	if(!settings.homePageOptions) {
+		log('No home page settings saved.');
+		return;
+	}
+
 	// Remove featured streams on homepage
-	if(settings.removeHomepageFeatured){
+	if(settings.homePageOptions.removeFeatured){
 		$('.home .featured').css('display', 'none');
 		$('.browse').css('padding-top', '75px');
 
@@ -133,8 +138,27 @@ function loadHomepage(){
 function loadStreamerPage(streamerName) {
 	log(`Loading streamer page for: ${streamerName}`);
 
+	if(!settings.streamerPageOptions) {
+		log('No streamer page settings saved.');
+		return;
+	}
+
+	var options = settings.streamerPageOptions.global;
+
+	// override the options if there is streamer specific options available
+	var overrides = settings.streamerPageOptions.overrides;
+	var overrideKeys = Object.keys(overrides);
+	for(var i = 0; i < overrideKeys.length; i++) {
+		var key = overrideKeys[i];
+		if(key.toLowerCase() === streamerName.toLowerCase()) {
+			log(`found override options for ${streamerName}`)
+			options = overrides[key];
+		}
+		break;
+	}
+
 	// Auto close interactive
-	if(settings.autoCloseInteractive) {
+	if(options.autoCloseInteractive) {
 		var minimizeInteractiveBtn = $('button[buitooltip=\'Minimize controls\'');
 		if(minimizeInteractiveBtn != null) {
 			minimizeInteractiveBtn.click();
@@ -143,7 +167,7 @@ function loadStreamerPage(streamerName) {
 
 	// Auto forward on host
 	// This checks every second to see if the channel hosted someone.
-	if(settings.autoForwardOnHost){
+	if(options.autoForwardOnHost){
 		var hostee = null;
 		setInterval(function(){ 
 			hostee = $('b-host-bar').is(':visible');
@@ -163,18 +187,36 @@ function loadStreamerPage(streamerName) {
 }
 
 function applyChatSettings(streamerName) {
+
+	if(!settings.streamerPageOptions) {
+		log('No streamer page settings saved.');
+		return;
+	}
+	var options = settings.streamerPageOptions.global;
+	
+	// override the options if there is streamer specific options available
+	var overrides = settings.streamerPageOptions.overrides;
+	var overrideKeys = Object.keys(overrides);
+	for(var i = 0; i < overrideKeys.length; i++) {
+		var key = overrideKeys[i];
+		if(key.toLowerCase() === streamerName.toLowerCase()) {
+			options = overrides[key];
+			break;
+		}		
+	}
+
 	// Add in a line below each chat message.
-	if(settings.separateChat) {
+	if(options.separateChat) {
 		var chatContainer = $('.message-container');
-		if(chatContainer != null) {
+		if(chatContainer != null && chatContainer.length > 0) {
 			chatContainer.addClass('separated-chat');
 			chatContainer.animate({
 				scrollTop: chatContainer[0].scrollHeight
 			}, 500);
 		}
-	} else if(!settings.separateChat){
+	} else if(!options.separateChat){
 		var chatContainer = $('.separated-chat');
-		if(chatContainer != null){
+		if(chatContainer != null && chatContainer.length > 0){
 			chatContainer.removeClass('separated-chat');
 			chatContainer.animate({
 				scrollTop: chatContainer[0].scrollHeight
@@ -183,21 +225,19 @@ function applyChatSettings(streamerName) {
 	}
 
 	// Alternate chat bg color
-	if(settings.alternateChatBGColor){
+	if(options.alternateChatBGColor){
 		var chatContainer = $('.message-container');
-		if(chatContainer != null) {
-			console.log('Adding alternate chat class');
+		if(chatContainer != null && chatContainer.length > 0) {
 			chatContainer.addClass('chat-alternate-bg');
 		}
-	} else if(!settings.alternateChatBGColor){
+	} else if(!options.alternateChatBGColor){
 		var chatContainer = $('.message-container');
-		if(chatContainer != null) {
-			console.log('Removing alternate chat class');
+		if(chatContainer != null && chatContainer.length > 0) {
 			chatContainer.removeClass('chat-alternate-bg');
 		}
 	}
 
-	if(!settings.showImageLinksInline) {
+	if(!options.showImageLinksInline) {
 		$('img[exlixr-img]').each(function() { $(this).parent().remove();  });
 	}
 
@@ -214,7 +254,7 @@ function applyChatSettings(streamerName) {
 		if(alreadyChecked == true) return;
 		messageContainer.attr('elixrfied', 'true');
 
-		if(settings.showImageLinksInline) {
+		if(options.showImageLinksInline) {
 			var links = messageContainer.find('a[target=\'_blank\']');
 			if(links.length > 0) {
 				links.each(function(l) {
@@ -248,9 +288,11 @@ function loadSettings() {
 function getSettings() {
 	return new Promise((resolve, reject) => {
 		chrome.storage.sync.get({
-			'settings': null
+			'streamerPageOptions': null,
+			'homePageOptions': null
 		  }, (options) => {
-			resolve(options.settings);	  
+			  console.log(options);
+			resolve(options);	  
 		  });
 	});
 }
