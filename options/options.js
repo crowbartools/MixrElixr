@@ -60,7 +60,7 @@ Vue.component('home-page-options', {
 	template: `
 		<div class="settings-section">
 			<div class="settings-section-header">
-				<h4>Homepage</h4>
+				<span class="title">Homepage</span>
 			</div>
 			<div class="settings-section-settings">
 			<checkbox-toggle :value.sync="removeFeatured" @changed="saveSettings()" label="Remove Featured Streams"></checkbox-toggle>
@@ -119,13 +119,12 @@ Vue.component('streamer-page-options', {
 	template: `
 		<div class="settings-section">
 			<div class="settings-section-header">
-				<h4>Streamer Page <streamer-override-dropdown :overrideNames="overrideNames" 
+				<span class="title">Streamer Page</span> <streamer-override-dropdown :overrideNames="overrideNames" 
 						:selected="selected"
 						@override-added="overrideAdded"
 						@override-selected="overrideSelected"
 						@override-deleted="overrideDeleted">
 					</streamer-override-dropdown>
-				</h4>
 			</div>
 			<div class="settings-section-settings">
 				<checkbox-toggle :value.sync="autoCloseInteractive" @changed="saveSettings()" label="Auto close Interactive boards"></checkbox-toggle>
@@ -248,7 +247,7 @@ Vue.component('streamer-page-options', {
 Vue.component('streamer-override-dropdown', {
 	template: `
         <span>
-            <b-dropdown id="ddown1" v-bind:text="selected" variant="link" class="m-md-2 white-link">
+            <b-dropdown id="ddown1" v-bind:text="selected" variant="link" right class="m-md-2 white-link">
                 <b-dropdown-item  @click="selectOverride('Global')">Global</b-dropdown-item>
                 <b-dropdown-header id="header1">Streamer Overrides</b-dropdown-header>
 				<b-dropdown-item aria-describedby="header1" v-for="name in overrideNames" @click="selectOverride(name)">{{name}}</b-dropdown-item>
