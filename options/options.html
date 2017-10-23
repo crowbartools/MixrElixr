@@ -18,14 +18,26 @@
 					</div>
 				</div>
 				<div v-if="activeTab == 'options'" class="tab-content">
-					<h4>Streamer Page</h4>
-					<checkbox-toggle :value.sync="autoCloseInteractive" :change="saveSettings()" label="Auto close Interactive boards"></checkbox-toggle>
-					<checkbox-toggle :value.sync="separateChat" :change="saveSettings()" label="Separate Chat Lines"></checkbox-toggle>
-					<checkbox-toggle :value.sync="alternateChatBGColor" :change="saveSettings()" label="Alternate Chat BG Color"></checkbox-toggle>
-					<checkbox-toggle :value.sync="showImageLinksInline" :change="saveSettings()" label="Show Image Links Inline"></checkbox-toggle>
-					<checkbox-toggle :value.sync="autoForwardOnHost" :change="saveSettings()" label="Auto Forward on Host"></checkbox-toggle>			
-					<h4>Homepage</h4>
-					<checkbox-toggle :value.sync="removeHomepageFeatured" :change="saveSettings()" label="Remove Featured Streams"></checkbox-toggle>
+					<div class="settings-section">
+						<div class="settings-section-header">
+							<h4>Streamer Page</h4>
+						</div>
+						<div class="settings-section-settings">
+							<checkbox-toggle :value.sync="autoCloseInteractive" :change="saveSettings()" label="Auto close Interactive boards"></checkbox-toggle>
+							<checkbox-toggle :value.sync="separateChat" :change="saveSettings()" label="Separate Chat Lines"></checkbox-toggle>
+							<checkbox-toggle :value.sync="alternateChatBGColor" :change="saveSettings()" label="Alternate Chat BG Color"></checkbox-toggle>
+							<checkbox-toggle :value.sync="showImageLinksInline" :change="saveSettings()" label="Show Image Links Inline"></checkbox-toggle>
+							<checkbox-toggle :value.sync="autoForwardOnHost" :change="saveSettings()" label="Auto Forward on Host"></checkbox-toggle>			
+						</div>
+					</div>
+					<div class="settings-section">
+						<div class="settings-section-header">
+							<h4>Homepage</h4>
+						</div>
+						<div class="settings-section-settings">
+							<checkbox-toggle :value.sync="removeHomepageFeatured" :change="saveSettings()" label="Remove Featured Streams"></checkbox-toggle>
+						</div>
+					</div>
 				</div>				
 			</div>	
 		</div>	
