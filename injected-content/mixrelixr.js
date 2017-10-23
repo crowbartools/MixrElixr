@@ -225,7 +225,7 @@ function applyChatSettings(streamerName) {
 						var previousImage = messageContainer.find(`img[src='${url}']`);
 	
 						if(previousImage == null || previousImage.length < 1) {
-							$(`<span _ngcontent-c69 style="display:block"><img _ngcontent-c69 src="${url}" style=",max-width: 200px; max-height: 125px; object-fit:contain;" exlixr-img></span>`).insertBefore(link.parent());
+							$(`<span _ngcontent-c69 style="display:block"><img _ngcontent-c69 src="${url}" style="max-width: 200px; max-height: 125px; object-fit:contain;" exlixr-img></span>`).insertBefore(link.parent());
 						}
 					}
 				});

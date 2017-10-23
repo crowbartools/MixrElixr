@@ -88,6 +88,8 @@ input:checked + .slider:before {
     transform: translateX(22px);
 }
 
+/* end slider */
+
 .online-friends-wrap{
     display:flex;
     flex-wrap: wrap;
@@ -179,4 +181,14 @@ input:checked + .slider:before {
     overflow:hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.white-link button {
+    cursor: pointer;
+    color: whitesmoke;
+}
+
+.white-link button:hover {
+    text-decoration: none;
+    color: gray;
 }
