@@ -69,6 +69,10 @@ h4 {
     font-weight: 100;
 }
 
+.modal-title {
+    color: black;
+}
+
 /*Switch*/
 
 /** Switch
@@ -124,6 +128,8 @@ input:checked + .slider:before {
     -ms-transform: translateX(22px);
     transform: translateX(22px);
 }
+
+/* end slider */
 
 .online-friends-wrap{
     display:flex;
@@ -222,14 +228,14 @@ input:checked + .slider:before {
 /*** Settings Sections ***/
 .settings-section{
     background:rgba(255, 255, 255, 0.05);
-    border-radius: 4px;
+    border-radius: 1px;
     border: 1px solid rgba(255, 255, 255, 0.05);
     margin-bottom: 1em;
     box-shadow:0px 1px 5px 0px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 3px 1px -2px rgba(0,0,0,0.12);
 }
 .settings-section-header{
     width:100%;
-    border-radius: 4px 4px 0px 0px;
+    border-radius: 1px 1px 0px 0px;
     background:rgba(255, 255, 255, 0.09);
 }
 .settings-section-header h4{
@@ -239,3 +245,12 @@ input:checked + .slider:before {
     padding:1em;
 }
 
+.white-link button {
+    cursor: pointer;
+    color: whitesmoke;
+}
+
+.white-link button:hover {
+    text-decoration: none;
+    color: gray;
+}

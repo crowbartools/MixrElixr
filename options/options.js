@@ -40,7 +40,7 @@ Vue.component('checkbox-toggle', {
 	template: `
 		<label style="display:flex">
 			<label class="switch">
-				<input type="checkbox" v-model="value" @change="valueUpdated"/>
+				<input type="checkbox" v-model.lazy="value" @change="valueUpdated"/>
 				<span class="slider"></span>
 			</label>
 			{{label}}
@@ -50,7 +50,265 @@ Vue.component('checkbox-toggle', {
 	methods: {
 		valueUpdated: function() {
 			this.$emit('update:value', this.value);
-			this.$emit('change');
+			this.$emit('changed');
+		}
+	}
+});
+
+
+Vue.component('home-page-options', {
+	template: `
+		<div class="settings-section">
+			<div class="settings-section-header">
+				<h4>Homepage</h4>
+			</div>
+			<div class="settings-section-settings">
+			<checkbox-toggle :value.sync="removeFeatured" @changed="saveSettings()" label="Remove Featured Streams"></checkbox-toggle>
+			</div>
+		</div>
+	`,
+	data: function() {
+		var dataObj = {};
+
+		var defaults = settingsStorage.getDefaultOptions().homePageOptions;
+
+		// fill out our model
+		Object.keys(defaults).forEach((k) => {
+			dataObj[k] = defaults[k];
+		});
+
+		return dataObj;
+	},
+	methods: {
+		saveSettings: function() {
+			var model = this.getModel();
+			settingsStorage.saveHomePageOptions(model);
+		},
+		loadSettings: function() {
+			var app = this;
+			settingsStorage.fetch().then((data) => {
+				var homePageOptions = data.homePageOptions;
+				app.setModel(homePageOptions);
+			});
+		},
+		setModel: function(options) {
+			var app = this;
+			Object.keys(options).forEach((k) => {
+				app[k] = options[k];
+			});
+		},
+		getModel: function() {
+			var app = this;
+			
+			var builtModel = {};
+			var options = settingsStorage.getDefaultOptions().homePageOptions;
+			
+			Object.keys(options).forEach((k) => {
+				builtModel[k] = app[k];
+			});
+
+			return builtModel;
+		}
+	},
+	mounted: function() {
+		this.loadSettings();
+	}
+});
+
+Vue.component('streamer-page-options', {
+	template: `
+		<div class="settings-section">
+			<div class="settings-section-header">
+				<h4>Streamer Page <streamer-override-dropdown :overrideNames="overrideNames" 
+						:selected="selected"
+						@override-added="overrideAdded"
+						@override-selected="overrideSelected"
+						@override-deleted="overrideDeleted">
+					</streamer-override-dropdown>
+				</h4>
+			</div>
+			<div class="settings-section-settings">
+				<checkbox-toggle :value.sync="autoCloseInteractive" @changed="saveSettings()" label="Auto close Interactive boards"></checkbox-toggle>
+				<checkbox-toggle :value.sync="separateChat" @changed="saveSettings()" label="Separate Chat Lines"></checkbox-toggle>
+				<checkbox-toggle :value.sync="alternateChatBGColor" @changed="saveSettings()" label="Alternate Chat BG Color"></checkbox-toggle>
+				<checkbox-toggle :value.sync="showImageLinksInline" @changed="saveSettings()" label="Show Image Links Inline"></checkbox-toggle>
+				<checkbox-toggle :value.sync="autoForwardOnHost" @changed="saveSettings()" label="Auto Forward on Host"></checkbox-toggle>
+			</div>
+        </div>
+	`,
+	methods: {
+		overrideSelected: function(name) {
+			this.selected = name;
+			this.setModel(this.getSelectedOptions());
+		},
+		overrideAdded: function(name) {
+			this.selected = name;
+
+			var defaults = settingsStorage.getDefaultOptions().streamerPageOptions.global;
+			
+			var defaultsCopy = JSON.parse(JSON.stringify(defaults));
+
+			this.overrides[name] = defaultsCopy;
+
+			this.overrideNames = this.getOverrideNames();
+
+			this.setModel(defaultsCopy);
+
+			this.saveSettings();
+		},
+		overrideDeleted: function(name) {
+			delete this.overrides[name];
+			this.overrideNames = this.getOverrideNames();
+			this.selectModel('Global');
+			this.saveSettings();
+		},
+		selectModel: function(name) {
+			this.selected = name;
+			this.setModel(this.getSelectedOptions());
+		},
+		saveSettings: function() {
+			var model = this.getModel();
+
+			if(this.selected === 'Global') {
+				this.global = model;
+			} else {
+				this.overrides[this.selected] = model;
+			}
+			settingsStorage.saveStreamerPageOptions({
+				global: this.global,
+				overrides: this.overrides
+			});
+		},
+		loadSettings: function() {
+			var app = this;
+			app.selected = 'Global';
+			settingsStorage.fetch().then((data) => {
+				var streamerPageOptions = data.streamerPageOptions;
+				app.setModel(streamerPageOptions.global);
+				app.global = streamerPageOptions.global;
+				app.overrides = streamerPageOptions.overrides;
+				app.overrideNames = app.getOverrideNames();
+			});
+		},
+		getOverrideNames: function() {
+			return Object.keys(this.overrides);
+		},
+		getSelectedOptions: function() {
+			if(this.selected === 'Global') {
+				return this.global;
+			} else {
+				return this.overrides[this.selected];
+			}
+		},
+		setModel: function(options) {
+			var app = this;
+			Object.keys(options).forEach((k) => {
+				app[k] = options[k];
+			});
+		},
+		getModel: function() {
+			var app = this;
+			
+			var builtModel = {};
+			var options = app.getSelectedOptions();	
+			
+			Object.keys(options).forEach((k) => {
+				builtModel[k] = app[k];
+			});
+
+			return builtModel;
+		}
+	},
+	data: function() {
+
+		var dataObj = {
+			selected: 'Global',
+			overrideNames: []
+		};
+
+		var defaults = settingsStorage.getDefaultOptions().streamerPageOptions;
+
+		// fill out our model with the default settings
+		var global = defaults.global;		
+		Object.keys(global).forEach((k) => {
+			dataObj[k] = global[k];
+		});
+
+		dataObj.global = global;
+		dataObj.overrides = defaults.overrides;
+
+		return dataObj;
+	},
+	mounted: function() {
+		this.loadSettings();
+	}
+});
+
+
+Vue.component('streamer-override-dropdown', {
+	template: `
+        <span>
+            <b-dropdown id="ddown1" v-bind:text="selected" variant="link" class="m-md-2 white-link">
+                <b-dropdown-item  @click="selectOverride('Global')">Global</b-dropdown-item>
+                <b-dropdown-header id="header1">Streamer Overrides</b-dropdown-header>
+				<b-dropdown-item aria-describedby="header1" v-for="name in overrideNames" @click="selectOverride(name)">{{name}}</b-dropdown-item>
+				<b-dropdown-item v-if="overrideNames.length === 0" disabled>None</b-dropdown-item>
+                <b-dropdown-divider></b-dropdown-divider>
+				<b-dropdown-item @click="showModal">+ Add Streamer</b-dropdown-item>
+				<b-dropdown-item @click="deleteOverride" v-if="selected !== 'Global'" style="color: red"><i class="fa fa-trash"></i> Delete {{selected}}</b-dropdown-item>
+            </b-dropdown>
+            <b-modal id="newOverrideModal"
+					ref="newOverrideModal"
+					size="sm"
+                    title="Enter Streamer Name"
+                    @ok="handleOk"
+                    @shown="clearName">
+                <b-form-input type="text"
+                            placeholder="Name"
+                            v-model="newName" ref="nameInput" @keyup.native.enter="handleOk"></b-form-input>
+                <span v-if="newNameError" style="color:red; margin-top: 10px;">Please enter a name!</span>
+            </b-modal>
+        </span>   
+    `,
+	props: ['overrideNames', 'selected'],
+	data: function() {
+		return {
+			newName: '',
+			newNameError: false,
+			selectedName: this.selected
+		};
+	},
+	methods: {
+		selectOverride: function(name) {
+			this.$emit('override-selected', name);
+		},
+		clearName: function() {
+			this.newName = '';
+			this.$refs.nameInput.focus();
+		},
+		deleteOverride: function() {
+			this.$emit('override-deleted', this.selected);
+		},
+		showModal: function() {
+			this.$refs.newOverrideModal.show();
+		},
+		handleOk: function(evt) {
+			// Prevent modal from closing
+			evt.preventDefault();
+			if (!this.newName || this.newName.toLowerCase() === 'global') {
+				this.newNameError = true;
+			} else {
+				this.handleSubmit();
+			}
+		},
+		handleSubmit: function() {
+			var nameCopy = JSON.parse(JSON.stringify(this.newName));
+			this.$emit('override-added', nameCopy);
+
+			this.clearName();
+			this.$refs.newOverrideModal.hide();
+
+			this.selectOverride(nameCopy);
 		}
 	}
 });
@@ -110,19 +368,49 @@ Vue.component('online-friend', {
 */
 
 var settingsStorage = {
-	fetch: function(defaultSettings) {
+	fetch: function() {
 		return new Promise((resolve) => {
+			var defaults = settingsStorage.getDefaultOptions();
+			
 			chrome.storage.sync.get({
-				'settings': defaultSettings
+				'streamerPageOptions': defaults.streamerPageOptions,
+				'homePageOptions': defaults.homePageOptions
 			}, function(data) {
 				resolve(data);
 			});
 		});
 	},
 	save: function(settings) {
-		chrome.storage.sync.set({ 'settings': settings }, () => {
+		chrome.storage.sync.set(settings, () => {
 			settingsStorage.emitEvent();
 		});
+	},
+	saveStreamerPageOptions: function(options) {
+		settingsStorage.save({
+			'streamerPageOptions': options
+		});
+	},
+	saveHomePageOptions: function(options) {
+		settingsStorage.save({
+			'homePageOptions': options
+		});
+	},
+	getDefaultOptions: function() {
+		return {
+			streamerPageOptions: {
+				global: {
+					autoCloseInteractive: false,
+					separateChat: false,
+					alternateChatBGColor: false,
+					showImageLinksInline: false,
+					autoForwardOnHost: false   
+				},
+				overrides: {}
+			},
+			homePageOptions: {
+				removeFeatured: false
+			}
+		};
 	},
 	emitEvent: function() {
 		// let the content script on whatever tab know the settings have been updated
@@ -228,48 +516,10 @@ var onlineMixerFriends = {
 var app = new Vue({
 	el: '#app',
 	data: {
-		autoCloseInteractive: false,
-		separateChat: false,
-		alternateChatBGColor: false,
-		showImageLinksInline: false,
-		autoForwardOnHost: false,
-		removeHomepageFeatured: false,
 		activeTab: 'online',
 		friends: []
 	},
-	computed: {
-		settings: {
-			get: function() {
-				return {
-					autoCloseInteractive: this.autoCloseInteractive,
-					separateChat: this.separateChat,
-					alternateChatBGColor: this.alternateChatBGColor,
-					showImageLinksInline: this.showImageLinksInline,
-					autoForwardOnHost: this.autoForwardOnHost,
-					removeHomepageFeatured: this.removeHomepageFeatured
-				};
-			}, 
-			set: function(settings) {
-				this.autoCloseInteractive = settings.autoCloseInteractive === true;
-				this.separateChat = settings.separateChat === true;
-				this.alternateChatBGColor = settings.alternateChatBGColor === true;
-				this.showImageLinksInline = settings.showImageLinksInline === true;
-				this.autoForwardOnHost = settings.autoForwardOnHost === true;
-				this.removeHomepageFeatured = settings.removeHomepageFeatured === true;
-			}		
-		}
-	},
 	methods: {
-		fetchSettings: function() {
-			var app = this;
-			settingsStorage.fetch(app.settings).then((data) => {
-				app.settings = data.settings;
-			});
-		},
-		saveSettings: function() {
-			var app = this;
-			settingsStorage.save(app.settings);
-		},
 		updateActiveTab: function(tab) {
 			console.log('tab changed: ' + tab);
 			this.activeTab = tab;
@@ -288,7 +538,6 @@ var app = new Vue({
 	},
 	mounted: function() {
 		// When Vue is ready
-		this.fetchSettings();
 		this.fetchFriends();
 	}
 });
