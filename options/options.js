@@ -327,7 +327,7 @@ Vue.component('online-friend', {
                             <span class="friendViewers"><i class="fa fa-eye" aria-hidden="true"></i>{{friend.viewersCurrent}}</span>
 						</div>
 						<div class="friend-icons">
-							<i v-if="friend.interactive" class="fa fa-gamepad" title="Interactivate available"></i>
+							<i v-if="friend.interactive" class="fa fa-gamepad" title="Interactive"></i>
 							<i v-if="friend.costreamId" class="fa fa-users" title="Costream"></i>
 						</div>
                     </div>
