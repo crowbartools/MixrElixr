@@ -317,7 +317,7 @@ Vue.component('online-friend', {
 	template: `
         <div class="mixerFriend">
             <div class="friendPreview" @mouseover="hover = true" @mouseleave="hover = false">
-                <a v-bind:href="channelLink" target="_blank" class="friendLink" v-bind:title="channelTitle">
+                <a v-bind:href="channelLink" target="_blank" class="friendLink">
                     <div class="thumbnail">
                         <img v-bind:src="channelImgUrl" v-show="hover === false">
                         <video autoplay="" loop="" preload="none" v-show="hover === true">
@@ -328,13 +328,13 @@ Vue.component('online-friend', {
                             <span class="friendViewers"><i class="fa fa-eye" aria-hidden="true"></i>{{friend.viewersCurrent}}</span>
 						</div>
 						<div class="friend-icons">
-							<i v-if="friend.interactive" class="material-icons">videogame_asset</i>
-							<i v-if="friend.costreamId" class="material-icons">group</i>
+							<i v-if="friend.interactive" class="fa fa-gamepad" title="Interactivate available"></i>
+							<i v-if="friend.costreamId" class="fa fa-users" title="Costream"></i>
 						</div>
                     </div>
-                    <div class="info-container">
-                        <div class="friendGame">{{friend.type.name}}</div>
-                        <div class="friendTitle">{{friend.name}}</div>
+					<div class="info-container">
+						<div class="friendTitle" :title="channelTitle">{{friend.name}}</div>
+                        <div class="friendGame">{{friend.type.name}}</div>                       
                     </div>
                 </a>
             </div>
