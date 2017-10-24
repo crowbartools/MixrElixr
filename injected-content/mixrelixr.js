@@ -276,7 +276,8 @@ function applyChatSettings(streamerName) {
 
 		var alreadyChecked = messageContainer.attr('elixrfied');
 		// check to see if we have already looked at this chat messsage.
-		if(alreadyChecked == true) return;
+		if(alreadyChecked == true) { return; }
+		
 		messageContainer.attr('elixrfied', 'true');
 
 		if(options.showImageLinksInline) {
