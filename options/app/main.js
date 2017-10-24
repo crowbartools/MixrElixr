@@ -9,6 +9,8 @@ new Vue({
 		updateActiveTab: function(tab) {
 			console.log('tab changed: ' + tab);
 			this.activeTab = tab;
+			var container = this.$el.querySelector(".tabs-wrapper");
+			container.scrollTo(0, 0);
 		},
 		fetchFriends: function() {
 			console.log('getting friends');
