@@ -97,6 +97,13 @@ h4 {
     margin: 30px auto;
 }
 
+.modal-header {
+    border-bottom: none;
+}
+
+.modal-footer {
+    border-top: none;
+}
 /*Switch*/
 
 /** Switch
@@ -308,13 +315,18 @@ input:checked + .slider:before {
     text-align: center;
 }
 .made-with-love-wrapper a {
-    color: #a5a3a3;
+    color: #a5a3a3 !important;
+    cursor: pointer;
     text-decoration: none;
 }
 .made-with-love-wrapper .fa {
     color: #E90606;
     margin: 0 3px;
     font-size: 10px;
+    
+}
+
+.pound {
     animation: pound 0.35s infinite alternate;
     -webkit-animation: pound 0.35s infinite alternate;
 }
@@ -328,5 +340,23 @@ input:checked + .slider:before {
     to {
     transform: scale(1.1);
     }
+}
+
+.teammember {
+    font-size: 20px;
+    font-weight: 100;
+    padding: 5px;
+}
+
+.disclaimer {
+    color: #a5a3a3;
+    font-size: 13px;
+    padding-top: 5px;
+}
+
+.disclaimer a {
+    color: white;
+    cursor: pointer;
+    text-decoration: none;
 }
   
