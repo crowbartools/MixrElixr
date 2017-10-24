@@ -132,6 +132,8 @@ Vue.component('streamer-page-options', {
 				<checkbox-toggle :value.sync="alternateChatBGColor" @changed="saveSettings()" label="Alternate Chat BG Color"></checkbox-toggle>
 				<checkbox-toggle :value.sync="showImageLinksInline" @changed="saveSettings()" label="Show Image Links Inline"></checkbox-toggle>
 				<checkbox-toggle :value.sync="autoForwardOnHost" @changed="saveSettings()" label="Auto Forward on Host"></checkbox-toggle>
+				<checkbox-toggle :value.sync="autoMute" @changed="saveSettings()" label="Auto Mute Streams"></checkbox-toggle>
+				<checkbox-toggle :value.sync="autoMuteOnHost" @changed="saveSettings()" label="Auto Mute Stream on Host"></checkbox-toggle>
 			</div>
         </div>
 	`,
@@ -402,12 +404,15 @@ var settingsStorage = {
 					separateChat: false,
 					alternateChatBGColor: false,
 					showImageLinksInline: false,
-					autoForwardOnHost: false   
+					autoForwardOnHost: false,
+					autoMute: false,
+					autoMuteOnHost: false
 				},
 				overrides: {}
 			},
 			homePageOptions: {
-				removeFeatured: false
+				removeFeatured: false,
+				autoMute: false
 			}
 		};
 	},

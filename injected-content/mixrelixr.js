@@ -1,5 +1,6 @@
 // stuff we need to track across pages
 var settings = null;
+var cache = {};
 
 //on document ready
 $(() => {
@@ -55,9 +56,13 @@ function waitForPageLoad() {
 
 function runPageLogic() {
 
+	// Channel dectection
 	var channelBlock = $('b-channel-action-block');
+
+	// Home detection
 	var homeBlock = $('.home');
  
+	// Window location
 	var url = window.location.href;
 
 	//check we if we are an embeded chat window
@@ -73,6 +78,7 @@ function runPageLogic() {
 			applyChatSettings(name);
 		});   
 	} 
+
 	//check if we are on a streamer page by looking for the name in the top right corner.
 	else if(channelBlock != null  && channelBlock.length > 0) {
         
@@ -131,8 +137,7 @@ function loadHomepage(){
 		// This forces the left navigation to recalculate position.
 		$('.home').scrollTop($('.home').scrollTop() - '5');
 		$('.home').scrollTop($('.home').scrollTop() + '5');
-	}
-	
+	}	
 }
 
 function loadStreamerPage(streamerName) {
@@ -165,22 +170,45 @@ function loadStreamerPage(streamerName) {
 		}
 	}
 
-	// Auto forward on host
+	// Host Loop
 	// This checks every second to see if the channel hosted someone.
-	if(options.autoForwardOnHost){
-		var hostee = null;
-		setInterval(function(){ 
+	if(options.autoForwardOnHost || options.autoMuteOnHost){
+
+		if(cache.hostLoop != null) {
+			clearInterval(cache.hostLoop);
+		}
+
+		cache.hostLoop = setInterval(function(){ 
 			hostee = $('b-host-bar').is(':visible');
 			if(hostee){
+				var hosteeName = $('.owner-block h2').text();
 				var hostName = $('b-host-bar b-channel-creator span').text();
 
-				// Check to make sure we're not trying to forward again accidently (which sometimes occured if interval fired during page load after a redirect)
-				if(hostName !== hostee){
+				// Auto forward the person on host.
+				if(options.autoForwardOnHost && hostName !== hosteeName){
+					// Check to make sure we're not trying to forward again accidently (which sometimes occured if interval fired during page load after a redirect)
 					console.log('Redirecting to '+hostName+' because forwarding on host is on.');
 					document.location.href = 'https://mixer.com/'+hostName;
 				}
+
+				// Auto mute when a stream hosts someone.
+				console.log(options.autoMuteOnHost);
+				if(options.autoMuteOnHost && hosteeName !== cache.mutedHost && $('light-volume-control button bui-icon').is(':visible') ){
+					if( $('light-volume-control button bui-icon').attr('icon') == "volume_up" ){
+						$('light-volume-control button').click();
+						cache.mutedHost = hosteeName;
+					}
+				}
+
 			}
 		}, 1000);
+	}
+
+	// Auto Mute Stream
+	if(options.autoMute){
+		if( $('light-volume-control button bui-icon').attr('icon') == "volume_up" ){
+			$('light-volume-control button').click();
+		}
 	}
 
 	applyChatSettings(streamerName);
