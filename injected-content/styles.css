@@ -1,18 +1,20 @@
 
+.timestamp{
+    height:18px!important;
+}
+
 /** Separated Chat Lines **/
 .separated-chat b-channel-chat-message{
     border-top: 2px solid #2a354c;
     padding-top: .5em;
     padding-bottom: .5em;
 }
-.separated-chat .timestamp{
-    height:21px!important;
-}
 .separated-chat .timestamp::before{
     border:none!important;
 }
 
 /** Alternate Chat BG Color **/
-.chat-alternate-bg div:not(.timestamp):nth-child(odd) > b-channel-chat-message{
+.chat-alternate-bg div:nth-child(odd):not(.timestamp) > b-channel-chat-message{
     background-color:rgba(255, 255, 255, 0.05);
 }
+
