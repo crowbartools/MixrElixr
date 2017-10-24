@@ -263,6 +263,16 @@ input:checked + .slider:before {
     padding:1em;
 }
 
+.setting-subcategory {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    padding-bottom: 10px;
+    padding-top: 5px;
+    opacity: 0.7;
+}
+
 .white-link button {
     cursor: pointer;
     color: whitesmoke;
@@ -272,3 +282,32 @@ input:checked + .slider:before {
     text-decoration: none;
     color: gray;
 }
+  
+.made-with-love-wrapper {
+    color: #666;
+    font-size: 12px;
+    text-align: center;
+}
+.made-with-love-wrapper a {
+    color: #a5a3a3;
+    text-decoration: none;
+}
+.made-with-love-wrapper .fa {
+    color: #E90606;
+    margin: 0 3px;
+    font-size: 10px;
+    animation: pound 0.35s infinite alternate;
+    -webkit-animation: pound 0.35s infinite alternate;
+}
+  
+@-webkit-keyframes pound {
+    to {
+    transform: scale(1.1);
+    }
+}
+@keyframes pound {
+    to {
+    transform: scale(1.1);
+    }
+}
+  

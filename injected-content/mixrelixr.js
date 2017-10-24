@@ -169,8 +169,6 @@ function loadStreamerPage(streamerName) {
 			minimizeInteractiveBtn.click();
 		}
 	}
-
-	debugger;  // eslint-disable-line
 	
 	// Host Loop
 	// This checks every second to see if the channel hosted someone.
@@ -261,7 +259,7 @@ function applyChatSettings(streamerName) {
 	}
 
 	if(!options.showImageLinksInline) {
-		$('img[exlixr-img]').each(function() { $(this).parent().remove();  });
+		$('img[exlixr-img]').each(function() { $(this).parent().parent().remove();  });
 	}
 
 	// get rid of any previous registered callbacks for chat messages
@@ -278,24 +276,54 @@ function applyChatSettings(streamerName) {
 		messageContainer.attr('elixrfied', 'true');
 
 		if(options.showImageLinksInline) {
-			var links = messageContainer.find('a[target=\'_blank\']');
-			if(links.length > 0) {
-				links.each(function(l) {
-					var link = $(this);
-					var url = link.attr('href');
-					
-					if(urlIsAnImage(url)) {
-						var previousImage = messageContainer.find(`img[src='${url}']`);
-	
-						if(previousImage == null || previousImage.length < 1) {
-							$(`<span _ngcontent-c69 style="display:block"><img _ngcontent-c69 src="${url}" style="max-width: 200px; max-height: 125px; object-fit:contain;" exlixr-img></span>`).insertBefore(link.parent());
-						}
-					}
+
+
+			var inlineImagePermitted = false;
+
+			var lowestPermittedRoleRank = getUserRoleRank(options.lowestUserRoleLinks);
+
+			var authorRoles = messageContainer
+				.find('b-channel-chat-author')
+				.attr('class')
+				.split(' ')
+				.map((c) => {
+					return c.replace('role-', '');
 				});
+
+			authorRoles.forEach((r) => {
+				var roleRank = getUserRoleRank(r);
+				if(roleRank <= lowestPermittedRoleRank) {
+					inlineImagePermitted = true;
+				}
+			});
+
+			if(inlineImagePermitted) {
+				var links = messageContainer.find('a[target=\'_blank\']');
+				if(links.length > 0) {
+					links.each(function(l) {
+						var link = $(this);
+						var url = link.attr('href');
+						
+						if(urlIsAnImage(url)) {
+							var previousImage = messageContainer.find(`img[src='${url}']`);
+		
+							if(previousImage == null || previousImage.length < 1) {
+								$(`<span _ngcontent-c69 style="display:block;">
+									<span style=" position: relative; display: inline-block">
+										<span class="hide-picture-btn">x</span>
+										<img _ngcontent-c69 src="${url}" style="max-width: 200px; max-height: 125px; object-fit:contain;" exlixr-img>
+									</span>									
+								</span>`).insertBefore(link.parent());
+
+								$('.hide-picture-btn').click(function() {
+									$(this).parent().parent().remove();
+								});
+							}
+						}
+					});
+				}
 			}
 		}
-
-		var username = messageContainer.find('.username').text();
 	});
 }
 
@@ -370,6 +398,24 @@ function runUrlWatcher() {
 
 function log(message) {
 	console.log(`[ME: ${message}]`);
+}
+
+function getUserRoleRank(role = '') {
+	switch(role) {
+	case 'owner':
+		return 1;
+	case 'mod':
+		return 2;
+	case 'sub':
+		return 3;
+	case 'pro':
+		return 4;
+	case 'user':
+		return 5;
+	case 'all':
+	default:
+		return 6;
+	}
 }
 
 var urlIsAnImage = function(uri) {

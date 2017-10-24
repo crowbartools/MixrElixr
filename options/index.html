@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   	<head>
-		<title>MixerElixir</title>
+		<title>MixrElixr</title>
 		<link type="text/css" rel="stylesheet" href="/resources/bootstrap/bootstrap.min.css"/>
 		<link type="text/css" rel="stylesheet" href="/resources/bootstrap/bootstrap-vue.css"/>
 		<link rel="stylesheet" href="/resources/font-awesome/css/font-awesome.min.css">
@@ -22,6 +22,9 @@
 				<div v-if="activeTab == 'options'" class="tab-content">
 					<streamer-page-options></streamer-page-options>			
 					<home-page-options></home-page-options>
+					<div style="text-align: center">
+						<made-with-love></made-with-love>
+					</div>
 				</div>				
 			</div>	
 		</div>	
@@ -32,6 +35,7 @@
 		<script src="/options/app/mixins/friendFetcher.js"></script>
 		<script src="/options/app/components/checkboxToggle.js"></script>
 		<script src="/options/app/components/homePageOptions.js"></script>
+		<script src="/options/app/components/madeWithLove.js"></script>
 		<script src="/options/app/components/navBar.js"></script>
 		<script src="/options/app/components/onlineFriend.js"></script>
 		<script src="/options/app/components/streamerOverrideDropdown.js"></script>

@@ -10,13 +10,21 @@ Vue.component('streamer-page-options', {
 					</streamer-override-dropdown>
 			</div>
 			<div class="settings-section-settings">
+				<span class="setting-subcategory">General</span>
+				<checkbox-toggle :value.sync="autoCloseInteractive" @changed="saveSettings()" label="Auto close Interactive boards"></checkbox-toggle>
+				<checkbox-toggle :value.sync="autoMute" @changed="saveSettings()" label="Auto Mute Streams"></checkbox-toggle>
+
+				<span class="setting-subcategory">Chat</span>
 				<checkbox-toggle :value.sync="separateChat" @changed="saveSettings()" label="Separate Chat Lines"></checkbox-toggle>
 				<checkbox-toggle :value.sync="alternateChatBGColor" @changed="saveSettings()" label="Alternate Chat BG Color"></checkbox-toggle>
 				<checkbox-toggle :value.sync="showImageLinksInline" @changed="saveSettings()" label="Show Image Links Inline"></checkbox-toggle>
-				<hr>
-				<checkbox-toggle :value.sync="autoCloseInteractive" @changed="saveSettings()" label="Auto close Interactive boards"></checkbox-toggle>
-				<checkbox-toggle :value.sync="autoMute" @changed="saveSettings()" label="Auto Mute Streams"></checkbox-toggle>
-				<hr>
+				<div v-if="showImageLinksInline" style="width: 65%">
+					<div style="padding-bottom: 5px;">Permitted User Roles for Inline Images</div>
+					<b-form-select v-model="lowestUserRoleLinks" :options="userRoles" class="mb-3"></b-form-select>
+				</div>
+				
+
+				<span class="setting-subcategory">Hosts</span>
 				<checkbox-toggle :value.sync="autoForwardOnHost" @changed="saveSettings()" label="Auto Forward on Host"></checkbox-toggle>
 				<checkbox-toggle :value.sync="autoMuteOnHost" @changed="saveSettings()" label="Auto Mute Stream on Host"></checkbox-toggle>
 			</div>
@@ -106,10 +114,22 @@ Vue.component('streamer-page-options', {
 			return builtModel;
 		}
 	},
+	watch: {
+		lowestUserRoleLinks: function(newRole) {
+			this.saveSettings();
+		}
+	},
 	data: function() {
 
 		var dataObj = {
 			selected: 'Global',
+			userRoles: [
+				{ value: 'owner', text: 'Streamer' },
+				{ value: 'mod', text: 'Mods (& above)' },
+				{ value: 'subscriber', text: 'Subscribers (& above)' },
+				{ value: 'pro', text: 'Pro (& above)' },
+				{ value: 'all', text: 'All' }
+			],
 			overrideNames: []
 		};
 

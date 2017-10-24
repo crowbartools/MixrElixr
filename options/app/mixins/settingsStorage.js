@@ -37,6 +37,7 @@ settingsStorage = {
 						separateChat: false,
 						alternateChatBGColor: false,
 						showImageLinksInline: false,
+						lowestUserRoleLinks: 'mod',
 						autoForwardOnHost: false,
 						autoMute: false,
 						autoMuteOnHost: false
