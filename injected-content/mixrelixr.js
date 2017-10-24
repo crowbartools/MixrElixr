@@ -156,7 +156,7 @@ function loadStreamerPage(streamerName) {
 	for(var i = 0; i < overrideKeys.length; i++) {
 		var key = overrideKeys[i];
 		if(key.toLowerCase() === streamerName.toLowerCase()) {
-			log(`found override options for ${streamerName}`)
+			log(`found override options for ${streamerName}`);
 			options = overrides[key];
 		}
 		break;
@@ -178,7 +178,10 @@ function loadStreamerPage(streamerName) {
 			clearInterval(cache.hostLoop);
 		}
 
-		cache.hostLoop = setInterval(function(){ 
+		cache.hostLoop = setInterval(function(){
+			
+			var options = getStreamerOptionsForStreamer(streamerName);
+			
 			hostee = $('b-host-bar').is(':visible');
 			if(hostee){
 				var hosteeName = $('.owner-block h2').text();
@@ -194,7 +197,7 @@ function loadStreamerPage(streamerName) {
 				// Auto mute when a stream hosts someone.
 				console.log(options.autoMuteOnHost);
 				if(options.autoMuteOnHost && hosteeName !== cache.mutedHost && $('light-volume-control button bui-icon').is(':visible') ){
-					if( $('light-volume-control button bui-icon').attr('icon') == "volume_up" ){
+					if( $('light-volume-control button bui-icon').attr('icon') == 'volume_up' ){
 						$('light-volume-control button').click();
 						cache.mutedHost = hosteeName;
 					}
@@ -206,7 +209,7 @@ function loadStreamerPage(streamerName) {
 
 	// Auto Mute Stream
 	if(options.autoMute){
-		if( $('light-volume-control button bui-icon').attr('icon') == "volume_up" ){
+		if( $('light-volume-control button bui-icon').attr('icon') == 'volume_up' ){
 			$('light-volume-control button').click();
 		}
 	}
@@ -220,18 +223,8 @@ function applyChatSettings(streamerName) {
 		log('No streamer page settings saved.');
 		return;
 	}
-	var options = settings.streamerPageOptions.global;
-	
-	// override the options if there is streamer specific options available
-	var overrides = settings.streamerPageOptions.overrides;
-	var overrideKeys = Object.keys(overrides);
-	for(var i = 0; i < overrideKeys.length; i++) {
-		var key = overrideKeys[i];
-		if(key.toLowerCase() === streamerName.toLowerCase()) {
-			options = overrides[key];
-			break;
-		}		
-	}
+
+	var options = getStreamerOptionsForStreamer(streamerName);
 
 	// Add in a line below each chat message.
 	if(options.separateChat) {
@@ -304,6 +297,29 @@ function applyChatSettings(streamerName) {
 	});
 }
 
+
+function getStreamerOptionsForStreamer(streamerName) {
+	if(!settings.streamerPageOptions) {
+		log('No streamer page settings saved.');
+		return;
+	}
+	
+	var options = settings.streamerPageOptions.global;
+	
+	// override the options if there is streamer specific options available
+	var overrides = settings.streamerPageOptions.overrides;
+	var overrideKeys = Object.keys(overrides);
+	for(var i = 0; i < overrideKeys.length; i++) {
+		var key = overrideKeys[i];
+		if(key.toLowerCase() === streamerName.toLowerCase()) {
+			options = overrides[key];
+			break;
+		}		
+	}
+
+	return options;
+}
+
 function loadSettings() {
 	return new Promise((resolve, reject) => {
 		getSettings().then((savedSettings) => {
@@ -339,7 +355,7 @@ function runUrlWatcher() {
 		if(previousUrl !== currentUrl) {
 
 			// fire event
-			var detail = { current: currentUrl.toString(), previous: previousUrl.toString() }
+			var detail = { current: currentUrl.toString(), previous: previousUrl.toString() };
 			var event = new CustomEvent('url-change', { detail: detail });
 			window.dispatchEvent(event);
 
