@@ -104,6 +104,22 @@ h4 {
 .modal-footer {
     border-top: none;
 }
+
+/*** Service Status **/
+
+.mixerAlert[status='none'] i{
+    display:none;
+}
+.mixerAlert[status='minor'] i{
+    color:yellow;
+}
+.mixerAlert[status='major'] i{
+    color:orange;
+}
+.mixerAlert[status='critical'] i{
+    color:red;
+}
+
 /*Switch*/
 
 /** Switch
