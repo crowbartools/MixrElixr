@@ -28,7 +28,8 @@ Vue.component('streamer-override-dropdown', {
                 <span v-if="newNameError" style="color:red; margin-top: 10px;">Please enter a name!</span>
             </b-modal>
         </span>   
-    `,
+	`,
+	mixins: [scriptCommunication],
 	props: ['overrideNames', 'selected'],
 	data: function() {
 		return {
@@ -42,8 +43,24 @@ Vue.component('streamer-override-dropdown', {
 			this.$emit('override-selected', name);
 		},
 		clearName: function() {
-			this.newName = '';
-			this.$refs.nameInput.focus();
+			var app = this;
+
+			app.newName = '';
+			
+			app.getCurrentStreamerNameInOpenTab().then((name) => {
+				if(name != null) {
+					// search for a matching override case insensitive
+					var match = this.overrideNames.filter((o) => {
+						return o.toLowerCase() === name.toLowerCase();
+					});
+		
+					if(match.length < 1) {
+						app.newName = name;
+					}
+				}
+			});
+
+			app.$refs.nameInput.focus();
 		},
 		deleteOverride: function() {
 			this.$emit('override-deleted', this.selected);
