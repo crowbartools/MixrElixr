@@ -180,23 +180,23 @@ function loadStreamerPage(streamerName) {
 
 		cache.hostLoop = setInterval(function(){
 			
-			var options = getStreamerOptionsForStreamer(streamerName);
-			
+			var updatedOptions = getStreamerOptionsForStreamer(streamerName);
+
 			hostee = $('b-host-bar').is(':visible');
 			if(hostee){
 				var hosteeName = $('.owner-block h2').text();
 				var hostName = $('b-host-bar b-channel-creator span').text();
 
 				// Auto forward the person on host.
-				if(options.autoForwardOnHost && hostName !== hosteeName){
+				if(updatedOptions.autoForwardOnHost && hostName !== hosteeName){
 					// Check to make sure we're not trying to forward again accidently (which sometimes occured if interval fired during page load after a redirect)
 					console.log('Redirecting to '+hostName+' because forwarding on host is on.');
 					document.location.href = 'https://mixer.com/'+hostName;
 				}
 
 				// Auto mute when a stream hosts someone.
-				console.log(options.autoMuteOnHost);
-				if(options.autoMuteOnHost && hosteeName !== cache.mutedHost && $('light-volume-control button bui-icon').is(':visible') ){
+				console.log(updatedOptions.autoMuteOnHost);
+				if(updatedOptions.autoMuteOnHost && hosteeName !== cache.mutedHost && $('light-volume-control button bui-icon').is(':visible') ){
 					if( $('light-volume-control button bui-icon').attr('icon') == 'volume_up' ){
 						$('light-volume-control button').click();
 						cache.mutedHost = hosteeName;
