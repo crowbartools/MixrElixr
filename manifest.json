@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "MixrElixr",
     "description": "Provides various options and tweaks to improve your Mixer.com viewing experience. (MixrElixr is neither created nor endorsed by Mixer or Microsoft)",
-    "version": "0.1",
+    "version": "1.0",
     "browser_action": {
         "default_icon": "/resources/images/elixr-light-16.png",
         "default_popup": "/options/index.html"
