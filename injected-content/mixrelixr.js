@@ -243,19 +243,13 @@ function applyChatSettings(streamerName) {
 		var chatContainer = $('.message-container');
 		if(chatContainer != null && chatContainer.length > 0) {
 			chatContainer.addClass('separated-chat');
-			/*chatContainer.animate({
-				scrollTop: chatContainer[0].scrollHeight
-			}, 500);*/
-			chatContainer.scrollTop = chatContainer[0].scrollHeight
+			chatContainer.scrollTop(chatContainer[0].scrollHeight)
 		}
 	} else if(!options.separateChat){
 		var chatContainer = $('.separated-chat');
 		if(chatContainer != null && chatContainer.length > 0){
 			chatContainer.removeClass('separated-chat');
-			/*chatContainer.animate({
-				scrollTop: chatContainer[0].scrollHeight
-			}, 500);*/
-			chatContainer.scrollTop = chatContainer[0].scrollHeight
+			chatContainer.scrollTop(chatContainer[0].scrollHeight)
 		}
 	}
 
@@ -275,7 +269,7 @@ function applyChatSettings(streamerName) {
 	if(!options.showImageLinksInline) {
 		$('img[exlixr-img]').each(function() { $(this).parent().parent().remove();  });
 		var chatContainer = $('.message-container');
-		chatContainer.scrollTop = chatContainer[0].scrollHeight;
+		chatContainer.scrollTop(chatContainer[0].scrollHeight)
 	}
 
 	// get rid of any previous registered callbacks for chat messages
@@ -350,7 +344,7 @@ function applyChatSettings(streamerName) {
 								});
 
 								var chatContainer = $('.message-container');
-								chatContainer.scrollTop = chatContainer[0].scrollHeight;
+								chatContainer.scrollTop(chatContainer[0].scrollHeight);
 							}
 						}
 					});
