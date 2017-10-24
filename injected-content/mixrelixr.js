@@ -342,9 +342,6 @@ function applyChatSettings(streamerName) {
 								$('.hide-picture-btn').click(function() {
 									$(this).parent().parent().remove();
 								});
-
-								var chatContainer = $('.message-container');
-								chatContainer.scrollTop(chatContainer[0].scrollHeight);
 							}
 						}
 					});
@@ -352,6 +349,9 @@ function applyChatSettings(streamerName) {
 			}
 		}
 	});
+
+	var chatContainer = $('.message-container');
+	chatContainer.scrollTop(chatContainer[0].scrollHeight);
 }
 
 
