@@ -311,7 +311,8 @@ function runUrlWatcher() {
 		if(previousUrl !== currentUrl) {
 
 			// fire event
-			var event = new CustomEvent('url-change', { current: currentUrl, previous: previousUrl });
+			var detail = { current: currentUrl.toString(), previous: previousUrl.toString() }
+			var event = new CustomEvent('url-change', { detail: detail });
 			window.dispatchEvent(event);
 
 			previousUrl = currentUrl;
