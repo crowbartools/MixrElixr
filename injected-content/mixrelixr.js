@@ -172,14 +172,13 @@ function loadStreamerPage(streamerName) {
 
 	// Host Loop
 	// This checks every second to see if the channel hosted someone.
+	if(cache.hostLoop != null) {
+		clearInterval(cache.hostLoop);
+	}
+
 	if(options.autoForwardOnHost || options.autoMuteOnHost){
 
-		if(cache.hostLoop != null) {
-			clearInterval(cache.hostLoop);
-		}
-
 		cache.hostLoop = setInterval(function(){
-			
 			var updatedOptions = getStreamerOptionsForStreamer(streamerName);
 
 			hostee = $('b-host-bar').is(':visible');
@@ -195,8 +194,7 @@ function loadStreamerPage(streamerName) {
 				}
 
 				// Auto mute when a stream hosts someone.
-				console.log(updatedOptions.autoMuteOnHost);
-				if(updatedOptions.autoMuteOnHost && hosteeName !== cache.mutedHost && $('light-volume-control button bui-icon').is(':visible') ){
+				if(updatedOptions.autoMuteOnHost && hosteeName !== cache.mutedHost ){
 					if( $('light-volume-control button bui-icon').attr('icon') == 'volume_up' ){
 						$('light-volume-control button').click();
 						cache.mutedHost = hosteeName;
