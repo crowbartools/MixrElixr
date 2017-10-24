@@ -122,15 +122,15 @@ function loadHomepage(){
 		$('.browse').css('padding-top', '75px');
 
 		// This forces the left navigation to recalculate position.
-		$('.home').scrollTop('-5');
-		$('.home').scrollTop('5');
+		$('.home').scrollTop($('.home').scrollTop() - '5');
+		$('.home').scrollTop($('.home').scrollTop() + '5');
 	} else {
 		$('.home .featured').css('display', 'flex');
 		$('.browse').css('padding-top', '0px');
 
 		// This forces the left navigation to recalculate position.
-		$('.home').scrollTop('-5');
-		$('.home').scrollTop('5');
+		$('.home').scrollTop($('.home').scrollTop() - '5');
+		$('.home').scrollTop($('.home').scrollTop() + '5');
 	}
 	
 }
