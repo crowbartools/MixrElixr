@@ -46,7 +46,7 @@ body {
     font-size: 100%;
     width: 500px;
     min-height: 400px;
-    background: #1c2a3c;
+    background: #141828;
 }
 
 .tab-content {
@@ -68,6 +68,14 @@ h4 {
 
 .modal-title {
     color: black;
+}
+
+.bg-dark {
+    background-color: #00295D !important;
+}
+
+.navbar-brand {
+    padding-top: 0;
 }
 
 /*Switch*/
@@ -95,7 +103,7 @@ h4 {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: #B7B7B8;
+    background-color: #b0b6bd;
     -webkit-transition: .2s;
     transition: .2s;
 }
@@ -113,7 +121,7 @@ h4 {
 }
 
 input:checked + .slider {
-    background-color: #2196F3;
+    background-color: #1FBAED;
 }
 
 input:focus + .slider {

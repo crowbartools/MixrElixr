@@ -5,7 +5,7 @@
     "version": "0.1",
     "browser_action": {
         "default_icon": "/resources/images/elixr-light-16.png",
-        "default_popup": "/options/options.html"
+        "default_popup": "/options/index.html"
     },
     "icons": {
         "16": "/resources/images/elixr-light-16.png",
@@ -33,7 +33,7 @@
     "web_accessible_resources": [
         "images/*"
     ],
-    "options_page": "/options/options.html",
+    "options_page": "/options/index.html",
     "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
     "permissions": [
         "storage"
