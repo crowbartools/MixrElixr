@@ -30,11 +30,28 @@ Vue.component('streamer-page-options', {
 			</div>
         </div>
 	`,
-	mixins: [settingsStorage],
+	mixins: [settingsStorage, scriptCommunication],
 	methods: {
 		overrideSelected: function(name) {
-			this.selected = name;
-			this.setModel(this.getSelectedOptions());
+			var selectedType = null;
+
+			if(name === 'Global') {
+				selectedType = name;
+			} else {
+				// search for a matching override case insensitive
+				var match = this.getOverrideNames().filter((o) => {
+					return o.toLowerCase() === name.toLowerCase();
+				});
+	
+				if(match.length > 0) {
+					selectedType = match[0];
+				}
+			}
+
+			if(selectedType != null) {
+				this.selected = selectedType;
+				this.setModel(this.getSelectedOptions());
+			}
 		},
 		overrideAdded: function(name) {
 			this.selected = name;
@@ -148,5 +165,10 @@ Vue.component('streamer-page-options', {
 	},
 	mounted: function() {
 		this.loadSettings();
+		this.getCurrentStreamerNameInOpenTab().then((name) => {
+			if(name != null) {
+				this.overrideSelected(name);
+			}
+		});
 	}
 });

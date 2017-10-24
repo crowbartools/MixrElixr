@@ -27,10 +27,19 @@ $(() => {
 	
 	// listen for an event from the Options page. This fires everytime the user updates a setting
 	chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-		if(!request.settingsUpdated) return;
-		loadSettings().then(() => {
-			runPageLogic();
-		});
+		if(request.settingsUpdated) {
+			loadSettings().then(() => {
+				runPageLogic();
+			});
+		} 
+		else if(request.query === "currentStreamerName"){
+			console.log("got request for current streamer");
+			console.log(cache.currentPage)
+			if(cache.currentPage === "streamer") {
+				console.log(cache.currentStreamerName)
+				sendResponse( { streamerName: cache.currentStreamerName });
+			}
+		}		
 	});
 });
 
@@ -70,6 +79,7 @@ function runPageLogic() {
 	var result = embededChatRegex.exec(url);
 	if(result != null) {
 		log('Detected embeded chat window');
+		cache.currentPage = "embedded-chat";
 
 		var channelId = result[2];
 		if(isNaN(channelId)) return;
@@ -81,8 +91,8 @@ function runPageLogic() {
 
 	//check if we are on a streamer page by looking for the name in the top right corner.
 	else if(channelBlock != null  && channelBlock.length > 0) {
-        
 		log('detected streamer page...');
+		cache.currentPage = "streamer";
 
 		function getStreamerName() {
 			return new Promise((resolve, reject) => {
@@ -91,6 +101,7 @@ function runPageLogic() {
 				if(channelBlock != null && channelBlock.length > 0) {
 					var name = channelBlock.find('h2').text();
 					if(name != null && name !== '') {
+						cache.currentStreamerName = name;
 						resolve(name);
 					} else {
 						setTimeout(() => { getStreamerName(); }, 250);
@@ -108,8 +119,10 @@ function runPageLogic() {
 		});
 	} else if (homeBlock != null && homeBlock.length > 0){
 		log('looks like we are on the main page');
+		cache.currentPage = "homepage";
 		loadHomepage();
 	} else {
+		cache.currentPage = "other";
 		log('looks like we\'re on some other page');
 	}
 }
