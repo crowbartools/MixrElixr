@@ -11,21 +11,23 @@
 		<div id="app">
 			<div class="page-wrapper">
 				<nav-bar @tab-changed="updateActiveTab" :online-count="friends.length"></nav-bar>
-				<div v-if="activeTab == 'online'" id="onlineFriends" class="tab-content">
-					<div class="online-friends-wrap">
-						<online-friend	v-for="friend in friends" v-bind:friend="friend"></online-friend>
+				<div class="tabs-wrapper">
+					<div v-if="activeTab == 'online'" id="onlineFriends" class="tab-content">
+						<div class="online-friends-wrap">
+							<online-friend	v-for="friend in friends" v-bind:friend="friend"></online-friend>
+						</div>
+						<div class="online-friends-error" v-if="friends.length === 0">
+							To view your online friends go to <a href="https://mixer.com" target="_blank">Mixer.com</a> and log in.
+						</div>
 					</div>
-					<div class="online-friends-error" v-if="friends.length === 0">
-						To view your online friends go to <a href="https://mixer.com" target="_blank">Mixer.com</a> and log in.
-					</div>
-				</div>
-				<div v-if="activeTab == 'options'" class="tab-content">
-					<streamer-page-options></streamer-page-options>			
-					<home-page-options></home-page-options>
-					<div style="text-align: center">
-						<made-with-love></made-with-love>
-					</div>
-				</div>				
+					<div v-if="activeTab == 'options'" class="tab-content">
+						<streamer-page-options></streamer-page-options>			
+						<home-page-options></home-page-options>
+						<div style="text-align: center">
+							<made-with-love></made-with-love>
+						</div>
+					</div>	
+				</div>			
 			</div>	
 		</div>	
 		<script src="/resources/js/vue.min.js"></script>

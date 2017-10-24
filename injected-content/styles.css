@@ -27,13 +27,15 @@
     background: rgba(0, 0, 0, 0.356); 
     border-radius: 10px;
     cursor: pointer; 
-    color: white;
+    color: whitesmoke;
     text-align: center;
     font-size: 12px;
     font-family: "Segoe UI", sans-serif;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding-bottom: 3.5px;
+    padding-right: 0.5px;
 }
 
 .hide-picture-btn:hover {
