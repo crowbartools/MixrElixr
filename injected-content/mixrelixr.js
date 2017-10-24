@@ -231,17 +231,19 @@ function applyChatSettings(streamerName) {
 		var chatContainer = $('.message-container');
 		if(chatContainer != null && chatContainer.length > 0) {
 			chatContainer.addClass('separated-chat');
-			chatContainer.animate({
+			/*chatContainer.animate({
 				scrollTop: chatContainer[0].scrollHeight
-			}, 500);
+			}, 500);*/
+			chatContainer.scrollTop = chatContainer[0].scrollHeight
 		}
 	} else if(!options.separateChat){
 		var chatContainer = $('.separated-chat');
 		if(chatContainer != null && chatContainer.length > 0){
 			chatContainer.removeClass('separated-chat');
-			chatContainer.animate({
+			/*chatContainer.animate({
 				scrollTop: chatContainer[0].scrollHeight
-			}, 500);
+			}, 500);*/
+			chatContainer.scrollTop = chatContainer[0].scrollHeight
 		}
 	}
 
@@ -260,6 +262,8 @@ function applyChatSettings(streamerName) {
 
 	if(!options.showImageLinksInline) {
 		$('img[exlixr-img]').each(function() { $(this).parent().parent().remove();  });
+		var chatContainer = $('.message-container');
+		chatContainer.scrollTop = chatContainer[0].scrollHeight;
 	}
 
 	// get rid of any previous registered callbacks for chat messages
@@ -306,8 +310,11 @@ function applyChatSettings(streamerName) {
 						
 						if(urlIsAnImage(url)) {
 							var previousImage = messageContainer.find(`img[src='${url}']`);
+
+							var messageIsDeleted = messageContainer.find(".message-deleted");
 		
-							if(previousImage == null || previousImage.length < 1) {
+							if((previousImage == null || previousImage.length < 1) 
+								&& (messageIsDeleted == null || messageIsDeleted.length < 1)) {
 								$(`<span _ngcontent-c69 style="display:block;">
 									<span style=" position: relative; display: inline-block">
 										<span class="hide-picture-btn">x</span>
@@ -315,9 +322,16 @@ function applyChatSettings(streamerName) {
 									</span>									
 								</span>`).insertBefore(link.parent());
 
+								//remove previously bound click events
+								$(".hide-picture-btn").off("click", "**");
+
+								//add updated click event
 								$('.hide-picture-btn').click(function() {
 									$(this).parent().parent().remove();
 								});
+
+								var chatContainer = $('.message-container');
+								chatContainer.scrollTop = chatContainer[0].scrollHeight;
 							}
 						}
 					});
