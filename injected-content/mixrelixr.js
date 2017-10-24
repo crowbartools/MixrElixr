@@ -195,12 +195,11 @@ function loadStreamerPage(streamerName) {
 				}
 
 				// Auto mute when a stream hosts someone.
-				console.log(updatedOptions.autoMuteOnHost);
 				if(updatedOptions.autoMuteOnHost && hosteeName !== cache.mutedHost && $('light-volume-control button bui-icon').is(':visible') ){
 					if( $('light-volume-control button bui-icon').attr('icon') == 'volume_up' ){
 						$('light-volume-control button').click();
-						cache.mutedHost = hosteeName;
 					}
+					cache.mutedHost = hosteeName;
 				}
 
 			}
@@ -274,6 +273,12 @@ function applyChatSettings(streamerName) {
 		// check to see if we have already looked at this chat messsage.
 		if(alreadyChecked == true) return;
 		messageContainer.attr('elixrfied', 'true');
+
+		// Give chat messages a chat message class.
+		messageContainer.parent().addClass('chat-message');
+
+		// Give every other chat message an alternate-bg class.
+		$('.chat-message:odd').addClass('alternate-bg');
 
 		if(options.showImageLinksInline) {
 

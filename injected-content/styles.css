@@ -14,7 +14,7 @@
 }
 
 /** Alternate Chat BG Color **/
-.chat-alternate-bg div:nth-child(odd):not(.timestamp) > b-channel-chat-message{
+.chat-alternate-bg .alternate-bg{
     background-color:rgba(255, 255, 255, 0.05);
 }
 
