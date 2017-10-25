@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "MixrElixr",
-    "description": "Provides options to improve your Mixer.com viewing experience. (MixrElixr is neither created nor endorsed by Mixer/Microsoft)",
+    "description": "Options and tweaks to improve your Mixer viewing experience.",
     "version": "1.0",
     "short_name": "Elixr",
     "browser_action": {
