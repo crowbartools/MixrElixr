@@ -294,7 +294,7 @@ function applyChatSettings(streamerName) {
 		.filter(function() { return  $(this).find('[elixrfied="value"]').length === 0 })
 		.each(function( index ){
 			if( !$(this).hasClass('alternate-bg') ){
-				$(this).next('.chat-message').addClass('alternate-bg');
+				$(this).nextAll('.chat-message:first').addClass('alternate-bg');
 			}
 		});
 
