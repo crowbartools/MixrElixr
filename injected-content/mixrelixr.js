@@ -290,7 +290,13 @@ function applyChatSettings(streamerName) {
 		messageContainer.parent().addClass('chat-message');
 
 		// Give every other chat message an alternate-bg class.
-		$('.chat-message:odd').addClass('alternate-bg');
+		$('.chat-alternate-bg .chat-message')
+		.filter(function() { return  $(this).find('[elixrfied="value"]').length === 0 })
+		.each(function( index ){
+			if( !$(this).hasClass('alternate-bg') ){
+				$(this).next('.chat-message').addClass('alternate-bg');
+			}
+		});
 
 		if(options.showImageLinksInline) {
 
