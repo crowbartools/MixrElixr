@@ -3,7 +3,6 @@
     "name": "MixrElixr",
     "description": "Provides options to improve your Mixer.com viewing experience. (MixrElixr is neither created nor endorsed by Mixer/Microsoft)",
     "version": "1.0",
-    "default_locale": "en",
     "short_name": "Elixr",
     "browser_action": {
         "default_icon": "/resources/images/elixr-light-16.png",
