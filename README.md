@@ -2,9 +2,7 @@
 
 A Google Chrome extension that provides options and tweaks to improve your [Mixer.com](http://mixer.com) viewing experience. Built with love by the [Firebot](https://github.com/Firebottle/Firebot) team.
 
-**Disclaimer**
-
-MixrElixr is neither created nor endorsed by Mixer or Microsoft. It is created by the community for the community. If you have questions or concerns, please reach out to us: [@MixrElixr](http://twitter.com/mixrelixr)
+**Disclaimer**: MixrElixr is neither created nor endorsed by Mixer or Microsoft. It is created by the community for the community.
 
 ## How To Use
 1) Install the extension from the Google Web Store
@@ -12,7 +10,7 @@ MixrElixr is neither created nor endorsed by Mixer or Microsoft. It is created b
 3) Visit  [Mixer](http://mixer.com) and enjoy!
 
 ## Issues
-If you have a question or need help, please feel free to reach out to us on [Twitter](http://twitter.com/mixrelixr).
+If you have questions, concerns, or need help, please reach out to us on Twitter: [@MixrElixr](http://twitter.com/mixrelixr)
 
 ### Found a bug? 
 Head over to the [Issues](https://github.com/ebiggz/MixrElixr/issues) page and create a new issue. We appreciate it!
