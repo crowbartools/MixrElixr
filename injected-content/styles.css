@@ -1,0 +1,48 @@
+
+.timestamp{
+    height:18px!important;
+}
+
+/** Separated Chat Lines **/
+.separated-chat b-channel-chat-message{
+    border-top: 2px solid #2a354c;
+    padding-top: .5em;
+    padding-bottom: .5em;
+}
+.separated-chat .timestamp::before{
+    border:none!important;
+}
+
+/** Alternate Chat BG Color **/
+.chat-alternate-bg .alternate-bg{
+    background-color:rgba(255, 255, 255, 0.05);
+}
+.chat-alternate-bg .timestamp{
+    display:block;
+    float:right;
+}
+
+.hide-picture-btn {
+    position:absolute; 
+    top:3px; 
+    right:3px; 
+    width: 15px; 
+    height: 15px; 
+    background: rgba(0, 0, 0, 0.356); 
+    border-radius: 10px;
+    cursor: pointer; 
+    color: whitesmoke;
+    text-align: center;
+    font-size: 12px;
+    font-family: "Segoe UI", sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 3.5px;
+    padding-right: 0.5px;
+}
+
+.hide-picture-btn:hover {
+    opacity: 0.6;
+}
+
