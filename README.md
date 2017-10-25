@@ -2,7 +2,7 @@
 
 A Google Chrome extension that provides options and tweaks to improve your [Mixer.com](http://mixer.com) viewing experience. Built with love by the [Firebot](https://github.com/Firebottle/Firebot) team.
 
-**Disclaimer**: MixrElixr is neither created nor endorsed by Mixer or Microsoft. It is created by the community for the community.
+>**Disclaimer**: MixrElixr is neither created nor endorsed by Mixer or Microsoft. It is created by the community for the community.
 
 If you have questions, concerns, need help, or just want to say hi, please reach out to us on Twitter: [@MixrElixr](http://twitter.com/mixrelixr)
 
