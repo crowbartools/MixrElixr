@@ -1,4 +1,4 @@
-![logo](https://i.imgur.com/r1L9Xwt.png)
+![logo](https://i.imgur.com/vJVeWKj.png)
 
 A Google Chrome extension that provides options and tweaks to improve your [Mixer.com](http://mixer.com) viewing experience. Built with love by the [Firebot](https://github.com/Firebottle/Firebot) team.
 
