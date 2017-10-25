@@ -18,8 +18,8 @@ Vue.component('online-friend', {
 						</div>
                     </div>
 					<div class="info-container">
-						<div class="friendTitle" :title="channelTitle">{{friend.name}}</div>
-                        <div class="friendGame">{{friend.type.name}}</div>                       
+						<div class="friendGame" :title="channelGame">{{friend.type.name}}</div> 
+						<div class="friendTitle" :title="channelTitle">{{friend.name}}</div>                                   
                     </div>
                 </a>
             </div>
@@ -43,6 +43,9 @@ Vue.component('online-friend', {
 		},
 		channelTitle: function(){
 			return `${this.friend.name}`;
+		},
+		channelGame: function(){
+			return `${this.friend.type.name}`;
 		}
 	}
 });
