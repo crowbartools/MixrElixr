@@ -7,7 +7,7 @@ If you have questions, concerns, need help, or just want to say hi, you can reac
 >**Disclaimer**: MixrElixr is neither created nor endorsed by Mixer or Microsoft. It is created by the community for the community.
 
 ## How To Use
-1) Install the extension from the Google Web Store
+1) Install the extension from the [Google Web Store](https://chrome.google.com/webstore/detail/mixrelixr/mmfbdcekojokeeonagpnlpoklelkcjon)
 2) Change settings to your liking (click on the Elixr icon in the Chrome toolbar)
 3) Visit  [Mixer](http://mixer.com) and enjoy!
 
