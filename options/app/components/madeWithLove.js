@@ -15,13 +15,15 @@ Vue.component('made-with-love', {
                 footer-text-variant="light"
                 ok-only="true"
                 @ok="hideModal">
-                    <h5 class="modal-title">The Team</h5>
+                    <h5 class="modal-title">Team Crowbar</h5>
                     <div class="teammember">ebiggz</div>
-                    <div class="teammember">Firebottle</div>
-                    <div class="teammember">Carlyndra</div>
+                    <div class="teammember">Firebottle</div>                
                     <div class="teammember">ThePerry</div>
-                    <h5 class="modal-title" style="padding-top: 20px">Need help?</h5>
-                    <div class="disclaimer">MixrElixr is neither created nor endorsed by Mixer or Microsoft. It is created by the community for the community. If you have questions, please <a href="https://twitter.com/MixrElixr" target="_blank">reach out to us</a>.</div>
+                    <h5 class="modal-title" style="padding-top: 20px">Graphic Design By</h5>
+                    <div class="teammember">Carlyndra</div>
+                    <h5 class="modal-title" style="padding-top: 20px">Need Help?</h5>
+                    <div style="font-size:16px">If you have questions, please reach out to us <a class="light-blue-link" href="https://twitter.com/MixrElixr" target="_blank">on Twitter</a> or post in the #elixr-help channel of <a class="light-blue-link" href="https://discord.gg/2CGrbA4" target="_blank">our Discord</a>.</div>
+                    <div class="disclaimer">MixrElixr is neither created nor endorsed by Mixer or Microsoft. It is created by the community for the community.</div>
                     <div slot="modal-footer" style="text-align: center; width: 100%;">
                         <b-btn variant="primary" @click="hideModal">Ok</b-btn>
                     </div>
