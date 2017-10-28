@@ -8,6 +8,9 @@ $(() => {
 	// start the process
 	log('Starting MixerElixir...');
 
+	// Get user info and store it in cache.
+	getUserInfo();
+
 	function waitForPageLoad() {
 		return new Promise((resolve, reject)=>{
 			function doPageCheck() {
@@ -230,7 +233,21 @@ $(() => {
 				chatContainer.removeClass('chat-alternate-bg');
 			}
 		}
+
+		// Mention BG Color
+		if(options.mentionChatBGColor){
+			var chatContainer = $('.message-container');
+			if(chatContainer != null && chatContainer.length > 0) {
+				chatContainer.addClass('chat-mention-bg');
+			}
+		} else if(!options.mentionChatBGColor){
+			var chatContainer = $('.message-container');
+			if(chatContainer != null && chatContainer.length > 0) {
+				chatContainer.removeClass('chat-mention-bg');
+			}
+		}
 	
+		// Inline Image Links
 		if(!options.showImageLinksInline) {
 			$('img[exlixr-img]').each(function() { $(this).parent().parent().remove();  });
 			var chatContainer = $('.message-container');
@@ -248,10 +265,9 @@ $(() => {
 			var alreadyChecked = messageContainer.attr('elixrfied');
 			// check to see if we have already looked at this chat messsage.
 			if(alreadyChecked == true) { return; }
-			
 			messageContainer.attr('elixrfied', 'true');
 	
-			// Give chat messages a chat message class.
+			// Give chat messages a chat message class for easier targeting.
 			messageContainer.parent().addClass('chat-message');
 	
 			// Give every other chat message an alternate-bg class.
@@ -262,6 +278,15 @@ $(() => {
 						$(this).nextAll('.chat-message:first').addClass('alternate-bg');
 					}
 				});
+
+			// Give any message with a mention of our user a class.
+			var messageText = messageContainer.find('.textComponent').text().toLowerCase();
+			var userTagged = messageContainer.find('.user-tag').text().toLowerCase();
+			var userLowerCase = cache.user.username.toLowerCase();
+			if(~messageText.indexOf(userLowerCase) || ~userTagged.indexOf(userLowerCase) ){
+				messageContainer.parent().addClass('user-mentioned');
+			}
+
 	
 			if(options.showImageLinksInline) {
 	
@@ -453,6 +478,50 @@ $(() => {
 			request.send();
 		});
 	}
+
+	// Get user info
+	// This gets user info of current logged in person and stores it in cache for reference.
+	function getUserInfo(){
+		var request = new XMLHttpRequest();
+		request.open('GET', 'https://mixer.com/api/v1/users/current', true);
+
+		request.onload = function() {
+			if (request.status >= 200 && request.status < 400) {
+				// Success!
+				var data = JSON.parse(request.responseText);
+				var user = {
+					username: data.username,
+					userId: data.channel.userId,
+					experience: data.experience,
+					sparks: data.sparks,
+					avatarUrl: data.avatarUrl,
+					channel: {
+						id: data.channel.id,
+						online: data.channel.online,
+						partnered: data.channel.partnered,
+						viewersTotal: data.channel.viewersTotal,
+						viewersCurrent: data.channel.viewersCurrent,
+						numFollowers: data.channel.numFollowers,
+						audience: data.channel.audience
+					}
+				};
+
+				cache.user = user;
+				console.log('Got user settings');
+				console.log(cache.user);
+			} else {
+				// We reached our target server, but it returned an error
+				console.log('Login at Mixer.com to see your online friends.');
+			}
+		};
+
+		request.onerror = function() {
+			// There was a connection error of some sort
+			console.log('Error getting userId');
+		};
+
+		request.send();
+	}
 	
 	waitForPageLoad().then(() => {
 
@@ -480,8 +549,6 @@ $(() => {
 			});
 		} 
 		else if(request.query === 'currentStreamerName'){
-			console.log('got request for current streamer');
-			console.log(cache.currentPage);
 			if(cache.currentPage === 'streamer') {
 				console.log(cache.currentStreamerName);
 				sendResponse( { streamerName: cache.currentStreamerName });

@@ -36,6 +36,7 @@ settingsStorage = {
 						autoCloseInteractive: false,
 						separateChat: false,
 						alternateChatBGColor: false,
+						mentionChatBGColor: false,
 						showImageLinksInline: false,
 						lowestUserRoleLinks: 'mod',
 						autoForwardOnHost: false,

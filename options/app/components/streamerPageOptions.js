@@ -17,6 +17,7 @@ Vue.component('streamer-page-options', {
 				<span class="setting-subcategory">Chat</span>
 				<checkbox-toggle :value.sync="separateChat" @changed="saveSettings()" label="Separate Chat Lines"></checkbox-toggle>
 				<checkbox-toggle :value.sync="alternateChatBGColor" @changed="saveSettings()" label="Alternate Chat BG Color"></checkbox-toggle>
+				<checkbox-toggle :value.sync="mentionChatBGColor" @changed="saveSettings()" label="Highlight User Mentions"></checkbox-toggle>
 				<checkbox-toggle :value.sync="showImageLinksInline" @changed="saveSettings()" label="Show Image Links Inline"></checkbox-toggle>
 				<div v-if="showImageLinksInline" style="width: 65%">
 					<div style="padding-bottom: 5px;">Permitted User Roles for Inline Images</div>
@@ -25,7 +26,7 @@ Vue.component('streamer-page-options', {
 				
 
 				<span class="setting-subcategory">Hosts</span>
-				<checkbox-toggle :value.sync="autoForwardOnHost" @changed="saveSettings()" label="Auto Forward on Host"></checkbox-toggle>
+				<checkbox-toggle :value.sync="autoForwardOnHost" @changed="saveSettings()" label="Redirect on Host"></checkbox-toggle>
 				<checkbox-toggle :value.sync="autoMuteOnHost" @changed="saveSettings()" label="Auto Mute Stream on Host"></checkbox-toggle>
 			</div>
         </div>
