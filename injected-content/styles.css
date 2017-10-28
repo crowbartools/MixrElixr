@@ -18,8 +18,11 @@
     background-color:rgba(255, 255, 255, 0.05);
 }
 .chat-alternate-bg .timestamp{
-    display:block;
     float:right;
+    align-items: stretch!important;
+    flex-direction: row!important;
+    height: 0px!important;
+    margin:0px!important;
 }
 
 /** Mention Chat BG Color **/
