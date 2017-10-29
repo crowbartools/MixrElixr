@@ -5,7 +5,7 @@ Vue.component('online-friend', {
                 <a v-bind:href="channelLink" target="_blank" class="friendLink">
                     <div class="thumbnail">
                         <img v-bind:src="channelImgUrl" v-show="hover === false">
-                        <video autoplay="" loop="" preload="none" v-show="hover === true">
+                        <video autoplay="" loop="" preload="none" v-if="hover === true">
                             <source type="video/mp4" v-bind:src="channelVidUrl">
                         </video>
                         <div class="friend-header">
