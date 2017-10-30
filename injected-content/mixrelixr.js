@@ -8,11 +8,8 @@ $(() => {
 	// start the process
 	log('Starting MixerElixir...');
 
-	// Get user info and store it in cache.
-	getUserInfo();
-
 	function waitForPageLoad() {
-		return new Promise((resolve, reject)=>{
+		return new Promise((resolve)=>{
 			function doPageCheck() {
 				var spinner = $('.initial-loading-overlay');
 				var spinnerExists = spinner != null && spinner.length > 0;
@@ -280,16 +277,19 @@ $(() => {
 				});
 
 			// Give any message with a mention of our user a class.
-			var messageText = messageContainer.find('.textComponent').text().toLowerCase();
-			var userTagged = messageContainer.find('.user-tag').text().toLowerCase();
-			var userLowerCase = cache.user.username.toLowerCase();
-			if(~messageText.indexOf(userLowerCase) || ~userTagged.indexOf(userLowerCase) ){
-				messageContainer.parent().addClass('user-mentioned');
+			var messageText = messageContainer.find('.textComponent').text().toLowerCase().trim();
+			var userTagged = messageContainer.find('.user-tag').text().toLowerCase().trim();
+			if(cache.user != null) {
+				var userLowerCase = cache.user.username.toLowerCase();
+				
+				var userRegex = new RegExp(`\\b${escapeRegExp(userLowerCase)}\\b`, 'i');
+				if(userRegex.test(messageText) || userRegex.test(userTagged)) {
+					messageContainer.parent().addClass('user-mentioned');
+				}
 			}
 
 	
-			if(options.showImageLinksInline) {
-	
+			if(options.showImageLinksInline) {	
 	
 				var inlineImagePermitted = false;
 	
@@ -420,6 +420,12 @@ $(() => {
 	}
 	
 	/* Helpers */
+
+	function escapeRegExp(string) {
+		return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+	}
+
+
 	
 	function log(message) {
 		console.log(`[ME: ${message}]`);
@@ -480,47 +486,22 @@ $(() => {
 	}
 
 	// Get user info
-	// This gets user info of current logged in person and stores it in cache for reference.
-	function getUserInfo(){
-		var request = new XMLHttpRequest();
-		request.open('GET', 'https://mixer.com/api/v1/users/current', true);
-
-		request.onload = function() {
-			if (request.status >= 200 && request.status < 400) {
-				// Success!
-				var data = JSON.parse(request.responseText);
-				var user = {
-					username: data.username,
-					userId: data.channel.userId,
-					experience: data.experience,
-					sparks: data.sparks,
-					avatarUrl: data.avatarUrl,
-					channel: {
-						id: data.channel.id,
-						online: data.channel.online,
-						partnered: data.channel.partnered,
-						viewersTotal: data.channel.viewersTotal,
-						viewersCurrent: data.channel.viewersCurrent,
-						numFollowers: data.channel.numFollowers,
-						audience: data.channel.audience
-					}
-				};
-
-				cache.user = user;
-				console.log('Got user settings');
-				console.log(cache.user);
-			} else {
+	// This gets user info of current logged in person
+	function loadUserInfo(){
+		return new Promise((resolve) => {
+			$.get('https://mixer.com/api/v1/users/current')
+				.done((data) => {
+					log('Got user settings');
+					cache.user = data;
+					resolve(data);
+				})
+				.fail(() => {
 				// We reached our target server, but it returned an error
-				console.log('Login at Mixer.com to see your online friends.');
-			}
-		};
-
-		request.onerror = function() {
-			// There was a connection error of some sort
-			console.log('Error getting userId');
-		};
-
-		request.send();
+					log('No user logged in.');
+					cache.user = null;
+					resolve(null);
+				});
+		});
 	}
 	
 	waitForPageLoad().then(() => {
@@ -532,10 +513,14 @@ $(() => {
 			runPageLogic();
 		});
 
-		loadSettings().then(() => {
+		var userInfoLoad = loadUserInfo();
+		var settingsLoad = loadSettings();
+
+		//wait for both user info and settings to load.
+		Promise.all([userInfoLoad, settingsLoad]).then(() => {
 			// run page logic for the first load
 			runPageLogic();
-
+			
 			// then let the url watcher trigger it from then on
 			runUrlWatcher();
 		});
