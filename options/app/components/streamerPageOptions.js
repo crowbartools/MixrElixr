@@ -18,16 +18,21 @@ Vue.component('streamer-page-options', {
 				<checkbox-toggle :value.sync="separateChat" @changed="saveSettings()" label="Separate Chat Lines"></checkbox-toggle>
 				<checkbox-toggle :value.sync="alternateChatBGColor" @changed="saveSettings()" label="Alternate Chat BG Color"></checkbox-toggle>
 				<checkbox-toggle :value.sync="mentionChatBGColor" @changed="saveSettings()" label="Highlight User Mentions"></checkbox-toggle>
-				<checkbox-toggle :value.sync="showImageLinksInline" @changed="saveSettings()" label="Show Image Links Inline"></checkbox-toggle>
-				<div v-if="showImageLinksInline" style="width: 65%">
+				<inline-img-toggle :value.sync="showImagesInline" @changed="saveSettings()"></inline-img-toggle>
+				<div v-show="showImagesInline" class="option-wrapper suboption">
 					<div style="padding-bottom: 5px;">Permitted User Roles for Inline Images</div>
-					<b-form-select v-model="lowestUserRoleLinks" :options="userRoles" class="mb-3"></b-form-select>
+					<b-form-select v-model="lowestUserRoleLinks" :options="userRoles" class="mb-3 option"></b-form-select>
+					<div style="padding-bottom: 5px;">User {{inlineUsersIsWhitelist ? 'Whitelist' : 'Blacklist'}} for Inline Images</div>
+					<edittable-list class="option" :value.sync="inlineImgUsers" :options="viewers" tag-placeholder="Press enter to add user" placeholder="Select or type to add" @changed="saveSettings()"></edittable-list>
+					<checkbox-toggle :value.sync="inlineUsersIsWhitelist" @changed="saveSettings()" label="Is Whitelist"></checkbox-toggle>
 				</div>
-				<div style="padding-bottom: 5px;">Ignored Users</div>
-				<edittable-list :value.sync="ignoredUsers" :options="viewers" tag-placeholder="Press enter to add user" placeholder="Select or type to add user" @changed="saveSettings()"></edittable-list>
-
+				<div class="option-wrapper">
+					<div style="padding-bottom: 5px;">Ignored Users</div>
+					<edittable-list class="option" :value.sync="ignoredUsers" :options="viewers" tag-placeholder="Press enter to add user" placeholder="Select or type to add" @changed="saveSettings()"></edittable-list>
+				</div>
+				
 				<span class="setting-subcategory">Hosts</span>
-				<checkbox-toggle :value.sync="autoForwardOnHost" @changed="saveSettings()" label="Redirect on Host"></checkbox-toggle>
+				<checkbox-toggle :value.sync="autoForwardOnHost" @changed="saveSettings()" label="Redirect on Host" tooltip="If the channel you go to is hosting someone else, automatically get redirected to that streamer."></checkbox-toggle>
 				<checkbox-toggle :value.sync="autoMuteOnHost" @changed="saveSettings()" label="Auto Mute Stream on Host"></checkbox-toggle>
 			</div>
         </div>
@@ -117,6 +122,15 @@ Vue.component('streamer-page-options', {
 		},
 		setModel: function(options) {
 			var app = this;
+			var g = app.global;
+
+			//copy over any settings from global that dont exist yet in this override (this happens when new settings are added);
+			Object.keys(g).forEach((k) => {
+				if(options[k] == null) {
+					options[k] = JSON.parse(JSON.stringify(g[k]));
+				}
+			});
+
 			Object.keys(options).forEach((k) => {
 				app[k] = options[k];
 			});

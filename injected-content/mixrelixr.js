@@ -245,7 +245,7 @@ $(() => {
 		}
 	
 		// Inline Image Links
-		if(!options.showImageLinksInline) {
+		if(!options.showImagesInline) {
 			$('img[exlixr-img]').each(function() { $(this).parent().parent().remove();  });
 			var chatContainer = $('.message-container');
 			chatContainer.scrollTop(chatContainer[0].scrollHeight);
@@ -268,9 +268,9 @@ $(() => {
 			messageContainer.parent().addClass('chat-message');
 
 
-			var author = messageContainer.find('.username').text().trim();
+			var messageAuthor = messageContainer.find('.username').text().trim();
 
-			if(options.ignoredUsers.includes(author)) {
+			if(options.ignoredUsers.includes(messageAuthor)) {
 				messageContainer.hide();
 			} else {
 				if(!messageContainer.is(':visible')) {
@@ -300,7 +300,7 @@ $(() => {
 			}
 
 	
-			if(options.showImageLinksInline) {	
+			if(options.showImagesInline) {	
 	
 				var inlineImagePermitted = false;
 	
@@ -313,13 +313,26 @@ $(() => {
 					.map((c) => {
 						return c.replace('role-', '');
 					});
-	
+					
+				var rolePermitted = false;
 				authorRoles.forEach((r) => {
 					var roleRank = getUserRoleRank(r);
 					if(roleRank <= lowestPermittedRoleRank) {
-						inlineImagePermitted = true;
+						rolePermitted = true;
 					}
 				});
+
+				if(rolePermitted) {
+					if(options.inlineImgUsers != null && options.inlineImgUsers.length > 0) {
+						if(options.inlineUsersIsWhitelist) {
+							inlineImagePermitted = options.inlineImgUsers.includes(messageAuthor);
+						} else {
+							inlineImagePermitted = !options.inlineImgUsers.includes(messageAuthor);
+						}
+					} else {
+						inlineImagePermitted = true;
+					}
+				} 
 	
 				if(inlineImagePermitted) {
 					var links = messageContainer.find('a[target=\'_blank\']');

@@ -382,12 +382,37 @@ a.light-blue-link {
     text-decoration: none;
 }
 
-
 .multiselect__tag, .multiselect__option--highlight,.multiselect__option--highlight::after {
     background: #1fbaed;
 }
 
 .multiselect__tag-icon:focus, .multiselect__tag-icon:hover {
     background: #1c9ac0;
+}
+
+.e-tooltip {
+    font-size: 13px;
+    opacity: 0.7;
+    margin-left: 5px;
+}
+
+.e-tooltip:hover {
+    opacity: 1;
+}
+
+.fa-exclamation-circle.e-tooltip, .e-tooltip.fa-exclamation-circle{
+    color:#ec3f3f;
+}
+
+.option {
+    margin-bottom: .5rem
+}
+
+.option-wrapper {
+    width: 65%;
+}
+
+.option-wrapper.suboption {
+    margin-left: 15px;
 }
   
