@@ -381,4 +381,13 @@ a.light-blue-link {
     cursor: pointer;
     text-decoration: none;
 }
+
+
+.multiselect__tag, .multiselect__option--highlight,.multiselect__option--highlight::after {
+    background: #1fbaed;
+}
+
+.multiselect__tag-icon:focus, .multiselect__tag-icon:hover {
+    background: #1c9ac0;
+}
   

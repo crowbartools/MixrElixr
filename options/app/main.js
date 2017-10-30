@@ -1,3 +1,5 @@
+Vue.component('multiselect', window.VueMultiselect.default);
+
 new Vue({
 	el: '#app',
 	mixins: [friendFetcher],
@@ -10,7 +12,7 @@ new Vue({
 		updateActiveTab: function(tab) {
 			console.log('tab changed: ' + tab);
 			this.activeTab = tab;
-			var container = this.$el.querySelector(".tabs-wrapper");
+			var container = this.$el.querySelector('.tabs-wrapper');
 			container.scrollTo(0, 0);
 		},
 		fetchFriends: function() {
@@ -43,7 +45,7 @@ new Vue({
 		},
 		friendScroller: function(){
 			// If we scroll 80% through our current friends, add some more.
-			if(this.activeTab == "online"){
+			if(this.activeTab == 'online'){
 				var obj = this.$el.querySelector('.tabs-wrapper');
 				var percent = (obj.scrollHeight - obj.offsetHeight) * .8;
 				if( obj.scrollTop >= percent ){
@@ -58,6 +60,6 @@ new Vue({
 		this.fetchFriends()
 			.then((res) =>{
 				this.friendPost();
-			})
+			});
 	}
 });

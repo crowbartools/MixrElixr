@@ -23,7 +23,8 @@ Vue.component('streamer-page-options', {
 					<div style="padding-bottom: 5px;">Permitted User Roles for Inline Images</div>
 					<b-form-select v-model="lowestUserRoleLinks" :options="userRoles" class="mb-3"></b-form-select>
 				</div>
-				
+				<div style="padding-bottom: 5px;">Ignored Users</div>
+				<edittable-list :value.sync="ignoredUsers" :options="viewers" tag-placeholder="Press enter to add user" placeholder="Select or type to add user" @changed="saveSettings()"></edittable-list>
 
 				<span class="setting-subcategory">Hosts</span>
 				<checkbox-toggle :value.sync="autoForwardOnHost" @changed="saveSettings()" label="Redirect on Host"></checkbox-toggle>
@@ -87,6 +88,7 @@ Vue.component('streamer-page-options', {
 			} else {
 				this.overrides[this.selected] = model;
 			}
+			
 			this.saveStreamerPageOptions({
 				global: this.global,
 				overrides: this.overrides
@@ -130,6 +132,23 @@ Vue.component('streamer-page-options', {
 			});
 
 			return builtModel;
+		},
+		getViewersForCurrentChannel: function() {
+			var app = this;
+			app.getCurrentStreamerNameInOpenTab().then((name) => {
+				if(name == null) return;
+				app.$http.get(`https://mixer.com/api/v1/channels/${encodeURIComponent(name)}?fields=id`, {responseType: 'json'})
+					.then((response) => {
+						if(!response.ok) return;
+
+						var id = response.body.id;
+						app.$http.get(`https://mixer.com/api/v1/chats/${id}/users?fields=userName`, {responseType: 'json'})
+							.then((response) => {
+								if(!response.ok) return;
+								app.viewers = response.body.map(v => v.userName);
+							});					
+					});
+			});
 		}
 	},
 	watch: {
@@ -148,7 +167,8 @@ Vue.component('streamer-page-options', {
 				{ value: 'pro', text: 'Pro (& above)' },
 				{ value: 'all', text: 'All' }
 			],
-			overrideNames: []
+			overrideNames: [],
+			viewers: []
 		};
 
 		var defaults = this.getDefaultOptions().streamerPageOptions;
@@ -171,5 +191,7 @@ Vue.component('streamer-page-options', {
 				this.overrideSelected(name);
 			}
 		});
+
+		this.getViewersForCurrentChannel();
 	}
 });

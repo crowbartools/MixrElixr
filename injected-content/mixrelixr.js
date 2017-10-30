@@ -266,10 +266,21 @@ $(() => {
 	
 			// Give chat messages a chat message class for easier targeting.
 			messageContainer.parent().addClass('chat-message');
+
+
+			var author = messageContainer.find('.username').text().trim();
+
+			if(options.ignoredUsers.includes(author)) {
+				messageContainer.hide();
+			} else {
+				if(!messageContainer.is(':visible')) {
+					messageContainer.show();
+				}
+			}
 	
 			// Give every other chat message an alternate-bg class.
 			$('.chat-alternate-bg .chat-message')
-				.filter(function() { return  $(this).find('[elixrfied="value"]').length === 0; })
+				.filter(function() { return  $(this).find('[elixrfied="value"]').length === 0 && $(this).find('b-channel-chat-message').is(':visible');})
 				.each(function( index ){
 					if( !$(this).hasClass('alternate-bg') ){
 						$(this).nextAll('.chat-message:first').addClass('alternate-bg');
@@ -424,8 +435,6 @@ $(() => {
 	function escapeRegExp(string) {
 		return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 	}
-
-
 	
 	function log(message) {
 		console.log(`[ME: ${message}]`);

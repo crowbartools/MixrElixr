@@ -41,7 +41,8 @@ settingsStorage = {
 						lowestUserRoleLinks: 'mod',
 						autoForwardOnHost: false,
 						autoMute: false,
-						autoMuteOnHost: false
+						autoMuteOnHost: false,
+						ignoredUsers: []
 					},
 					overrides: {}
 				},
