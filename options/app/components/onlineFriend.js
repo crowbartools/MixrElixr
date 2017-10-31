@@ -1,12 +1,11 @@
 Vue.component('online-friend', {
 	template: `
         <div class="mixerFriend">
-            <div class="friendPreview" @mouseover="hover = true" @mouseleave="hover = false">
+            <div class="friendPreview" @mouseover="hover = true" @mouseleave="hover = false, videoReady = false">
                 <a v-bind:href="channelLink" target="_blank" class="friendLink">
                     <div class="thumbnail">
-                        <img v-bind:src="channelImgUrl" v-show="hover === false">
-                        <video autoplay="" loop="" preload="none" v-if="hover === true">
-                            <source type="video/mp4" v-bind:src="channelVidUrl">
+                        <img v-bind:src="channelImgUrl" v-show="videoReady === false">
+                        <video autoplay="true" loop="true" @canplay="if(hover) { videoReady = true }" v-if="hover === true" v-show="videoReady === true" v-bind:src="channelVidUrl">                   
                         </video>
                         <div class="friend-header">
                             <span class="friendName">{{friend.token}}</span>
@@ -28,7 +27,8 @@ Vue.component('online-friend', {
 	props: ['friend'],
 	data: function() {
 		return {
-			hover: false
+			hover: false,
+			videoReady: false
 		};
 	},
 	computed: {
