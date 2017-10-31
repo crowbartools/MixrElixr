@@ -23,6 +23,7 @@ new Vue({
 					.then((res) => {
 						console.log(res);
 						this.friends = res;
+						this.updateIconBadge();
 						resolve(true);
 					})
 					.catch((err) => {
@@ -53,6 +54,16 @@ new Vue({
 					this.friendPost();
 				}
 			}
+		},
+		updateIconBadge: function() {
+			var text = null;
+			var friends = this.friends;
+			if(friends != null) {
+				if(friends.length > 0) {
+					text = friends.length.toString();
+				}
+			}
+			chrome.browserAction.setBadgeText({text: text});
 		}
 	},
 	mounted: function() {
