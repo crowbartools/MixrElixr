@@ -44,7 +44,8 @@ settingsStorage = {
 						autoForwardOnHost: false,
 						autoMute: false,
 						autoMuteOnHost: false,
-						ignoredUsers: []
+						ignoredUsers: [],
+						keywords: []
 					},
 					overrides: {}
 				},

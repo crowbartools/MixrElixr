@@ -243,6 +243,19 @@ $(() => {
 				chatContainer.removeClass('chat-mention-bg');
 			}
 		}
+
+		// Keyword BG Color
+		if(options.keywords.length > 0){
+			var chatContainer = $('.message-container');
+			if(chatContainer != null && chatContainer.length > 0) {
+				chatContainer.addClass('chat-keyword-bg');
+			}
+		} else {
+			var chatContainer = $('.message-container');
+			if(chatContainer != null && chatContainer.length > 0) {
+				chatContainer.removeClass('chat-keyword-bg');
+			}
+		}
 	
 		// Inline Image Links
 		if(!options.showImagesInline) {
@@ -297,6 +310,14 @@ $(() => {
 				if(userRegex.test(messageText) || userRegex.test(userTagged)) {
 					messageContainer.parent().addClass('user-mentioned');
 				}
+			}
+
+			if(options.keywords.length > 0) {
+				options.keywords.forEach(w => {
+					if(messageText.includes(w.toLowerCase())) {
+						messageContainer.parent().addClass('keyword-mentioned');
+					}
+				});
 			}
 
 	

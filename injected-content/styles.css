@@ -26,7 +26,7 @@
 }
 
 /** Mention Chat BG Color **/
-.chat-mention-bg .user-mentioned{
+.chat-mention-bg .user-mentioned, .chat-keyword-bg .keyword-mentioned {
     background-color: #20293f;
     background-image:linear-gradient(45deg, rgba(0, 117, 213, 0.25) 40px, rgba(12, 91, 178, 0.25) 40px, rgba(12, 91, 178, 0.25) 80px, rgba(24, 62, 141, 0.25) 80px, rgba(24, 62, 141, 0.25) 120px, rgba(12, 47, 111, 0.25) 120px, rgba(12, 47, 111, 0.25) 160px, rgba(0, 32, 80, 0.25) 160px), linear-gradient(-45deg, rgba(0, 117, 213, 0.25) 40px, rgba(12, 91, 178, 0.25) 40px, rgba(12, 91, 178, 0.25) 80px, rgba(24, 62, 141, 0.25) 80px, rgba(24, 62, 141, 0.25) 120px, rgba(12, 47, 111, 0.25) 120px, rgba(12, 47, 111, 0.25) 160px, rgba(0, 32, 80, 0.25) 160px);
 }

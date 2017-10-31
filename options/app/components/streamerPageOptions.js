@@ -17,7 +17,15 @@ Vue.component('streamer-page-options', {
 				<span class="setting-subcategory">Chat</span>
 				<checkbox-toggle :value.sync="separateChat" @changed="saveSettings()" label="Separate Chat Lines"></checkbox-toggle>
 				<checkbox-toggle :value.sync="alternateChatBGColor" @changed="saveSettings()" label="Alternate Chat BG Color"></checkbox-toggle>
-				<checkbox-toggle :value.sync="mentionChatBGColor" @changed="saveSettings()" label="Highlight User Mentions"></checkbox-toggle>
+				<checkbox-toggle :value.sync="mentionChatBGColor" @changed="saveSettings()" label="Highlight When Mentioned" tooltip="Apply a special background behind messages where you are mentioned."></checkbox-toggle>
+				<div class="option-wrapper">
+					<div style="padding-bottom: 5px;">Highlight Keywords<option-tooltip name="highlightKeywords" title="Any messages containing these keywords will have a special background."></option-tooltip></div>
+					<edittable-list class="option" :value.sync="keywords" :options="[]" tag-placeholder="Press enter to add keyword" placeholder="Type to add keyword" @changed="saveSettings()"></edittable-list>
+				</div>
+				<div class="option-wrapper" style="margin-bottom: 20px;">
+					<div style="padding-bottom: 5px;">Ignored Users<option-tooltip name="ignoredUsers" title="You will not see messages from users listed here."></option-tooltip></div>
+					<edittable-list class="option" :value.sync="ignoredUsers" :options="viewers" tag-placeholder="Press enter to add user" placeholder="Select or type to add" @changed="saveSettings()"></edittable-list>
+				</div>
 				<inline-img-toggle :value.sync="showImagesInline" @changed="saveSettings()"></inline-img-toggle>
 				<div v-show="showImagesInline" class="option-wrapper suboption">
 					<div style="padding-bottom: 5px;">Permitted User Roles for Inline Images</div>
@@ -26,11 +34,7 @@ Vue.component('streamer-page-options', {
 					<edittable-list class="option" :value.sync="inlineImgUsers" :options="viewers" tag-placeholder="Press enter to add user" placeholder="Select or type to add" @changed="saveSettings()"></edittable-list>
 					<checkbox-toggle :value.sync="inlineUsersIsWhitelist" @changed="saveSettings()" label="Is Whitelist"></checkbox-toggle>
 				</div>
-				<div class="option-wrapper">
-					<div style="padding-bottom: 5px;">Ignored Users</div>
-					<edittable-list class="option" :value.sync="ignoredUsers" :options="viewers" tag-placeholder="Press enter to add user" placeholder="Select or type to add" @changed="saveSettings()"></edittable-list>
-				</div>
-				
+
 				<span class="setting-subcategory">Hosts</span>
 				<checkbox-toggle :value.sync="autoForwardOnHost" @changed="saveSettings()" label="Redirect on Host" tooltip="If the channel you go to is hosting someone else, automatically get redirected to that streamer."></checkbox-toggle>
 				<checkbox-toggle :value.sync="autoMuteOnHost" @changed="saveSettings()" label="Auto Mute Stream on Host"></checkbox-toggle>
