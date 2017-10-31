@@ -1,12 +1,14 @@
 Vue.component('checkbox-toggle', {
 	template: `
-		<label style="display:flex">
+	<div>
+		<label style="display:inline-flex;">
 			<label class="switch">
 				<input type="checkbox" v-model.lazy="value" @change="valueUpdated"/>
 				<span class="slider"></span>
 			</label>
 			{{label}} <option-tooltip v-if="tooltip != null" :name="tooltipName" :title="tooltip" :type="tooltipType"></option-tooltip>
 		</label>
+	</div>	
 	`,
 	props: ['value', 'label', 'tooltip', 'tooltipType'],
 	methods: {
@@ -17,7 +19,7 @@ Vue.component('checkbox-toggle', {
 	},
 	computed: {
 		tooltipName: function() {
-			return this.label.replace(" ", "-").toLowerCase();
+			return this.label.replace(' ', '-').toLowerCase();
 		}
 	}
 });
