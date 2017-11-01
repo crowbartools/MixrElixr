@@ -257,12 +257,10 @@ $(() => {
 			}
 		}
 	
-		// Inline Image Links
-		if(!options.showImagesInline) {
-			$('img[exlixr-img]').each(function() { $(this).parent().parent().remove();  });
-			var chatContainer = $('.message-container');
-			chatContainer.scrollTop(chatContainer[0].scrollHeight);
-		}
+		// Remove prev Inline Image Links, they will be readded later if needed
+		$('img[elixr-img]').each(function() { $(this).parent().parent().remove();  });
+		var chatContainer = $('.message-container');
+		chatContainer.scrollTop(chatContainer[0].scrollHeight);
 
 		// remove all prev custom timestamps if feature is turned off
 		if(!options.timestampAllMessages) {
@@ -284,7 +282,6 @@ $(() => {
 	
 			// Give chat messages a chat message class for easier targeting.
 			messageContainer.parent().addClass('chat-message');
-
 
 			var messageAuthor = messageContainer.find('.username').text().trim();
 
@@ -355,8 +352,6 @@ $(() => {
 	
 			if(options.showImagesInline) {	
 	
-				var inlineImagePermitted = false;
-	
 				var lowestPermittedRoleRank = getUserRoleRank(options.lowestUserRoleLinks);
 	
 				var authorRoles = messageContainer
@@ -375,19 +370,18 @@ $(() => {
 					}
 				});
 
-				if(rolePermitted) {
-					if(options.inlineImgUsers != null && options.inlineImgUsers.length > 0) {
-						if(options.inlineUsersIsWhitelist) {
-							inlineImagePermitted = options.inlineImgUsers.includes(messageAuthor);
-						} else {
-							inlineImagePermitted = !options.inlineImgUsers.includes(messageAuthor);
-						}
-					} else {
-						inlineImagePermitted = true;
-					}
-				} 
+				var userPermitted = false;			
+				if(options.inlineImgPermittedUsers != null && options.inlineImgPermittedUsers.length > 0) {
+					userPermitted = options.inlineImgPermittedUsers.includes(messageAuthor);
+				}
+				
+				var userBlacklisted = false;
+				if(options.inlineImgBlacklistedUsers != null && options.inlineImgBlacklistedUsers.length > 0) {
+					userBlacklisted = options.inlineImgBlacklistedUsers.includes(messageAuthor);
+				}
 	
-				if(inlineImagePermitted) {
+				var shouldShowInlineImage = (rolePermitted || userPermitted) && !userBlacklisted;
+				if(shouldShowInlineImage) {
 					var links = messageContainer.find('a[target=\'_blank\']');
 					if(links.length > 0) {
 						links.each(function(l) {
@@ -401,13 +395,19 @@ $(() => {
 			
 								if((previousImage == null || previousImage.length < 1) 
 									&& (messageIsDeleted == null || messageIsDeleted.length < 1)) {
-									$(`<span _ngcontent-c69 style="display:block;">
-										<span style=" position: relative; display: inline-block">
+									$(`<span style="display:block;">
+										<span style="position: relative; display: inline-block">
 											<span class="hide-picture-btn">x</span>
-											<img _ngcontent-c69 src="${url}" style="max-width: 200px; max-height: 125px; object-fit:contain;" exlixr-img>
+											<img src="${url}" style="max-width: 200px; max-height: 125px; object-fit:contain;" 
+												onerror="this.onerror=null;this.src='${url.replace('https://', 'http://')}';"
+												elixr-img>
 										</span>									
 									</span>`).insertBefore(link.parent());
-	
+
+									// Note(ebiggz): The above "onerror" js code is a bandaid for a weird issue where an image sometimes wont load. 
+									// Switching from https to http seems to work, but I dont like this fix. There must be something else going on.
+									// Will need to investigate further.
+
 									//remove previously bound click events
 									$('.hide-picture-btn').off('click', '**');
 	
@@ -415,6 +415,7 @@ $(() => {
 									$('.hide-picture-btn').click(function() {
 										$(this).parent().parent().remove();
 									});
+
 								}
 							}
 						});
@@ -508,6 +509,8 @@ $(() => {
 	
 	function getUserRoleRank(role = '') {
 		switch(role) {
+		case '':
+			return -1;
 		case 'owner':
 			return 1;
 		case 'mod':

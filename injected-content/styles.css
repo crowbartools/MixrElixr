@@ -1,15 +1,25 @@
+/* Timestamps */
+.chat-message {
+    position: relative;
+}
 
 .timestamp{
     height:18px!important;
 }
 
-.elixrTime span{
+.elixrTime {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+.elixrTime span {
     line-height:1;
     display:block;
     margin: 1px 5px 0 13px;
     opacity: 0.25;
     font-size:11px;
 }
+
 
 /** Separated Chat Lines **/
 .separated-chat b-channel-chat-message{
@@ -63,23 +73,5 @@
 
 .hide-picture-btn:hover {
     opacity: 0.6;
-}
-
-.chat-message {
-    position: relative;
-}
-
-.elixrTime {
-    position: absolute;
-    top: 0;
-    right: 0;
-}
-
-.elixrTime span {
-    line-height: 1;
-    display: block;
-    margin: 1px 5px 0 13px;
-    opacity: 0.25;
-    font-size: 11px;
 }
 

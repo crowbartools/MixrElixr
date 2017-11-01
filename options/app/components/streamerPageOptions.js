@@ -29,11 +29,12 @@ Vue.component('streamer-page-options', {
 				</div>
 				<inline-img-toggle :value.sync="showImagesInline" @changed="saveSettings()"></inline-img-toggle>
 				<div v-show="showImagesInline" class="option-wrapper suboption">
-					<div style="padding-bottom: 5px;">Permitted User Roles for Inline Images</div>
+					<div style="padding-bottom: 5px;">Permitted User Roles<option-tooltip name="permUserRoles" title="See images from anyone in the selected role (and higher), unless the user is blacklisted below."></option-tooltip></div>
 					<b-form-select v-model="lowestUserRoleLinks" :options="userRoles" class="mb-3 option"></b-form-select>
-					<div style="padding-bottom: 5px;">User {{inlineUsersIsWhitelist ? 'Whitelist' : 'Blacklist'}} for Inline Images</div>
-					<edittable-list class="option" :value.sync="inlineImgUsers" :options="viewers" tag-placeholder="Press enter to add user" placeholder="Select or type to add" @changed="saveSettings()"></edittable-list>
-					<checkbox-toggle :value.sync="inlineUsersIsWhitelist" @changed="saveSettings()" label="Is Whitelist"></checkbox-toggle>
+					<div style="padding-bottom: 5px;">Trusted Users<option-tooltip name="permUsers" title="Images from these users will ALWAYS show, even if they aren't in a permitted role above."></div>
+					<edittable-list class="option" :value.sync="inlineImgPermittedUsers" :options="viewers" tag-placeholder="Press enter to add user" placeholder="Select or type to add" @changed="saveSettings()"></edittable-list>
+					<div style="padding-bottom: 5px;">Blacklisted Users<option-tooltip name="blacklistedUsers" title="Images from these users will NEVER show, even if they are in a permitted role above."></option-tooltip></div>
+					<edittable-list class="option" :value.sync="inlineImgBlacklistedUsers" :options="viewers" tag-placeholder="Press enter to add user" placeholder="Select or type to add" @changed="saveSettings()"></edittable-list>
 				</div>
 
 				<span class="setting-subcategory">Hosts</span>
@@ -180,6 +181,7 @@ Vue.component('streamer-page-options', {
 		var dataObj = {
 			selected: 'Global',
 			userRoles: [
+				{ value: '', text: 'None' },
 				{ value: 'owner', text: 'Streamer' },
 				{ value: 'mod', text: 'Mods (& above)' },
 				{ value: 'subscriber', text: 'Subscribers (& above)' },
