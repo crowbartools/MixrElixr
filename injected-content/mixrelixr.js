@@ -312,12 +312,47 @@ $(() => {
 				}
 			}
 
+			// Add class on keyword mention.
 			if(options.keywords.length > 0) {
 				options.keywords.forEach(w => {
 					if(messageText.includes(w.toLowerCase())) {
 						messageContainer.parent().addClass('keyword-mentioned');
 					}
 				});
+			}
+
+			// Timestamps on each message
+			if(options.timestampAllMessages){
+				$('.chat-message')
+					.filter(function() { return  $(this).find('[elixrfied="value"]').length === 0 && $(this).find('b-channel-chat-message').is(':visible');})
+					.each(function(index){
+						var prevDiv = $(this).prev();
+						var lastTimeStamp = $('.timestamp:not(.elixrTime):last');
+
+						// Only timestamp things after the last "real" timestamp.
+						// This prevents us from putting a timestamp on past messages in chat.
+						if( $(this).prevAll().filter(lastTimeStamp).length !== 0 && !prevDiv.hasClass('timestamp')  ){
+
+							var timeOptions = {hour12: true, hour: '2-digit', minute: '2-digit'};
+							var time = new Date().toLocaleString([], timeOptions);
+				
+							var timeStampTemplate = `
+								<div _ngcontent-c58="" class="timestamp elixrTime">
+									<div _ngcontent-c58="">
+										<span _ngcontent-c58="">${time}</span>
+									</div>
+								</div>
+							`;
+
+							// Throw in timestamp.
+							$(this).before(timeStampTemplate);
+
+							// Remove the weird timestamp that gets added to the bottom for some reason.
+							// We might be able to figure out a better way to do it. But, this also fixes issues after a message or two when chat is cleared.
+							$(this).nextAll('.timestamp').remove();
+
+						}
+					});
 			}
 
 	

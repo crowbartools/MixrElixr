@@ -17,6 +17,7 @@ Vue.component('streamer-page-options', {
 				<span class="setting-subcategory">Chat</span>
 				<checkbox-toggle :value.sync="separateChat" @changed="saveSettings()" label="Separate Chat Lines"></checkbox-toggle>
 				<checkbox-toggle :value.sync="alternateChatBGColor" @changed="saveSettings()" label="Alternate Chat BG Color"></checkbox-toggle>
+				<checkbox-toggle :value.sync="timestampAllMessages" @changed="saveSettings()" label="Timestamp All Messages"></checkbox-toggle>
 				<checkbox-toggle :value.sync="mentionChatBGColor" @changed="saveSettings()" label="Highlight When Mentioned" tooltip="Apply a special background behind messages where you are mentioned."></checkbox-toggle>
 				<div class="option-wrapper">
 					<div style="padding-bottom: 5px;">Highlight Keywords<option-tooltip name="highlightKeywords" title="Any messages containing these keywords will have a special background."></option-tooltip></div>

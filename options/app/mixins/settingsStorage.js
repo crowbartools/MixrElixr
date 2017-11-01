@@ -37,6 +37,7 @@ settingsStorage = {
 						separateChat: false,
 						alternateChatBGColor: false,
 						mentionChatBGColor: false,
+						timestampAllMessages: false,
 						showImagesInline: false,
 						lowestUserRoleLinks: 'mod',
 						inlineImgUsers: [],
