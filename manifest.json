@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "MixrElixr",
-    "description": "Options and tweaks to improve your Mixer viewing experience.",
+    "description": "Options and tweaks to improve your Mixer.com viewing experience.",
     "version": "1.1",
     "short_name": "Elixr",
     "browser_action": {
@@ -37,10 +37,11 @@
     "web_accessible_resources": [
         "images/*"
     ],
-    "options_page": "/options/index.html",
     "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
     "permissions": [
-        "storage"
+        "storage",
+        "cookies",
+        "*://mixer.com/*"
     ],
     "applications": {
         "gecko": {
