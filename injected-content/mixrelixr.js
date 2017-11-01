@@ -353,6 +353,14 @@ $(() => {
 
 						}
 					});
+
+				$('.timestamp')
+					.each(function(index){
+						var prevDiv = $(this).prev();
+						if(prevDiv.hasClass('timestamp')){
+							$(this).remove();
+						}
+					})
 			}
 
 	
