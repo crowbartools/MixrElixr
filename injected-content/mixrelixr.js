@@ -337,9 +337,10 @@ $(() => {
 			// Timestamps on each message
 			if(options.timestampAllMessages) {
 				var parent = messageContainer.parent();
+
+				// should we add a timestamp?
 				if(!parent.hasClass('no-timestamp') && !parent.prev().hasClass('timestamp')) {
 
-					// we should add a timestamp
 					var timeOptions = {hour12: true, hour: '2-digit', minute: '2-digit'};
 					var time = new Date().toLocaleString([], timeOptions);
 
