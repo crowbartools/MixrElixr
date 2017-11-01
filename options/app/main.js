@@ -6,7 +6,9 @@ new Vue({
 	data: {
 		activeTab: 'online',
 		friends: [],
-		friendsShown: []
+		friendsShown: [],
+		loadingMixerUser: true,
+		mixerUserFound: false
 	},
 	methods: {
 		updateActiveTab: function(tab) {
@@ -21,13 +23,12 @@ new Vue({
 				var app = this;
 				app.outputMixerFollows()
 					.then((res) => {
-						console.log(res);
-						this.friends = res;
-						this.updateIconBadge();
+						app.friends = res;
+						app.updateIconBadge();
 						resolve(true);
-					})
-					.catch((err) => {
-						app.friendsError(err);
+					}, (err) => {
+						console.log(err);
+						app.updateIconBadge();
 						reject(false);
 					});
 			});
@@ -56,7 +57,7 @@ new Vue({
 			}
 		},
 		updateIconBadge: function() {
-			var text = null;
+			var text = '';
 			var friends = this.friends;
 			if(friends != null) {
 				if(friends.length > 0) {
@@ -64,13 +65,28 @@ new Vue({
 				}
 			}
 			chrome.browserAction.setBadgeText({text: text});
+		},
+		findMixerId: function() {
+			return this.getMixerId();
 		}
 	},
 	mounted: function() {
+		var app = this;
 		// When Vue is ready
-		this.fetchFriends()
-			.then((res) =>{
-				this.friendPost();
+		app.getMixerId().then(
+			() => {
+				//id found
+				app.mixerUserFound = true;
+			},
+			() => {
+				//no current user
+				app.mixerUserFound = false;
 			});
+
+		app.fetchFriends()
+			.then(() =>{
+				app.friendPost();
+			}, () => {})
+			.then(() => { app.loadingMixerUser = false; });
 	}
 });

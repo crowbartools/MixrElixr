@@ -83,10 +83,6 @@ friendFetcher = {
 						reject(err);
 					});
 			});
-		},
-		friendsError: function(err){
-		// This runs when the user is not logged into mixer.
-			console.log(err);
 		}
 	}
 };

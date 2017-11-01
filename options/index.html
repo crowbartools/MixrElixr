@@ -9,7 +9,7 @@
 		<link rel="stylesheet" href="/options/options.css">		
   	</head>
   	<body>
-		<div id="app">
+		<div id="app" v-cloak>
 			<div class="page-wrapper">
 				<nav-bar @tab-changed="updateActiveTab" :online-count="friends.length"></nav-bar>
 				<div class="tabs-wrapper" v-on:scroll="friendScroller">
@@ -17,8 +17,14 @@
 						<div class="online-friends-wrap">
 							<online-friend	v-for="friend in friendsShown" v-bind:friend="friend"></online-friend>
 						</div>
-						<div class="online-friends-error" v-if="friends.length === 0">
+						<div v-if="!loadingMixerUser && !mixerUserFound">
 							To view your online friends go to <a href="https://mixer.com" target="_blank">Mixer.com</a> and log in.
+						</div>
+						<div class="muted" v-if="!loadingMixerUser && mixerUserFound && friends.length === 0">
+							No one is currently streaming.
+						</div>
+						<div class="muted" v-if="loadingMixerUser">
+							Loading online friends...
 						</div>
 					</div>
 					<div v-show="activeTab == 'options'" class="tab-content">
