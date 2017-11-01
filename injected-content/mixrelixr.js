@@ -331,13 +331,13 @@ $(() => {
 				var parent = messageContainer.parent();
 
 				//verify there isnt a native timestamp sometime after this message (if so, this is an older message)
-				var moreRecentTimestamps = parent.nextAll('.timestamp').length > 0;
+				var stampsAfterCurrentMsg = parent.nextAll('.timestamp').length > 0;
 
 				//check that the current message doesnt already have a native or custom timestamp
-				var alreadyHasStamp = parent.prev().hasClass('timestamp') || parent.find('.elixrTime').length > 0;
+				var msgAlreadyHasStamp = parent.prev().hasClass('timestamp') || parent.find('.elixrTime').length > 0;
 
 				// should we add a timestamp?
-				if(!moreRecentTimestamps && !alreadyHasStamp) {
+				if(!stampsAfterCurrentMsg && !msgAlreadyHasStamp) {
 
 					var timeOptions = {hour12: true, hour: '2-digit', minute: '2-digit'};
 					var time = new Date().toLocaleString([], timeOptions);
