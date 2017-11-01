@@ -263,6 +263,19 @@ $(() => {
 			var chatContainer = $('.message-container');
 			chatContainer.scrollTop(chatContainer[0].scrollHeight);
 		}
+
+		// remove all prev timestamps if feature is turned off
+		if(!options.timestampAllMessages) {
+			$('.elixrTime').remove();
+		}
+
+		// mark all current (historic) messages with a 'nostamp" tag so we know not to add a timestamp to them.
+		$('b-channel-chat-message').each(function() {
+			var parent = $(this).parent();
+			if(!parent.hasClass('no-timestamp')) {
+				parent.addClass('no-timestamp');
+			}		
+		});
 	
 		// get rid of any previous registered callbacks for chat messages
 		$.deinitialize('b-channel-chat-message');
@@ -322,45 +335,22 @@ $(() => {
 			}
 
 			// Timestamps on each message
-			if(options.timestampAllMessages){
-				$('.chat-message')
-					.filter(function() { return  $(this).find('[elixrfied="value"]').length === 0 && $(this).find('b-channel-chat-message').is(':visible');})
-					.each(function(index){
-						var prevDiv = $(this).prev();
-						var lastTimeStamp = $('.timestamp:not(.elixrTime):last');
+			if(options.timestampAllMessages) {
+				var parent = messageContainer.parent();
+				if(!parent.hasClass('no-timestamp') && !parent.prev().hasClass('timestamp')) {
 
-						// Only timestamp things after the last "real" timestamp.
-						// This prevents us from putting a timestamp on past messages in chat.
-						if( $(this).prevAll().filter(lastTimeStamp).length !== 0 && !prevDiv.hasClass('timestamp')  ){
+					// we should add a timestamp
+					var timeOptions = {hour12: true, hour: '2-digit', minute: '2-digit'};
+					var time = new Date().toLocaleString([], timeOptions);
 
-							var timeOptions = {hour12: true, hour: '2-digit', minute: '2-digit'};
-							var time = new Date().toLocaleString([], timeOptions);
-				
-							var timeStampTemplate = `
-								<div _ngcontent-c58="" class="timestamp elixrTime">
-									<div _ngcontent-c58="">
-										<span _ngcontent-c58="">${time}</span>
-									</div>
-								</div>
-							`;
+					var timeStampTemplate = `
+						<div class="elixrTime">
+								<span>${time}</span>
+						</div>
+					`;
 
-							// Throw in timestamp.
-							$(this).before(timeStampTemplate);
-
-							// Remove the weird timestamp that gets added to the bottom for some reason.
-							// We might be able to figure out a better way to do it. But, this also fixes issues after a message or two when chat is cleared.
-							$(this).nextAll('.timestamp').remove();
-
-						}
-					});
-
-				$('.timestamp')
-					.each(function(index){
-						var prevDiv = $(this).prev();
-						if(prevDiv.hasClass('timestamp')){
-							$(this).remove();
-						}
-					})
+					messageContainer.parent().append(timeStampTemplate);
+				}
 			}
 
 	
