@@ -349,7 +349,7 @@ $(() => {
 						</div>
 					`;
 
-					messageContainer.parent().append(timeStampTemplate);
+					parent.append(timeStampTemplate);
 				}
 			}
 
