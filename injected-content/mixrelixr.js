@@ -264,18 +264,10 @@ $(() => {
 			chatContainer.scrollTop(chatContainer[0].scrollHeight);
 		}
 
-		// remove all prev timestamps if feature is turned off
+		// remove all prev custom timestamps if feature is turned off
 		if(!options.timestampAllMessages) {
 			$('.elixrTime').remove();
 		}
-
-		// mark all current (historic) messages with a 'nostamp" tag so we know not to add a timestamp to them.
-		$('b-channel-chat-message').each(function() {
-			var parent = $(this).parent();
-			if(!parent.hasClass('no-timestamp')) {
-				parent.addClass('no-timestamp');
-			}		
-		});
 	
 		// get rid of any previous registered callbacks for chat messages
 		$.deinitialize('b-channel-chat-message');
@@ -338,8 +330,14 @@ $(() => {
 			if(options.timestampAllMessages) {
 				var parent = messageContainer.parent();
 
+				//verify there isnt a native timestamp sometime after this message (if so, this is an older message)
+				var moreRecentTimestamps = parent.nextAll('.timestamp').length > 0;
+
+				//check that the current message doesnt already have a native or custom timestamp
+				var alreadyHasStamp = parent.prev().hasClass('timestamp') || parent.find('.elixrTime').length > 0;
+
 				// should we add a timestamp?
-				if(!parent.hasClass('no-timestamp') && !parent.prev().hasClass('timestamp')) {
+				if(!moreRecentTimestamps && !alreadyHasStamp) {
 
 					var timeOptions = {hour12: true, hour: '2-digit', minute: '2-digit'};
 					var time = new Date().toLocaleString([], timeOptions);
