@@ -32,7 +32,7 @@ Vue.component('inline-img-toggle', {
 	props: ['value'],
 	data: function() {
 		return {
-			warningMsg: "Quick heads up: Malicious users could potentionally use image links to capture your IP address. This is no different than if you were to click a link and open it, but we just want to make sure you are aware before using inline images."
+			warningMsg: "Quick heads up: Malicious users could potentionally use inline images to capture your IP address. This is the same risk you take if you were to click a link and open it, but we just want to make sure you are aware before using inline images."
 		}
 	},
 	watch: {
