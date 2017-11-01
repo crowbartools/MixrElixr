@@ -65,6 +65,7 @@ new Vue({
 				}
 			}
 			chrome.browserAction.setBadgeText({text: text});
+			chrome.browserAction.setBadgeBackgroundColor({ color: "#18ABE9"})
 		},
 		findMixerId: function() {
 			return this.getMixerId();

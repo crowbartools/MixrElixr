@@ -97,6 +97,7 @@ var updateFriendCount = function() {
 			}
 		}
 		chrome.browserAction.setBadgeText({text: text});
+		chrome.browserAction.setBadgeBackgroundColor({ color: "#18ABE9"})
 	});
     
 };
