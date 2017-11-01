@@ -36,11 +36,17 @@ settingsStorage = {
 						autoCloseInteractive: false,
 						separateChat: false,
 						alternateChatBGColor: false,
-						showImageLinksInline: false,
+						mentionChatBGColor: false,
+						timestampAllMessages: false,
+						showImagesInline: false,
 						lowestUserRoleLinks: 'mod',
+						inlineImgPermittedUsers: [],
+						inlineImgBlacklistedUsers: [],
 						autoForwardOnHost: false,
 						autoMute: false,
-						autoMuteOnHost: false
+						autoMuteOnHost: false,
+						ignoredUsers: [],
+						keywords: []
 					},
 					overrides: {}
 				},

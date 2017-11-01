@@ -9,7 +9,7 @@ $(() => {
 	log('Starting MixerElixir...');
 
 	function waitForPageLoad() {
-		return new Promise((resolve, reject)=>{
+		return new Promise((resolve)=>{
 			function doPageCheck() {
 				var spinner = $('.initial-loading-overlay');
 				var spinnerExists = spinner != null && spinner.length > 0;
@@ -230,11 +230,41 @@ $(() => {
 				chatContainer.removeClass('chat-alternate-bg');
 			}
 		}
-	
-		if(!options.showImageLinksInline) {
-			$('img[exlixr-img]').each(function() { $(this).parent().parent().remove();  });
+
+		// Mention BG Color
+		if(options.mentionChatBGColor){
 			var chatContainer = $('.message-container');
-			chatContainer.scrollTop(chatContainer[0].scrollHeight);
+			if(chatContainer != null && chatContainer.length > 0) {
+				chatContainer.addClass('chat-mention-bg');
+			}
+		} else if(!options.mentionChatBGColor){
+			var chatContainer = $('.message-container');
+			if(chatContainer != null && chatContainer.length > 0) {
+				chatContainer.removeClass('chat-mention-bg');
+			}
+		}
+
+		// Keyword BG Color
+		if(options.keywords.length > 0){
+			var chatContainer = $('.message-container');
+			if(chatContainer != null && chatContainer.length > 0) {
+				chatContainer.addClass('chat-keyword-bg');
+			}
+		} else {
+			var chatContainer = $('.message-container');
+			if(chatContainer != null && chatContainer.length > 0) {
+				chatContainer.removeClass('chat-keyword-bg');
+			}
+		}
+	
+		// Remove prev Inline Image Links, they will be readded later if needed
+		$('img[elixr-img]').each(function() { $(this).parent().parent().remove();  });
+		var chatContainer = $('.message-container');
+		chatContainer.scrollTop(chatContainer[0].scrollHeight);
+
+		// remove all prev custom timestamps if feature is turned off
+		if(!options.timestampAllMessages) {
+			$('.elixrTime').remove();
 		}
 	
 		// get rid of any previous registered callbacks for chat messages
@@ -248,25 +278,79 @@ $(() => {
 			var alreadyChecked = messageContainer.attr('elixrfied');
 			// check to see if we have already looked at this chat messsage.
 			if(alreadyChecked == true) { return; }
-			
 			messageContainer.attr('elixrfied', 'true');
 	
-			// Give chat messages a chat message class.
+			// Give chat messages a chat message class for easier targeting.
 			messageContainer.parent().addClass('chat-message');
+
+			var messageAuthor = messageContainer.find('.username').text().trim();
+
+			if(options.ignoredUsers.includes(messageAuthor)) {
+				messageContainer.hide();
+			} else {
+				if(!messageContainer.is(':visible')) {
+					messageContainer.show();
+				}
+			}
 	
 			// Give every other chat message an alternate-bg class.
 			$('.chat-alternate-bg .chat-message')
-				.filter(function() { return  $(this).find('[elixrfied="value"]').length === 0; })
+				.filter(function() { return  $(this).find('[elixrfied="value"]').length === 0 && $(this).find('b-channel-chat-message').is(':visible');})
 				.each(function( index ){
 					if( !$(this).hasClass('alternate-bg') ){
 						$(this).nextAll('.chat-message:first').addClass('alternate-bg');
 					}
 				});
+
+			// Give any message with a mention of our user a class.
+			var messageText = messageContainer.find('.textComponent').text().toLowerCase().trim();
+			var userTagged = messageContainer.find('.user-tag').text().toLowerCase().trim();
+			if(cache.user != null) {
+				var userLowerCase = cache.user.username.toLowerCase();
+				
+				var userRegex = new RegExp(`\\b${escapeRegExp(userLowerCase)}\\b`, 'i');
+				if(userRegex.test(messageText) || userRegex.test(userTagged)) {
+					messageContainer.parent().addClass('user-mentioned');
+				}
+			}
+
+			// Add class on keyword mention.
+			if(options.keywords.length > 0) {
+				options.keywords.forEach(w => {
+					if(messageText.includes(w.toLowerCase())) {
+						messageContainer.parent().addClass('keyword-mentioned');
+					}
+				});
+			}
+
+			// Timestamps on each message
+			if(options.timestampAllMessages) {
+				var parent = messageContainer.parent();
+
+				//verify there isnt a native timestamp sometime after this message (if so, this is an older message)
+				var stampsAfterCurrentMsg = parent.nextAll('.timestamp').length > 0;
+
+				//check that the current message doesnt already have a native or custom timestamp
+				var msgAlreadyHasStamp = parent.prev().hasClass('timestamp') || parent.find('.elixrTime').length > 0;
+
+				// should we add a timestamp?
+				if(!stampsAfterCurrentMsg && !msgAlreadyHasStamp) {
+
+					var timeOptions = {hour12: true, hour: '2-digit', minute: '2-digit'};
+					var time = new Date().toLocaleString([], timeOptions);
+
+					var timeStampTemplate = `
+						<div class="elixrTime">
+								<span>${time}</span>
+						</div>
+					`;
+
+					parent.append(timeStampTemplate);
+				}
+			}
+
 	
-			if(options.showImageLinksInline) {
-	
-	
-				var inlineImagePermitted = false;
+			if(options.showImagesInline) {	
 	
 				var lowestPermittedRoleRank = getUserRoleRank(options.lowestUserRoleLinks);
 	
@@ -277,15 +361,27 @@ $(() => {
 					.map((c) => {
 						return c.replace('role-', '');
 					});
-	
+					
+				var rolePermitted = false;
 				authorRoles.forEach((r) => {
 					var roleRank = getUserRoleRank(r);
 					if(roleRank <= lowestPermittedRoleRank) {
-						inlineImagePermitted = true;
+						rolePermitted = true;
 					}
 				});
+
+				var userPermitted = false;			
+				if(options.inlineImgPermittedUsers != null && options.inlineImgPermittedUsers.length > 0) {
+					userPermitted = options.inlineImgPermittedUsers.includes(messageAuthor);
+				}
+				
+				var userBlacklisted = false;
+				if(options.inlineImgBlacklistedUsers != null && options.inlineImgBlacklistedUsers.length > 0) {
+					userBlacklisted = options.inlineImgBlacklistedUsers.includes(messageAuthor);
+				}
 	
-				if(inlineImagePermitted) {
+				var shouldShowInlineImage = (rolePermitted || userPermitted) && !userBlacklisted;
+				if(shouldShowInlineImage) {
 					var links = messageContainer.find('a[target=\'_blank\']');
 					if(links.length > 0) {
 						links.each(function(l) {
@@ -299,13 +395,19 @@ $(() => {
 			
 								if((previousImage == null || previousImage.length < 1) 
 									&& (messageIsDeleted == null || messageIsDeleted.length < 1)) {
-									$(`<span _ngcontent-c69 style="display:block;">
-										<span style=" position: relative; display: inline-block">
+									$(`<span style="display:block;">
+										<span style="position: relative; display: inline-block">
 											<span class="hide-picture-btn">x</span>
-											<img _ngcontent-c69 src="${url}" style="max-width: 200px; max-height: 125px; object-fit:contain;" exlixr-img>
+											<img src="${url}" style="max-width: 200px; max-height: 125px; object-fit:contain;" 
+												onerror="this.onerror=null;this.src='${url.replace('https://', 'http://')}';"
+												elixr-img>
 										</span>									
 									</span>`).insertBefore(link.parent());
-	
+
+									// Note(ebiggz): The above "onerror" js code is a bandaid for a weird issue where an image sometimes wont load. 
+									// Switching from https to http seems to work, but I dont like this fix. There must be something else going on.
+									// Will need to investigate further.
+
 									//remove previously bound click events
 									$('.hide-picture-btn').off('click', '**');
 	
@@ -313,6 +415,7 @@ $(() => {
 									$('.hide-picture-btn').click(function() {
 										$(this).parent().parent().remove();
 									});
+
 								}
 							}
 						});
@@ -395,6 +498,10 @@ $(() => {
 	}
 	
 	/* Helpers */
+
+	function escapeRegExp(string) {
+		return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+	}
 	
 	function log(message) {
 		console.log(`[ME: ${message}]`);
@@ -402,6 +509,8 @@ $(() => {
 	
 	function getUserRoleRank(role = '') {
 		switch(role) {
+		case '':
+			return -1;
 		case 'owner':
 			return 1;
 		case 'mod':
@@ -424,7 +533,7 @@ $(() => {
 		//moving on now
 		var parts = uri.split('.');
 		var extension = parts[parts.length-1];
-		var imageTypes = ['jpg','jpeg','tiff','png','gif','bmp'];
+		var imageTypes = ['jpg','jpeg','tiff','png','gif','bmp', 'webp'];
 		if(imageTypes.indexOf(extension) !== -1) {
 			return true;   
 		}
@@ -453,6 +562,25 @@ $(() => {
 			request.send();
 		});
 	}
+
+	// Get user info
+	// This gets user info of current logged in person
+	function loadUserInfo(){
+		return new Promise((resolve) => {
+			$.get('https://mixer.com/api/v1/users/current')
+				.done((data) => {
+					log('Got user settings');
+					cache.user = data;
+					resolve(data);
+				})
+				.fail(() => {
+				// We reached our target server, but it returned an error
+					log('No user logged in.');
+					cache.user = null;
+					resolve(null);
+				});
+		});
+	}
 	
 	waitForPageLoad().then(() => {
 
@@ -463,10 +591,14 @@ $(() => {
 			runPageLogic();
 		});
 
-		loadSettings().then(() => {
+		var userInfoLoad = loadUserInfo();
+		var settingsLoad = loadSettings();
+
+		//wait for both user info and settings to load.
+		Promise.all([userInfoLoad, settingsLoad]).then(() => {
 			// run page logic for the first load
 			runPageLogic();
-
+			
 			// then let the url watcher trigger it from then on
 			runUrlWatcher();
 		});
@@ -480,8 +612,6 @@ $(() => {
 			});
 		} 
 		else if(request.query === 'currentStreamerName'){
-			console.log('got request for current streamer');
-			console.log(cache.currentPage);
 			if(cache.currentPage === 'streamer') {
 				console.log(cache.currentStreamerName);
 				sendResponse( { streamerName: cache.currentStreamerName });

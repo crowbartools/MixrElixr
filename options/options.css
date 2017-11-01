@@ -66,7 +66,6 @@ body {
 
 .muted {
     opacity: 0.6;
-    font-size: 12px;
 }
 .clickable {
     cursor: pointer;
@@ -311,7 +310,7 @@ input:checked + .slider:before {
     font-weight: 500;
     text-transform: uppercase;
     padding-bottom: 10px;
-    padding-top: 5px;
+    padding-top: 10px;
     opacity: 0.7;
 }
 
@@ -359,7 +358,7 @@ input:checked + .slider:before {
 }
 
 .teammember {
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 100;
     padding: 5px;
 }
@@ -374,5 +373,51 @@ input:checked + .slider:before {
     color: white;
     cursor: pointer;
     text-decoration: none;
+}
+
+a.light-blue-link {
+    color: #96bfff;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.multiselect__tag, .multiselect__option--highlight,.multiselect__option--highlight::after {
+    background: #1fbaed;
+}
+
+.multiselect__tag-icon:focus, .multiselect__tag-icon:hover {
+    background: #1c9ac0;
+}
+
+.e-tooltip {
+    font-size: 13px;
+    opacity: 0.7;
+    margin-left: 5px;
+}
+
+.e-tooltip:hover {
+    opacity: 1;
+}
+
+.fa-exclamation-circle.e-tooltip, .e-tooltip.fa-exclamation-circle{
+    color:#ec3f3f;
+}
+
+.option {
+    margin-bottom: .6rem
+}
+
+.option-wrapper {
+    width: 75%;
+}
+
+.option-wrapper.suboption {
+    padding-left: 25px;
+    margin-left: 10px;
+    border-left: rgba(107, 107, 107, 0.3) solid 2px;
+}
+
+[v-cloak] {
+    display: none;
 }
   

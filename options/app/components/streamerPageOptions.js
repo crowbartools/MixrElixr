@@ -17,15 +17,28 @@ Vue.component('streamer-page-options', {
 				<span class="setting-subcategory">Chat</span>
 				<checkbox-toggle :value.sync="separateChat" @changed="saveSettings()" label="Separate Chat Lines"></checkbox-toggle>
 				<checkbox-toggle :value.sync="alternateChatBGColor" @changed="saveSettings()" label="Alternate Chat BG Color"></checkbox-toggle>
-				<checkbox-toggle :value.sync="showImageLinksInline" @changed="saveSettings()" label="Show Image Links Inline"></checkbox-toggle>
-				<div v-if="showImageLinksInline" style="width: 65%">
-					<div style="padding-bottom: 5px;">Permitted User Roles for Inline Images</div>
-					<b-form-select v-model="lowestUserRoleLinks" :options="userRoles" class="mb-3"></b-form-select>
+				<checkbox-toggle :value.sync="timestampAllMessages" @changed="saveSettings()" label="Timestamp All Messages" tooltip="Please note that timestamps will only be added to new messages as there is no way for us to tell when previous messages were sent."></checkbox-toggle>
+				<checkbox-toggle :value.sync="mentionChatBGColor" @changed="saveSettings()" label="Highlight When Mentioned" tooltip="Apply a special background behind messages when you are mentioned."></checkbox-toggle>
+				<div class="option-wrapper">
+					<div style="padding-bottom: 5px;">Highlight Keywords<option-tooltip name="highlightKeywords" title="Any messages containing these keywords will have a special background."></option-tooltip></div>
+					<edittable-list class="option" :value.sync="keywords" :options="[]" tag-placeholder="Press enter to add keyword" placeholder="Type to add keyword" @changed="saveSettings()"></edittable-list>
 				</div>
-				
+				<div class="option-wrapper" style="margin-bottom: 20px;">
+					<div style="padding-bottom: 5px;">Ignored Users<option-tooltip name="ignoredUsers" title="You will not see messages from users listed here."></option-tooltip></div>
+					<edittable-list class="option" :value.sync="ignoredUsers" :options="viewers" tag-placeholder="Press enter to add user" placeholder="Select or type to add" @changed="saveSettings()"></edittable-list>
+				</div>
+				<inline-img-toggle :value.sync="showImagesInline" @changed="saveSettings()"></inline-img-toggle>
+				<div v-show="showImagesInline" class="option-wrapper suboption">
+					<div style="padding-bottom: 5px;">Permitted User Roles<option-tooltip name="permUserRoles" title="See images from anyone in the selected role (and higher), unless the user is blacklisted below."></option-tooltip></div>
+					<b-form-select v-model="lowestUserRoleLinks" :options="userRoles" class="mb-3 option"></b-form-select>
+					<div style="padding-bottom: 5px;">Trusted Users<option-tooltip name="permUsers" title="Images from these users will ALWAYS show, even if they aren't in a permitted role above."></div>
+					<edittable-list class="option" :value.sync="inlineImgPermittedUsers" :options="viewers" tag-placeholder="Press enter to add user" placeholder="Select or type to add" @changed="saveSettings()"></edittable-list>
+					<div style="padding-bottom: 5px;">Blacklisted Users<option-tooltip name="blacklistedUsers" title="Images from these users will NEVER show, even if they are in a permitted role above."></option-tooltip></div>
+					<edittable-list class="option" :value.sync="inlineImgBlacklistedUsers" :options="viewers" tag-placeholder="Press enter to add user" placeholder="Select or type to add" @changed="saveSettings()"></edittable-list>
+				</div>
 
 				<span class="setting-subcategory">Hosts</span>
-				<checkbox-toggle :value.sync="autoForwardOnHost" @changed="saveSettings()" label="Auto Forward on Host"></checkbox-toggle>
+				<checkbox-toggle :value.sync="autoForwardOnHost" @changed="saveSettings()" label="Redirect on Host" tooltip="If the channel you are viewing hosts someone else, this will automatically redirect you to the hosted channel."></checkbox-toggle>
 				<checkbox-toggle :value.sync="autoMuteOnHost" @changed="saveSettings()" label="Auto Mute Stream on Host"></checkbox-toggle>
 			</div>
         </div>
@@ -86,6 +99,7 @@ Vue.component('streamer-page-options', {
 			} else {
 				this.overrides[this.selected] = model;
 			}
+			
 			this.saveStreamerPageOptions({
 				global: this.global,
 				overrides: this.overrides
@@ -114,6 +128,15 @@ Vue.component('streamer-page-options', {
 		},
 		setModel: function(options) {
 			var app = this;
+			var g = app.global;
+
+			//copy over any settings from global that dont exist yet in this override (this happens when new settings are added);
+			Object.keys(g).forEach((k) => {
+				if(options[k] == null) {
+					options[k] = JSON.parse(JSON.stringify(g[k]));
+				}
+			});
+
 			Object.keys(options).forEach((k) => {
 				app[k] = options[k];
 			});
@@ -129,6 +152,23 @@ Vue.component('streamer-page-options', {
 			});
 
 			return builtModel;
+		},
+		getViewersForCurrentChannel: function() {
+			var app = this;
+			app.getCurrentStreamerNameInOpenTab().then((name) => {
+				if(name == null) return;
+				app.$http.get(`https://mixer.com/api/v1/channels/${encodeURIComponent(name)}?fields=id`, {responseType: 'json'})
+					.then((response) => {
+						if(!response.ok) return;
+
+						var id = response.body.id;
+						app.$http.get(`https://mixer.com/api/v1/chats/${id}/users?fields=userName`, {responseType: 'json'})
+							.then((response) => {
+								if(!response.ok) return;
+								app.viewers = response.body.map(v => v.userName);
+							});					
+					});
+			});
 		}
 	},
 	watch: {
@@ -141,13 +181,15 @@ Vue.component('streamer-page-options', {
 		var dataObj = {
 			selected: 'Global',
 			userRoles: [
+				{ value: '', text: 'None' },
 				{ value: 'owner', text: 'Streamer' },
 				{ value: 'mod', text: 'Mods (& above)' },
 				{ value: 'subscriber', text: 'Subscribers (& above)' },
 				{ value: 'pro', text: 'Pro (& above)' },
 				{ value: 'all', text: 'All' }
 			],
-			overrideNames: []
+			overrideNames: [],
+			viewers: []
 		};
 
 		var defaults = this.getDefaultOptions().streamerPageOptions;
@@ -170,5 +212,7 @@ Vue.component('streamer-page-options', {
 				this.overrideSelected(name);
 			}
 		});
+
+		this.getViewersForCurrentChannel();
 	}
 });
