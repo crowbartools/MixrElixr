@@ -317,7 +317,7 @@ $(() => {
 			// Add class on keyword mention.
 			if(options.keywords.length > 0) {
 				options.keywords.forEach(w => {
-					if(messageText.includes(w.toLowerCase())) {
+					if(messageText.split(" ").includes(w.toLowerCase())) {
 						messageContainer.parent().addClass('keyword-mentioned');
 					}
 				});
