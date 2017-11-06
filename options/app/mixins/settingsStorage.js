@@ -7,16 +7,19 @@ settingsStorage = {
 			
 				chrome.storage.sync.get({
 					'streamerPageOptions': defaults.streamerPageOptions,
-					'homePageOptions': defaults.homePageOptions
+					'homePageOptions': defaults.homePageOptions,
+					'generalOptions': defaults.generalOptions
 				}, function(data) {
 					resolve(data);
 				});
 			});
 		},
-		saveAllSettings: function(settings) {
+		saveAllSettings: function(settings, emitEvent = true) {
 			var app = this;
 			chrome.storage.sync.set(settings, () => {
-				app.emitSettingUpdatedEvent();
+				if(emitEvent) {
+					app.emitSettingUpdatedEvent();
+				}				
 			});
 		},
 		saveStreamerPageOptions: function(options) {
@@ -28,6 +31,11 @@ settingsStorage = {
 			this.saveAllSettings({
 				'homePageOptions': options
 			});
+		},
+		saveGeneralOptions: function(options) {
+			this.saveAllSettings({
+				'generalOptions': options
+			}, false);
 		},
 		getDefaultOptions: function() {
 			return {
@@ -53,6 +61,10 @@ settingsStorage = {
 				homePageOptions: {
 					removeFeatured: false,
 					autoMute: false
+				},
+				generalOptions: {
+					showBadge: true,
+					favoriteFriends: []
 				}
 			};
 		},

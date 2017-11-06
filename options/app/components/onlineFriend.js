@@ -8,7 +8,12 @@ Vue.component('online-friend', {
                         <video autoplay="true" loop="true" @canplay="if(hover) { videoReady = true }" v-if="hover === true" v-show="videoReady === true" v-bind:src="channelVidUrl">                   
                         </video>
                         <div class="friend-header">
-                            <span class="friendName">{{friend.token}}</span>
+							<span class="friendName">{{friend.token}} 
+								<span class="favorite-btn">
+									<i :id="friend.token" class="fa" :class="favorite ? 'fa-star' : 'fa-star-o'" aria-hidden="true" @click="addOrRemoveFavorite($event)"></i>
+									<b-tooltip :target="friend.token" :title="favorite ? 'Remove Favorite' : 'Favorite'" no-fade="true"></b-tooltip>
+								</span>
+							</span>
                             <span class="friendViewers"><i class="fa fa-eye" aria-hidden="true"></i>{{friend.viewersCurrent}}</span>
 						</div>
 						<div class="friend-icons">
@@ -24,7 +29,7 @@ Vue.component('online-friend', {
             </div>
         </div>
 	`,
-	props: ['friend'],
+	props: ['friend', 'favorite'],
 	data: function() {
 		return {
 			hover: false,
@@ -46,6 +51,16 @@ Vue.component('online-friend', {
 		},
 		channelGame: function(){
 			return `${this.friend.type.name}`;
+		}
+	},
+	methods: {
+		addOrRemoveFavorite: function(event) {
+			if(event) event.preventDefault();
+			if(this.favorite) {
+				this.$emit('remove-favorite', this.friend.id)
+			} else {
+				this.$emit('add-favorite', this.friend.id)
+			}
 		}
 	}
 });

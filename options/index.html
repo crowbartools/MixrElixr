@@ -11,25 +11,15 @@
   	<body>
 		<div id="app" v-cloak>
 			<div class="page-wrapper">
-				<nav-bar @tab-changed="updateActiveTab" :online-count="friends.length"></nav-bar>
-				<div class="tabs-wrapper" v-on:scroll="friendScroller">
+				<nav-bar @tab-changed="updateActiveTab"></nav-bar>
+				<div class="tabs-wrapper" @scroll="addMoreFriendsCheck">
 					<div v-show="activeTab == 'online'" id="onlineFriends" class="tab-content">
-						<div class="online-friends-wrap">
-							<online-friend	v-for="friend in friendsShown" v-bind:friend="friend"></online-friend>
-						</div>
-						<div v-if="!loadingMixerUser && !mixerUserFound">
-							To view your online friends go to <a href="https://mixer.com" target="_blank">Mixer.com</a> and log in.
-						</div>
-						<div class="muted" v-if="!loadingMixerUser && mixerUserFound && friends.length === 0">
-							No one is currently streaming.
-						</div>
-						<div class="muted" v-if="loadingMixerUser">
-							Loading online friends...
-						</div>
+						<online-friends-list></online-friends-list>
 					</div>
 					<div v-show="activeTab == 'options'" class="tab-content">
 						<streamer-page-options></streamer-page-options>			
 						<home-page-options></home-page-options>
+						<general-options></general-options>
 						<div style="text-align: center">
 							<made-with-love></made-with-love>
 						</div>
@@ -52,9 +42,11 @@
 		<script src="/options/app/components/homePageOptions.js"></script>
 		<script src="/options/app/components/madeWithLove.js"></script>
 		<script src="/options/app/components/navBar.js"></script>
+		<script src="/options/app/components/onlineFriendsList.js"></script>
 		<script src="/options/app/components/onlineFriend.js"></script>
 		<script src="/options/app/components/streamerOverrideDropdown.js"></script>
 		<script src="/options/app/components/streamerPageOptions.js"></script>
+		<script src="/options/app/components/generalOptions.js"></script>
 		<script src="/options/app/main.js"></script>
 	</body>
 </html>

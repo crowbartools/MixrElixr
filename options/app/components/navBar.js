@@ -7,10 +7,10 @@ Vue.component('nav-bar', {
 			<div class="collapse navbar-collapse" id="navbarNav">
 				<ul class="navbar-nav mr-auto">
 					<li class="nav-item" class="clickable" :class="{active: onlineActive}" @click="changeTab('online')">
-						<a class="nav-link">Who's Online <span class="badge badge-light" v-if="onlineCount > 0">{{onlineCount}}</span></a>
+						<a class="nav-link">Who's Online</a>
 					</li>
 					<li class="nav-item" class="clickable" :class="{active: optionsActive}" @click="changeTab('options')">
-						<a class="nav-link">Options</a>
+						<a class="nav-link"><i class="fa fa-cog" aria-hidden="true"></i> Options</a>
 					</li>
 				</ul>
 				<ul class="navbar-nav flex-row">

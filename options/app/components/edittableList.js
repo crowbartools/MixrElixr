@@ -2,23 +2,33 @@ Vue.component('edittable-list', {
 	template: `
 		<div>
 			<multiselect v-model="value" 
-						 :tag-placeholder="tagPlaceholder" 
-						 :placeholder="placeholder"
-						 :options="options" 
-						 :multiple="true" 
-						 :taggable="true"
-						 @tag="addEntry"
-						 @select="addEntry"
-						 @remove="modelUpdated"
-						 :block-keys="['Delete']"></multiselect>
+				:tag-placeholder="tagPlaceholder" 
+				:placeholder="placeholder"
+				:options="options" 
+				:multiple="true" 
+				:taggable="isEdittable"
+				:close-on-select="shouldAutoClose"
+				@tag="addEntry"
+				@select="addEntry"
+				@remove="modelUpdated"
+				:options-limit="100"
+				:block-keys="['Delete']"></multiselect>
 		</div>
 	`,
-	props: ['value', 'options', 'tagPlaceholder', 'placeholder'],
+	props: ['value', 'options', 'tagPlaceholder', 'placeholder', 'edittable', 'autoClose'],
 	data: function() {
 		return {
 			viewers: [],
 			blockedKeys: ['Delete']
 		};
+	},
+	computed: {
+		isEdittable: function() {
+			return this.edittable == null ? true : this.edittable;
+		},
+		shouldAutoClose: function() {
+			return this.autoClose == null ? false : this.autoClose;
+		}
 	},
 	methods: {
 		addEntry: function(entry) {
