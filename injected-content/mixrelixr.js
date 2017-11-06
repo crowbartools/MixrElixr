@@ -317,7 +317,8 @@ $(() => {
 			// Add class on keyword mention.
 			if(options.keywords.length > 0) {
 				options.keywords.forEach(w => {
-					if(messageText.split(" ").includes(w.toLowerCase())) {
+					var keywordRegex = new RegExp(`\\b${escapeRegExp(w)}\\b`, 'i');
+					if(keywordRegex.test(messageText)) {
 						messageContainer.parent().addClass('keyword-mentioned');
 					}
 				});
