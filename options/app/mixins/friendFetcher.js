@@ -58,7 +58,7 @@ friendFetcher = {
 
 						if(data.length >= pageSize) {
 							app.getMixerFollows(userId, page+1, followList, onlyOnline).then((f) => {
-								resolve(f)
+								resolve(f);
 							});
 						} else {
 							// If we hit 50 friends, cycle again because we've run out of friends on this api call.

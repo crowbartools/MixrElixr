@@ -10,7 +10,7 @@ Vue.component('edittable-list', {
 				:close-on-select="shouldAutoClose"
 				@tag="addEntry"
 				@select="addEntry"
-				@remove="modelUpdated"
+				@remove="removeEntry"
 				:options-limit="100"
 				:block-keys="['Delete']"></multiselect>
 		</div>
@@ -35,10 +35,11 @@ Vue.component('edittable-list', {
 			if(this.value.includes(entry)) return;
 			this.value.push(entry);
 			this.modelUpdated();
+			this.$emit('add-entry', entry);
 		},
 		removeEntry: function(entry) {
-			this.value = this.value.filter(e => e != entry);
 			this.modelUpdated();
+			this.$emit('remove-entry', entry);
 		},
 		modelUpdated: function() {
 			this.$emit('update:value', this.value);

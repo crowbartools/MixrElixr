@@ -9,9 +9,9 @@ Vue.component('online-friend', {
                         </video>
                         <div class="friend-header">
 							<span class="friendName">{{friend.token}} 
-								<span class="favorite-btn">
-									<i :id="friend.token" class="fa" :class="favorite ? 'fa-star' : 'fa-star-o'" aria-hidden="true" @click="addOrRemoveFavorite($event)"></i>
-									<b-tooltip :target="friend.token" :title="favorite ? 'Remove Favorite' : 'Favorite'" no-fade="true"></b-tooltip>
+								<span class="favorite-btn" @click="addOrRemoveFavorite($event)">
+									<i :id="friend.token" class="fa" :class="favorite ? 'fa-star' : 'fa-star-o'" aria-hidden="true"></i>
+									<b-tooltip :target="friend.token" :title="favorite ? 'Remove Favorite' : 'Add Favorite'" no-fade="true"></b-tooltip>
 								</span>
 							</span>
                             <span class="friendViewers"><i class="fa fa-eye" aria-hidden="true"></i>{{friend.viewersCurrent}}</span>
@@ -57,9 +57,9 @@ Vue.component('online-friend', {
 		addOrRemoveFavorite: function(event) {
 			if(event) event.preventDefault();
 			if(this.favorite) {
-				this.$emit('remove-favorite', this.friend.id)
+				this.$emit('remove-favorite', this.friend.token);
 			} else {
-				this.$emit('add-favorite', this.friend.id)
+				this.$emit('add-favorite', this.friend.token);
 			}
 		}
 	}

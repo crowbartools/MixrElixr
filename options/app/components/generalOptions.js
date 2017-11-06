@@ -6,8 +6,9 @@ Vue.component('general-options', {
 			</div>
 			<div class="settings-section-settings" style="padding-bottom: 0;">
 			<div class="option-wrapper">
-				<div style="padding-bottom: 5px;">Favorite Streamers<option-tooltip name="favorite" title="Any streamers listed here will show up in the favorites list. If a favorite is online, the icon badge will be green instead of blue."></option-tooltip></div>
-				<edittable-list class="option" :value.sync="favoriteFriends" :options="followingList" tag-placeholder="" placeholder="Select a streamer" @changed="favoritesChanged()" :auto-close="true"></edittable-list>
+				<checkbox-toggle :value.sync="showBadge" @changed="showBadgeChanged()" label="Currently Online Count Badge" tooltip="Whether or not you want the number of currently streaming friends displaying as a badge on the Elixr icon."></checkbox-toggle>
+				<div style="padding-bottom: 5px;">Favorite Streamers<option-tooltip name="favorite" title="Any streamers listed here will show up in the favorites list. If any favorite is streaming, the icon badge will be green instead of blue."></option-tooltip></div>
+				<edittable-list class="option" :value.sync="favoriteFriends" :options="followingList" tag-placeholder="" placeholder="Search for or select a streamer" @changed="saveSettings()" @add-entry="favoriteAdded" @remove-entry="favoriteRemoved" :auto-close="true"></edittable-list>
 			</div>
 			</div>
 		</div>
@@ -30,9 +31,15 @@ Vue.component('general-options', {
 		return dataObj;
 	},
 	methods: {
-		favoritesChanged: function() {
+		showBadgeChanged: function() {
+			bus.$emit('badge-change', this.showBadge);
 			this.saveSettings();
-			bus.$emit('favorites-updated');
+		},
+		favoriteAdded: function(name) {
+			bus.$emit('add-favorite', name);
+		},
+		favoriteRemoved: function(name) {
+			bus.$emit('remove-favorite', name);
 		},
 		saveSettings: function() {
 			var model = this.getModel();
@@ -65,9 +72,14 @@ Vue.component('general-options', {
 	},
 	mounted: function() {
 		var app = this;
+
 		app.loadSettings();
 		app.outputMixerFollows(false).then((followList) => {
 			app.followingList = followList.map(u => u.token);
-		})
+		});
+
+		bus.$on('favorites-updated', function(favList) {
+			app.favoriteFriends = favList;
+		});
 	}
 });

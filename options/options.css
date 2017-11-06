@@ -424,7 +424,7 @@ a.light-blue-link {
 }
 
 .favorite-btn:hover {
-    color: lightgreen;
+    color: #0faf27;
     transition: 0.2s;
 }
 
@@ -432,6 +432,12 @@ a.light-blue-link {
     margin-left: 4.5px;
     margin-bottom: 4.5px;
 }
+
+.online-list-message {
+    margin-left: 4.5px;
+    font-size: 15px;
+}
+
 
 [v-cloak] {
     display: none;
