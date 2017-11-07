@@ -193,9 +193,9 @@ $(() => {
 
 		// Apply Theater Mode
 		if(options.theaterMode){
-			$('b-host-bar, header, .back-to-browse, .profile-header, .profile-blocks, .user, b-notifications[_nghost-c8], .interactive-controls.active[_ngcontent-c32]').addClass('theaterMode');
+			$('b-host-bar, header, .back-to-browse, .profile-header, .profile-blocks, .user, b-notifications, .interactive-controls.active').addClass('theaterMode');
 		}else{
-			$('b-host-bar, header, .back-to-browse, .profile-header, .profile-blocks, .user, b-notifications[_nghost-c8], .interactive-controls.active[_ngcontent-c32]').removeClass('theaterMode');
+			$('b-host-bar, header, .back-to-browse, .profile-header, .profile-blocks, .user, b-notifications, .interactive-controls.active').removeClass('theaterMode');
 		}
 	
 		applyChatSettings(streamerName);
