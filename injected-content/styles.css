@@ -76,10 +76,6 @@
 }
 
 /*Theater Mode*/
-.channel-page > section .theaterMode {
-    display: none!important;
-}
-
 .channel-page > header.theaterMode {
     display: none!important;
 }
