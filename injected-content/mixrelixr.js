@@ -194,13 +194,17 @@ $(() => {
 		//add theater mode btn
 		if($('[theater-mode-btn-container]').length < 1) {
 
-			//copy the fullscreen button and make it into the theater btn
+			//copy the fullscreen button so we can make it into the theater btn
 			var theaterBtn = $('.toolbar').children().last().clone();
 
+			//add an attr for us to check for it later
 			theaterBtn.attr('theater-mode-btn-container', '');
+			theaterBtn.attr('title', 'Theater Mode');
 
+			//change the icon
 			theaterBtn.find('span.set-material').text('event_seat');
 
+			//add click handler
 			theaterBtn.on('click', function() {
 				toggleTheaterMode();
 			});
@@ -211,7 +215,8 @@ $(() => {
 	}
 
 	function toggleTheaterMode() {
-		var theaterElements = $('header,.back-to-browse,.profile-header,.profile-blocks,.user,b-notifications,.channel-page,aside');
+		var theaterElements = 
+			$('header,.back-to-browse,.profile-header,.profile-blocks,.user,b-notifications,.channel-page,aside');
 		if(theaterElements.hasClass('theaterMode')) {
 			theaterElements.removeClass('theaterMode');
 		} else {
