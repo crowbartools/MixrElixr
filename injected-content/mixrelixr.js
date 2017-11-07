@@ -191,14 +191,32 @@ $(() => {
 			}
 		}
 
-		// Apply Theater Mode
-		if(options.theaterMode){
-			$('header,.back-to-browse,.profile-header,.profile-blocks,.user,b-notifications').addClass('theaterMode');
-		}else{
-			$('header,.back-to-browse,.profile-header,.profile-blocks,.user,b-notifications').removeClass('theaterMode');
+		//add theater mode btn
+		if($('[theater-mode-btn-container]').length < 1) {
+
+			//copy the fullscreen button and make it into the theater btn
+			var theaterBtn = $('.toolbar').children().last().clone();
+
+			theaterBtn.attr('theater-mode-btn-container', '');
+
+			theaterBtn.find('span.set-material').text('event_seat');
+
+			theaterBtn.on('click', function() {
+				toggleTheaterMode();
+			});
+			theaterBtn.insertBefore($('.toolbar').children().last());
 		}
 	
 		applyChatSettings(streamerName);
+	}
+
+	function toggleTheaterMode() {
+		var theaterElements = $('header,.back-to-browse,.profile-header,.profile-blocks,.user,b-notifications,.channel-page,aside');
+		if(theaterElements.hasClass('theaterMode')) {
+			theaterElements.removeClass('theaterMode');
+		} else {
+			theaterElements.addClass('theaterMode');
+		}
 	}
 	
 	function applyChatSettings(streamerName) {

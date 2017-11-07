@@ -76,26 +76,36 @@
 }
 
 /*Theater Mode*/
-.channel-page > header.theaterMode {
-    display: none!important;
+.channel-page > header,
+.back-to-browse,
+.profile-header,
+.profile-blocks,
+.user,
+.channel-page,
+.channel-page > aside,
+b-notifications {
+    transition: 0.5s;
 }
 
-.back-to-browse.theaterMode {
-    display: none!important;
-}
-
-.profile-header.theaterMode {
-    display: none!important;
-}
-
-.profile-blocks.theaterMode {
-    display: none!important;
-}
-
-.user.theaterMode {
-    display: none!important;
-}
-
+.channel-page > header.theaterMode,
+.back-to-browse.theaterMode,
+.user.theaterMode,
 b-notifications.theaterMode {
-    display: none!important;
+    opacity: 0!important;
+    transition: 0.5s
 }
+
+.profile-header.theaterMode,
+.profile-blocks.theaterMode {
+    display:none!important;
+}
+
+.channel-page.theaterMode,
+.channel-page > aside.theaterMode {
+    background: #040a19!important;
+}
+
+.channel-page > aside.theaterMode {
+    padding-top: 0px!important;
+}
+/* End Theater Mode */
