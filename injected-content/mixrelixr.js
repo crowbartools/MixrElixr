@@ -190,6 +190,13 @@ $(() => {
 				$('light-volume-control button').click();
 			}
 		}
+
+		// Apply Theater Mode
+		if(options.theaterMode){
+			$('b-host-bar, header, .back-to-browse, .profile-header, .profile-blocks, .user, b-notifications[_nghost-c8], .interactive-controls.active[_ngcontent-c32]').addClass('theaterMode');
+		}else{
+			$('b-host-bar, header, .back-to-browse, .profile-header, .profile-blocks, .user, b-notifications[_nghost-c8], .interactive-controls.active[_ngcontent-c32]').removeClass('theaterMode');
+		}
 	
 		applyChatSettings(streamerName);
 	}

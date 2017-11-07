@@ -1,0 +1,31 @@
+.channel-page[_ngcontent-c29] > section[_ngcontent-c29] .theaterMode[_ngcontent-c29] {
+    display: none;
+}
+
+.channel-page[_ngcontent-c29] > header.theaterMode[_ngcontent-c29] {
+    display: none;
+}
+
+.back-to-browse.theaterMode[_ngcontent-c29] {
+    display: none;
+}
+
+.profile-header.theaterMode[_ngcontent-c29] {
+    display: none;
+}
+
+.profile-blocks.theaterMode[_ngcontent-c29] {
+    display: none;
+}
+
+.user.theaterMode[_ngcontent-c9] {
+    display: none;
+}
+
+b-notifications[_nghost-c8].theaterMode {
+    display: none;
+}
+
+.interactive-controls.active[_ngcontent-c32].theatermode{
+    display: none;
+}
