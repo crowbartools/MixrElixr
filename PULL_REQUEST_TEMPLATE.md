@@ -1,6 +1,6 @@
-### Requirements
+#### Requirements
 
-* Filling out the template is required. Any pull request that does not include enough information to be reviewed in a timely manner may be closed at the maintainers' discretion.
+* Filling out the below template is required. Any pull request that does not include enough information to be reviewed in a timely manner may be closed at the maintainers' discretion.
 
 ### Description of the Change
 
@@ -25,3 +25,10 @@ We must be able to understand the design of your change from this description.
 ### Applicable Issues
 
 <!-- Enter any applicable Issues here -->
+
+
+> Note:
+> Please be aware that we may require changes (in code or in the UI) if we 
+> believe they are required to meet the vision and standards of Elixr.
+> Don't take suggestions for tweaks personally, we are all simply trying to make Elixr
+> the best that it can be :)
