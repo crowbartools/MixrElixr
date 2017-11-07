@@ -190,6 +190,13 @@ $(() => {
 				$('light-volume-control button').click();
 			}
 		}
+
+		// Apply Theater Mode
+		if(options.theaterMode){
+			$('header,.back-to-browse,.profile-header,.profile-blocks,.user,b-notifications').addClass('theaterMode');
+		}else{
+			$('header,.back-to-browse,.profile-header,.profile-blocks,.user,b-notifications').removeClass('theaterMode');
+		}
 	
 		applyChatSettings(streamerName);
 	}

@@ -75,3 +75,27 @@
     opacity: 0.6;
 }
 
+/*Theater Mode*/
+.channel-page > header.theaterMode {
+    display: none!important;
+}
+
+.back-to-browse.theaterMode {
+    display: none!important;
+}
+
+.profile-header.theaterMode {
+    display: none!important;
+}
+
+.profile-blocks.theaterMode {
+    display: none!important;
+}
+
+.user.theaterMode {
+    display: none!important;
+}
+
+b-notifications.theaterMode {
+    display: none!important;
+}

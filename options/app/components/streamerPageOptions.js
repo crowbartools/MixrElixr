@@ -13,6 +13,7 @@ Vue.component('streamer-page-options', {
 				<span class="setting-subcategory">General</span>
 				<checkbox-toggle :value.sync="autoCloseInteractive" @changed="saveSettings()" label="Auto close Interactive boards"></checkbox-toggle>
 				<checkbox-toggle :value.sync="autoMute" @changed="saveSettings()" label="Auto Mute Streams"></checkbox-toggle>
+				<checkbox-toggle :value.sync="theaterMode" @changed="saveSettings()" label="Theater Mode" tooltip="This will remove everything except for the stream and chat."></checkbox-toggle>
 
 				<span class="setting-subcategory">Chat</span>
 				<checkbox-toggle :value.sync="separateChat" @changed="saveSettings()" label="Separate Chat Lines"></checkbox-toggle>
