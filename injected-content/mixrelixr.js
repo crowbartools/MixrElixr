@@ -403,14 +403,23 @@ $(() => {
 			
 								if((previousImage == null || previousImage.length < 1) 
 									&& (messageIsDeleted == null || messageIsDeleted.length < 1)) {
-									$(`<span style="display:block;">
-										<span style="position: relative; display: inline-block">
-											<span class="hide-picture-btn">x</span>
-											<img src="${url}" style="max-width: 200px; max-height: 125px; object-fit:contain;" 
-												onerror="this.onerror=null;this.src='${url.replace('https://', 'http://')}';"
-												elixr-img>
-										</span>									
-									</span>`).insertBefore(link.parent());
+
+									var inlineImg = 
+										$(`<span style="display:block;">
+											<span style="position: relative; display: inline-block">
+												<span class="hide-picture-btn">x</span>
+												<img src="${url}" style="max-width: 200px; max-height: 125px; object-fit:contain;" 
+													onerror="this.onerror=null;this.src='${url.replace('https://', 'http://')}';"
+													elixr-img>
+											</span>									
+										</span>`);
+
+									inlineImg.find('img').on('load', function() {										
+										scrollChatToBottom();
+										$(this).off('load', '**');
+									});
+									
+									inlineImg.insertBefore(link.parent());
 
 									// Note(ebiggz): The above "onerror" js code is a bandaid for a weird issue where an image sometimes wont load. 
 									// Switching from https to http seems to work, but I dont like this fix. There must be something else going on.
@@ -432,6 +441,10 @@ $(() => {
 			}
 		});
 	
+		scrollChatToBottom();
+	}
+
+	function scrollChatToBottom() {
 		var chatContainer = $('.message-container');
 		chatContainer.scrollTop(chatContainer[0].scrollHeight);
 	}
