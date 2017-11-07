@@ -64,7 +64,7 @@ $(() => {
 					// double check it's still here
 					var channelBlock = $('b-channel-owners-block');
 					if(channelBlock != null && channelBlock.length > 0) {
-						var name = channelBlock.find('h2').text();
+						var name = channelBlock.find('h2').first().text();
 						if(name != null && name !== '') {
 							cache.currentStreamerName = name;
 							resolve(name);
