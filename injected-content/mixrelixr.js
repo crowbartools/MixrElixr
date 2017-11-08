@@ -116,6 +116,42 @@ $(() => {
 			$('.home').scrollTop($('.home').scrollTop() - '5');
 			$('.home').scrollTop($('.home').scrollTop() + '5');
 		}	
+
+		// If the user desires to have favorites highlighted:
+		if(settings.homePageOptions.highlightFavorites){
+			if(cache.highlightLoop != null) {
+				clearInterval(cache.highlightLoop);
+			}
+
+			// Lets keep checking to see if we find any new favorites
+			cache.highlightLoop = setInterval(function(){
+				// Get our current favorites
+				favoriteFriends = settings.generalOptions.favoriteFriends;
+
+				// Checking all streamer cards of non-favorites:
+				$("b-media-card:not('.favoriteFriend')").each(function (index) {
+					// Which streamer did we find
+					var streamer = $(this).find("h2.username").text().replace(/ /g, '').replace(/\r?\n|\r/g, "");
+					
+					if (favoriteFriends != null) {
+						if (favoriteFriends.indexOf(streamer) >= 0) {
+							// If streamer is a favorite, let's highlight the window
+							//log("Found '"+streamer+'"! Highlighting window.')
+							$(this).find("h2.username").addClass("favoriteUsername");
+							$(this).addClass("favoriteFriend");
+						}
+					}
+				});
+			}, 500);
+		} else {
+			// If highlights are off, then let's remove any active highlights.
+			$("b-media-card.favoriteFriend").removeClass("favoriteFriend");
+
+			// clear the loop so were aren't trying to run it constantly!
+			if(cache.highlightLoop != null) {
+				clearInterval(cache.highlightLoop);
+			}
+		}
 	}
 	
 	function loadStreamerPage(streamerName) {
@@ -510,7 +546,8 @@ $(() => {
 		return new Promise((resolve, reject) => {
 			chrome.storage.sync.get({
 				'streamerPageOptions': null,
-				'homePageOptions': null
+				'homePageOptions': null,
+				'generalOptions': null
 			  }, (options) => {
 				  console.log(options);
 				resolve(options);	  
@@ -663,12 +700,3 @@ $(() => {
 		}		
 	});
 });
-
-
-
-
-
-
-
-
-

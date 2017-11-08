@@ -109,3 +109,15 @@ b-notifications.theaterMode {
     padding-top: 0px!important;
 }
 /* End Theater Mode */
+
+
+/** Favorite Highlights **/
+b-media-card.favoriteFriend {
+    background-color: rgb(15, 175, 39);
+}
+
+.favoriteUsername {
+    font-weight: bold;
+    font-style: italic;
+}
+/** End Highlights CSS **/

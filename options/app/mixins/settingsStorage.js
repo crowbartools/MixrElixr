@@ -60,7 +60,8 @@ settingsStorage = {
 				},
 				homePageOptions: {
 					removeFeatured: false,
-					autoMute: false
+					autoMute: false,
+					highlightFavorites: false
 				},
 				generalOptions: {
 					showBadge: true,
