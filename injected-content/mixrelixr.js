@@ -118,7 +118,7 @@ $(() => {
 		}	
 
 		// If the user desires to have favorites highlighted:
-		if(settings.homePageOptions.highlightFavorites){
+		if(settings.generalOptions.highlightFavorites){
 			if(cache.highlightLoop != null) {
 				clearInterval(cache.highlightLoop);
 			}
@@ -133,13 +133,10 @@ $(() => {
 					// Which streamer did we find
 					var streamer = $(this).find("h2.username").text().replace(/ /g, '').replace(/\r?\n|\r/g, "");
 					
-					if (favoriteFriends != null) {
-						if (favoriteFriends.indexOf(streamer) >= 0) {
-							// If streamer is a favorite, let's highlight the window
-							//log("Found '"+streamer+'"! Highlighting window.')
-							$(this).find("h2.username").addClass("favoriteUsername");
-							$(this).addClass("favoriteFriend");
-						}
+					if (streamerIsFavorited(streamer)) {
+						// If streamer is a favorite, let's highlight the window
+						$(this).find("h2.username").addClass("favoriteUsername");
+						$(this).addClass("favoriteFriend");
 					}
 				});
 			}, 500);
@@ -153,9 +150,125 @@ $(() => {
 			}
 		}
 	}
+
+	function showFavoriteButton(isFavorited) {
+		if (isFavorited == "") {
+			isFavorited = false;
+		}
+
+		if (isFavorited) {
+			$("div.owner-block h2:first-of-type").addClass("favoriteUsername");
+			$("<div id=\"ME_favorite-btn\">&#9733;</div>").insertAfter("div.follow-block");
+			$("#ME_favorite-btn").addClass("faved");
+		} else {
+			$("div.owner-block h2:first-of-type").removeClass("favoriteUsername");
+			$("<div id=\"ME_favorite-btn\">&#9734;</div>").insertAfter("div.follow-block");
+			$("#ME_favorite-btn").removeClass("faved");
+		}
+
+	}
+
+	function setFavoriteButtonState(isFavorited) {
+		if (isFavorited == "") {
+			isFavorited = false;
+		}
+
+		// Removing the favorite button to avoid any duplication
+		$("#ME_favorite-btn").remove();
+
+		if (isFavorited) {
+			//
+			$("#ME_favorite-btn").html("&#9733;");
+			$("div.owner-block h2:first-of-type").addClass("favoriteUsername");
+			$("#ME_favorite-btn").addClass("faved");
+		} else {
+			$("#ME_favorite-btn").html("&#9734;");
+			$("div.owner-block h2:first-of-type").removeClass("favoriteUsername");
+			$("#ME_favorite-btn").removeClass("faved");
+		}
+	}
+
+	function getChannelNameById(id) {
+		return new Promise((resolve, reject) => {
+			var request = new XMLHttpRequest();
+			request.open('GET', `https://mixer.com/api/v1/channels/${id}`, true);
+	
+			request.onload = function() {
+				if (request.status >= 200 && request.status < 400) {
+					// Success!
+					var data = JSON.parse(request.responseText);
+					resolve(data.token);
+				} else {
+					reject('Error getting channel details');
+				}
+			};
+	
+			request.onerror = function() {
+				// There was a connection error of some sort
+				reject('Error getting channel details');
+			};
+	
+			request.send();
+		});
+	}
 	
 	function loadStreamerPage(streamerName) {
 		log(`Loading streamer page for: ${streamerName}`);
+
+		// If the user desires to have favorites highlighted, we need to active the :
+		if(settings.generalOptions.highlightFavorites){
+			log("Starting working on the highlight + fav button");
+
+			// Let's if we are following this person
+			isFollowed = streamerIsFollowed(streamerName);
+
+			// Once we get some info back from the API
+			isFollowed.then((result) => {
+				if (result) {
+					// If the streamer is followed,
+					// Let's show the favorite button, but it's state is based on whether streamed is faved.
+					showFavoriteButton(streamerIsFavorited(streamerName));
+
+					// We now set some actions to the button we just added.
+					// These toggle the favorite status of the streamer, as well the button's state.
+					$("#ME_favorite-btn").click( function () {
+						addOrRemoveFavorite(streamerName);
+						setFavoriteButtonState(streamerIsFavorited(streamerName));
+					});
+
+					// Also need to set an action that either detects if the streamer is no longer followed, or pays attention to the unfollow action.
+					// If user unfollows, favorite status needs to be removed.
+				} else {
+					// User doesn't follow the streamer.
+					// There's stuff to do here that I haven't figured out yet.
+
+					// If not followed, favorite status should be removed automatically.
+
+					// We should also attach an event to the follow button that will make the favorite button appear when a streamer is followed.
+					$('bui-icon[icon="heart-full"]').closest('div.bui-btn-raised').click(function () {
+						log('Now following current streamer!');
+						showFavoriteButton(streamerIsFavorited(streamerName));
+
+						$("#ME_favorite-btn").click( function () {
+							addOrRemoveFavorite(streamerName);
+							setFavoriteButtonState(streamerIsFavorited(streamerName));
+						});
+
+						$('bui-icon[icon="heart-full"]').closest('div.bui-btn-raised').off('click');
+					});
+				}
+			});
+
+			
+
+
+			
+
+		} else {
+			log("Highlights not active. So we don't do this.")
+			$("div.owner-block h2:first-of-type").removeClass("favoriteUsername");
+			$("#ME_favorite-btn").removeClass("faved");
+		}
 	
 		if(!settings.streamerPageOptions) {
 			log('No streamer page settings saved.');
@@ -661,6 +774,90 @@ $(() => {
 					resolve(null);
 				});
 		});
+	}
+
+	function streamerIsFollowed(streamerName) {
+		return new Promise((resolve, reject) => {
+			// get id and do something with it
+			if (cache.user != null) {
+				var userId = cache.user.id;
+				log("current userID: " + userId);
+				log(`https://mixer.com/api/v1/users/${userId}/follows?fields=token&where=token:eq:${streamerName}`);
+
+				var request = new XMLHttpRequest();
+				request.open('GET', `https://mixer.com/api/v1/users/${userId}/follows?fields=token&where=token:eq:${streamerName}`, true);
+		
+				request.onload = function() {
+					if (request.status >= 200 && request.status < 400) {
+						// Success!
+						//var data = JSON.parse(request.responseText);
+						var data = JSON.parse(request.responseText);
+						console.log(data);
+
+						if (data.length > 0) {
+							log(`${streamerName} is followed`)
+							resolve(true);
+						} else {
+							log(`${streamerName} is not followed`)
+							resolve(false);
+						}
+						//if (data.)
+						//resolve(true);
+					} else {
+						var data = JSON.parse(request.responseText);
+						console.log(data);
+						reject(false);
+					}
+				};
+		
+				request.onerror = function() {
+					// There was a connection error of some sort
+					reject(false);
+				};
+		
+				request.send();
+			
+			} else {
+				reject(false);
+			}
+		});
+	}
+
+	// Returns boolean based on whether or not a streamer is favorited.
+	function streamerIsFavorited(streamerName) {
+		favoriteFriends = settings.generalOptions.favoriteFriends;
+
+		// Is there data in the friends array?
+		if (favoriteFriends != null) {
+			// If there is data, is there anything in it?
+			if (favoriteFriends.indexOf(streamerName) >= 0) {
+				// If streamer is a favorite, then we want.
+				return true;
+			}
+		}
+		return false;
+	}
+
+	// Adds or Removes a streamer to the favorite list
+	function addOrRemoveFavorite(streamerName) {
+		favorites = settings.generalOptions.favoriteFriends;
+		if (streamerIsFavorited(streamerName)) {
+			log("Removing: "+streamerName);
+			const index = favorites.indexOf(streamerName);
+
+			if (index !== -1) {
+				favorites.splice(index, 1);
+			}
+		} else {
+			favorites.push(streamerName);
+			log("Adding: "+streamerName);
+		}
+
+		chrome.storage.sync.set({
+			'generalOptions': {
+				favoriteFriends: favorites
+			}
+		}, () => {});
 	}
 	
 	waitForPageLoad().then(() => {

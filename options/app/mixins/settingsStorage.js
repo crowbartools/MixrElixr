@@ -60,12 +60,12 @@ settingsStorage = {
 				},
 				homePageOptions: {
 					removeFeatured: false,
-					autoMute: false,
-					highlightFavorites: false
+					autoMute: false
 				},
 				generalOptions: {
 					showBadge: true,
-					favoriteFriends: []
+					favoriteFriends: [],
+					highlightFavorites: false
 				}
 			};
 		},

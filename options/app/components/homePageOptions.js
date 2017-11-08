@@ -7,9 +7,6 @@ Vue.component('home-page-options', {
 			<div class="settings-section-settings" style="padding-bottom: 0;">
 				<checkbox-toggle :value.sync="removeFeatured" @changed="saveSettings()" label="Remove Featured Streams"></checkbox-toggle>
 			</div>
-			<div class="settings-section-settings" style="padding-bottom: 0;">
-				<checkbox-toggle :value.sync="highlightFavorites" @changed="saveSettings()" label="Highlight Favorites"></checkbox-toggle>
-			</div>
 		</div>
 	`,
 	mixins: [settingsStorage],
