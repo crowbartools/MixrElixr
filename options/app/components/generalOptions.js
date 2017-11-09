@@ -7,6 +7,10 @@ Vue.component('general-options', {
 			<div class="settings-section-settings" style="padding-bottom: 0;">
 			<div class="option-wrapper">
 				<checkbox-toggle :value.sync="showBadge" @changed="showBadgeChanged()" label="Currently Online Count Badge" tooltip="Whether or not you want the number of currently streaming friends displaying as a badge on the Elixr icon."></checkbox-toggle>
+				
+				<checkbox-toggle :value.sync="highlightFavorites" @changed="highlightFavoritesChanged()" label="Highlight Favorites" tooltip="Marks favorite streamers with green highlights while browsing Mixer."></checkbox-toggle>
+
+
 				<div style="padding-bottom: 5px;">Favorite Streamers<option-tooltip name="favorite" title="Any streamers listed here will show up in the favorites list. If any favorite is streaming, the icon badge will be green instead of blue."></option-tooltip></div>
 				<edittable-list class="option" :value.sync="favoriteFriends" :options="followingList" tag-placeholder="" placeholder="Search for or select a streamer" @changed="saveSettings()" @add-entry="favoriteAdded" @remove-entry="favoriteRemoved" :auto-close="true"></edittable-list>
 			</div>
