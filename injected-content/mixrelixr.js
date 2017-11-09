@@ -94,6 +94,47 @@ $(() => {
 	
 	function loadHomepage(){
 		log('Loading up settings for homepage');
+
+		// If the user desires to have favorites highlighted:
+		/*if(settings.generalOptions.highlightFavorites){*/
+			// log("Highlighting Favorites is on");
+			// clear the loop so were aren't trying to run it constantly!
+			if(cache.highlightLoop != null) {
+				clearInterval(cache.highlightLoop);
+			}
+
+			// Lets keep checking to see if we find any new favorites
+			cache.highlightLoop = setInterval(function(){
+				// Get our current favorites
+				favoriteFriends = settings.generalOptions.favoriteFriends;
+
+				// Checking all streamer cards of non-favorites:
+				$("b-media-card:not('.favoriteFriend')").each(function (index) {
+					// Which streamer did we find
+					var streamer = $(this).find("h2.username").text().replace(/ /g, '').replace(/\r?\n|\r/g, "");
+					
+					if (streamerIsFavorited(streamer)) {
+						// If streamer is a favorite, let's highlight the window
+						$(this).find("h2.username").addClass("favoriteUsername");
+						$(this).addClass("favoriteFriend");
+					} else {
+						$(this).find("h2.username").removeClass("favoriteUsername");
+						$(this).removeClass("favoriteFriend");
+					}
+				});
+			}, 500);
+		/*} else {
+			log("Highlighting Favorites is off");
+			// If highlights are off, then let's remove any active highlights.
+			$("b-media-card.favoriteFriend").removeClass("favoriteFriend");
+
+			// clear the loop so were aren't trying to run it constantly!
+			if(cache.highlightLoop != null) {
+				clearInterval(cache.highlightLoop);
+			}
+		}*/
+
+		
 	
 		if(!settings.homePageOptions) {
 			log('No home page settings saved.');
@@ -116,45 +157,15 @@ $(() => {
 			$('.home').scrollTop($('.home').scrollTop() - '5');
 			$('.home').scrollTop($('.home').scrollTop() + '5');
 		}	
-
-		// If the user desires to have favorites highlighted:
-		if(settings.generalOptions.highlightFavorites){
-			if(cache.highlightLoop != null) {
-				clearInterval(cache.highlightLoop);
-			}
-
-			// Lets keep checking to see if we find any new favorites
-			cache.highlightLoop = setInterval(function(){
-				// Get our current favorites
-				favoriteFriends = settings.generalOptions.favoriteFriends;
-
-				// Checking all streamer cards of non-favorites:
-				$("b-media-card:not('.favoriteFriend')").each(function (index) {
-					// Which streamer did we find
-					var streamer = $(this).find("h2.username").text().replace(/ /g, '').replace(/\r?\n|\r/g, "");
-					
-					if (streamerIsFavorited(streamer)) {
-						// If streamer is a favorite, let's highlight the window
-						$(this).find("h2.username").addClass("favoriteUsername");
-						$(this).addClass("favoriteFriend");
-					}
-				});
-			}, 500);
-		} else {
-			// If highlights are off, then let's remove any active highlights.
-			$("b-media-card.favoriteFriend").removeClass("favoriteFriend");
-
-			// clear the loop so were aren't trying to run it constantly!
-			if(cache.highlightLoop != null) {
-				clearInterval(cache.highlightLoop);
-			}
-		}
 	}
 
-	function showFavoriteButton(isFavorited) {
+	function addFavoriteButton(isFavorited) {
 		if (isFavorited == "") {
 			isFavorited = false;
 		}
+
+		// Removing the favorite button to avoid any duplication
+		$("#ME_favorite-btn").remove();
 
 		if (isFavorited) {
 			$("div.owner-block h2:first-of-type").addClass("favoriteUsername");
@@ -173,11 +184,7 @@ $(() => {
 			isFavorited = false;
 		}
 
-		// Removing the favorite button to avoid any duplication
-		$("#ME_favorite-btn").remove();
-
 		if (isFavorited) {
-			//
 			$("#ME_favorite-btn").html("&#9733;");
 			$("div.owner-block h2:first-of-type").addClass("favoriteUsername");
 			$("#ME_favorite-btn").addClass("faved");
@@ -215,8 +222,11 @@ $(() => {
 	function loadStreamerPage(streamerName) {
 		log(`Loading streamer page for: ${streamerName}`);
 
-		// If the user desires to have favorites highlighted, we need to active the :
-		if(settings.generalOptions.highlightFavorites){
+		// murfGUY TO DO NOTES:
+			// Was having issues storing a toggle option to activate highlights.
+			// So I've opted to just leave them on permenantly until further development can be done.
+			// This is the original logic gate. Leaving it in for now so I can return to it later.
+		/*if(settings.generalOptions.highlightFavorites){*/
 			log("Starting working on the highlight + fav button");
 
 			// Let's if we are following this person
@@ -227,7 +237,7 @@ $(() => {
 				if (result) {
 					// If the streamer is followed,
 					// Let's show the favorite button, but it's state is based on whether streamed is faved.
-					showFavoriteButton(streamerIsFavorited(streamerName));
+					addFavoriteButton(streamerIsFavorited(streamerName));
 
 					// We now set some actions to the button we just added.
 					// These toggle the favorite status of the streamer, as well the button's state.
@@ -243,11 +253,14 @@ $(() => {
 					// There's stuff to do here that I haven't figured out yet.
 
 					// If not followed, favorite status should be removed automatically.
+					if (streamerIsFavorited(streamerName)) {
+						syncFavorites(removeFavorite(streamerName));
+					}
 
 					// We should also attach an event to the follow button that will make the favorite button appear when a streamer is followed.
 					$('bui-icon[icon="heart-full"]').closest('div.bui-btn-raised').click(function () {
 						log('Now following current streamer!');
-						showFavoriteButton(streamerIsFavorited(streamerName));
+						addFavoriteButton(streamerIsFavorited(streamerName));
 
 						$("#ME_favorite-btn").click( function () {
 							addOrRemoveFavorite(streamerName);
@@ -258,17 +271,13 @@ $(() => {
 					});
 				}
 			});
-
-			
-
-
-			
-
-		} else {
+		/*} else {
 			log("Highlights not active. So we don't do this.")
 			$("div.owner-block h2:first-of-type").removeClass("favoriteUsername");
 			$("#ME_favorite-btn").removeClass("faved");
-		}
+		}*/
+
+		
 	
 		if(!settings.streamerPageOptions) {
 			log('No streamer page settings saved.');
@@ -656,6 +665,7 @@ $(() => {
 	}
 	
 	function getSettings() {
+		log("getSettings()");
 		return new Promise((resolve, reject) => {
 			chrome.storage.sync.get({
 				'streamerPageOptions': null,
@@ -781,8 +791,8 @@ $(() => {
 			// get id and do something with it
 			if (cache.user != null) {
 				var userId = cache.user.id;
-				log("current userID: " + userId);
-				log(`https://mixer.com/api/v1/users/${userId}/follows?fields=token&where=token:eq:${streamerName}`);
+				//log("current userID: " + userId);
+				//log(`https://mixer.com/api/v1/users/${userId}/follows?fields=token&where=token:eq:${streamerName}`);
 
 				var request = new XMLHttpRequest();
 				request.open('GET', `https://mixer.com/api/v1/users/${userId}/follows?fields=token&where=token:eq:${streamerName}`, true);
@@ -841,18 +851,30 @@ $(() => {
 	// Adds or Removes a streamer to the favorite list
 	function addOrRemoveFavorite(streamerName) {
 		favorites = settings.generalOptions.favoriteFriends;
-		if (streamerIsFavorited(streamerName)) {
-			log("Removing: "+streamerName);
-			const index = favorites.indexOf(streamerName);
 
-			if (index !== -1) {
-				favorites.splice(index, 1);
-			}
+		if (streamerIsFavorited(streamerName)) {
+			favorites = removeFavorite(streamerName)
 		} else {
+			log("Adding favorite: "+streamerName);
 			favorites.push(streamerName);
-			log("Adding: "+streamerName);
 		}
 
+		syncFavorites(favorites);
+	}
+
+	function removeFavorite(streamerName) {
+		log("Removing favorite: "+streamerName);
+		favorites = settings.generalOptions.favoriteFriends;
+		const index = favorites.indexOf(streamerName);
+
+		if (index !== -1) {
+			favorites.splice(index, 1);
+		}
+		return favorites;
+	}
+
+	function syncFavorites(favorites) {
+		log("Syncing Favorites list: "+favorites)
 		chrome.storage.sync.set({
 			'generalOptions': {
 				favoriteFriends: favorites

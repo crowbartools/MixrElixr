@@ -120,7 +120,6 @@ b-media-card.favoriteFriend {
 .favoriteUsername {
     color: rgb(90,251,142) !important;
     font-weight: bold;
-    font-style: italic;
 }
 
 #ME_favorite-btn {

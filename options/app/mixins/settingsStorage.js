@@ -35,7 +35,7 @@ settingsStorage = {
 		saveGeneralOptions: function(options) {
 			this.saveAllSettings({
 				'generalOptions': options
-			}, false);
+			}, true);
 		},
 		getDefaultOptions: function() {
 			return {
@@ -65,7 +65,7 @@ settingsStorage = {
 				generalOptions: {
 					showBadge: true,
 					favoriteFriends: [],
-					highlightFavorites: false
+					highlightFavorites: true
 				}
 			};
 		},
