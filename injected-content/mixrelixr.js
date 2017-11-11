@@ -368,6 +368,17 @@ $(() => {
 			});
 			theaterBtn.insertBefore($('.toolbar').children().last());
 		}
+
+        // Auto Close Costreams
+        if(options.autoCloseCostreams){
+            var costreamPage = detectCostreams();
+            if(costreamPage) {
+                log('Costream detected. Waiting for profiles to load')
+                closeCostreams(streamerName);
+            } else {
+                log('No costream detected');
+            }
+        }
 	
 		applyChatSettings(streamerName);
 	}
@@ -381,6 +392,35 @@ $(() => {
 			theaterElements.addClass('theaterMode');
 		}
 	}
+
+    function closeCostreams(streamerName) {        
+        var profile = $('div.profile');
+        if(profile.length === 0) {
+            // Profile divs have not appeared yet
+            setTimeout(closeCostreams, 500, streamerName);
+        } else {
+            // Profile divs have appeared
+            log('Profiles loaded');
+            profile.each(function() {
+                // Check if profile does NOT contain current streamer's name
+                if($(this).is(':not(:contains(' + streamerName + '))')) {
+                    var closeBtn = $(this).siblings().eq(0).children()[2];
+                    if(closeBtn){
+                        closeBtn.click();
+                    }
+                }
+            });
+        }
+    }
+
+    function detectCostreams() {
+        var owners = $('div.owners').find('.head');
+        if(owners.length > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 	
 	function applyChatSettings(streamerName) {
 	
