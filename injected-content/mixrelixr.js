@@ -165,15 +165,19 @@ $(() => {
 		// Removing the favorite button to avoid any duplication
 		$('.ME_favorite-btn[streamer="'+streamerName+'"]').remove();
 
+		avatarBlock = $('a.avatar-block[href="/'+streamerName+'"]');
+		log('a.avatar-block[href="/'+streamerName+'"]');
+		console.log(avatarBlock);
+		console.log(avatarBlock.attr("href"));
+
 		if (isCostream) {
-			preceedingElement = $('a.avatar-block[href="'+streamerName+'"]').siblings("div.owner-block").find("div.follow-block");
-			userNameTarget = $('a.avatar-block[href="'+streamerName+'"]').siblings("div.owner-block").find("h2:first-of-type");
+			preceedingElement = avatarBlock.siblings("div.owner-block").find("div.follow-block");
+			userNameTarget = avatarBlock.siblings("div.owner-block").find("h2:first-of-type");
 		} else {
 			preceedingElement = $("div.follow-block");
 			userNameTarget = $("div.owner-block h2:first-of-type");
 		}
 
-		console.log($('a.avatar-block[href="'+streamerName+'"]').attr("href"));
 		console.log(preceedingElement);
 		console.log(userNameTarget);
 
