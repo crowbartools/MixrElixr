@@ -160,35 +160,37 @@ $(() => {
 	}
 
 	function addFavoriteButton(streamerName, isFavorited = false, isCostream = false) {
-		log("addFavoriteButton("+streamerName+", "+isFavorited+")");
+		log("addFavoriteButton(streamerName:"+streamerName+", isFavorited:"+isFavorited+", isCostream:"+isCostream+")");
 
 		// Removing the favorite button to avoid any duplication
-		$(".ME_favorite-btn[streamer='"+streamerName+"']").remove();
+		$('.ME_favorite-btn[streamer="'+streamerName+'"]').remove();
 
 		if (isCostream) {
-			preceedingElement = $("a.avatar-block[href=\"/"+streamer+"\"]").siblings("div.owner-block").find("div.follow-block");
-			userNameTarget = $("a.avatar-block[href=\"/"+streamer+"\"]").siblings("div.owner-block").find("h2:first-of-type");
+			preceedingElement = $('a.avatar-block[href="'+streamerName+'"]').siblings("div.owner-block").find("div.follow-block");
+			userNameTarget = $('a.avatar-block[href="'+streamerName+'"]').siblings("div.owner-block").find("h2:first-of-type");
 		} else {
 			preceedingElement = $("div.follow-block");
 			userNameTarget = $("div.owner-block h2:first-of-type");
 		}
 
+		console.log($('a.avatar-block[href="'+streamerName+'"]').attr("href"));
+		console.log(preceedingElement);
 		console.log(userNameTarget);
 
 		if (isFavorited) {
 			preceedingElement.after("<div streamer=\""+streamerName+"\" class=\"ME_favorite-btn\">&#9733;</div>");
 			userNameTarget.addClass("favoriteUsername");
-			$(".ME_favorite-btn[streamer='"+streamerName+"']").addClass("faved");
+			$('.ME_favorite-btn[streamer="'+streamerName+'"]').addClass("faved");
 		} else {
 			preceedingElement.after("<div streamer=\""+streamerName+"\" class=\"ME_favorite-btn\">&#9734;</div>");
 			userNameTarget.removeClass("favoriteUsername");
-			$(".ME_favorite-btn[streamer='"+streamerName+"']").removeClass("faved");
+			$('.ME_favorite-btn[streamer="'+streamerName+'"]').removeClass("faved");
 		}
 
 	}
 
 	function setFavoriteButtonState(streamerName, isFavorited = false, isCostream=false) {
-		log("setFavoriteButtonState("+streamerName+", "+isFavorited+")");
+		log("setFavoriteButtonState(streamerName:"+streamerName+", isFavorited:"+isFavorited+", isCostream:"+isCostream+")");
 
 		buttonTarget = $(".ME_favorite-btn[streamer='"+streamerName+"']");
 
@@ -197,8 +199,6 @@ $(() => {
 		} else {
 			userNameTarget = $("div.owner-block h2:first-of-type");
 		}
-
-		console.log(userNameTarget);
 
 		if (isFavorited) {
 			buttonTarget.html("&#9733;");
@@ -235,15 +235,39 @@ $(() => {
 		});
 	}
 	
-	// Buttercup made a similar function that is due to be merged.
-	// I have given mine the same name as his and this function can be discarded during merge process.
-	function detectCostreams() {
-		if ($("div.owners div.head").length >= 1) {
-				log("This is a co-stream.");
-			return true;
-		}
-		log("This is a normal stream.");
-		return false;
+	// Checks the Mixer API to find a co-stream id.
+	function getCostreamID(streamerName) {
+		// `https://mixer.com/api/v1/channels/${streamerName}?fields=costreamId`
+
+		return new Promise((resolve, reject) => {
+			$.getJSON(`https://mixer.com/api/v1/channels/${streamerName}?fields=costreamId`, function(data) {
+				//var data = JSON.parse(request.responseText);
+				console.log(data);
+				if (data['costreamId'] != null) {
+					//log(`This is a co-stream!`);
+					resolve(data.costreamId);
+				} else {
+					//log(`This is NOT a co-stream!`);
+					resolve(null);
+				}
+			})
+		});
+	}
+
+	// Gets list of costreamers via Mixer API
+	function getCostreamers(costreamID) {
+		return new Promise((resolve, reject) => {
+			$.getJSON(`https://mixer.com/api/v1/costreams/${costreamID}`, function(data) {
+				var channels = data['channels'];
+				var participants = Array();
+
+				$.each(channels, function(i, val) {
+					participants.push(channels[i].token);
+				});
+
+				resolve(participants);
+			})
+		});
 	}
 
 	function loadStreamerPage(streamerName) {
@@ -256,7 +280,138 @@ $(() => {
 		/*if(settings.generalOptions.highlightFavorites){*/
 			log("Starting working on the highlight + fav button");
 
-			if (!detectCostreams()) {
+			// Let's get the Costream ID via API call
+			costreamID = getCostreamID(streamerName);
+
+			costreamID.then((result) => {
+				if (result == null) {
+					// If result is null, then this is not a costream.
+					log(streamerName+" is not costreaming.");
+
+					// Let's if we are following this streamer
+					isFollowed = streamerIsFollowed(streamerName);
+
+					// Once we get some info back from the API
+					isFollowed.then((result) => {
+						if (result.isFollowed) {
+							// Which streamer is this?
+							streamer = result.streamerName
+
+							// If the streamer is followed,
+							// Let's show the favorite button, but it's state is based on whether streamed is faved.
+							addFavoriteButton(streamer, streamerIsFavorited(streamer));
+
+							// We now set some actions to the button we just added.
+							// These toggle the favorite status of the streamer, as well the button's state.
+							$(".ME_favorite-btn[streamer='"+streamerName+"']").click( function () {
+								streamer = $(this).attr('streamer');
+								log("This is the button for: " + streamer);
+								addOrRemoveFavorite(streamer);
+								setFavoriteButtonState(streamer, streamerIsFavorited(streamer));
+							});
+						} else {
+							// User doesn't follow the streamer.
+
+							// If not followed but is favorited, favorite status should be removed automatically.
+							if (streamerIsFavorited(streamerName)) {
+								syncFavorites(removeFavorite(streamerName));
+							}
+
+							// We should also attach an event to the follow button that will make the favorite button appear when a streamer is followed.
+							$('bui-icon[icon="heart-full"]').closest('div.bui-btn-raised').click(function () {
+								//log('Now following current streamer!');
+								addFavoriteButton(streamerIsFavorited(streamerName));
+
+								$(".ME_favorite-btn[streamer='"+streamerName+"']").click( function () {
+									streamer = $(this).attr('streamer');
+									log("This is the button for: " + streamer);
+									addOrRemoveFavorite(streamer);
+									setFavoriteButtonState(streamer, streamerIsFavorited(streamerName));
+								});
+
+								$('bui-icon[icon="heart-full"]').closest('div.bui-btn-raised').off('click');
+							});
+						}
+					});
+
+				} else {
+					// If result has value, then this is a co-stream.
+					log(streamerName+" is currently costreaming.");
+
+					// Let's see who is part of this co-stream collective.
+					costreamers = getCostreamers(result);
+
+					costreamers.then((result) => {
+						log("Costreamers: "+result);
+						costreamers = result;
+
+						$.each(costreamers, function(i, val) {
+							//participants.push(channels[i].token);
+
+							// This is the current streamer.
+							currentStreamer = costreamers[i]; 
+
+							//log("CoStreamer #"+(i+1)+": " + currentStreamer);
+							isFollowed = streamerIsFollowed(currentStreamer);
+
+							isFollowed.then((result) => {
+								streamer = result.streamerName;
+
+								if (result.isFollowed) {
+									// The current streamer is followed 
+									log("Costreamer '" + streamer+"' is followed.");
+									addFavoriteButton(streamer, streamerIsFavorited(streamer), true);
+
+									// We now set some actions to the button we just added.
+									// These toggle the favorite status of the streamer, as well the button's state.
+									$(".ME_favorite-btn[streamer=\""+streamer+"\"]").click( function () {
+										thisStreamer = $(this).attr('streamer');
+										log("This is the button for: " + thisStreamer);
+										addOrRemoveFavorite(thisStreamer);
+										setFavoriteButtonState(thisStreamer, streamerIsFavorited(thisStreamer), true);
+									});
+								} else {
+									// The current streamer is not followed
+									log("Costreamer '" + streamer+"' is not followed.");
+
+									// If not followed but is favorited, favorite status should be removed automatically.
+									if (streamerIsFavorited(streamer)) {
+										syncFavorites(removeFavorite(streamer));
+									}
+
+									followButtonElement = $('a.avatar-block[href="/'+streamer+'"]').siblings('div.owner-block').find('div.bui-btn');
+
+									// We should also attach an event to the follow button that will make the favorite button appear when a streamer is followed.
+									followButtonElement.click(function () {
+										//console.log($(this))
+										//console.log($(this).parents('div.head').find('a.avatar-block').attr("href").substr(1));
+
+										thisStreamer = $(this).parents('div.head').find('a.avatar-block').attr("href").substr(1);
+										log('Now following '+thisStreamer);
+
+										addFavoriteButton(thisStreamer, streamerIsFavorited(thisStreamer), true);
+
+										$(".ME_favorite-btn[streamer='"+thisStreamer+"']").click( function () {
+											streamer = $(this).attr('streamer');
+											log("This is the button for: " + streamer);
+											addOrRemoveFavorite(streamer);
+											setFavoriteButtonState(streamer, streamerIsFavorited(streamer), true);
+										});
+
+										followButtonElement.off('click');
+									});
+								}
+							});
+						});
+
+
+					});
+				}
+			});
+
+	
+
+			/*if (!detectCostreams()) {
 				// If not a costream, run standard favorite button insertion
 
 				// Let's if we are following this streamer
@@ -367,7 +522,7 @@ $(() => {
 					});
 					
 				}
-			}
+			}*/
 
 			
 		/*} else {
@@ -885,6 +1040,8 @@ $(() => {
 		});
 	}
 
+	// Checks Mixer API to see if streamer is followed. 
+	// Returns object with following status and streamer name.
 	function streamerIsFollowed(streamerName) {
 		return new Promise((resolve, reject) => {
 			// get id and do something with it
@@ -902,15 +1059,12 @@ $(() => {
 				streamerData.isFollowed = false;
 
 				$.getJSON(`https://mixer.com/api/v1/users/${userId}/follows?fields=token&where=token:eq:${streamerName}`, function(data) {
-					//var data = JSON.parse(request.responseText);
-					console.log(data);
-
 					if (data.length > 0) {
-						log(`API Call: ${streamerName} is followed`);
+						//log(`API Call: ${streamerName} is followed`);
 						streamerData.isFollowed = true;
 						resolve(streamerData);
 					} else {
-						log(`API Call: ${streamerName} is NOT followed`);
+						//log(`API Call: ${streamerName} is NOT followed`);
 						streamerData.isFollowed = false;
 						resolve(streamerData);
 					}
