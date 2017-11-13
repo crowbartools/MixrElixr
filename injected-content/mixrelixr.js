@@ -294,8 +294,8 @@ $(() => {
 							$(".ME_favorite-btn[streamer='"+streamerName+"']").click( function () {
 								streamer = $(this).attr('streamer');
 								log("This is the button for: " + streamer);
-								addOrRemoveFavorite(streamerName);
-								setFavoriteButtonState(streamerIsFavorited(streamerName));
+								addOrRemoveFavorite(streamer);
+								setFavoriteButtonState(streamer, streamerIsFavorited(streamerName));
 							});
 
 							$('bui-icon[icon="heart-full"]').closest('div.bui-btn-raised').off('click');
@@ -314,11 +314,12 @@ $(() => {
 					// This is the current streamer.
 					currentStreamer = $("a.avatar-block:eq("+i+")").attr("href").substr(1);
 					coStreamers.push(currentStreamer);
-					log("CoStreamer #"+(i+1)+": " + currentStreamer);
+					//log("CoStreamer #"+(i+1)+": " + currentStreamer);
 					isFollowed = streamerIsFollowed(currentStreamer);
 
 					isFollowed.then((result) => {
 							streamer = result.streamerName;
+
 							if (result.isFollowed) {
 								// The current streamer is followed 
 								log("Costreamer '" + streamer+"' is followed.");
@@ -335,6 +336,33 @@ $(() => {
 							} else {
 								// The current streamer is not followed
 								log("Costreamer '" + streamer+"' is not followed.");
+
+								// If not followed but is favorited, favorite status should be removed automatically.
+								if (streamerIsFavorited(streamer)) {
+									syncFavorites(removeFavorite(streamer));
+								}
+
+								followButtonElement = $('a.avatar-block[href="/'+streamer+'"]').siblings('div.owner-block').find('div.bui-btn');
+
+								// We should also attach an event to the follow button that will make the favorite button appear when a streamer is followed.
+								followButtonElement.click(function () {
+									//console.log($(this))
+									//console.log($(this).parents('div.head').find('a.avatar-block').attr("href").substr(1));
+
+									thisStreamer = $(this).parents('div.head').find('a.avatar-block').attr("href").substr(1);
+									log('Now following '+thisStreamer);
+
+									addFavoriteButton(thisStreamer, streamerIsFavorited(thisStreamer), true);
+
+									$(".ME_favorite-btn[streamer='"+thisStreamer+"']").click( function () {
+										streamer = $(this).attr('streamer');
+										log("This is the button for: " + streamer);
+										addOrRemoveFavorite(streamer);
+										setFavoriteButtonState(streamer, streamerIsFavorited(streamer), true);
+									});
+
+									followButtonElement.off('click');
+								});
 							}
 					});
 					
