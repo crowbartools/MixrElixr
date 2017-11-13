@@ -897,22 +897,43 @@ $(() => {
 
 	// Returns boolean based on whether or not a streamer is favorited.
 	function streamerIsFavorited(streamerName) {
-		favoriteFriends = settings.generalOptions.favoriteFriends;
+		// If general options is null, we need to create the object so we have something to read the data from.
+		if (settings.generalOptions == null) {
+			settings.generalOptions = {};
+			settings.generalOptions.favoriteFriends = Array();
+		}
 
-		// Is there data in the friends array?
-		if (favoriteFriends != null) {
-			// If there is data, is there anything in it?
-			if (favoriteFriends.indexOf(streamerName) >= 0) {
-				// If streamer is a favorite, then we want.
-				return true;
+		// Are there any favorites?
+		if (settings.generalOptions.favoriteFriends != null) {
+			favoriteFriends = settings.generalOptions.favoriteFriends;
+
+			// Is there data in the friends array?
+			if (favoriteFriends != null) {
+				// If there is data, is there anything in it?
+				if (favoriteFriends.indexOf(streamerName) >= 0) {
+					// If streamer is a favorite, then we want.
+					return true;
+				}
 			}
 		}
+
 		return false;
 	}
 
 	// Adds or Removes a streamer to the favorite list
 	function addOrRemoveFavorite(streamerName) {
 		log("addOrRemoveFavorite("+streamerName+")")
+
+		// If general options is null, we need to create the object so we have something to attach the data to.
+		if (settings.generalOptions == null) {
+			settings.generalOptions = {};
+			settings.generalOptions.favoriteFriends = Array();
+		}
+
+		console.log(settings.generalOptions)
+		console.log(settings.generalOptions.favoriteFriends)
+
+
 		favorites = settings.generalOptions.favoriteFriends;
 
 		if (streamerIsFavorited(streamerName)) {
@@ -923,6 +944,7 @@ $(() => {
 		}
 
 		syncFavorites(favorites);
+		
 	}
 
 	function removeFavorite(streamerName) {
