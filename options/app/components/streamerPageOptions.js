@@ -12,6 +12,7 @@ Vue.component('streamer-page-options', {
 			<div class="settings-section-settings">
 				<span class="setting-subcategory">General</span>
 				<checkbox-toggle :value.sync="autoCloseInteractive" @changed="saveSettings()" label="Auto close Interactive boards"></checkbox-toggle>
+				<checkbox-toggle :value.sync="autoCloseCostreams" @changed="saveSettings()" label="Auto Close Costreams" tooltip="This will close all streamers in a costream except for the streamer whom you are visiting."></checkbox-toggle>
 				<checkbox-toggle :value.sync="autoMute" @changed="saveSettings()" label="Auto Mute Streams"></checkbox-toggle>
 
 				<span class="setting-subcategory">Chat</span>
