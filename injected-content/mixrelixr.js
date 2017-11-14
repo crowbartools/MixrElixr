@@ -159,62 +159,6 @@ $(() => {
 		}	
 	}
 
-	function addFavoriteButton(streamerName, isFavorited = false, isCostream = false) {
-		log("addFavoriteButton(streamerName:"+streamerName+", isFavorited:"+isFavorited+", isCostream:"+isCostream+")");
-
-		// Removing the favorite button to avoid any duplication
-		$('.ME_favorite-btn[streamer="'+streamerName+'"]').remove();
-
-		avatarBlock = $('a.avatar-block[href="/'+streamerName+'"]');
-		log('a.avatar-block[href="/'+streamerName+'"]');
-		console.log(avatarBlock);
-		console.log(avatarBlock.attr("href"));
-
-		if (isCostream) {
-			preceedingElement = avatarBlock.siblings("div.owner-block").find("div.follow-block");
-			userNameTarget = avatarBlock.siblings("div.owner-block").find("h2:first-of-type");
-		} else {
-			preceedingElement = $("div.follow-block");
-			userNameTarget = $("div.owner-block h2:first-of-type");
-		}
-
-		console.log(preceedingElement);
-		console.log(userNameTarget);
-
-		if (isFavorited) {
-			preceedingElement.after("<div streamer=\""+streamerName+"\" class=\"ME_favorite-btn\">&#9733;</div>");
-			userNameTarget.addClass("favoriteUsername");
-			$('.ME_favorite-btn[streamer="'+streamerName+'"]').addClass("faved");
-		} else {
-			preceedingElement.after("<div streamer=\""+streamerName+"\" class=\"ME_favorite-btn\">&#9734;</div>");
-			userNameTarget.removeClass("favoriteUsername");
-			$('.ME_favorite-btn[streamer="'+streamerName+'"]').removeClass("faved");
-		}
-
-	}
-
-	function setFavoriteButtonState(streamerName, isFavorited = false, isCostream=false) {
-		log("setFavoriteButtonState(streamerName:"+streamerName+", isFavorited:"+isFavorited+", isCostream:"+isCostream+")");
-
-		buttonTarget = $(".ME_favorite-btn[streamer='"+streamerName+"']");
-
-		if (isCostream) {
-			userNameTarget = $("a.avatar-block[href=\"/"+streamerName+"\"").siblings("div.owner-block").find("h2:first-of-type");
-		} else {
-			userNameTarget = $("div.owner-block h2:first-of-type");
-		}
-
-		if (isFavorited) {
-			buttonTarget.html("&#9733;");
-			buttonTarget.addClass("faved");
-			userNameTarget.addClass("favoriteUsername");
-		} else {
-			buttonTarget.html("&#9734;");
-			buttonTarget.removeClass("faved");
-			userNameTarget.removeClass("favoriteUsername");
-		}
-	}
-
 	function getChannelNameById(id) {
 		return new Promise((resolve, reject) => {
 			var request = new XMLHttpRequest();
@@ -238,41 +182,7 @@ $(() => {
 			request.send();
 		});
 	}
-	
-	// Checks the Mixer API to find a co-stream id.
-	function getCostreamID(streamerName) {
-		// `https://mixer.com/api/v1/channels/${streamerName}?fields=costreamId`
 
-		return new Promise((resolve, reject) => {
-			$.getJSON(`https://mixer.com/api/v1/channels/${streamerName}?fields=costreamId`, function(data) {
-				//var data = JSON.parse(request.responseText);
-				console.log(data);
-				if (data['costreamId'] != null) {
-					//log(`This is a co-stream!`);
-					resolve(data.costreamId);
-				} else {
-					//log(`This is NOT a co-stream!`);
-					resolve(null);
-				}
-			})
-		});
-	}
-
-	// Gets list of costreamers via Mixer API
-	function getCostreamers(costreamID) {
-		return new Promise((resolve, reject) => {
-			$.getJSON(`https://mixer.com/api/v1/costreams/${costreamID}`, function(data) {
-				var channels = data['channels'];
-				var participants = Array();
-
-				$.each(channels, function(i, val) {
-					participants.push(channels[i].token);
-				});
-
-				resolve(participants);
-			})
-		});
-	}
 
 	function loadStreamerPage(streamerName) {
 		log(`Loading streamer page for: ${streamerName}`);
@@ -281,12 +191,11 @@ $(() => {
 			// Was having issues storing a toggle option to activate highlights.
 			// So I've opted to just leave them on permenantly until further development can be done.
 			// This is the original logic gate. Leaving it in for now so I can return to it later.
-		/*if(settings.generalOptions.highlightFavorites){*/
-			log("Starting working on the highlight + fav button");
+			// We should probably make it so that "favorite buttons" are always present, but name highlighting is optional.
 
+		/*if(settings.generalOptions.highlightFavorites){*/
 			// Let's get the Costream ID via API call
 			costreamID = getCostreamID(streamerName);
-
 			costreamID.then((result) => {
 				if (result == null) {
 					// If result is null, then this is not a costream.
@@ -304,15 +213,6 @@ $(() => {
 							// If the streamer is followed,
 							// Let's show the favorite button, but it's state is based on whether streamed is faved.
 							addFavoriteButton(streamer, streamerIsFavorited(streamer));
-
-							// We now set some actions to the button we just added.
-							// These toggle the favorite status of the streamer, as well the button's state.
-							$(".ME_favorite-btn[streamer='"+streamerName+"']").click( function () {
-								streamer = $(this).attr('streamer');
-								log("This is the button for: " + streamer);
-								addOrRemoveFavorite(streamer);
-								setFavoriteButtonState(streamer, streamerIsFavorited(streamer));
-							});
 						} else {
 							// User doesn't follow the streamer.
 
@@ -324,15 +224,9 @@ $(() => {
 							// We should also attach an event to the follow button that will make the favorite button appear when a streamer is followed.
 							$('bui-icon[icon="heart-full"]').closest('div.bui-btn-raised').click(function () {
 								//log('Now following current streamer!');
-								addFavoriteButton(streamerIsFavorited(streamerName));
+								addFavoriteButton(streamerName, streamerIsFavorited(streamerName));
 
-								$(".ME_favorite-btn[streamer='"+streamerName+"']").click( function () {
-									streamer = $(this).attr('streamer');
-									log("This is the button for: " + streamer);
-									addOrRemoveFavorite(streamer);
-									setFavoriteButtonState(streamer, streamerIsFavorited(streamerName));
-								});
-
+								// Remove the action from the follow button.
 								$('bui-icon[icon="heart-full"]').closest('div.bui-btn-raised').off('click');
 							});
 						}
@@ -344,64 +238,45 @@ $(() => {
 
 					// Let's see who is part of this co-stream collective.
 					costreamers = getCostreamers(result);
-
 					costreamers.then((result) => {
 						log("Costreamers: "+result);
 						costreamers = result;
-
+						// Let's check each co-streamer
 						$.each(costreamers, function(i, val) {
-							//participants.push(channels[i].token);
-
-							// This is the current streamer.
+							// This is the current co-streamer.
 							currentStreamer = costreamers[i]; 
 
-							//log("CoStreamer #"+(i+1)+": " + currentStreamer);
+							// Check to see if this streamer is followed.
 							isFollowed = streamerIsFollowed(currentStreamer);
 
 							isFollowed.then((result) => {
+								// Let's see which streamer we checked
 								streamer = result.streamerName;
 
 								if (result.isFollowed) {
-									// The current streamer is followed 
-									log("Costreamer '" + streamer+"' is followed.");
+									// The streamer is followed, so let's create the favorite button.
 									addFavoriteButton(streamer, streamerIsFavorited(streamer), true);
-
-									// We now set some actions to the button we just added.
-									// These toggle the favorite status of the streamer, as well the button's state.
-									$(".ME_favorite-btn[streamer=\""+streamer+"\"]").click( function () {
-										thisStreamer = $(this).attr('streamer');
-										log("This is the button for: " + thisStreamer);
-										addOrRemoveFavorite(thisStreamer);
-										setFavoriteButtonState(thisStreamer, streamerIsFavorited(thisStreamer), true);
-									});
 								} else {
 									// The current streamer is not followed
-									log("Costreamer '" + streamer+"' is not followed.");
+									//log("Costreamer '" + streamer+"' is not followed.");
 
 									// If not followed but is favorited, favorite status should be removed automatically.
 									if (streamerIsFavorited(streamer)) {
 										syncFavorites(removeFavorite(streamer));
 									}
 
+									// We need to find the follow button for this streamer.
 									followButtonElement = $('a.avatar-block[href="/'+streamer+'"]').siblings('div.owner-block').find('div.bui-btn');
 
 									// We should also attach an event to the follow button that will make the favorite button appear when a streamer is followed.
 									followButtonElement.click(function () {
-										//console.log($(this))
-										//console.log($(this).parents('div.head').find('a.avatar-block').attr("href").substr(1));
-
+										// Find out which streamer's follow button we are hitting.
 										thisStreamer = $(this).parents('div.head').find('a.avatar-block').attr("href").substr(1);
-										log('Now following '+thisStreamer);
 
+										// Add a favorite button for this streamer
 										addFavoriteButton(thisStreamer, streamerIsFavorited(thisStreamer), true);
 
-										$(".ME_favorite-btn[streamer='"+thisStreamer+"']").click( function () {
-											streamer = $(this).attr('streamer');
-											log("This is the button for: " + streamer);
-											addOrRemoveFavorite(streamer);
-											setFavoriteButtonState(streamer, streamerIsFavorited(streamer), true);
-										});
-
+										// remove event from the follow button.
 										followButtonElement.off('click');
 									});
 								}
@@ -412,123 +287,6 @@ $(() => {
 					});
 				}
 			});
-
-	
-
-			/*if (!detectCostreams()) {
-				// If not a costream, run standard favorite button insertion
-
-				// Let's if we are following this streamer
-				isFollowed = streamerIsFollowed(streamerName);
-
-				// Once we get some info back from the API
-				isFollowed.then((result) => {
-					if (result.isFollowed) {
-							streamer = result.streamerName
-							// If the streamer is followed,
-							// Let's show the favorite button, but it's state is based on whether streamed is faved.
-							addFavoriteButton(streamer, streamerIsFavorited(streamer));
-
-							// We now set some actions to the button we just added.
-							// These toggle the favorite status of the streamer, as well the button's state.
-							$(".ME_favorite-btn[streamer='"+streamerName+"']").click( function () {
-								streamer = $(this).attr('streamer');
-								log("This is the button for: " + streamer);
-								addOrRemoveFavorite(streamer);
-								setFavoriteButtonState(streamer, streamerIsFavorited(streamer));
-							});
-					} else {
-						// User doesn't follow the streamer.
-
-						// If not followed but is favorited, favorite status should be removed automatically.
-						if (streamerIsFavorited(streamerName)) {
-							syncFavorites(removeFavorite(streamerName));
-						}
-
-						// We should also attach an event to the follow button that will make the favorite button appear when a streamer is followed.
-						$('bui-icon[icon="heart-full"]').closest('div.bui-btn-raised').click(function () {
-							//log('Now following current streamer!');
-							addFavoriteButton(streamerIsFavorited(streamerName));
-
-							$(".ME_favorite-btn[streamer='"+streamerName+"']").click( function () {
-								streamer = $(this).attr('streamer');
-								log("This is the button for: " + streamer);
-								addOrRemoveFavorite(streamer);
-								setFavoriteButtonState(streamer, streamerIsFavorited(streamerName));
-							});
-
-							$('bui-icon[icon="heart-full"]').closest('div.bui-btn-raised').off('click');
-						});
-					}
-				});
-			} else {
-				// We found a co-stream.
-
-				// How many streamers are there in this co-stream?
-				streamersCount = $("div.owners div.head").length;
-				coStreamers = Array();
-
-				// Let's loop them through.
-				for (i=0; i<streamersCount; i++) {
-					// This is the current streamer.
-					currentStreamer = $("a.avatar-block:eq("+i+")").attr("href").substr(1);
-					coStreamers.push(currentStreamer);
-					//log("CoStreamer #"+(i+1)+": " + currentStreamer);
-					isFollowed = streamerIsFollowed(currentStreamer);
-
-					isFollowed.then((result) => {
-							streamer = result.streamerName;
-
-							if (result.isFollowed) {
-								// The current streamer is followed 
-								log("Costreamer '" + streamer+"' is followed.");
-								addFavoriteButton(streamer, streamerIsFavorited(streamer), true);
-
-								// We now set some actions to the button we just added.
-								// These toggle the favorite status of the streamer, as well the button's state.
-								$(".ME_favorite-btn[streamer=\""+streamer+"\"]").click( function () {
-									thisStreamer = $(this).attr('streamer');
-									log("This is the button for: " + thisStreamer);
-									addOrRemoveFavorite(thisStreamer);
-									setFavoriteButtonState(thisStreamer, streamerIsFavorited(thisStreamer), true);
-								});
-							} else {
-								// The current streamer is not followed
-								log("Costreamer '" + streamer+"' is not followed.");
-
-								// If not followed but is favorited, favorite status should be removed automatically.
-								if (streamerIsFavorited(streamer)) {
-									syncFavorites(removeFavorite(streamer));
-								}
-
-								followButtonElement = $('a.avatar-block[href="/'+streamer+'"]').siblings('div.owner-block').find('div.bui-btn');
-
-								// We should also attach an event to the follow button that will make the favorite button appear when a streamer is followed.
-								followButtonElement.click(function () {
-									//console.log($(this))
-									//console.log($(this).parents('div.head').find('a.avatar-block').attr("href").substr(1));
-
-									thisStreamer = $(this).parents('div.head').find('a.avatar-block').attr("href").substr(1);
-									log('Now following '+thisStreamer);
-
-									addFavoriteButton(thisStreamer, streamerIsFavorited(thisStreamer), true);
-
-									$(".ME_favorite-btn[streamer='"+thisStreamer+"']").click( function () {
-										streamer = $(this).attr('streamer');
-										log("This is the button for: " + streamer);
-										addOrRemoveFavorite(streamer);
-										setFavoriteButtonState(streamer, streamerIsFavorited(streamer), true);
-									});
-
-									followButtonElement.off('click');
-								});
-							}
-					});
-					
-				}
-			}*/
-
-			
 		/*} else {
 			log("Highlights not active. So we don't do this.")
 			$("div.owner-block h2:first-of-type").removeClass("favoriteUsername");
@@ -883,6 +641,76 @@ $(() => {
 		scrollChatToBottom();
 	}
 
+	// This inserts a button that toggles favorite status of the specified streamer.
+	// This also modifies the coloration on the user name.
+	function addFavoriteButton(streamerName, isFavorited = false, isCostream = false) {
+		//log("addFavoriteButton(streamerName:"+streamerName+", isFavorited:"+isFavorited+", isCostream:"+isCostream+")");
+
+		// Removing the favorite button to avoid any duplication
+		$('.ME_favorite-btn[streamer="'+streamerName+'"]').remove();
+
+		// Before we add any button, we need to find the DOM objects that will be impacted by our insertions.
+			// preceedingElement = The element that comes before where the favorite button will go.
+			// userNameTarget = The element that CSS will be applied to to denote the streamer's favorited status.
+		if (isCostream) {
+			// The avatar block is the key to finding out which co-streamer we are working with
+			avatarBlock = $('a.avatar-block[href="/'+streamerName+'"]');
+			preceedingElement = avatarBlock.siblings("div.owner-block").find("div.follow-block");
+			userNameTarget = avatarBlock.siblings("div.owner-block").find("h2:first-of-type");
+		} else {
+			preceedingElement = $("div.follow-block");
+			userNameTarget = $("div.owner-block h2:first-of-type");
+		}
+
+		// Now we need to do the actual button and CSS insertions.
+			// This adds the favorite button with either a hollow star (non-favorite), or filled star (favorite).
+			// It also marks the streamer's name depending on favorite status.
+		if (isFavorited) {
+			preceedingElement.after("<div streamer=\""+streamerName+"\" class=\"ME_favorite-btn\">&#9733;</div>");
+			userNameTarget.addClass("favoriteUsername");
+			$('.ME_favorite-btn[streamer="'+streamerName+'"]').addClass("faved");
+		} else {
+			preceedingElement.after("<div streamer=\""+streamerName+"\" class=\"ME_favorite-btn\">&#9734;</div>");
+			userNameTarget.removeClass("favoriteUsername");
+			$('.ME_favorite-btn[streamer="'+streamerName+'"]').removeClass("faved");
+		}
+
+		// We now set some actions to the button we just added.
+		// This will toggle the favorite status of the streamer, as well the button's state.
+		$(".ME_favorite-btn[streamer='"+streamerName+"']").click( function () {
+			streamer = $(this).attr('streamer');
+			addOrRemoveFavorite(streamer);
+			setFavoriteButtonState(streamer, streamerIsFavorited(streamer));
+		});
+	}
+
+	// This toggles on-screen DOM elements based on the specified streamer's favorite status.
+	function setFavoriteButtonState(streamerName, isFavorited = false, isCostream=false) {
+		//log("setFavoriteButtonState(streamerName:"+streamerName+", isFavorited:"+isFavorited+", isCostream:"+isCostream+")");
+
+		// First, let's find out which streamer we're working on.
+		buttonTarget = $(".ME_favorite-btn[streamer='"+streamerName+"']");
+
+		// Now we need to find the user name element so we can modifiy it.
+		if (isCostream) {
+			userNameTarget = $("a.avatar-block[href=\"/"+streamerName+"\"").siblings("div.owner-block").find("h2:first-of-type");
+		} else {
+			userNameTarget = $("div.owner-block h2:first-of-type");
+		}
+
+		if (isFavorited) {
+			// If streamer is faved: fill in star, change user name to green.
+			buttonTarget.html("&#9733;");
+			buttonTarget.addClass("faved");
+			userNameTarget.addClass("favoriteUsername");
+		} else {
+			// If streamer is not faved: empty star, change user name to normal.
+			buttonTarget.html("&#9734;");
+			buttonTarget.removeClass("faved");
+			userNameTarget.removeClass("favoriteUsername");
+		}
+	}
+
 	function scrollChatToBottom() {
 		var chatContainer = $('.message-container');
 		chatContainer.scrollTop(chatContainer[0].scrollHeight);
@@ -1048,27 +876,22 @@ $(() => {
 	// Returns object with following status and streamer name.
 	function streamerIsFollowed(streamerName) {
 		return new Promise((resolve, reject) => {
-			// get id and do something with it
-
-
-			// TODO: Modify this function so that it returns the follow boolean AND the target streamer
 			if (cache.user != null) {
 				var userId = cache.user.id;
-				//log("current userID: " + userId);
-				//log(`https://mixer.com/api/v1/users/${userId}/follows?fields=token&where=token:eq:${streamerName}`);
-				//apiURL = `https://mixer.com/api/v1/users/${userId}/follows?fields=token&where=token:eq:${streamerName}`;
 
+				// Let's create the data we want to return
 				var streamerData = {}
 				streamerData.streamerName = streamerName;
 				streamerData.isFollowed = false;
 
+				// Now check the API to see if this streamer is followed.
 				$.getJSON(`https://mixer.com/api/v1/users/${userId}/follows?fields=token&where=token:eq:${streamerName}`, function(data) {
 					if (data.length > 0) {
-						//log(`API Call: ${streamerName} is followed`);
+						// Found the streamer in the user's followers.
 						streamerData.isFollowed = true;
 						resolve(streamerData);
 					} else {
-						//log(`API Call: ${streamerName} is NOT followed`);
+						// Did not find the streamer in the user's followers.
 						streamerData.isFollowed = false;
 						resolve(streamerData);
 					}
@@ -1108,7 +931,7 @@ $(() => {
 
 	// Adds or Removes a streamer to the favorite list
 	function addOrRemoveFavorite(streamerName) {
-		log("addOrRemoveFavorite("+streamerName+")")
+		//log("addOrRemoveFavorite("+streamerName+")")
 
 		// If general options is null, we need to create the object so we have something to attach the data to.
 		if (settings.generalOptions == null) {
@@ -1134,7 +957,7 @@ $(() => {
 	}
 
 	function removeFavorite(streamerName) {
-		log("Removing favorite: "+streamerName);
+		//log("Removing favorite: "+streamerName);
 		favorites = settings.generalOptions.favoriteFriends;
 		const index = favorites.indexOf(streamerName);
 
@@ -1151,6 +974,41 @@ $(() => {
 				favoriteFriends: favorites
 			}
 		}, () => {});
+	}
+
+	// Checks the Mixer API to find a co-stream id.
+	function getCostreamID(streamerName) {
+		return new Promise((resolve, reject) => {
+			// Check Mixer API to see if active streamer is currently costreaming.
+			$.getJSON(`https://mixer.com/api/v1/channels/${streamerName}?fields=costreamId`, function(data) {
+				if (data['costreamId'] != null) {
+					// If user is co-streaming, resolve with costream id.
+					resolve(data.costreamId);
+				} else {
+					// If user is co-streaming, resolve with null.
+					resolve(null);
+				}
+			})
+		});
+	}
+
+	// Gets list of costreamers via Mixer API
+	function getCostreamers(costreamID) {
+		return new Promise((resolve, reject) => {
+			// Check Mixer API with co-stream ID to see who is participaiting in the co-stream. 
+			$.getJSON(`https://mixer.com/api/v1/costreams/${costreamID}`, function(data) {
+				var channels = data['channels'];
+				var participants = Array();
+
+				// Check each channel from API data and insert into participants array.
+				$.each(channels, function(i, val) {
+					participants.push(channels[i].token);
+				});
+
+				// Resolve array of co-stream participants
+				resolve(participants);
+			})
+		});
 	}
 	
 	waitForPageLoad().then(() => {
