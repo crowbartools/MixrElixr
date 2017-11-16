@@ -22,8 +22,8 @@ Vue.component('online-friend', {
 						</div>
                     </div>
 					<div class="info-container">
-						<div class="friendGame" :title="channelGame">{{friend.type.name}}</div> 
-						<div class="friendTitle" :title="channelTitle">{{friend.name}}</div>                                   
+						<div class="friendGame" :title="channelGame">{{channelGame}}</div> 
+						<div class="friendTitle" :title="channelTitle">{{channelTitle}}</div>                                   
                     </div>
                 </a>
             </div>
@@ -47,10 +47,11 @@ Vue.component('online-friend', {
 			return `https://mixer.com/${this.friend.token}`;
 		},
 		channelTitle: function(){
-			return `${this.friend.name}`;
+			return this.friend.name;
 		},
 		channelGame: function(){
-			return `${this.friend.type.name}`;
+			if(this.friend.type == null) return "";
+			return this.friend.type.name;
 		}
 	},
 	methods: {
