@@ -35,7 +35,7 @@ settingsStorage = {
 		saveGeneralOptions: function(options) {
 			this.saveAllSettings({
 				'generalOptions': options
-			}, true);
+			});
 		},
 		getDefaultOptions: function() {
 			return {

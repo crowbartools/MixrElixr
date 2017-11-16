@@ -96,8 +96,7 @@ $(() => {
 		log('Loading up settings for homepage');
 
 		// If the user desires to have favorites highlighted:
-		/*if(settings.generalOptions.highlightFavorites){*/
-			// log("Highlighting Favorites is on");
+		if(settings.generalOptions.highlightFavorites){
 			// clear the loop so were aren't trying to run it constantly!
 			if(cache.highlightLoop != null) {
 				clearInterval(cache.highlightLoop);
@@ -123,7 +122,7 @@ $(() => {
 					}
 				});
 			}, 500);
-		/*} else {
+		} else {
 			log("Highlighting Favorites is off");
 			// If highlights are off, then let's remove any active highlights.
 			$("b-media-card.favoriteFriend").removeClass("favoriteFriend");
@@ -132,9 +131,7 @@ $(() => {
 			if(cache.highlightLoop != null) {
 				clearInterval(cache.highlightLoop);
 			}
-		}*/
-
-		
+		}	
 	
 		if(!settings.homePageOptions) {
 			log('No home page settings saved.');
@@ -188,12 +185,9 @@ $(() => {
 		log(`Loading streamer page for: ${streamerName}`);
 
 		// murfGUY TO DO NOTES:
-			// Was having issues storing a toggle option to activate highlights.
-			// So I've opted to just leave them on permenantly until further development can be done.
-			// This is the original logic gate. Leaving it in for now so I can return to it later.
 			// We should probably make it so that "favorite buttons" are always present, but name highlighting is optional.
 
-		/*if(settings.generalOptions.highlightFavorites){*/
+		if(settings.generalOptions.highlightFavorites){
 			// Let's get the Costream ID via API call
 			costreamID = getCostreamID(streamerName);
 			costreamID.then((result) => {
@@ -287,13 +281,11 @@ $(() => {
 					});
 				}
 			});
-		/*} else {
+		} else {
 			log("Highlights not active. So we don't do this.")
 			$("div.owner-block h2:first-of-type").removeClass("favoriteUsername");
 			$("#ME_favorite-btn").removeClass("faved");
-		}*/
-
-		
+		}		
 	
 		if(!settings.streamerPageOptions) {
 			log('No streamer page settings saved.');
@@ -796,7 +788,7 @@ $(() => {
 			chrome.storage.sync.get({
 				'streamerPageOptions': null,
 				'homePageOptions': null,
-				'generalOptions': null
+				'generalOptions': { highlightFavorites: true }
 			  }, (options) => {
 				  console.log(options);
 				resolve(options);	  
@@ -978,10 +970,6 @@ $(() => {
 			settings.generalOptions = {};
 			settings.generalOptions.favoriteFriends = Array();
 		}
-
-		console.log(settings.generalOptions)
-		console.log(settings.generalOptions.favoriteFriends)
-
 
 		favorites = settings.generalOptions.favoriteFriends;
 
