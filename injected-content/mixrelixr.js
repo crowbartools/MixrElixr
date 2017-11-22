@@ -108,24 +108,24 @@ $(() => {
 				favoriteFriends = settings.generalOptions.favoriteFriends;
 
 				// Checking all streamer cards of non-favorites:
-				$("b-media-card:not('.favoriteFriend')").each(function (index) {
+				$('b-media-card:not(\'.favoriteFriend\')').each(function(index) {
 					// Which streamer did we find
-					var streamer = $(this).find("h2.username").text().replace(/ /g, '').replace(/\r?\n|\r/g, "");
+					var streamer = $(this).find('h2.username').text().replace(/ /g, '').replace(/\r?\n|\r/g, '');
 					
 					if (streamerIsFavorited(streamer)) {
 						// If streamer is a favorite, let's highlight the window
-						$(this).find("h2.username").addClass("favoriteUsername");
-						$(this).addClass("favoriteFriend");
+						$(this).find('h2.username').addClass('favoriteUsername');
+						$(this).addClass('favoriteFriend');
 					} else {
-						$(this).find("h2.username").removeClass("favoriteUsername");
-						$(this).removeClass("favoriteFriend");
+						$(this).find('h2.username').removeClass('favoriteUsername');
+						$(this).removeClass('favoriteFriend');
 					}
 				});
 			}, 500);
 		} else {
-			log("Highlighting Favorites is off");
+			log('Highlighting Favorites is off');
 			// If highlights are off, then let's remove any active highlights.
-			$("b-media-card.favoriteFriend").removeClass("favoriteFriend");
+			$('b-media-card.favoriteFriend').removeClass('favoriteFriend');
 
 			// clear the loop so were aren't trying to run it constantly!
 			if(cache.highlightLoop != null) {
@@ -185,7 +185,7 @@ $(() => {
 		log(`Loading streamer page for: ${streamerName}`);
 
 		// murfGUY TO DO NOTES:
-			// We should probably make it so that "favorite buttons" are always present, but name highlighting is optional.
+		// We should probably make it so that "favorite buttons" are always present, but name highlighting is optional.
 
 		if(settings.generalOptions.highlightFavorites){
 			// Let's get the Costream ID via API call
@@ -193,7 +193,7 @@ $(() => {
 			costreamID.then((result) => {
 				if (result == null) {
 					// If result is null, then this is not a costream.
-					log(streamerName+" is not costreaming.");
+					log(streamerName+' is not costreaming.');
 
 					// Let's if we are following this streamer
 					isFollowed = streamerIsFollowed(streamerName);
@@ -202,7 +202,7 @@ $(() => {
 					isFollowed.then((result) => {
 						if (result.isFollowed) {
 							// Which streamer is this?
-							streamer = result.streamerName
+							streamer = result.streamerName;
 
 							// If the streamer is followed,
 							// Let's show the favorite button, but it's state is based on whether streamed is faved.
@@ -216,7 +216,7 @@ $(() => {
 							}
 
 							// We should also attach an event to the follow button that will make the favorite button appear when a streamer is followed.
-							$('bui-icon[icon="heart-full"]').closest('div.bui-btn-raised').click(function () {
+							$('bui-icon[icon="heart-full"]').closest('div.bui-btn-raised').click(function() {
 								//log('Now following current streamer!');
 								addFavoriteButton(streamerName, streamerIsFavorited(streamerName));
 
@@ -228,12 +228,12 @@ $(() => {
 
 				} else {
 					// If result has value, then this is a co-stream.
-					log(streamerName+" is currently costreaming.");
+					log(streamerName+' is currently costreaming.');
 
 					// Let's see who is part of this co-stream collective.
 					costreamers = getCostreamers(result);
 					costreamers.then((result) => {
-						log("Costreamers: "+result);
+						log('Costreamers: '+result);
 						costreamers = result;
 						// Let's check each co-streamer
 						$.each(costreamers, function(i, val) {
@@ -263,9 +263,9 @@ $(() => {
 									followButtonElement = $('a.avatar-block[href="/'+streamer+'"]').siblings('div.owner-block').find('div.bui-btn');
 
 									// We should also attach an event to the follow button that will make the favorite button appear when a streamer is followed.
-									followButtonElement.click(function () {
+									followButtonElement.click(function() {
 										// Find out which streamer's follow button we are hitting.
-										thisStreamer = $(this).parents('div.head').find('a.avatar-block').attr("href").substr(1);
+										thisStreamer = $(this).parents('div.head').find('a.avatar-block').attr('href').substr(1);
 
 										// Add a favorite button for this streamer
 										addFavoriteButton(thisStreamer, streamerIsFavorited(thisStreamer), true);
@@ -282,9 +282,9 @@ $(() => {
 				}
 			});
 		} else {
-			log("Highlights not active. So we don't do this.")
-			$("div.owner-block h2:first-of-type").removeClass("favoriteUsername");
-			$("#ME_favorite-btn").removeClass("faved");
+			log('Highlights not active. So we don\'t do this.');
+			$('div.owner-block h2:first-of-type').removeClass('favoriteUsername');
+			$('#ME_favorite-btn').removeClass('faved');
 		}		
 	
 		if(!settings.streamerPageOptions) {
@@ -377,16 +377,16 @@ $(() => {
 			theaterBtn.insertBefore($('.toolbar').children().last());
 		}
 
-        // Auto Close Costreams
-        if(options.autoCloseCostreams){
-            var costreamPage = detectCostreams();
-            if(costreamPage) {
-                log('Costream detected. Waiting for profiles to load')
-                closeCostreams(streamerName);
-            } else {
-                log('No costream detected');
-            }
-        }
+		// Auto Close Costreams
+		if(options.autoCloseCostreams){
+			var costreamPage = detectCostreams();
+			if(costreamPage) {
+				log('Costream detected. Waiting for profiles to load');
+				closeCostreams(streamerName);
+			} else {
+				log('No costream detected');
+			}
+		}
 	
 		applyChatSettings(streamerName);
 	}
@@ -401,34 +401,34 @@ $(() => {
 		}
 	}
 
-    function closeCostreams(streamerName) {        
-        var profile = $('div.profile');
-        if(profile.length === 0) {
-            // Profile divs have not appeared yet
-            setTimeout(closeCostreams, 500, streamerName);
-        } else {
-            // Profile divs have appeared
-            log('Profiles loaded');
-            profile.each(function() {
-                // Check if profile does NOT contain current streamer's name
-                if($(this).is(':not(:contains(' + streamerName + '))')) {
-                    var closeBtn = $(this).siblings().eq(0).children()[2];
-                    if(closeBtn){
-                        closeBtn.click();
-                    }
-                }
-            });
-        }
-    }
+	function closeCostreams(streamerName) {        
+		var profile = $('div.profile');
+		if(profile.length === 0) {
+			// Profile divs have not appeared yet
+			setTimeout(closeCostreams, 500, streamerName);
+		} else {
+			// Profile divs have appeared
+			log('Profiles loaded');
+			profile.each(function() {
+				// Check if profile does NOT contain current streamer's name
+				if($(this).is(':not(:contains(' + streamerName + '))')) {
+					var closeBtn = $(this).siblings().eq(0).children()[2];
+					if(closeBtn){
+						closeBtn.click();
+					}
+				}
+			});
+		}
+	}
 
-    function detectCostreams() {
-        var owners = $('div.owners').find('.head');
-        if(owners.length > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+	function detectCostreams() {
+		var owners = $('div.owners').find('.head');
+		if(owners.length > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 	
 	function applyChatSettings(streamerName) {
 	
@@ -682,34 +682,34 @@ $(() => {
 		$('.ME_favorite-btn[streamer="'+streamerName+'"]').remove();
 
 		// Before we add any button, we need to find the DOM objects that will be impacted by our insertions.
-			// preceedingElement = The element that comes before where the favorite button will go.
-			// userNameTarget = The element that CSS will be applied to to denote the streamer's favorited status.
+		// preceedingElement = The element that comes before where the favorite button will go.
+		// userNameTarget = The element that CSS will be applied to to denote the streamer's favorited status.
 		if (isCostream) {
 			// The avatar block is the key to finding out which co-streamer we are working with
 			avatarBlock = $('a.avatar-block[href="/'+streamerName+'"]');
-			preceedingElement = avatarBlock.siblings("div.owner-block").find("div.follow-block");
-			userNameTarget = avatarBlock.siblings("div.owner-block").find("h2:first-of-type");
+			preceedingElement = avatarBlock.siblings('div.owner-block').find('div.follow-block');
+			userNameTarget = avatarBlock.siblings('div.owner-block').find('h2:first-of-type');
 		} else {
-			preceedingElement = $("div.follow-block");
-			userNameTarget = $("div.owner-block h2:first-of-type");
+			preceedingElement = $('div.follow-block');
+			userNameTarget = $('div.owner-block h2:first-of-type');
 		}
 
 		// Now we need to do the actual button and CSS insertions.
-			// This adds the favorite button with either a hollow star (non-favorite), or filled star (favorite).
-			// It also marks the streamer's name depending on favorite status.
+		// This adds the favorite button with either a hollow star (non-favorite), or filled star (favorite).
+		// It also marks the streamer's name depending on favorite status.
 		if (isFavorited) {
-			preceedingElement.after("<div streamer=\""+streamerName+"\" class=\"ME_favorite-btn\">&#9733;</div>");
-			userNameTarget.addClass("favoriteUsername");
-			$('.ME_favorite-btn[streamer="'+streamerName+'"]').addClass("faved");
+			preceedingElement.after('<div streamer="'+streamerName+'" class="ME_favorite-btn">&#9733;</div>');
+			userNameTarget.addClass('favoriteUsername');
+			$('.ME_favorite-btn[streamer="'+streamerName+'"]').addClass('faved');
 		} else {
-			preceedingElement.after("<div streamer=\""+streamerName+"\" class=\"ME_favorite-btn\">&#9734;</div>");
-			userNameTarget.removeClass("favoriteUsername");
-			$('.ME_favorite-btn[streamer="'+streamerName+'"]').removeClass("faved");
+			preceedingElement.after('<div streamer="'+streamerName+'" class="ME_favorite-btn">&#9734;</div>');
+			userNameTarget.removeClass('favoriteUsername');
+			$('.ME_favorite-btn[streamer="'+streamerName+'"]').removeClass('faved');
 		}
 
 		// We now set some actions to the button we just added.
 		// This will toggle the favorite status of the streamer, as well the button's state.
-		$(".ME_favorite-btn[streamer='"+streamerName+"']").click( function () {
+		$('.ME_favorite-btn[streamer=\''+streamerName+'\']').click( function() {
 			streamer = $(this).attr('streamer');
 			addOrRemoveFavorite(streamer);
 			setFavoriteButtonState(streamer, streamerIsFavorited(streamer));
@@ -721,25 +721,25 @@ $(() => {
 		//log("setFavoriteButtonState(streamerName:"+streamerName+", isFavorited:"+isFavorited+", isCostream:"+isCostream+")");
 
 		// First, let's find out which streamer we're working on.
-		buttonTarget = $(".ME_favorite-btn[streamer='"+streamerName+"']");
+		buttonTarget = $('.ME_favorite-btn[streamer=\''+streamerName+'\']');
 
 		// Now we need to find the user name element so we can modifiy it.
 		if (isCostream) {
-			userNameTarget = $("a.avatar-block[href=\"/"+streamerName+"\"").siblings("div.owner-block").find("h2:first-of-type");
+			userNameTarget = $('a.avatar-block[href="/'+streamerName+'"').siblings('div.owner-block').find('h2:first-of-type');
 		} else {
-			userNameTarget = $("div.owner-block h2:first-of-type");
+			userNameTarget = $('div.owner-block h2:first-of-type');
 		}
 
 		if (isFavorited) {
 			// If streamer is faved: fill in star, change user name to green.
-			buttonTarget.html("&#9733;");
-			buttonTarget.addClass("faved");
-			userNameTarget.addClass("favoriteUsername");
+			buttonTarget.html('&#9733;');
+			buttonTarget.addClass('faved');
+			userNameTarget.addClass('favoriteUsername');
 		} else {
 			// If streamer is not faved: empty star, change user name to normal.
-			buttonTarget.html("&#9734;");
-			buttonTarget.removeClass("faved");
-			userNameTarget.removeClass("favoriteUsername");
+			buttonTarget.html('&#9734;');
+			buttonTarget.removeClass('faved');
+			userNameTarget.removeClass('favoriteUsername');
 		}
 	}
 
@@ -783,7 +783,7 @@ $(() => {
 	}
 	
 	function getSettings() {
-		log("getSettings()");
+		log('getSettings()');
 		return new Promise((resolve, reject) => {
 			chrome.storage.sync.get({
 				'streamerPageOptions': null,
@@ -912,7 +912,7 @@ $(() => {
 				var userId = cache.user.id;
 
 				// Let's create the data we want to return
-				var streamerData = {}
+				var streamerData = {};
 				streamerData.streamerName = streamerName;
 				streamerData.isFollowed = false;
 
@@ -927,7 +927,7 @@ $(() => {
 						streamerData.isFollowed = false;
 						resolve(streamerData);
 					}
-				})
+				});
 
 
 			} else {
@@ -974,9 +974,9 @@ $(() => {
 		favorites = settings.generalOptions.favoriteFriends;
 
 		if (streamerIsFavorited(streamerName)) {
-			favorites = removeFavorite(streamerName)
+			favorites = removeFavorite(streamerName);
 		} else {
-			log("Adding favorite: "+streamerName);
+			log('Adding favorite: '+streamerName);
 			favorites.push(streamerName);
 		}
 
@@ -996,7 +996,7 @@ $(() => {
 	}
 
 	function syncFavorites(favorites) {
-		log("Syncing Favorites list: "+favorites)
+		log('Syncing Favorites list: '+favorites);
 		chrome.storage.sync.set({
 			'generalOptions': {
 				favoriteFriends: favorites
@@ -1016,7 +1016,7 @@ $(() => {
 					// If user is co-streaming, resolve with null.
 					resolve(null);
 				}
-			})
+			});
 		});
 	}
 
@@ -1035,7 +1035,7 @@ $(() => {
 
 				// Resolve array of co-stream participants
 				resolve(participants);
-			})
+			});
 		});
 	}
 	
