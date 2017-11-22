@@ -35,13 +35,14 @@ settingsStorage = {
 		saveGeneralOptions: function(options) {
 			this.saveAllSettings({
 				'generalOptions': options
-			}, false);
+			});
 		},
 		getDefaultOptions: function() {
 			return {
 				streamerPageOptions: {
 					global: {
 						autoCloseInteractive: false,
+						autoCloseCostreams: false,
 						separateChat: false,
 						alternateChatBGColor: false,
 						mentionChatBGColor: false,
@@ -64,7 +65,8 @@ settingsStorage = {
 				},
 				generalOptions: {
 					showBadge: true,
-					favoriteFriends: []
+					favoriteFriends: [],
+					highlightFavorites: true
 				}
 			};
 		},

@@ -105,7 +105,8 @@ function getGeneralOptions() {
 		chrome.storage.sync.get({
 			'generalOptions': {
 				showBadge: true,
-				favoriteFriends: []
+				favoriteFriends: [],
+				highlightFavories: false
 			}
 		}, function(data) {
 			resolve(data);
