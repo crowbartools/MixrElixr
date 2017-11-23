@@ -21,5 +21,10 @@
         ],
         "no-undef": "warn",
         "no-unused-vars": "warn"
+    },
+    "globals": {
+        "$": false,
+        "chrome": false,
+        "Vue": false
     }
 }
