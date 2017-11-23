@@ -679,8 +679,11 @@ $(() => {
 	function addFavoriteButton(streamerName, isFavorited = false, isCostream = false) {
 
 		let favoriteBtnTarget = `.ME_favorite-btn[streamer='${streamerName}']`;
+
 		// Removing the favorite button to avoid any duplication
-		$(favoriteBtnTarget).remove();
+		// we dont want to filter to the streamer name here so we also remove any 
+		// favorite buttons from other streamers pages
+		$('.ME_favorite-btn').remove();
 
 		// Before we add any button, we need to find the DOM objects that will be impacted by our insertions.
 		let avatarBlock, preceedingElement, userNameTarget;
