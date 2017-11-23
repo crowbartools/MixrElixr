@@ -22,11 +22,14 @@
                 "*/api/*"
             ],
             "css": [
+                "/resources/css/plugins/jquery/tooltipster.bundle.min.css",
+                "/resources/css/plugins/jquery/tooltipster-sideTip-borderless.min.css",
                 "/injected-content/styles.css"
             ],
             "js": [
                 "/resources/js/jquery.js",
                 "/resources/js/jquery.initialize.js",
+                "/resources/js/plugins/jquery/tooltipster.bundle.min.js",
                 "/injected-content/mixrelixr.js"
             ]
         }

@@ -274,8 +274,6 @@ $(() => {
 								}
 							});
 						});
-
-
 					});
 				}
 			});
@@ -367,6 +365,8 @@ $(() => {
 			//add an attr for us to check for it later
 			theaterBtn.attr('theater-mode-btn-container', '');
 			theaterBtn.attr('title', 'MixrElixr: Theater Mode');
+
+			theaterBtn.addClass('me-tooltip');
 
 			//change the icon
 			theaterBtn.find('span.set-material').text('event_seat');
@@ -678,8 +678,9 @@ $(() => {
 	// This also modifies the coloration on the user name.
 	function addFavoriteButton(streamerName, isFavorited = false, isCostream = false) {
 
+		let favoriteBtnTarget = `.ME_favorite-btn[streamer='${streamerName}']`;
 		// Removing the favorite button to avoid any duplication
-		$('.ME_favorite-btn[streamer="'+streamerName+'"]').remove();
+		$(favoriteBtnTarget).remove();
 
 		// Before we add any button, we need to find the DOM objects that will be impacted by our insertions.
 		let avatarBlock, preceedingElement, userNameTarget;
@@ -696,18 +697,18 @@ $(() => {
 		// Now we need to do the actual button and CSS insertions.
 		// This adds the favorite button with either a hollow star (non-favorite), or filled star (favorite).
 		// It also marks the streamer's name depending on favorite status.
-		preceedingElement.after(`<div streamer="${streamerName}" class="ME_favorite-btn" title="MixrElixr: Favorite">&#9733;</div>`);
+		preceedingElement.after(`<div streamer="${streamerName}" class="ME_favorite-btn me-tooltip" title="MixrElixr: Favorite">&#9733;</div>`);
 		if (isFavorited) {
 			userNameTarget.addClass('favoriteUsername');
-			$('.ME_favorite-btn[streamer="'+streamerName+'"]').addClass('faved');
+			$(favoriteBtnTarget).addClass('faved');
 		} else {
 			userNameTarget.removeClass('favoriteUsername');
-			$('.ME_favorite-btn[streamer="'+streamerName+'"]').removeClass('faved');
+			$(favoriteBtnTarget).removeClass('faved');
 		}
 
 		// We now set some actions to the button we just added.
 		// This will toggle the favorite status of the streamer, as well the button's state.
-		$('.ME_favorite-btn[streamer=\''+streamerName+'\']').click( function() {
+		$(favoriteBtnTarget).click( function() {
 			let streamer = $(this).attr('streamer');
 			addOrRemoveFavorite(streamer);
 			setFavoriteButtonState(streamer, streamerIsFavorited(streamer));
@@ -716,7 +717,6 @@ $(() => {
 
 	// This toggles on-screen DOM elements based on the specified streamer's favorite status.
 	function setFavoriteButtonState(streamerName, isFavorited = false, isCostream=false) {
-		//log("setFavoriteButtonState(streamerName:"+streamerName+", isFavorited:"+isFavorited+", isCostream:"+isCostream+")");
 
 		// First, let's find out which streamer we're working on.
 		let buttonTarget = $('.ME_favorite-btn[streamer=\''+streamerName+'\']');
@@ -1048,5 +1048,18 @@ $(() => {
 				sendResponse( { streamerName: cache.currentStreamerName });
 			}
 		}		
+	});
+
+	//tooltip listener
+	$.initialize('.me-tooltip', function() {
+		let meTooltip = $(this);
+
+		meTooltip.tooltipster({
+			animation: 'grow',
+			delay: 10,
+			animationDuration: 150,
+			contentAsHTML: true,
+			theme: 'tooltipster-borderless'
+		});
 	});
 });
