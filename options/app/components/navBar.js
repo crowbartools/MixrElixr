@@ -55,14 +55,14 @@ Vue.component('nav-bar', {
 						resolve(data.status.indicator);
 					} else {
 						// We reached our target server, but it returned an error
-						console.log('Error getting mixer status.')
+						console.log('Error getting mixer status.');
 						reject('Error getting mixer status.');
 					}
 				};
 	
 				request.onerror = function() {
 					// There was a connection error of some sort
-					console.log('Error getting mixer status.')
+					console.log('Error getting mixer status.');
 					reject('Error getting mixer status.');
 				};
 	
@@ -73,8 +73,8 @@ Vue.component('nav-bar', {
 	mounted: function() {
 		// Check mixer status
 		this.serviceStatus()
-		.then((res) =>{
-			this.mixerStatus = res;
-		})
+			.then((res) =>{
+				this.mixerStatus = res;
+			});
 	}
 });
