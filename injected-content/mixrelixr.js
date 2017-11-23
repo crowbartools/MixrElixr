@@ -35,7 +35,7 @@ $(() => {
 	
 		// Home detection
 		var homeBlock = $('.home');
-	 
+
 		// Window location
 		var url = window.location.href;
 	
@@ -58,24 +58,6 @@ $(() => {
 		else if(channelBlock != null  && channelBlock.length > 0) {
 			log('detected streamer page...');
 			cache.currentPage = 'streamer';
-	
-			function getStreamerName() {
-				return new Promise((resolve, reject) => {
-					// double check it's still here
-					var channelBlock = $('b-channel-owners-block');
-					if(channelBlock != null && channelBlock.length > 0) {
-						var name = channelBlock.find('h2').first().text();
-						if(name != null && name !== '') {
-							cache.currentStreamerName = name;
-							resolve(name);
-						} else {
-							setTimeout(() => { getStreamerName(); }, 250);
-						}
-					} else {
-						reject();
-					}					
-				});
-			}
 	
 			// get the streamers name, this also waits for the page to load
 			getStreamerName().then((name) => {
@@ -104,11 +86,9 @@ $(() => {
 
 			// Lets keep checking to see if we find any new favorites
 			cache.highlightLoop = setInterval(function(){
-				// Get our current favorites
-				favoriteFriends = settings.generalOptions.favoriteFriends;
 
 				// Checking all streamer cards of non-favorites:
-				$('b-media-card:not(\'.favoriteFriend\')').each(function(index) {
+				$('b-media-card:not(\'.favoriteFriend\')').each(function() {
 					// Which streamer did we find
 					var streamer = $(this).find('h2.username').text().replace(/ /g, '').replace(/\r?\n|\r/g, '');
 					
@@ -156,6 +136,24 @@ $(() => {
 		}	
 	}
 
+	function getStreamerName() {
+		return new Promise((resolve, reject) => {
+			// double check it's still here
+			var channelBlock = $('b-channel-owners-block');
+			if(channelBlock != null && channelBlock.length > 0) {
+				var name = channelBlock.find('h2').first().text();
+				if(name != null && name !== '') {
+					cache.currentStreamerName = name;
+					resolve(name);
+				} else {
+					setTimeout(() => { getStreamerName(); }, 250);
+				}
+			} else {
+				reject();
+			}					
+		});
+	}
+
 	function getChannelNameById(id) {
 		return new Promise((resolve, reject) => {
 			var request = new XMLHttpRequest();
@@ -189,20 +187,20 @@ $(() => {
 
 		if(settings.generalOptions.highlightFavorites){
 			// Let's get the Costream ID via API call
-			costreamID = getCostreamID(streamerName);
+			let costreamID = getCostreamID(streamerName);
 			costreamID.then((result) => {
 				if (result == null) {
 					// If result is null, then this is not a costream.
 					log(streamerName+' is not costreaming.');
 
 					// Let's if we are following this streamer
-					isFollowed = streamerIsFollowed(streamerName);
+					let isFollowed = streamerIsFollowed(streamerName);
 
 					// Once we get some info back from the API
 					isFollowed.then((result) => {
 						if (result.isFollowed) {
 							// Which streamer is this?
-							streamer = result.streamerName;
+							let streamer = result.streamerName;
 
 							// If the streamer is followed,
 							// Let's show the favorite button, but it's state is based on whether streamed is faved.
@@ -231,21 +229,21 @@ $(() => {
 					log(streamerName+' is currently costreaming.');
 
 					// Let's see who is part of this co-stream collective.
-					costreamers = getCostreamers(result);
+					let costreamers = getCostreamers(result);
 					costreamers.then((result) => {
 						log('Costreamers: '+result);
 						costreamers = result;
 						// Let's check each co-streamer
-						$.each(costreamers, function(i, val) {
+						$.each(costreamers, function(i) {
 							// This is the current co-streamer.
-							currentStreamer = costreamers[i]; 
+							let currentStreamer = costreamers[i]; 
 
 							// Check to see if this streamer is followed.
-							isFollowed = streamerIsFollowed(currentStreamer);
+							let isFollowed = streamerIsFollowed(currentStreamer);
 
 							isFollowed.then((result) => {
 								// Let's see which streamer we checked
-								streamer = result.streamerName;
+								let streamer = result.streamerName;
 
 								if (result.isFollowed) {
 									// The streamer is followed, so let's create the favorite button.
@@ -260,12 +258,12 @@ $(() => {
 									}
 
 									// We need to find the follow button for this streamer.
-									followButtonElement = $('a.avatar-block[href="/'+streamer+'"]').siblings('div.owner-block').find('div.bui-btn');
+									let followButtonElement = $('a.avatar-block[href="/'+streamer+'"]').siblings('div.owner-block').find('div.bui-btn');
 
 									// We should also attach an event to the follow button that will make the favorite button appear when a streamer is followed.
 									followButtonElement.click(function() {
 										// Find out which streamer's follow button we are hitting.
-										thisStreamer = $(this).parents('div.head').find('a.avatar-block').attr('href').substr(1);
+										let thisStreamer = $(this).parents('div.head').find('a.avatar-block').attr('href').substr(1);
 
 										// Add a favorite button for this streamer
 										addFavoriteButton(thisStreamer, streamerIsFavorited(thisStreamer), true);
@@ -308,7 +306,10 @@ $(() => {
 	
 		// Auto close interactive
 		if(options.autoCloseInteractive) {
-			var minimizeInteractiveBtn = $('button[buitooltip=\'Minimize controls\'');
+			var minimizeInteractiveBtn = $('b-interactive-wrapper')
+				.find('.icon-indeterminate_check_box')
+				.parents('button')
+				.click();
 			if(minimizeInteractiveBtn != null) {
 				minimizeInteractiveBtn.click();
 			}
@@ -326,7 +327,7 @@ $(() => {
 				
 				var updatedOptions = getStreamerOptionsForStreamer(streamerName);
 	
-				hostee = $('b-host-bar').is(':visible');
+				let hostee = $('b-host-bar').is(':visible');
 				if(hostee){
 					var hosteeName = $('.owner-block h2').text();
 					var hostName = $('b-host-bar b-channel-creator span').text();
@@ -361,11 +362,11 @@ $(() => {
 		if($('[theater-mode-btn-container]').length < 1) {
 
 			//copy the fullscreen button so we can make it into the theater btn
-			var theaterBtn = $('.toolbar').children().last().clone();
+			let theaterBtn = $('.toolbar').children().last().clone();
 
 			//add an attr for us to check for it later
 			theaterBtn.attr('theater-mode-btn-container', '');
-			theaterBtn.attr('title', 'Theater Mode');
+			theaterBtn.attr('title', 'MixrElixr: Theater Mode');
 
 			//change the icon
 			theaterBtn.find('span.set-material').text('event_seat');
@@ -441,13 +442,13 @@ $(() => {
 	
 		// Add in a line below each chat message.
 		if(options.separateChat) {
-			var chatContainer = $('.message-container');
+			let chatContainer = $('.message-container');
 			if(chatContainer != null && chatContainer.length > 0) {
 				chatContainer.addClass('separated-chat');
 				chatContainer.scrollTop(chatContainer[0].scrollHeight);
 			}
 		} else if(!options.separateChat){
-			var chatContainer = $('.separated-chat');
+			let chatContainer = $('.separated-chat');
 			if(chatContainer != null && chatContainer.length > 0){
 				chatContainer.removeClass('separated-chat');
 				chatContainer.scrollTop(chatContainer[0].scrollHeight);
@@ -456,12 +457,12 @@ $(() => {
 	
 		// Alternate chat bg color
 		if(options.alternateChatBGColor){
-			var chatContainer = $('.message-container');
+			let chatContainer = $('.message-container');
 			if(chatContainer != null && chatContainer.length > 0) {
 				chatContainer.addClass('chat-alternate-bg');
 			}
 		} else if(!options.alternateChatBGColor){
-			var chatContainer = $('.message-container');
+			let chatContainer = $('.message-container');
 			if(chatContainer != null && chatContainer.length > 0) {
 				chatContainer.removeClass('chat-alternate-bg');
 			}
@@ -469,12 +470,12 @@ $(() => {
 
 		// Mention BG Color
 		if(options.mentionChatBGColor){
-			var chatContainer = $('.message-container');
+			let chatContainer = $('.message-container');
 			if(chatContainer != null && chatContainer.length > 0) {
 				chatContainer.addClass('chat-mention-bg');
 			}
 		} else if(!options.mentionChatBGColor){
-			var chatContainer = $('.message-container');
+			let chatContainer = $('.message-container');
 			if(chatContainer != null && chatContainer.length > 0) {
 				chatContainer.removeClass('chat-mention-bg');
 			}
@@ -482,12 +483,12 @@ $(() => {
 
 		// Keyword BG Color
 		if(options.keywords.length > 0){
-			var chatContainer = $('.message-container');
+			let chatContainer = $('.message-container');
 			if(chatContainer != null && chatContainer.length > 0) {
 				chatContainer.addClass('chat-keyword-bg');
 			}
 		} else {
-			var chatContainer = $('.message-container');
+			let chatContainer = $('.message-container');
 			if(chatContainer != null && chatContainer.length > 0) {
 				chatContainer.removeClass('chat-keyword-bg');
 			}
@@ -495,7 +496,7 @@ $(() => {
 	
 		// Remove prev Inline Image Links, they will be readded later if needed
 		$('img[elixr-img]').each(function() { $(this).parent().parent().remove();  });
-		var chatContainer = $('.message-container');
+		let chatContainer = $('.message-container');
 		chatContainer.scrollTop(chatContainer[0].scrollHeight);
 
 		// remove all prev custom timestamps if feature is turned off
@@ -532,7 +533,7 @@ $(() => {
 			// Give every other chat message an alternate-bg class.
 			$('.chat-alternate-bg .chat-message')
 				.filter(function() { return  $(this).find('[elixrfied="value"]').length === 0 && $(this).find('b-channel-chat-message').is(':visible');})
-				.each(function( index ){
+				.each(function(){
 					if( !$(this).hasClass('alternate-bg') ){
 						$(this).nextAll('.chat-message:first').addClass('alternate-bg');
 					}
@@ -621,7 +622,7 @@ $(() => {
 				if(shouldShowInlineImage) {
 					var links = messageContainer.find('a[target=\'_blank\']');
 					if(links.length > 0) {
-						links.each(function(l) {
+						links.each(function() {
 							var link = $(this);
 							var url = link.attr('href');
 							
@@ -676,14 +677,12 @@ $(() => {
 	// This inserts a button that toggles favorite status of the specified streamer.
 	// This also modifies the coloration on the user name.
 	function addFavoriteButton(streamerName, isFavorited = false, isCostream = false) {
-		//log("addFavoriteButton(streamerName:"+streamerName+", isFavorited:"+isFavorited+", isCostream:"+isCostream+")");
 
 		// Removing the favorite button to avoid any duplication
 		$('.ME_favorite-btn[streamer="'+streamerName+'"]').remove();
 
 		// Before we add any button, we need to find the DOM objects that will be impacted by our insertions.
-		// preceedingElement = The element that comes before where the favorite button will go.
-		// userNameTarget = The element that CSS will be applied to to denote the streamer's favorited status.
+		let avatarBlock, preceedingElement, userNameTarget;
 		if (isCostream) {
 			// The avatar block is the key to finding out which co-streamer we are working with
 			avatarBlock = $('a.avatar-block[href="/'+streamerName+'"]');
@@ -697,12 +696,11 @@ $(() => {
 		// Now we need to do the actual button and CSS insertions.
 		// This adds the favorite button with either a hollow star (non-favorite), or filled star (favorite).
 		// It also marks the streamer's name depending on favorite status.
+		preceedingElement.after(`<div streamer="${streamerName}" class="ME_favorite-btn" title="MixrElixr: Favorite">&#9733;</div>`);
 		if (isFavorited) {
-			preceedingElement.after('<div streamer="'+streamerName+'" class="ME_favorite-btn">&#9733;</div>');
 			userNameTarget.addClass('favoriteUsername');
 			$('.ME_favorite-btn[streamer="'+streamerName+'"]').addClass('faved');
 		} else {
-			preceedingElement.after('<div streamer="'+streamerName+'" class="ME_favorite-btn">&#9734;</div>');
 			userNameTarget.removeClass('favoriteUsername');
 			$('.ME_favorite-btn[streamer="'+streamerName+'"]').removeClass('faved');
 		}
@@ -710,7 +708,7 @@ $(() => {
 		// We now set some actions to the button we just added.
 		// This will toggle the favorite status of the streamer, as well the button's state.
 		$('.ME_favorite-btn[streamer=\''+streamerName+'\']').click( function() {
-			streamer = $(this).attr('streamer');
+			let streamer = $(this).attr('streamer');
 			addOrRemoveFavorite(streamer);
 			setFavoriteButtonState(streamer, streamerIsFavorited(streamer));
 		});
@@ -721,9 +719,10 @@ $(() => {
 		//log("setFavoriteButtonState(streamerName:"+streamerName+", isFavorited:"+isFavorited+", isCostream:"+isCostream+")");
 
 		// First, let's find out which streamer we're working on.
-		buttonTarget = $('.ME_favorite-btn[streamer=\''+streamerName+'\']');
+		let buttonTarget = $('.ME_favorite-btn[streamer=\''+streamerName+'\']');
 
 		// Now we need to find the user name element so we can modifiy it.
+		let userNameTarget;
 		if (isCostream) {
 			userNameTarget = $('a.avatar-block[href="/'+streamerName+'"').siblings('div.owner-block').find('h2:first-of-type');
 		} else {
@@ -772,7 +771,7 @@ $(() => {
 	}
 	
 	function loadSettings() {
-		return new Promise((resolve, reject) => {
+		return new Promise((resolve) => {
 			getSettings().then((savedSettings) => {
 				settings = savedSettings;
 				console.log('got settings');
@@ -784,15 +783,15 @@ $(() => {
 	
 	function getSettings() {
 		log('getSettings()');
-		return new Promise((resolve, reject) => {
+		return new Promise((resolve) => {
 			chrome.storage.sync.get({
 				'streamerPageOptions': null,
 				'homePageOptions': null,
 				'generalOptions': { highlightFavorites: true }
-			  }, (options) => {
-				  console.log(options);
+			}, (options) => {
+				console.log(options);
 				resolve(options);	  
-			  });
+			});
 		});
 	}
 	
@@ -860,30 +859,6 @@ $(() => {
 			return true;   
 		}
 	};
-	
-	function getChannelNameById(id) {
-		return new Promise((resolve, reject) => {
-			var request = new XMLHttpRequest();
-			request.open('GET', `https://mixer.com/api/v1/channels/${id}`, true);
-	
-			request.onload = function() {
-				if (request.status >= 200 && request.status < 400) {
-					// Success!
-					var data = JSON.parse(request.responseText);
-					resolve(data.token);
-				} else {
-					reject('Error getting channel details');
-				}
-			};
-	
-			request.onerror = function() {
-				// There was a connection error of some sort
-				reject('Error getting channel details');
-			};
-	
-			request.send();
-		});
-	}
 
 	// Get user info
 	// This gets user info of current logged in person
@@ -946,7 +921,7 @@ $(() => {
 
 		// Are there any favorites?
 		if (settings.generalOptions.favoriteFriends != null) {
-			favoriteFriends = settings.generalOptions.favoriteFriends;
+			let favoriteFriends = settings.generalOptions.favoriteFriends;
 
 			// Is there data in the friends array?
 			if (favoriteFriends != null) {
@@ -971,7 +946,7 @@ $(() => {
 			settings.generalOptions.favoriteFriends = Array();
 		}
 
-		favorites = settings.generalOptions.favoriteFriends;
+		let favorites = settings.generalOptions.favoriteFriends;
 
 		if (streamerIsFavorited(streamerName)) {
 			favorites = removeFavorite(streamerName);
@@ -985,8 +960,7 @@ $(() => {
 	}
 
 	function removeFavorite(streamerName) {
-		//log("Removing favorite: "+streamerName);
-		favorites = settings.generalOptions.favoriteFriends;
+		let favorites = settings.generalOptions.favoriteFriends;
 		const index = favorites.indexOf(streamerName);
 
 		if (index !== -1) {
@@ -1006,7 +980,7 @@ $(() => {
 
 	// Checks the Mixer API to find a co-stream id.
 	function getCostreamID(streamerName) {
-		return new Promise((resolve, reject) => {
+		return new Promise((resolve) => {
 			// Check Mixer API to see if active streamer is currently costreaming.
 			$.getJSON(`https://mixer.com/api/v1/channels/${streamerName}?fields=costreamId`, function(data) {
 				if (data['costreamId'] != null) {
@@ -1022,14 +996,14 @@ $(() => {
 
 	// Gets list of costreamers via Mixer API
 	function getCostreamers(costreamID) {
-		return new Promise((resolve, reject) => {
+		return new Promise((resolve) => {
 			// Check Mixer API with co-stream ID to see who is participaiting in the co-stream. 
 			$.getJSON(`https://mixer.com/api/v1/costreams/${costreamID}`, function(data) {
 				var channels = data['channels'];
 				var participants = Array();
 
 				// Check each channel from API data and insert into participants array.
-				$.each(channels, function(i, val) {
+				$.each(channels, function(i) {
 					participants.push(channels[i].token);
 				});
 
@@ -1044,7 +1018,7 @@ $(() => {
 		log('page loaded');
 
 		//Listen for url changes
-		window.addEventListener('url-change', function(e) {
+		window.addEventListener('url-change', function() {
 			runPageLogic();
 		});
 
