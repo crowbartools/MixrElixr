@@ -360,7 +360,7 @@ $(() => {
 		if($('[theater-mode-btn-container]').length < 1) {
 
 			//copy the fullscreen button so we can make it into the theater btn
-			let theaterBtn = $('.toolbar','.player-controls').children().last().clone();
+			let theaterBtn = $('#fullscreen-button').parent().clone();
 
 			//add an attr for us to check for it later
 			theaterBtn.attr('theater-mode-btn-container', '');
@@ -375,7 +375,8 @@ $(() => {
 			theaterBtn.on('click', function() {
 				toggleTheaterMode();
 			});
-			theaterBtn.insertBefore($('.toolbar').children().last());
+			theaterBtn.insertBefore($('#fullscreen-button').parent());
+			
 		}
 
 		// Auto Close Costreams
