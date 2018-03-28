@@ -40,18 +40,26 @@ $(() => {
 		var url = window.location.href;
 	
 		//check we if we are an embeded chat window
-		var embededChatRegex = /^https?:\/\/(www\.)?mixer\.com\/embed\/chat\/(\d+)/;
+		var embededChatRegex = /^https?:\/\/(www\.)?mixer\.com\/embed\/chat\/(\w+)/;
 		var result = embededChatRegex.exec(url);
 		if(result != null) {
 			log('Detected embeded chat window');
 			cache.currentPage = 'embedded-chat';
 	
-			var channelId = result[2];
-			if(isNaN(channelId)) return;
-	
-			getChannelNameById(channelId).then((name) => {
-				applyChatSettings(name);
-			});   
+			var channelIdOrName = result[2];
+			
+			let isName = false;
+			if(isNaN(channelIdOrName)) {
+				isName = true;
+			}
+			
+			if(isName) {
+				applyChatSettings(channelIdOrName);
+			} else {
+				getChannelNameById(channelIdOrName).then((name) => {
+					applyChatSettings(name);
+				});
+			}			   
 		} 
 	
 		//check if we are on a streamer page by looking for the name in the top right corner.
