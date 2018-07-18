@@ -31,10 +31,10 @@ $(() => {
 	function runPageLogic() {
 	
 		// Channel dectection
-		var channelBlock = $('b-channel-action-block');
+		var channelBlock = $('b-channel-page-wrapper');
 	
 		// Home detection
-		var homeBlock = $('.home');
+		var homeBlock = $('b-homepage');
 
 		// Window location
 		var url = window.location.href;
@@ -78,6 +78,7 @@ $(() => {
 			loadHomepage();
 		} else {
 			cache.currentPage = 'other';
+			loadOtherPage();
 			log('looks like we\'re on some other page');
 		}
 	}
@@ -96,16 +97,15 @@ $(() => {
 			cache.highlightLoop = setInterval(function(){
 
 				// Checking all streamer cards of non-favorites:
-				$('b-media-card:not(\'.favoriteFriend\')').each(function() {
+				$('.card:not(".favoriteFriend")').each(function() {
 					// Which streamer did we find
-					var streamer = $(this).find('h2.username').text().replace(/ /g, '').replace(/\r?\n|\r/g, '');
-					
+					var streamer = $(this).find('.titles small').first().text().trim().replace(/ /g, '').replace(/\r?\n|\r/g, '');
 					if (streamerIsFavorited(streamer)) {
 						// If streamer is a favorite, let's highlight the window
-						$(this).find('h2.username').addClass('favoriteUsername');
+						$(this).find('.titles small').first().addClass('favoriteUsername');
 						$(this).addClass('favoriteFriend');
 					} else {
-						$(this).find('h2.username').removeClass('favoriteUsername');
+						$(this).find('.titles small').first().removeClass('favoriteUsername');
 						$(this).removeClass('favoriteFriend');
 					}
 				});
@@ -113,7 +113,7 @@ $(() => {
 		} else {
 			log('Highlighting Favorites is off');
 			// If highlights are off, then let's remove any active highlights.
-			$('b-media-card.favoriteFriend').removeClass('favoriteFriend');
+			$('.card.favoriteFriend').removeClass('favoriteFriend');
 
 			// clear the loop so were aren't trying to run it constantly!
 			if(cache.highlightLoop != null) {
@@ -128,31 +128,21 @@ $(() => {
 	
 		// Remove featured streams on homepage
 		if(settings.homePageOptions.removeFeatured){
-			$('.home .featured').css('display', 'none');
-			$('.browse').css('padding-top', '75px');
-	
-			// This forces the left navigation to recalculate position.
-			$('.home').scrollTop($('.home').scrollTop() - '5');
-			$('.home').scrollTop($('.home').scrollTop() + '5');
-		} else {
-			$('.home .featured').css('display', 'flex');
-			$('.browse').css('padding-top', '0px');
-	
-			// This forces the left navigation to recalculate position.
-			$('.home').scrollTop($('.home').scrollTop() - '5');
-			$('.home').scrollTop($('.home').scrollTop() + '5');
+			$('b-delve-featured-carousel, b-delve-games, b-delve-oom-channels').remove();
+		} else if ($('b-delve-featured-carousel, b-delve-games, b-delve-oom-channels').length === 0){
+			location.reload();
 		}	
 	}
 
 	function getStreamerName() {
 		return new Promise((resolve, reject) => {
 			// double check it's still here
-			var channelBlock = $('b-channel-owners-block');
+			var channelBlock = $('b-channel-profile-redesign');
 			if(channelBlock != null && channelBlock.length > 0) {
 				var name = channelBlock.find('h2').first().text();
 				if(name != null && name !== '') {
 					cache.currentStreamerName = name;
-					resolve(name);
+					resolve(name.trim());
 				} else {
 					setTimeout(() => { getStreamerName(); }, 250);
 				}
@@ -184,6 +174,45 @@ $(() => {
 	
 			request.send();
 		});
+	}
+
+
+	function loadOtherPage() {
+		log('Loading up other page settings.');
+		// If the user desires to have favorites highlighted:
+		if(settings.generalOptions.highlightFavorites){
+			// clear the loop so were aren't trying to run it constantly!
+			if(cache.highlightLoop != null) {
+				clearInterval(cache.highlightLoop);
+			}
+
+			// Lets keep checking to see if we find any new favorites
+			cache.highlightLoop = setInterval(function(){
+
+				// Checking all streamer cards of non-favorites:
+				$('.card:not(".favoriteFriend")').each(function() {
+					// Which streamer did we find
+					var streamer = $(this).find('.titles small').first().text().trim().replace(/ /g, '').replace(/\r?\n|\r/g, '');
+					if (streamerIsFavorited(streamer)) {
+						// If streamer is a favorite, let's highlight the window
+						$(this).find('.titles small').first().addClass('favoriteUsername');
+						$(this).addClass('favoriteFriend');
+					} else {
+						$(this).find('.titles small').first().removeClass('favoriteUsername');
+						$(this).removeClass('favoriteFriend');
+					}
+				});
+			}, 500);
+		} else {
+			log('Highlighting Favorites is off');
+			// If highlights are off, then let's remove any active highlights.
+			$('.card.favoriteFriend').removeClass('favoriteFriend');
+
+			// clear the loop so were aren't trying to run it constantly!
+			if(cache.highlightLoop != null) {
+				clearInterval(cache.highlightLoop);
+			}
+		}
 	}
 
 
@@ -312,12 +341,23 @@ $(() => {
 	
 		// Auto close interactive
 		if(options.autoCloseInteractive) {
-			var minimizeInteractiveBtn = $('b-interactive-wrapper')
-				.find('.icon-indeterminate_check_box')
-				.parents('button')
-				.click();
+			let minimizeInteractiveBtn = $('.hide-interactive')
 			if(minimizeInteractiveBtn != null) {
-				minimizeInteractiveBtn.click();
+				let hideInteractiveTries = 0;
+
+				let hideInteractiveInterval = setInterval(function(){
+					minimizeInteractiveBtn.click();
+					if( $('.hide-interactive .icon-check_box_outline_blank').length === 1){
+						log('Hid the interactive panel successfully.');
+						clearInterval(hideInteractiveInterval);
+					} else if (hideInteractiveTries < 10) {
+						hideInteractiveTries++;
+						log('Cant find interactive hide button. Trying again.');
+					} else {
+						clearInterval(hideInteractiveInterval);
+						log('Tried to hide interactive for 10 seconds and failed.');
+					}
+				}, 1000);
 			}
 		}
 		
@@ -333,24 +373,37 @@ $(() => {
 				
 				var updatedOptions = getStreamerOptionsForStreamer(streamerName);
 	
-				let hostee = $('b-host-bar').is(':visible');
-				if(hostee){
-					var hosteeName = $('.owner-block h2').text();
-					var hostName = $('b-host-bar b-channel-creator span').text();
+				let hosting = $('.host-name').is(':visible');
+				if(hosting){
+					var hostName = $('.hostee span').text().trim();
 	
 					// Auto forward the person on host.
-					if(updatedOptions.autoForwardOnHost && hostName !== hosteeName){
+					if(updatedOptions.autoForwardOnHost && hostName !== streamerName){
 						// Check to make sure we're not trying to forward again accidently (which sometimes occured if interval fired during page load after a redirect)
-						console.log('Redirecting to '+hostName+' because forwarding on host is on.');
+						log('Redirecting to '+hostName+' because forwarding on host is on.');
 						document.location.href = 'https://mixer.com/'+hostName;
 					}
 	
 					// Auto mute when a stream hosts someone.
-					if(updatedOptions.autoMuteOnHost && hosteeName !== cache.mutedHost && $('light-volume-control button bui-icon').is(':visible') ){
-						if( $('light-volume-control button bui-icon').attr('icon') == 'volume_up' ){
-							$('light-volume-control button').click();
-						}
-						cache.mutedHost = hosteeName;
+					if(updatedOptions.autoMuteOnHost && streamerName !== cache.mutedHost){
+						let muteStreamTries = 0;
+						let autoMuteInterval = setInterval(function(){
+							if( $('.icon-volume_up, .icon-volume_down').length >= 1){
+								$('.icon-volume_up, .icon-volume_down').click();
+								log('Auto muted the stream successfully.');
+								clearInterval(autoMuteInterval);
+							} else if ($(".icon-volume_off").length >= 1) {
+								clearInterval(autoMuteInterval);
+								log('Stream is already muted. No need to mute again.');
+							} else if (muteStreamTries < 10) {
+								muteStreamTries++;
+								log('Cant find auto mute button. Trying again.');
+							} else {
+								clearInterval(autoMuteInterval);
+								log('Tried to auto mute for 10 seconds and failed.');
+							}
+						}, 1000);
+						cache.mutedHost = streamerName;
 					}
 	
 				}
@@ -359,9 +412,23 @@ $(() => {
 	
 		// Auto Mute Stream
 		if(options.autoMute){
-			if( $('light-volume-control button bui-icon').attr('icon') == 'volume_up' ){
-				$('light-volume-control button').click();
-			}
+			let muteStreamTries = 0;
+			let autoMuteInterval = setInterval(function(){
+				if( $('.icon-volume_up, .icon-volume_down').length >= 1){
+					$('.icon-volume_up, .icon-volume_down').click();
+					log('Auto muted the stream successfully.');
+					clearInterval(autoMuteInterval);
+				} else if ($(".icon-volume_off").length >= 1) {
+					clearInterval(autoMuteInterval);
+					log('Stream is already muted. No need to mute again.');
+				} else if (muteStreamTries < 10) {
+					muteStreamTries++;
+					log('Cant find auto mute button. Trying again.');
+				} else {
+					clearInterval(autoMuteInterval);
+					log('Tried to auto mute for 10 seconds and failed.');
+				}
+			}, 1000);
 		}
 
 		//add theater mode btn
@@ -412,7 +479,7 @@ $(() => {
 	}
 
 	function closeCostreams(streamerName) {        
-		var profile = $('div.profile');
+		var profile = $('.costream-rollout .profile');
 		if(profile.length === 0) {
 			// Profile divs have not appeared yet
 			setTimeout(closeCostreams, 500, streamerName);
@@ -421,7 +488,7 @@ $(() => {
 			log('Profiles loaded');
 			profile.each(function() {
 				// Check if profile does NOT contain current streamer's name
-				if($(this).is(':not(:contains(' + streamerName + '))')) {
+				if($(this).is(':not(:contains(' + streamerName.trim() + '))')) {
 					var closeBtn = $(this).siblings().eq(0).children()[2];
 					if(closeBtn){
 						closeBtn.click();
@@ -432,8 +499,7 @@ $(() => {
 	}
 
 	function detectCostreams() {
-		var owners = $('div.owners').find('.head');
-		if(owners.length > 0) {
+		if($('.costream-avatars').length > 0) {
 			return true;
 		} else {
 			return false;
@@ -645,20 +711,20 @@ $(() => {
 
 									var inlineImg = 
 										$(`<span style="display:block;">
-											<span style="position: relative; display: inline-block">
-												<span class="hide-picture-btn">x</span>
-												<img src="${url}" style="max-width: 200px; max-height: 125px; object-fit:contain;" 
+											<span style="position: relative; display: block;">
+												<span class="hide-picture-btn" style="position:absolute; left:3px; top:3px;">x</span>
+												<img class="elixr-chat-img" src="${url}" style="max-width: 200px; max-height: 125px; object-fit:contain;" 
 													onerror="this.onerror=null;this.src='${url.replace('https://', 'http://')}';"
 													elixr-img>
 											</span>									
 										</span>`);
 
-									inlineImg.find('img').on('load', function() {										
+									inlineImg.find('img').on('load', function() {									
 										scrollChatToBottom();
 										$(this).off('load', '**');
 									});
 									
-									inlineImg.insertBefore(link.parent());
+									inlineImg.insertBefore(link);
 
 									// Note(ebiggz): The above "onerror" js code is a bandaid for a weird issue where an image sometimes wont load. 
 									// Switching from https to http seems to work, but I dont like this fix. There must be something else going on.

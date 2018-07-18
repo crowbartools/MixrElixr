@@ -5,7 +5,7 @@ Vue.component('home-page-options', {
 				<span class="title">Homepage</span>
 			</div>
 			<div class="settings-section-settings" style="padding-bottom: 0;">
-				<checkbox-toggle :value.sync="removeFeatured" @changed="saveSettings()" label="Remove Featured Streams"></checkbox-toggle>
+				<checkbox-toggle :value.sync="removeFeatured" @changed="saveSettings()" label="Streams Only"></checkbox-toggle>
 			</div>
 		</div>
 	`,
