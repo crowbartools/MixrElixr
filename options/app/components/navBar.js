@@ -21,7 +21,7 @@ Vue.component('nav-bar', {
 						<a class="nav-link" href="https://twitter.com/MixrElixr" target="_blank"><i class="fa fa-twitter" aria-hidden="true"></i></a>
 					</li>
 					<li class="nav-item clickable">
-						<a class="nav-link" href="https://github.com/ebiggz/MixrElixr" target="_blank"><i class="fa fa-github" aria-hidden="true"></i></a>
+						<a class="nav-link" href="https://github.com/crowbartools/MixrElixr" target="_blank"><i class="fa fa-github" aria-hidden="true"></i></a>
 					</li>
 				</ul>
 			</div>
