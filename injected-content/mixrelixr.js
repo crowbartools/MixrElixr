@@ -6,7 +6,7 @@ $(() => {
 	var cache = {};
 
 	// start the process
-	log('Starting MixerElixir...');
+	log('Starting MixerElixir sloth edition...');
 
 	function waitForPageLoad() {
 		return new Promise((resolve)=>{
@@ -453,7 +453,7 @@ $(() => {
 			theaterBtn.insertBefore($('#fullscreen-button').parent());
 			
 		}
-
+		toggleTheaterMode(); // using ebiggz' trick to enable for 'fixing' theater mode
 		// Auto Close Costreams
 		if(options.autoCloseCostreams){
 			var costreamPage = detectCostreams();
@@ -470,7 +470,7 @@ $(() => {
 
 	function toggleTheaterMode() {
 		var theaterElements = 
-			$('header,.back-to-browse,.profile-header,.profile-blocks,.user,b-notifications,.channel-page,aside');
+			$('header,.profile-header,.profile-blocks,.user,b-notifications,.channel-page,aside,b-desktop-header,b-channel-info-bar');
 		if(theaterElements.hasClass('theaterMode')) {
 			theaterElements.removeClass('theaterMode');
 		} else {
