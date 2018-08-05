@@ -93,13 +93,10 @@ b-notifications.theaterMode {
     transition: 0.5s
 }
 
-
-
-
 .profile-header.theaterMode,
 .profile-blocks.theaterMode {
     display:none!important;
-   /*  transition: 3s; 3s for testing, currently not working, out of sync transition on toggleTheaterMode()*/
+   /* transition: 3s;  3s for testing, currently not working, out of sync transition on toggleTheaterMode()*/
 }
 
 .channel-page.theaterMode,
@@ -111,14 +108,13 @@ b-notifications.theaterMode {
     padding-top: 0px!important;
 }
 
-/* Removes top text :( */ 
+/* Removes top text and bar! */ 
 b-desktop-header.theaterMode {
     opacity: 0!important;
     display: none;
     visibility: hidden;
     transition: 0.5s;
 }
-/* Removing the actual top bar*/ 
 
 /* Removing profile bar that shows gamename, viewer count and game image */
 b-channel-info-bar.theaterMode {
@@ -126,8 +122,6 @@ b-channel-info-bar.theaterMode {
     visibility: hidden;
     transition: 0.5s;
 }
-
-/* End Theater Mode */
 /* End Theater Mode */
 
 /** Favorite Highlights **/
