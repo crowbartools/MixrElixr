@@ -91,7 +91,7 @@ b-notifications {
 .user.theaterMode,
 b-notifications.theaterMode {
     opacity: 0!important;
-    transition: 0.5s
+    transition: 0.5s;
 }
 
 .profile-header.theaterMode,
@@ -114,32 +114,32 @@ b-desktop-header.theaterMode {
     opacity: 0!important;
     display: none;
     visibility: hidden;
-    transition: 0.5s; /* transition not working */
+   /*transition: 0.5s;  transition not working */
 }
 
-/* WORKING: Removing new profile bar under video that shows gamename, viewer count and game image */
+/* WORKING: Removing Anniversary profile bar under video that shows game name, viewer count and game image */
 b-channel-info-bar.theaterMode {
     display: none;
     visibility: hidden;
-    transition: 3s!important; /* transition not working */
+    /*transition: 0.5s!important; transition not working */
 }
-/* WORKING: Fully removes bottom bar now */
+/* WORKING: Fully removes excess bottom bar that appears after Anniversary profile bar is removed */
 .channel-page.theaterMode,
 .channel-page > aside.theaterMode {
-    height: calc(1000vh - 60px)!important;
-    max-height: calc(1000vh - 60px)!important;
+    height: calc(500vh - 60px)!important;
+    max-height: calc(500vh - 60px)!important;
+  /* visual bug: Background image scrolls up and down when Theatermode is toggled as it ties to left over bottom bar somehow */
 }
 
-/* Not Working Fully: Removing .chat top: 60px behind the new mixer top bar */
+/* Working Partially: Removes extra top chat space of  60px behind the Anniversary top bar */
 .chat.theaterMode,
 .chat > aside.theaterMode {
     position: absolute;
-    /*top: 0%!important;  works, but will hide chat box on theatermode off :( */ 
+    /* top: 0%!important;  works, but will hide chatbox when Theater Mode is off :( */ 
 }
-/* Current Issues w/ new mixer theaterMode 
-        -- Chat box goes away when theater mode is off *facepalm* (See line 137)
-        -- transition times don't exist with the new removals i've added
-/*
+/**      Current Issues w/ new mixer theaterMode 
+        -- Chat box goes away when theater mode is off (Uncomment line 138 to see this bug)
+        -- transition times don't work with the new ui removals i've added  **/
 
 /* End Theater Mode */
 

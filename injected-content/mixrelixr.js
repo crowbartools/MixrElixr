@@ -6,7 +6,7 @@ $(() => {
 	var cache = {};
 
 	// start the process
-	log('Starting MixerElixir sloth edition...');
+	log('Starting MixerElixir...');
 
 	function waitForPageLoad() {
 		return new Promise((resolve)=>{
@@ -453,7 +453,7 @@ $(() => {
 			theaterBtn.insertBefore($('#fullscreen-button').parent());
 			
 		}
-		toggleTheaterMode(); // using ebiggz' trick to enable for 'fixing' theater mode
+
 		// Auto Close Costreams
 		if(options.autoCloseCostreams){
 			var costreamPage = detectCostreams();
