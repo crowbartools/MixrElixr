@@ -79,6 +79,7 @@
 .channel-page > header,
 .profile-header,
 .profile-blocks,
+.chat,
 .user,
 .channel-page,
 .channel-page > aside,
@@ -108,20 +109,38 @@ b-notifications.theaterMode {
     padding-top: 0px!important;
 }
 
-/* Removes top text and bar! */ 
+/* WORKING: Removes new top bar! */ 
 b-desktop-header.theaterMode {
     opacity: 0!important;
     display: none;
     visibility: hidden;
-    transition: 0.5s;
+    transition: 0.5s; /* transition not working */
 }
 
-/* Removing profile bar that shows gamename, viewer count and game image */
+/* WORKING: Removing new profile bar under video that shows gamename, viewer count and game image */
 b-channel-info-bar.theaterMode {
     display: none;
     visibility: hidden;
-    transition: 0.5s;
+    transition: 3s!important; /* transition not working */
 }
+/* WORKING: Fully removes bottom bar now */
+.channel-page.theaterMode,
+.channel-page > aside.theaterMode {
+    height: calc(1000vh - 60px)!important;
+    max-height: calc(1000vh - 60px)!important;
+}
+
+/* Not Working Fully: Removing .chat top: 60px behind the new mixer top bar */
+.chat.theaterMode,
+.chat > aside.theaterMode {
+    position: absolute;
+    /*top: 0%!important;  works, but will hide chat box on theatermode off :( */ 
+}
+/* Current Issues w/ new mixer theaterMode 
+        -- Chat box goes away when theater mode is off *facepalm* (See line 137)
+        -- transition times don't exist with the new removals i've added
+/*
+
 /* End Theater Mode */
 
 /** Favorite Highlights **/

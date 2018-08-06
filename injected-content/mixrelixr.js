@@ -470,7 +470,7 @@ $(() => {
 
 	function toggleTheaterMode() {
 		var theaterElements = 
-			$('header,.profile-header,.profile-blocks,.user,b-notifications,.channel-page,aside,b-desktop-header,b-channel-info-bar');
+			$('header,.profile-header,.profile-blocks,.user,b-notifications,.channel-page,b-desktop-header,b-channel-info-bar,.chat');
 		if(theaterElements.hasClass('theaterMode')) {
 			theaterElements.removeClass('theaterMode');
 		} else {
