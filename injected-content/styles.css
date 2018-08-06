@@ -131,14 +131,17 @@ b-channel-info-bar.theaterMode {
   /* visual bug: Background image scrolls up and down when Theatermode is toggled as it ties to left over bottom bar somehow */
 }
 
-/* Working Partially: Removes extra top chat space of  60px behind the Anniversary top bar */
+/* NOT WORKING: Removes extra top chat space of  60px behind the Anniversary top bar */
+/*
 .chat.theaterMode,
 .chat > aside.theaterMode {
     position: absolute;
-    /* top: 0%!important;  works, but will hide chatbox when Theater Mode is off :( */ 
-}
+    top: 0%!important;  works, but will hide chatbox when Theater Mode is off :( 
+} 
+*/  
+
 /**      Current Issues w/ new mixer theaterMode 
-        -- Chat box goes away when theater mode is off (Uncomment line 138 to see this bug)
+        -- Chat box goes away when theater mode is off (Uncomment lines 135 to 141 to see this bug)
         -- transition times don't work with the new ui removals i've added  **/
 
 /* End Theater Mode */

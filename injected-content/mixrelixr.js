@@ -433,11 +433,12 @@ $(() => {
 
 		//add theater mode btn
 		if($('[theater-mode-btn-container]').length < 1) {
-
-			//copy the fullscreen button so we can make it into the theater btn
-			let theaterBtn = $('#fullscreen-button').parent().clone();
-
-			//add an attr for us to check for it later
+			setTimeout(func, 2500); // Here we're waiting for the player or controls to load, temp fix to add theater button.
+			function func() { 
+				//copy the fullscreen button so we can make it into the theater btn
+				let theaterBtn = $('#fullscreen-button').parent().clone();
+			
+				//add an attr for us to check for it later
 			theaterBtn.attr('theater-mode-btn-container', '');
 			theaterBtn.attr('title', 'MixrElixr: Theater Mode');
 
@@ -451,7 +452,7 @@ $(() => {
 				toggleTheaterMode();
 			});
 			theaterBtn.insertBefore($('#fullscreen-button').parent());
-			
+			}
 		}
 
 		// Auto Close Costreams
