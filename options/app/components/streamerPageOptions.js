@@ -20,6 +20,9 @@ Vue.component('streamer-page-options', {
 				<checkbox-toggle :value.sync="alternateChatBGColor" @changed="saveSettings()" label="Alternate Chat BG Color"></checkbox-toggle>
 				<checkbox-toggle :value.sync="timestampAllMessages" @changed="saveSettings()" label="Timestamp All Messages" tooltip="Please note that timestamps will only be added to new messages as there is no way for us to tell when previous messages were sent."></checkbox-toggle>
 				<checkbox-toggle :value.sync="mentionChatBGColor" @changed="saveSettings()" label="Highlight When Mentioned" tooltip="Apply a special background behind messages when you are mentioned."></checkbox-toggle>
+				<checkbox-toggle :value.sync="hideDeleted" @changed="saveSettings()" label="Change the way deleted messages" tooltip="Whether or not you want to show the deleted messages in another way."></checkbox-toggle>
+				<checkbox-toggle :value.sync="noneStrikedDeleted" @changed="saveSettings()" label="Don't strikeout deleted" tooltip="Whether or not you want to show the deleted messages striked out or just faded."></checkbox-toggle>
+
 				<div class="option-wrapper">
 					<div style="padding-bottom: 5px;">Highlight Keywords<option-tooltip name="highlightKeywords" title="Any messages containing these keywords will have a special background."></option-tooltip></div>
 					<edittable-list class="option" :value.sync="keywords" :options="[]" tag-placeholder="Press enter to add keyword" placeholder="Type to add keyword" @changed="saveSettings()"></edittable-list>
