@@ -6,7 +6,7 @@ $(() => {
 	var cache = {};
 
 	// start the process
-	log('Starting MixerElixir...');
+	log('Starting MixrElixr...');
 
 	function waitForPageLoad() {
 		return new Promise((resolve)=>{
@@ -155,12 +155,15 @@ $(() => {
 
 	function getStreamerName() {
 		return new Promise((resolve, reject) => {
+			if(cache.currentStreamerName != null) {
+				return resolve(cache.currentStreamerName.trim());
+			}
 			// double check it's still here
 			var channelBlock = $('b-channel-profile-redesign');
 			if(channelBlock != null && channelBlock.length > 0) {
 				var name = channelBlock.find('h2').first().text();
 				if(name != null && name !== '') {
-					cache.currentStreamerName = name;
+					cache.currentStreamerName = name.trim();
 					resolve(name.trim());
 				} else {
 					setTimeout(() => { getStreamerName(); }, 250);
@@ -168,6 +171,61 @@ $(() => {
 			} else {
 				reject();
 			}
+		});
+	}
+
+	// Gets channel id by name
+	function getChannelId(){
+		return getStreamerName().then((name) => {
+			return new Promise((resolve) => {
+				log(`current id cache: ${cache.currentStreamerId}`);
+				if(cache.currentStreamerId != null) {
+					resolve(cache.currentStreamerId);
+				}
+				
+				$.get(`https://mixer.com/api/v1/channels/${name}?fields=id`)
+					.done((data) => {
+						cache.currentStreamerId = data.id;
+						log('Got channel id');
+						resolve(data.id);
+					})
+					.fail(() => {
+						// We reached our target server, but it returned an error
+						log('Failed to get channel id');
+						resolve(null);
+					});
+			});
+		});		
+	}
+
+	// Gets channel id by name
+	function userIsModInCurrentChannel(){
+		return getChannelId().then(id => {
+			return new Promise((resolve) => {
+
+				if(!cache.user || !cache.currentStreamerName) {
+					return resolve(false);
+				}
+	
+				let userLowerCase = cache.user.username.toLowerCase();
+				log(`${userLowerCase} == ${cache.currentStreamerName.toLowerCase()}`);
+				if(userLowerCase === cache.currentStreamerName.toLowerCase()) {
+					log('User is streamer so is mod');
+					return resolve(true);
+				}
+
+				$.get(`https://mixer.com/api/v1/channels/${id}/users/mod?where=username:eq:${userLowerCase}&fields=username`)
+					.done((data) => {
+						let isMod = data.length > 0;
+						log('User is mod');
+						resolve(isMod);
+					})
+					.fail(() => {
+						// We reached our target server, but it returned an error
+						log('Failed to check mod status');
+						resolve(false);
+					});
+			});
 		});
 	}
 
@@ -538,7 +596,7 @@ $(() => {
 		}
 	}
 
-	function applyChatSettings(streamerName) {
+	async function applyChatSettings(streamerName) {
 
 		if(!settings.streamerPageOptions) {
 			log('No streamer page settings saved.');
@@ -546,6 +604,9 @@ $(() => {
 		}
 
 		var options = getStreamerOptionsForStreamer(streamerName);
+
+		cache.userIsMod = await userIsModInCurrentChannel();
+		log(`User is mod: ${cache.userIsMod}`);
 
 		// Add in a line below each chat message.
 		if(options.separateChat) {
@@ -661,11 +722,63 @@ $(() => {
 			// Add class on keyword mention.
 			if(options.keywords.length > 0) {
 				options.keywords.forEach(w => {
-					var keywordRegex = new RegExp(`\\b${escapeRegExp(w)}\\b`, 'i');
+					let keywordRegex = new RegExp(`\\b${escapeRegExp(w)}\\b`, 'i');
 					if(keywordRegex.test(messageText)) {
 						messageContainer.parent().addClass('keyword-mentioned');
 					}
 				});
+			}
+			
+			if(!cache.userIsMod) {
+
+				// Add class on hide keyword mention.
+				if(options.hideKeywords != null && options.hideKeywords.length > 0) {
+
+					messageContainer.find('.textComponent').each(function() {
+						let component = $(this);
+
+						let text = component.text();
+
+
+						function generateReplaceText(count) {
+							let buffer = '';
+
+							for(let i = 0; i < count; i++) {
+								buffer += '*';
+							}
+
+							return buffer;
+						}
+
+						options.hideKeywords.forEach(w => {
+							let keywordRegex = new RegExp(`\\b${escapeRegExp(w)}\\b`, 'i');
+
+							let hideStyle = options.hideStyle || 'blur';
+
+							if(hideStyle === 'remove') {
+								if(keywordRegex.test(messageText)) {
+									messageContainer.parent().addClass('hide-word-mentioned hide-remove');
+								}
+							} else {
+								text = text.replace(keywordRegex, match => {
+									log('found match: ' + match + ' style: ' + hideStyle);
+									let text = null;
+									if(hideStyle === 'asterisk') {
+										let replaced = generateReplaceText(match.length);
+										text =`<span title="${match}">${replaced}</span>`;
+									} 
+									else if (hideStyle === 'blur') {
+										text = `<span class="hide-word-mentioned hide-blur">${match}</span>`;
+									}
+									return text;
+								});
+
+								component.html(text);
+							}
+						});
+					  });
+				
+				}
 			}
 
 			// Timestamps on each message
@@ -1154,6 +1267,7 @@ $(() => {
 
 		//wait for both user info and settings to load.
 		Promise.all([userInfoLoad, settingsLoad]).then(() => {
+
 			// run page logic for the first load
 			runPageLogic();
 

@@ -56,7 +56,9 @@ settingsStorage = {
 						autoMute: false,
 						autoMuteOnHost: false,
 						ignoredUsers: [],
-						keywords: []
+						keywords: [],
+						hideKeywords: [],
+						hideStyle: 'blur'
 					},
 					overrides: {}
 				},
