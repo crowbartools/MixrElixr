@@ -341,7 +341,7 @@ $(() => {
 
 		// Auto close interactive
 		if(options.autoCloseInteractive) {
-			let minimizeInteractiveBtn = $('.hide-interactive')
+			let minimizeInteractiveBtn = $('.hide-interactive');
 			if(minimizeInteractiveBtn != null) {
 				let hideInteractiveTries = 0;
 
@@ -392,7 +392,7 @@ $(() => {
 								$('.icon-volume_up, .icon-volume_down').click();
 								log('Auto muted the stream successfully.');
 								clearInterval(autoMuteInterval);
-							} else if ($(".icon-volume_off").length >= 1) {
+							} else if ($('.icon-volume_off').length >= 1) {
 								clearInterval(autoMuteInterval);
 								log('Stream is already muted. No need to mute again.');
 							} else if (muteStreamTries < 10) {
@@ -418,7 +418,7 @@ $(() => {
 					$('.icon-volume_up, .icon-volume_down').click();
 					log('Auto muted the stream successfully.');
 					clearInterval(autoMuteInterval);
-				} else if ($(".icon-volume_off").length >= 1) {
+				} else if ($('.icon-volume_off').length >= 1) {
 					clearInterval(autoMuteInterval);
 					log('Stream is already muted. No need to mute again.');
 				} else if (muteStreamTries < 10) {
@@ -669,7 +669,6 @@ $(() => {
 
 				// If the message is deleted apply blured style.
 				if(isDeleted){
-					log("This message has been deleted."); // TODO: Remove this before it's pushed to release.
 					//check that the current message doesnt already have a custom delete type
 					var msgAlreadyBlurred = messageContainer.children().find('.deleted-blur').length > 0;
 
