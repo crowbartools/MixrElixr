@@ -28,6 +28,25 @@ $(() => {
 		});
 	}
 
+	function waitForElementAvailablity(selector) {
+		return new Promise((resolve)=>{
+			function doElementCheck() {
+				var element = $(selector);
+				var elementExists = element != null && element.length > 0;
+
+				if(!elementExists) {
+					//spinner still exists, check again in a bit
+					setTimeout(()=> { doElementCheck(); }, 250);
+				} else {
+					log(`Element '${selector}' found!`);
+					resolve();
+				}
+			}
+
+			doElementCheck();
+		});
+	}
+
 	function runPageLogic() {
 
 		// Channel dectection
@@ -433,26 +452,31 @@ $(() => {
 
 		//add theater mode btn
 		if($('[theater-mode-btn-container]').length < 1) {
-			setTimeout(func, 2500); // Here we're waiting for the player or controls to load, temp fix to add theater button.
-			function func() { 
+
+			//wait for video controls to load
+			waitForElementAvailablity('#fullscreen-button').then(() => {
+
 				//copy the fullscreen button so we can make it into the theater btn
 				let theaterBtn = $('#fullscreen-button').parent().clone();
-			
+
 				//add an attr for us to check for it later
-			theaterBtn.attr('theater-mode-btn-container', '');
-			theaterBtn.attr('title', 'MixrElixr: Theater Mode');
+				theaterBtn.attr('theater-mode-btn-container', '');
+				theaterBtn.attr('title', 'MixrElixr: Theater Mode');
+	
+				theaterBtn.addClass('me-tooltip');
+	
+				//change the icon
+				theaterBtn.find('span.set-material').text('event_seat');
+	
+				//add click handler
+				theaterBtn.on('click', function() {
+					toggleTheaterMode();
+				});
 
-			theaterBtn.addClass('me-tooltip');
-
-			//change the icon
-			theaterBtn.find('span.set-material').text('event_seat');
-
-			//add click handler
-			theaterBtn.on('click', function() {
-				toggleTheaterMode();
+				theaterBtn.insertBefore($('#fullscreen-button').parent());
 			});
-			theaterBtn.insertBefore($('#fullscreen-button').parent());
-    }
+		}
+
 		// Auto Close Costreams
 		if(options.autoCloseCostreams){
 			var costreamPage = detectCostreams();
@@ -469,9 +493,18 @@ $(() => {
 
 	function toggleTheaterMode() {
 		var theaterElements = 
-			$('header,.profile-header,.profile-blocks,.user,b-notifications,.channel-page,b-desktop-header,b-channel-info-bar,.chat');
+			$('body,header,b-channel-info-bar,.profile-header,.profile-blocks, b-notifications,.channel-page,b-desktop-header,.chat,.stage.aspect-16-9');
 		if(theaterElements.hasClass('theaterMode')) {
 			theaterElements.removeClass('theaterMode');
+
+			//hacky way to toggle "position: relative" on and off to force the chat element to rerender with proper positioning
+			setTimeout(() => {
+				$('.chat').addClass('relative');
+				setTimeout(() => {
+					$('.chat').removeClass('relative');
+				}, 1);
+			}, 1);
+			
 		} else {
 			theaterElements.addClass('theaterMode');
 		}

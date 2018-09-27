@@ -79,7 +79,6 @@
 .channel-page > header,
 .profile-header,
 .profile-blocks,
-.chat,
 .user,
 .channel-page,
 .channel-page > aside,
@@ -87,17 +86,9 @@ b-notifications {
     transition: 0.5s;
 }
 
-.channel-page > header.theaterMode,
-.user.theaterMode,
-b-notifications.theaterMode {
-    opacity: 0!important;
-    transition: 0.5s;
-}
-
 .profile-header.theaterMode,
 .profile-blocks.theaterMode {
     display:none!important;
-   /* transition: 3s;  3s for testing, currently not working, out of sync transition on toggleTheaterMode()*/
 }
 
 .channel-page.theaterMode,
@@ -105,40 +96,44 @@ b-notifications.theaterMode {
     background: #040a19!important;
 }
 
+.channel-page.theaterMode {
+    margin-top: 30px!important;
+    height: 100%!important;
+    max-height: 100%!important;
+}
+
 .channel-page > aside.theaterMode {
     padding-top: 0px!important;
 }
 
-/* WORKING: Removes new top bar! */ 
+body.theaterMode {
+    background: #0b0f15;
+}
+
 b-desktop-header.theaterMode {
     opacity: 0!important;
     display: none;
     visibility: hidden;
-   /*transition: 0.5s;  transition not working */
 }
 
-/* WORKING: Removing Anniversary profile bar under video that shows game name, viewer count and game image */
 b-channel-info-bar.theaterMode {
     display: none;
     visibility: hidden;
-    /*transition: 0.5s!important; transition not working */
-}
-/* WORKING: Fully removes excess bottom bar that appears after Anniversary profile bar is removed */
-.channel-page.theaterMode,
-.channel-page > aside.theaterMode {
-    height: calc(500vh - 60px)!important;
-    max-height: calc(500vh - 60px)!important;
-  /* visual bug: Background image scrolls up and down when Theatermode is toggled as it ties to left over bottom bar somehow */
 }
 
-/* NOT WORKING: Removes extra top chat space of  60px behind the Anniversary top bar */
-/*
-.chat.theaterMode,
-.chat > aside.theaterMode {
-    position: absolute;
-    top: 0%!important;  works, but will hide chatbox when Theater Mode is off :( 
-} 
-*/  
+.stage.aspect-16-9.theaterMode {
+    max-height: 100% !important;
+}
+
+.chat.theaterMode {
+    background: #161D29!important;
+    top: 0px !important;
+}
+
+.chat.relative {
+    position: relative !important;
+}
+
 
 /**      Current Issues w/ new mixer theaterMode 
         -- Chat box goes away when theater mode is off (Uncomment lines 135 to 141 to see this bug)
