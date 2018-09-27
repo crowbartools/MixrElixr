@@ -89,11 +89,12 @@ b-notifications {
 .profile-header.theaterMode,
 .profile-blocks.theaterMode {
     display:none!important;
+    visibility: hidden !important;
 }
 
 .channel-page.theaterMode,
 .channel-page > aside.theaterMode {
-    background: #040a19!important;
+    background: #0b0f15!important;
 }
 
 .channel-page.theaterMode {
@@ -194,12 +195,16 @@ b-channel-info-bar.theaterMode {
 .deleted-blur:hover > div,
 .hide-word-mentioned.hide-blur:hover
 {
-    opacity: 1;
+    opacity: 0.7;
     filter: blur(0);
     -webkit-filter: blur(0);
     -moz-filter: blur(0);
     -ms-filter: blur(0);
     -o-filter: blur(0);
+}
+
+.deleted-blur > b-channel-chat-author {
+    opacity: 0.5;
 }
 
 .hide-word-mentioned.hide-remove {

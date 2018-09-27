@@ -509,10 +509,11 @@ $(() => {
 		}
 
 		//add theater mode btn
-		if($('[theater-mode-btn-container]').length < 1) {
 
-			//wait for video controls to load
-			waitForElementAvailablity('#fullscreen-button').then(() => {
+		//wait for video controls to load
+		waitForElementAvailablity('.toolbar').then(() => {
+
+			if($('[theater-mode-btn-container]').length < 1) {
 
 				//copy the fullscreen button so we can make it into the theater btn
 				let theaterBtn = $('#fullscreen-button').parent().clone();
@@ -520,20 +521,20 @@ $(() => {
 				//add an attr for us to check for it later
 				theaterBtn.attr('theater-mode-btn-container', '');
 				theaterBtn.attr('title', 'MixrElixr: Theater Mode');
-	
+		
 				theaterBtn.addClass('me-tooltip');
-	
+		
 				//change the icon
 				theaterBtn.find('span.set-material').text('event_seat');
-	
+		
 				//add click handler
 				theaterBtn.on('click', function() {
 					toggleTheaterMode();
 				});
 
 				theaterBtn.insertBefore($('#fullscreen-button').parent());
-			});
-		}
+			}
+		});
 
 		// Auto Close Costreams
 		if(options.autoCloseCostreams){
@@ -562,9 +563,30 @@ $(() => {
 					$('.chat').removeClass('relative');
 				}, 1);
 			}, 1);
+
+			let stage = $('addedBuiAr');
+			if(stage != null && stage.length > 0) {
+				stage.removeClass('addedBuiAr');
+				stage.removeClass('bui-arContent');
+				$('.stage').removeClass('aspect-16-9');
+			}
 			
 		} else {
-			theaterElements.addClass('theaterMode');
+
+			let minimizeInteractiveBtn = $('.hide-interactive');
+			if(minimizeInteractiveBtn != null) {
+				let isHideBtn = $('.indeterminate_check_box');
+				if(isHideBtn != null && isHideBtn.length < 0) {
+					minimizeInteractiveBtn.click();
+				}
+			}
+			setTimeout(() => {
+				theaterElements.addClass('theaterMode');
+			}, 1000);
+
+			$('b-stage').addClass('bui-arContent addedBuiAr');
+			$('.stage').addClass('aspect-16-9');
+			console.log($('b-stage'));
 		}
 	}
 
@@ -776,8 +798,7 @@ $(() => {
 								component.html(text);
 							}
 						});
-					  });
-				
+					  });	
 				}
 			}
 
