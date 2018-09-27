@@ -561,8 +561,8 @@ $(() => {
 				$('.chat').addClass('relative');
 				setTimeout(() => {
 					$('.chat').removeClass('relative');
-				}, 1);
-			}, 1);
+				}, 25);
+			}, 25);
 
 			let stage = $('addedBuiAr');
 			if(stage != null && stage.length > 0) {
@@ -575,18 +575,17 @@ $(() => {
 
 			let minimizeInteractiveBtn = $('.hide-interactive');
 			if(minimizeInteractiveBtn != null) {
-				let isHideBtn = $('.indeterminate_check_box');
-				if(isHideBtn != null && isHideBtn.length < 0) {
+				let isHideBtn = $('.icon-indeterminate_check_box');
+				if(isHideBtn != null && isHideBtn.length > 0) {
 					minimizeInteractiveBtn.click();
 				}
 			}
 			setTimeout(() => {
 				theaterElements.addClass('theaterMode');
-			}, 1000);
+			}, 1);
 
 			$('b-stage').addClass('bui-arContent addedBuiAr');
-			$('.stage').addClass('aspect-16-9');
-			console.log($('b-stage'));
+			$('.stage').addClass('aspect-16-9 theaterMode');
 		}
 	}
 
