@@ -815,11 +815,11 @@ $(() => {
 				// If the message is deleted apply blured style.
 				if(isDeleted){
 					//check that the current message doesnt already have a custom delete type
-					var msgAlreadyBlurred = messageContainer.children().find('.deleted-blur').length > 0;
+					var msgAlreadyBlurred = messageContainer.children().children().find('.deleted-blur').length > 0;
 
 					// should we add a timestamp?
 					if(!msgAlreadyBlurred) {
-						messageContainer.children().addClass('deleted-blur');
+						messageContainer.children().children().not('b-channel-chat-author').addClass('deleted-blur');
 					}
 				}
 			}
