@@ -195,7 +195,7 @@ b-channel-info-bar.theaterMode {
 .deleted-blur:hover > div,
 .hide-word-mentioned.hide-blur:hover
 {
-    opacity: 0.7;
+    opacity: 0.8;
     filter: blur(0);
     -webkit-filter: blur(0);
     -moz-filter: blur(0);
@@ -204,7 +204,7 @@ b-channel-info-bar.theaterMode {
 }
 
 .deleted-blur > b-channel-chat-author {
-    opacity: 0.5;
+    opacity: 0.6;
 }
 
 .hide-word-mentioned.hide-remove {
