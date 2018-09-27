@@ -5,10 +5,10 @@ Vue.component('online-friend', {
                 <a v-bind:href="channelLink" target="_blank" class="friendLink">
                     <div class="thumbnail">
                         <img v-bind:src="channelImgUrl" v-show="videoReady === false">
-                        <video autoplay="true" loop="true" @canplay="if(hover) { videoReady = true }" v-if="hover === true" v-show="videoReady === true" v-bind:src="channelVidUrl">                   
+                        <video autoplay="true" loop="true" @canplay="if(hover) { videoReady = true }" v-if="hover === true" v-show="videoReady === true" v-bind:src="channelVidUrl">
                         </video>
                         <div class="friend-header">
-							<span class="friendName">{{friend.token}} 
+							<span class="friendName">{{friend.token}}
 								<span class="favorite-btn" @click="addOrRemoveFavorite($event)">
 									<i :id="friend.token" class="fa" :class="favorite ? 'fa-star' : 'fa-star-o'" aria-hidden="true"></i>
 									<b-tooltip :target="friend.token" :title="favorite ? 'Remove Favorite' : 'Add Favorite'" no-fade="true"></b-tooltip>
@@ -16,14 +16,17 @@ Vue.component('online-friend', {
 							</span>
                             <span class="friendViewers"><i class="fa fa-eye" aria-hidden="true"></i>{{friend.viewersCurrent}}</span>
 						</div>
+						<div class="friend-audience">
+							{{friend.audience}}
+						</div>
 						<div class="friend-icons">
 							<i v-if="friend.interactive" class="fa fa-gamepad" title="Interactive"></i>
 							<i v-if="friend.costreamId" class="fa fa-users" title="Costream"></i>
 						</div>
                     </div>
 					<div class="info-container">
-						<div class="friendGame" :title="channelGame">{{channelGame}}</div> 
-						<div class="friendTitle" :title="channelTitle">{{channelTitle}}</div>                                   
+						<div class="friendGame" :title="channelGame">{{channelGame}}</div>
+						<div class="friendTitle" :title="channelTitle">{{channelTitle}}</div>
                     </div>
                 </a>
             </div>

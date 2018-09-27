@@ -245,6 +245,13 @@ input:checked + .slider:before {
     right:8px;
 }
 
+.friend-audience{
+    position: absolute;
+    bottom:-2px;
+    left:4px;
+    font-size: 12px;
+}
+
 .friendName{
     float:left;
 }
