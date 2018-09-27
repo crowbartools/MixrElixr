@@ -178,6 +178,7 @@ b-channel-info-bar.theaterMode {
 
 .deleted-blur > a,
 .deleted-blur > span,
+.deleted-blur > div,
 .hide-word-mentioned.hide-blur
 {
     opacity: 0.6;
@@ -190,6 +191,7 @@ b-channel-info-bar.theaterMode {
 
 .deleted-blur:hover > a,
 .deleted-blur:hover > span,
+.deleted-blur:hover > div,
 .hide-word-mentioned.hide-blur:hover
 {
     opacity: 1;
