@@ -16,8 +16,8 @@ Vue.component('online-friend', {
 							</span>
                             <span class="friendViewers"><i class="fa fa-eye" aria-hidden="true"></i>{{friend.viewersCurrent}}</span>
 						</div>
-						<div class="friend-audience">
-							{{friend.audience}}
+						<div class="friend-audience" :class="{ eighteen: friend.audience === '18+' }">
+							<span>{{friend.audience}}</span>	
 						</div>
 						<div class="friend-icons">
 							<i v-if="friend.interactive" class="fa fa-gamepad" title="Interactive"></i>
@@ -53,7 +53,7 @@ Vue.component('online-friend', {
 			return this.friend.name;
 		},
 		channelGame: function(){
-			if(this.friend.type == null) return "";
+			if(this.friend.type == null) return '';
 			return this.friend.type.name;
 		}
 	},
