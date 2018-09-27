@@ -16,9 +16,11 @@ Vue.component('online-friend', {
 							</span>
                             <span class="friendViewers"><i class="fa fa-eye" aria-hidden="true"></i>{{friend.viewersCurrent}}</span>
 						</div>
-						<div class="friend-audience" :class="{ eighteen: friend.audience === '18+' }">
+						<div :id="friend.token + friend.audience" class="friend-audience" :class="{ eighteen: friend.audience === '18+' }">
 							<span>{{friend.audience}}</span>	
 						</div>
+						<b-tooltip :target="friend.token + friend.audience" :title="'Stream Audience'" no-fade="true"></b-tooltip>
+						
 						<div class="friend-icons">
 							<i v-if="friend.interactive" class="fa fa-gamepad" title="Interactive"></i>
 							<i v-if="friend.costreamId" class="fa fa-users" title="Costream"></i>
