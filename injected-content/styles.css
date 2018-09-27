@@ -176,17 +176,23 @@ b-channel-info-bar.theaterMode {
 }
 /** End Highlights CSS **/
 
-.deleted-blur, .hide-word-mentioned.hide-blur
+.deleted-blur > a,
+.deleted-blur > span,
+.hide-word-mentioned.hide-blur
 {
-    opacity: 0.4;
+    opacity: 0.6;
     filter: blur(4px);
     -webkit-filter: blur(4px);
     -moz-filter: blur(4px);
     -ms-filter: blur(4px);
     -o-filter: blur(4px);
 }
-.deleted-blur:hover, .hide-word-mentioned.hide-blur:hover
+
+.deleted-blur:hover > a,
+.deleted-blur:hover > span,
+.hide-word-mentioned.hide-blur:hover
 {
+    opacity: 1;
     filter: blur(0);
     -webkit-filter: blur(0);
     -moz-filter: blur(0);
