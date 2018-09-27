@@ -52,14 +52,14 @@
 
 /** Inline Pictures **/
 .hide-picture-btn {
-    position:absolute; 
-    top:3px; 
-    right:3px; 
-    width: 15px; 
-    height: 15px; 
-    background: rgba(0, 0, 0, 0.356); 
+    position:absolute;
+    top:3px;
+    right:3px;
+    width: 15px;
+    height: 15px;
+    background: rgba(0, 0, 0, 0.356);
     border-radius: 10px;
-    cursor: pointer; 
+    cursor: pointer;
     color: whitesmoke;
     text-align: center;
     font-size: 12px;
@@ -180,3 +180,22 @@ b-channel-info-bar.theaterMode {
     border-color: rgb(90, 251, 142);
 }
 /** End Highlights CSS **/
+
+.deleted-blur
+{
+    opacity: 0.4;
+
+    filter: blur(3px);
+    -webkit-filter: blur(3px);
+    -moz-filter: blur(3px);
+    -ms-filter: blur(3px);
+    -o-filter: blur(3px);
+}
+.deleted-blur:hover
+{
+    filter: blur(0);
+    -webkit-filter: blur(0);
+    -moz-filter: blur(0);
+    -ms-filter: blur(0);
+    -o-filter: blur(0);
+}
