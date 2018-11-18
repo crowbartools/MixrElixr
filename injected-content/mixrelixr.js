@@ -73,9 +73,11 @@ $(() => {
 			}
 
 			if(isName) {
+				cache.currentStreamerName = channelIdOrName;
 				applyChatSettings(channelIdOrName);
 			} else {
 				getChannelNameById(channelIdOrName).then((name) => {
+					cache.currentStreamerName = name;
 					applyChatSettings(name);
 				});
 			}
@@ -647,9 +649,14 @@ $(() => {
 		}
 
 		var options = getStreamerOptionsForStreamer(streamerName);
-		
-		cache.userIsMod = await userIsModInCurrentChannel();
-		log(`User is mod: ${cache.userIsMod}`);
+
+		try {
+			cache.userIsMod = await userIsModInCurrentChannel();
+			log(`User is mod: ${cache.userIsMod}`);
+		} catch(err) {
+			log('Error getting user mod status');
+			console.log(err);
+		}
 
 		// Add in a line below each chat message.
 		if(options.separateChat) {
