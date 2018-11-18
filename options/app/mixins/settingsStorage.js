@@ -58,7 +58,8 @@ settingsStorage = {
 						ignoredUsers: [],
 						keywords: [],
 						hideKeywords: [],
-						hideStyle: 'blur'
+						hideStyle: 'blur',
+						useCustomFontSize: false
 					},
 					overrides: {}
 				},
