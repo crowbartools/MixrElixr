@@ -730,6 +730,16 @@ $(() => {
 		$.initialize('b-channel-chat-message', function() {
 			var messageContainer = $(this);
 
+			if(options.useCustomFontSize) {
+				messageContainer.css("font-size", `${options.textSize}px`);
+				messageContainer.children(".message").css("line-height", `${options.textSize + 9}px`);
+				messageContainer.find(".image").css("font-size", `15px`);
+			} else {
+				messageContainer.css("font-size", "");
+				messageContainer.children(".message").css("line-height", "");
+				messageContainer.find(".image").css("font-size", "");
+			}
+
 			var alreadyChecked = messageContainer.attr('elixrfied');
 			// check to see if we have already looked at this chat messsage.
 			if(alreadyChecked == true) { return; }
@@ -835,10 +845,10 @@ $(() => {
 				var parent = messageContainer.parent();
 
 				//verify there isnt a native timestamp sometime after this message (if so, this is an older message)
-				var stampsAfterCurrentMsg = parent.nextAll('.timestamp').length > 0;
+				var stampsAfterCurrentMsg = parent.nextAll('div:not(.chat-message)').length > 0;
 
 				//check that the current message doesnt already have a native or custom timestamp
-				var msgAlreadyHasStamp = parent.prev().hasClass('timestamp') || parent.find('.elixrTime').length > 0;
+				var msgAlreadyHasStamp = parent.prev().find(".timestamp").length > 0 || parent.find('.elixrTime').length > 0;
 
 				// should we add a timestamp?
 				if(!stampsAfterCurrentMsg && !msgAlreadyHasStamp) {

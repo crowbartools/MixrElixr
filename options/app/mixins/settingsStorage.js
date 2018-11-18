@@ -59,7 +59,8 @@ settingsStorage = {
 						keywords: [],
 						hideKeywords: [],
 						hideStyle: 'blur',
-						useCustomFontSize: false
+						useCustomFontSize: false,
+						textSize: 15
 					},
 					overrides: {}
 				},
