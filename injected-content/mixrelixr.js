@@ -418,13 +418,35 @@ $(() => {
 
 		// Auto close interactive
 		if(options.autoCloseInteractive) {
-			let minimizeInteractiveBtn = $('.hide-interactive');
+			let minimizeInteractiveBtn = $('.toggle-interactive');
 			if(minimizeInteractiveBtn != null) {
 				let hideInteractiveTries = 0;
 
 				let hideInteractiveInterval = setInterval(function(){
+
+					// click the hide button
 					minimizeInteractiveBtn.click();
-					if( $('.hide-interactive .icon-check_box_outline_blank').length === 1){
+					
+					// get a fresh copy of the toggle button, this will reflect any changes in the DOM that 
+					// happenedafter we clicked it
+					let updatedBtn = $('.toggle-interactive');
+						
+					// this will be true if there is a costream and multiple streamers in the costream have
+					// interactive on 
+					if(detectCostreams() && updatedBtn.length === 0){
+						log('Pressed the toggle interactive button successfully.');
+						clearInterval(hideInteractiveInterval);
+
+						// wait half a sec
+						setTimeout(() => {
+							//click X close button
+							$('[icon="MixerBan"]').click();
+							log('Pressed the close interactive button.');
+						}, 100);
+
+					} 
+					// this will be true if theres no costreamer or only one streamer in costream has interactive on
+					else if(updatedBtn.length !== 0 && !updatedBtn.hasClass('open')){
 						log('Hid the interactive panel successfully.');
 						clearInterval(hideInteractiveInterval);
 					} else if (hideInteractiveTries < 10) {
@@ -435,7 +457,7 @@ $(() => {
 						log('Tried to hide interactive for 10 seconds and failed.');
 					}
 				}, 1000);
-			}
+			}		
 		}
 
 		// Host Loop
@@ -625,7 +647,7 @@ $(() => {
 		}
 
 		var options = getStreamerOptionsForStreamer(streamerName);
-
+		
 		cache.userIsMod = await userIsModInCurrentChannel();
 		log(`User is mod: ${cache.userIsMod}`);
 
