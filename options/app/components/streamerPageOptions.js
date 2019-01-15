@@ -11,13 +11,12 @@ Vue.component('streamer-page-options', {
 			</div>
 			<div class="settings-section-settings">
 				<span class="setting-subcategory">General</span>
-				<checkbox-toggle :value.sync="autoCloseInteractive" @changed="saveSettings()" label="Auto close Interactive boards"></checkbox-toggle>
+				<checkbox-toggle :value.sync="autoCloseInteractive" @changed="saveSettings()" label="Auto Close MixPlay"></checkbox-toggle>
 				<checkbox-toggle :value.sync="autoCloseCostreams" @changed="saveSettings()" label="Auto Close Costreams" tooltip="This will close all streamers in a costream except for the streamer whom you are visiting."></checkbox-toggle>
 				<checkbox-toggle :value.sync="autoMute" @changed="saveSettings()" label="Auto Mute Streams"></checkbox-toggle>
 
 				<span class="setting-subcategory">Chat</span>
 				<checkbox-toggle :value.sync="separateChat" @changed="saveSettings()" label="Separate Chat Lines"></checkbox-toggle>
-				<checkbox-toggle :value.sync="alternateChatBGColor" @changed="saveSettings()" label="Alternate Chat BG Color"></checkbox-toggle>
 				<checkbox-toggle :value.sync="timestampAllMessages" @changed="saveSettings()" label="Timestamp All Messages" tooltip="Please note that timestamps will only be added to new messages as there is no way for us to tell when previous messages were sent."></checkbox-toggle>
 				<checkbox-toggle :value.sync="mentionChatBGColor" @changed="saveSettings()" label="Highlight When Mentioned" tooltip="Apply a special background behind messages when you are mentioned."></checkbox-toggle>
 				<checkbox-toggle :value.sync="hideDeleted" @changed="saveSettings()" label="Mask Deleted Messages" tooltip="Hides deleted messages behind a blur. Hover over the deleted message to reveal it. Great way to hide spoilers or toxic messages."></checkbox-toggle>
@@ -245,7 +244,7 @@ Vue.component('streamer-page-options', {
 				tooltip: false,
 				lazy: true,
 				processStyle: {
-					backgroundColor: "#1FBAED"
+					backgroundColor: '#1FBAED'
 				}
 			},
 			overrideNames: [],
@@ -275,8 +274,8 @@ Vue.component('streamer-page-options', {
 
 		this.getViewersForCurrentChannel();
 
-		bus.$on("tab-changed", (tab) => {
-			if(tab === "options") {
+		bus.$on('tab-changed', (tab) => {
+			if(tab === 'options') {
 				this.$nextTick(() => {
 					this.$refs.textSizeSlider.refresh();
 				});			

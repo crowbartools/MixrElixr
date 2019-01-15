@@ -5,6 +5,11 @@ $(() => {
 	var settings = null;
 	var cache = {};
 
+	const ElementSelector = {
+		CHAT_CONTAINER: '[class*=\'ChatMessages\']',
+		CHAT_MESSAGE: '[class*=\'message__\']'
+	};
+
 	// start the process
 	log('Starting MixrElixr...');
 
@@ -157,15 +162,18 @@ $(() => {
 
 	function getStreamerName() {
 		return new Promise((resolve, reject) => {
+			log('Looking for streamer name...');
 			if(cache.currentStreamerName != null) {
+				log('Found it in the cache: ' + cache.currentStreamerName);
 				return resolve(cache.currentStreamerName.trim());
 			}
 			// double check it's still here
-			var channelBlock = $('b-channel-profile-redesign');
+			var channelBlock = $('b-channel-profile');
 			if(channelBlock != null && channelBlock.length > 0) {
 				var name = channelBlock.find('h2').first().text();
 				if(name != null && name !== '') {
 					cache.currentStreamerName = name.trim();
+					log('Found it on the page: ' + cache.currentStreamerName);
 					resolve(name.trim());
 				} else {
 					setTimeout(() => { getStreamerName(); }, 250);
@@ -658,9 +666,14 @@ $(() => {
 			console.log(err);
 		}
 
+		//add custom css class to chat message container so its easier for us to query
+		$(ElementSelector.CHAT_CONTAINER)
+			.children()
+			.addClass('elixr-chat-container');
+
 		// Add in a line below each chat message.
 		if(options.separateChat) {
-			let chatContainer = $('.message-container');
+			let chatContainer = $('.elixr-chat-container');
 			if(chatContainer != null && chatContainer.length > 0) {
 				chatContainer.addClass('separated-chat');
 				chatContainer.scrollTop(chatContainer[0].scrollHeight);
@@ -673,27 +686,14 @@ $(() => {
 			}
 		}
 
-		// Alternate chat bg color
-		if(options.alternateChatBGColor){
-			let chatContainer = $('.message-container');
-			if(chatContainer != null && chatContainer.length > 0) {
-				chatContainer.addClass('chat-alternate-bg');
-			}
-		} else if(!options.alternateChatBGColor){
-			let chatContainer = $('.message-container');
-			if(chatContainer != null && chatContainer.length > 0) {
-				chatContainer.removeClass('chat-alternate-bg');
-			}
-		}
-
 		// Mention BG Color
 		if(options.mentionChatBGColor){
-			let chatContainer = $('.message-container');
+			let chatContainer = $('.elixr-chat-container');
 			if(chatContainer != null && chatContainer.length > 0) {
 				chatContainer.addClass('chat-mention-bg');
 			}
 		} else if(!options.mentionChatBGColor){
-			let chatContainer = $('.message-container');
+			let chatContainer = $('.elixr-chat-container');
 			if(chatContainer != null && chatContainer.length > 0) {
 				chatContainer.removeClass('chat-mention-bg');
 			}
@@ -701,12 +701,12 @@ $(() => {
 
 		// Keyword BG Color
 		if(options.keywords.length > 0){
-			let chatContainer = $('.message-container');
+			let chatContainer = $('.elixr-chat-container');
 			if(chatContainer != null && chatContainer.length > 0) {
 				chatContainer.addClass('chat-keyword-bg');
 			}
 		} else {
-			let chatContainer = $('.message-container');
+			let chatContainer = $('.elixr-chat-container');
 			if(chatContainer != null && chatContainer.length > 0) {
 				chatContainer.removeClass('chat-keyword-bg');
 			}
@@ -714,7 +714,7 @@ $(() => {
 
 		// Remove prev Inline Image Links, they will be readded later if needed
 		$('img[elixr-img]').each(function() { $(this).parent().parent().remove();  });
-		let chatContainer = $('.message-container');
+		let chatContainer = $('.elixr-chat-container');
 		chatContainer.scrollTop(chatContainer[0].scrollHeight);
 
 		// remove all prev custom timestamps if feature is turned off
@@ -723,21 +723,37 @@ $(() => {
 		}
 
 		// get rid of any previous registered callbacks for chat messages
-		$.deinitialize('b-channel-chat-message');
+		$.deinitialize(ElementSelector.CHAT_MESSAGE);
 
 		// This will run the callback for every message that already exists as well as any new ones added. 
 		// We can use this to do any tweaks and modifications to chat as they come in
-		$.initialize('b-channel-chat-message', function() {
+		//message__
+		$.initialize(ElementSelector.CHAT_MESSAGE, function() {
 			var messageContainer = $(this);
 
 			if(options.useCustomFontSize) {
-				messageContainer.css("font-size", `${options.textSize}px`);
-				messageContainer.children(".message").css("line-height", `${options.textSize + 9}px`);
-				messageContainer.find(".image").css("font-size", `15px`);
+				messageContainer.find('[class*=\'messageContent\']').css('font-size', `${options.textSize}px`);
+				messageContainer.find('[class*=\'messageContent\']').css('line-height', `${options.textSize + 9}px`);
 			} else {
-				messageContainer.css("font-size", "");
-				messageContainer.children(".message").css("line-height", "");
-				messageContainer.find(".image").css("font-size", "");
+				messageContainer.find('[class*=\'messageContent\']').css('font-size', '');
+				messageContainer.find('[class*=\'messageContent\']').css('line-height', '');
+			}
+
+			// Change the way the deleted messages looks
+			if(options.hideDeleted) {
+				// Check to see if the message is deleted or not.
+				var isDeleted = messageContainer.is('[class*="deleted"]');
+			
+				// If the message is deleted apply blured style.
+				if(isDeleted){
+					//check that the current message doesnt already have a custom delete type
+					var msgAlreadyBlurred = messageContainer.hasClass('deleted-blur');
+			
+					// Has the message already been blurred?
+					if(!msgAlreadyBlurred) {
+						messageContainer.addClass('deleted-blur');
+					}
+				}
 			}
 
 			var alreadyChecked = messageContainer.attr('elixrfied');
@@ -746,9 +762,9 @@ $(() => {
 			messageContainer.attr('elixrfied', 'true');
 
 			// Give chat messages a chat message class for easier targeting.
-			messageContainer.parent().addClass('chat-message');
+			messageContainer.addClass('chat-message');
 
-			var messageAuthor = messageContainer.find('.username').text().trim();
+			var messageAuthor = messageContainer.find('[class*=\'username\']').text().trim();
 
 			if(options.ignoredUsers.includes(messageAuthor)) {
 				messageContainer.hide();
@@ -758,24 +774,16 @@ $(() => {
 				}
 			}
 
-			// Give every other chat message an alternate-bg class.
-			$('.chat-alternate-bg .chat-message')
-				.filter(function() { return  $(this).find('[elixrfied="value"]').length === 0 && $(this).find('b-channel-chat-message').is(':visible');})
-				.each(function(){
-					if( !$(this).hasClass('alternate-bg') ){
-						$(this).nextAll('.chat-message:first').addClass('alternate-bg');
-					}
-				});
-
 			// Give any message with a mention of our user a class.
-			var messageText = messageContainer.find('.textComponent').text().toLowerCase().trim();
-			var userTagged = messageContainer.find('.user-tag').text().toLowerCase().trim();
+			var messageText = messageContainer.find('[class*=\'textComponent\']').text().toLowerCase().trim();
+			console.log(`Message text: ${messageText}`);
+			var userTagged = messageContainer.find('.tagComponent').text().toLowerCase().trim().replace('@', '');
 			if(cache.user != null) {
 				var userLowerCase = cache.user.username.toLowerCase();
 
 				var userRegex = new RegExp(`\\b${escapeRegExp(userLowerCase)}\\b`, 'i');
 				if(userRegex.test(messageText) || userRegex.test(userTagged)) {
-					messageContainer.parent().addClass('user-mentioned');
+					messageContainer.addClass('user-mentioned');
 				}
 			}
 
@@ -784,7 +792,7 @@ $(() => {
 				options.keywords.forEach(w => {
 					let keywordRegex = new RegExp(`\\b${escapeRegExp(w)}\\b`, 'i');
 					if(keywordRegex.test(messageText)) {
-						messageContainer.parent().addClass('keyword-mentioned');
+						messageContainer.addClass('keyword-mentioned');
 					}
 				});
 			}
@@ -794,7 +802,7 @@ $(() => {
 				// Add class on hide keyword mention.
 				if(options.hideKeywords != null && options.hideKeywords.length > 0) {
 
-					messageContainer.find('.textComponent').each(function() {
+					messageContainer.find('[class*=\'textComponent\']').each(function() {
 						let component = $(this);
 
 						let text = component.text();
@@ -817,7 +825,7 @@ $(() => {
 
 							if(hideStyle === 'remove') {
 								if(keywordRegex.test(messageText)) {
-									messageContainer.parent().addClass('hide-word-mentioned hide-remove');
+									messageContainer.addClass('hide-word-mentioned hide-remove');
 								}
 							} else {
 								text = text.replace(keywordRegex, match => {
@@ -842,13 +850,13 @@ $(() => {
 
 			// Timestamps on each message
 			if(options.timestampAllMessages) {
-				var parent = messageContainer.parent();
+				var parent = messageContainer;
 
 				//verify there isnt a native timestamp sometime after this message (if so, this is an older message)
 				var stampsAfterCurrentMsg = parent.nextAll('div:not(.chat-message)').length > 0;
 
 				//check that the current message doesnt already have a native or custom timestamp
-				var msgAlreadyHasStamp = parent.prev().find(".timestamp").length > 0 || parent.find('.elixrTime').length > 0;
+				var msgAlreadyHasStamp = parent.prev().find('.timestamp').length > 0 || parent.find('.elixrTime').length > 0;
 
 				// should we add a timestamp?
 				if(!stampsAfterCurrentMsg && !msgAlreadyHasStamp) {
@@ -866,44 +874,26 @@ $(() => {
 				}
 			}
 
-			// Change the way the deleted messages looks
-			if(options.hideDeleted) {
-				// Check to see if the message is deleted or not.
-				var isDeleted = messageContainer.children().hasClass('message-deleted');
-
-				// If the message is deleted apply blured style.
-				if(isDeleted){
-					//check that the current message doesnt already have a custom delete type
-					var msgAlreadyBlurred = messageContainer.children().find('.deleted-blur').length > 0;
-
-					// Has the message already been blurred?
-					if(!msgAlreadyBlurred) {
-						messageContainer.children().removeClass('message-deleted');
-						messageContainer.children().addClass('deleted-blur');
-					}
-				}
-			}
-
 
 			if(options.showImagesInline) {
 
 				var lowestPermittedRoleRank = getUserRoleRank(options.lowestUserRoleLinks);
 
-				var authorRoles = messageContainer
+				/*var authorRoles = messageContainer
 					.find('b-channel-chat-author')
 					.attr('class')
 					.split(' ')
 					.map((c) => {
 						return c.replace('role-', '');
-					});
+					});*/
 
-				var rolePermitted = false;
-				authorRoles.forEach((r) => {
+				var rolePermitted = true;
+				/*authorRoles.forEach((r) => {
 					var roleRank = getUserRoleRank(r);
 					if(roleRank <= lowestPermittedRoleRank) {
 						rolePermitted = true;
 					}
-				});
+				});*/
 
 				var userPermitted = false;
 				if(options.inlineImgPermittedUsers != null && options.inlineImgPermittedUsers.length > 0) {
@@ -926,10 +916,11 @@ $(() => {
 							if(urlIsAnImage(url)) {
 								var previousImage = messageContainer.find(`img[src='${url}']`);
 
-								var messageIsDeleted = messageContainer.find('.message-deleted');
+								//deleted
+								var messageIsDeleted = messageContainer.is('[class^="deleted"]');
 
 								if((previousImage == null || previousImage.length < 1) 
-									&& (messageIsDeleted == null || messageIsDeleted.length < 1)) {
+									&& (messageIsDeleted == null || messageIsDeleted === false || messageIsDeleted.length < 1)) {
 
 									var inlineImg = 
 										$(`<span style="display:block;">
@@ -1043,7 +1034,7 @@ $(() => {
 	}
 
 	function scrollChatToBottom() {
-		var chatContainer = $('.message-container');
+		var chatContainer = $('.elixr-chat-container');
 		chatContainer.scrollTop(chatContainer[0].scrollHeight);
 	}
 
