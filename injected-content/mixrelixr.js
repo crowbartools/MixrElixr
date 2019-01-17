@@ -594,7 +594,7 @@ $(() => {
 
 	function toggleTheaterMode() {
 		var theaterElements = 
-			$('body,header,b-channel-info-bar,.profile-header,.profile-blocks, b-notifications,.channel-page,b-desktop-header,.chat,.stage.aspect-16-9');
+			$('body,b-desktop-header,b-channel-info-bar,.profile-header,.profile-blocks, b-notifications,.channel-page,b-desktop-header,.chat,.stage.aspect-16-9');
 		if(theaterElements.hasClass('theaterMode')) {
 			theaterElements.removeClass('theaterMode');
 
