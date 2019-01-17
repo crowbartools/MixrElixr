@@ -670,22 +670,7 @@ $(() => {
 		$(ElementSelector.CHAT_CONTAINER)
 			.children()
 			.addClass('elixr-chat-container');
-
-		// Add in a line below each chat message.
-		if(options.separateChat) {
-			let chatContainer = $('.elixr-chat-container');
-			if(chatContainer != null && chatContainer.length > 0) {
-				chatContainer.addClass('separated-chat');
-				chatContainer.scrollTop(chatContainer[0].scrollHeight);
-			}
-		} else if(!options.separateChat){
-			let chatContainer = $('.separated-chat');
-			if(chatContainer != null && chatContainer.length > 0){
-				chatContainer.removeClass('separated-chat');
-				chatContainer.scrollTop(chatContainer[0].scrollHeight);
-			}
-		}
-
+			
 		// Mention BG Color
 		if(options.mentionChatBGColor){
 			let chatContainer = $('.elixr-chat-container');
@@ -737,23 +722,6 @@ $(() => {
 			} else {
 				messageContainer.find('[class*=\'messageContent\']').css('font-size', '');
 				messageContainer.find('[class*=\'messageContent\']').css('line-height', '');
-			}
-
-			// Change the way the deleted messages looks
-			if(options.hideDeleted) {
-				// Check to see if the message is deleted or not.
-				var isDeleted = messageContainer.is('[class*="deleted"]');
-			
-				// If the message is deleted apply blured style.
-				if(isDeleted){
-					//check that the current message doesnt already have a custom delete type
-					var msgAlreadyBlurred = messageContainer.hasClass('deleted-blur');
-			
-					// Has the message already been blurred?
-					if(!msgAlreadyBlurred) {
-						messageContainer.addClass('deleted-blur');
-					}
-				}
 			}
 
 			var alreadyChecked = messageContainer.attr('elixrfied');
@@ -853,10 +821,10 @@ $(() => {
 				var parent = messageContainer;
 
 				//verify there isnt a native timestamp sometime after this message (if so, this is an older message)
-				var stampsAfterCurrentMsg = parent.nextAll('div:not(.chat-message)').length > 0;
+				var stampsAfterCurrentMsg = parent.nextAll().find('[class*=\'message\']').length > 0;
 
 				//check that the current message doesnt already have a native or custom timestamp
-				var msgAlreadyHasStamp = parent.prev().find('.timestamp').length > 0 || parent.find('.elixrTime').length > 0;
+				var msgAlreadyHasStamp = parent.prev().find('[class*=\'timeStamp\']').length > 0 || parent.find('.elixrTime').length > 0;
 
 				// should we add a timestamp?
 				if(!stampsAfterCurrentMsg && !msgAlreadyHasStamp) {
@@ -876,26 +844,7 @@ $(() => {
 
 
 			if(options.showImagesInline) {
-
-				var lowestPermittedRoleRank = getUserRoleRank(options.lowestUserRoleLinks);
-
-				/*var authorRoles = messageContainer
-					.find('b-channel-chat-author')
-					.attr('class')
-					.split(' ')
-					.map((c) => {
-						return c.replace('role-', '');
-					});*/
-
-				var rolePermitted = true;
-				/*authorRoles.forEach((r) => {
-					var roleRank = getUserRoleRank(r);
-					if(roleRank <= lowestPermittedRoleRank) {
-						rolePermitted = true;
-					}
-				});*/
-
-				var userPermitted = false;
+				var userPermitted = options.inlineImgPermittedUsers.length === 0;
 				if(options.inlineImgPermittedUsers != null && options.inlineImgPermittedUsers.length > 0) {
 					userPermitted = options.inlineImgPermittedUsers.includes(messageAuthor);
 				}
@@ -905,53 +854,70 @@ $(() => {
 					userBlacklisted = options.inlineImgBlacklistedUsers.includes(messageAuthor);
 				}
 
-				var shouldShowInlineImage = (rolePermitted || userPermitted) && !userBlacklisted;
+				var shouldShowInlineImage = userPermitted && !userBlacklisted;
 				if(shouldShowInlineImage) {
 					var links = messageContainer.find('a[target=\'_blank\']');
+
 					if(links.length > 0) {
 						links.each(function() {
 							var link = $(this);
 							var url = link.attr('href');
 
 							if(urlIsAnImage(url)) {
-								var previousImage = messageContainer.find(`img[src='${url}']`);
+								var lowestPermittedRoleRank = getUserRoleRank(options.lowestUserRoleLinks);
+								var rolePermitted = false;
 
-								//deleted
-								var messageIsDeleted = messageContainer.is('[class^="deleted"]');
-
-								if((previousImage == null || previousImage.length < 1) 
-									&& (messageIsDeleted == null || messageIsDeleted === false || messageIsDeleted.length < 1)) {
-
-									var inlineImg = 
-										$(`<span style="display:block;">
-											<span style="position: relative; display: block;">
-												<span class="hide-picture-btn" style="position:absolute; left:3px; top:3px;">x</span>
-												<img class="elixr-chat-img" src="${url}" style="max-width: 200px; max-height: 125px; object-fit:contain;" 
-													onerror="this.onerror=null;this.src='${url.replace('https://', 'http://')}';"
-													elixr-img>
-											</span>
-										</span>`);
-
-									inlineImg.find('img').on('load', function() {
-										scrollChatToBottom();
-										$(this).off('load', '**');
+								// Get the author roles in an array.
+								getUserRoles(cache.currentStreamerId, messageAuthor).then((result) => {
+									// Check to make sure the correct role is in the user array.
+									result.forEach((r) => {
+										var roleRank = getUserRoleRank(r);
+										if(roleRank <= lowestPermittedRoleRank) {
+											rolePermitted = true;
+										}
 									});
 
-									inlineImg.insertBefore(link);
+									if(rolePermitted === true){
+										var previousImage = messageContainer.find(`img[src='${url}']`);
 
-									// Note(ebiggz): The above "onerror" js code is a bandaid for a weird issue where an image sometimes wont load. 
-									// Switching from https to http seems to work, but I dont like this fix. There must be something else going on.
-									// Will need to investigate further.
+										//deleted
+										var messageIsDeleted = messageContainer.is('[class^="deleted"]');
 
-									//remove previously bound click events
-									$('.hide-picture-btn').off('click', '**');
+										if((previousImage == null || previousImage.length < 1) 
+											&& (messageIsDeleted == null || messageIsDeleted === false || messageIsDeleted.length < 1)) {
 
-									//add updated click event
-									$('.hide-picture-btn').click(function() {
-										$(this).parent().parent().remove();
-									});
+											var inlineImg = 
+												$(`<span style="display:block;">
+													<span style="position: relative; display: block;">
+														<span class="hide-picture-btn" style="position:absolute; left:3px; top:3px;">x</span>
+														<img class="elixr-chat-img" src="${url}" style="max-width: 200px; max-height: 125px; object-fit:contain;" 
+															onerror="this.onerror=null;this.src='${url.replace('https://', 'http://')}';"
+															elixr-img>
+													</span>
+												</span>`);
 
-								}
+											inlineImg.find('img').on('load', function() {
+												scrollChatToBottom();
+												$(this).off('load', '**');
+											});
+
+											inlineImg.insertBefore(link);
+
+											// Note(ebiggz): The above "onerror" js code is a bandaid for a weird issue where an image sometimes wont load. 
+											// Switching from https to http seems to work, but I dont like this fix. There must be something else going on.
+											// Will need to investigate further.
+
+											//remove previously bound click events
+											$('.hide-picture-btn').off('click', '**');
+
+											//add updated click event
+											$('.hide-picture-btn').click(function() {
+												$(this).parent().parent().remove();
+											});
+
+										}
+									}; // End role permitted if statement.
+								}); // End authorRoles.then statement
 							}
 						});
 					}
@@ -1123,15 +1089,16 @@ $(() => {
 		switch(role) {
 		case '':
 			return -1;
-		case 'owner':
+		case 'Owner':
 			return 1;
-		case 'mod':
+		case 'ChannelEditor':
+		case 'Mod':
 			return 2;
-		case 'sub':
+		case 'Subscriber':
 			return 3;
-		case 'pro':
+		case 'Pro':
 			return 4;
-		case 'user':
+		case 'User':
 			return 5;
 		case 'all':
 		default:
@@ -1300,6 +1267,26 @@ $(() => {
 
 				// Resolve array of co-stream participants
 				resolve(participants);
+			});
+		});
+	}
+
+	// Gets user roles from api.
+	function getUserRoles(channelId, username) {
+		return new Promise((resolve) => {
+			// Check Mixer API with co-stream ID to see who is participaiting in the co-stream. 
+			let url = "https://mixer.com/api/v1/channels/"+channelId+"/users?where=username:eq:"+username+"&fields=id";
+			$.getJSON(url, function(data) {
+				var groups = data[0]['groups'];
+				var roles = Array();
+
+				// Check each group from API data and insert into roles array.
+				$.each(groups, function(i) {
+					roles.push(groups[i].name);
+				});
+
+				// Resolve array of co-stream participants
+				resolve(roles);
 			});
 		});
 	}
