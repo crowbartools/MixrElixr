@@ -160,23 +160,29 @@ b-channel-info-bar.theaterMode {
 .ME_favorite-btn {
     font-size: 18px;
     cursor: pointer;
-    padding: 6px;
-    color: #999;
-    border: 1px solid gray;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    width: 30px;
+    height: 36px;
+    color: #409bff;
     border-radius: 4px;
-    margin-right: 15px;
-    background: rgb(20,24,41);
+    margin-right: 10px;
+    background: #364163;
+}
+
+.ME_favorite-btn span {
+    transform: translateY(-1px);
 }
 
 .ME_favorite-btn.faved {
-    color: rgb(4,117,213);
-    border: 1px solid rgb(66,72,85);
+    /*color: rgb(4,117,213);*/
 }
 
 .ME_favorite-btn:hover,
 .ME_favorite-btn.faved:hover {
-    color: rgb(90, 251, 142);
-    border-color: rgb(90, 251, 142);
+    background: #2e3958;
 }
 /** End Highlights CSS **/
 

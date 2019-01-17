@@ -926,7 +926,7 @@ $(() => {
 											});
 
 										}
-									}; // End role permitted if statement.
+									} // End role permitted if statement.
 								}); // End authorRoles.then statement
 							}
 						});
@@ -964,7 +964,7 @@ $(() => {
 		// Now we need to do the actual button and CSS insertions.
 		// This adds the favorite button with either a hollow star (non-favorite), or filled star (favorite).
 		// It also marks the streamer's name depending on favorite status.
-		preceedingElement.after(`<div streamer="${streamerName}" class="ME_favorite-btn me-tooltip" title="MixrElixr: Favorite">&#9733;</div>`);
+		preceedingElement.after(`<div streamer="${streamerName}" class="ME_favorite-btn me-tooltip" title="MixrElixr: Favorite"><span>&#9733;</span></div>`);
 		if (isFavorited) {
 			userNameTarget.addClass('favoriteUsername');
 			$(favoriteBtnTarget).addClass('faved');
@@ -998,12 +998,12 @@ $(() => {
 
 		if (isFavorited) {
 			// If streamer is faved: fill in star, change user name to green.
-			buttonTarget.html('&#9733;');
+			buttonTarget.html('<span>&#9733;</span>');
 			buttonTarget.addClass('faved');
 			userNameTarget.addClass('favoriteUsername');
 		} else {
 			// If streamer is not faved: empty star, change user name to normal.
-			buttonTarget.html('&#9734;');
+			buttonTarget.html('<span>&#9734;</span>');
 			buttonTarget.removeClass('faved');
 			userNameTarget.removeClass('favoriteUsername');
 		}
@@ -1285,7 +1285,7 @@ $(() => {
 	function getUserRoles(channelId, username) {
 		return new Promise((resolve) => {
 			// Check Mixer API with co-stream ID to see who is participaiting in the co-stream. 
-			let url = "https://mixer.com/api/v1/channels/"+channelId+"/users?where=username:eq:"+username+"&fields=id";
+			let url = 'https://mixer.com/api/v1/channels/'+channelId+'/users?where=username:eq:'+username+'&fields=id';
 			$.getJSON(url, function(data) {
 				var groups = data[0]['groups'];
 				var roles = Array();
