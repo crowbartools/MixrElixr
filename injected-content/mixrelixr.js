@@ -7,7 +7,7 @@ $(() => {
 
 	const ElementSelector = {
 		CHAT_CONTAINER: '[class*=\'ChatMessages\']',
-		CHAT_MESSAGE: '[class*=\'message__\']'
+		CHAT_MESSAGE: 'div[class*=\'message_\']'
 	};
 
 	// start the process
@@ -79,11 +79,19 @@ $(() => {
 
 			if(isName) {
 				cache.currentStreamerName = channelIdOrName;
-				applyChatSettings(channelIdOrName);
+
+				waitForElementAvailablity(ElementSelector.CHAT_CONTAINER).then(() => {
+					applyChatSettings(channelIdOrName);
+				});
+				
 			} else {
 				getChannelNameById(channelIdOrName).then((name) => {
 					cache.currentStreamerName = name;
-					applyChatSettings(name);
+
+					waitForElementAvailablity(ElementSelector.CHAT_CONTAINER).then(() => {
+						applyChatSettings(name);
+					});
+
 				});
 			}
 		}
@@ -579,7 +587,9 @@ $(() => {
 			}
 		}
 
-		applyChatSettings(streamerName);
+		waitForElementAvailablity(ElementSelector.CHAT_CONTAINER).then(() => {
+			applyChatSettings(streamerName);
+		});
 	}
 
 	function toggleTheaterMode() {
