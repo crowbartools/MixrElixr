@@ -775,7 +775,7 @@ $(() => {
 				});
 			}
 			
-			if(!cache.userIsMod) {
+			if(!cache.userIsMod || options.enableHideKeywordsWhenMod) {
 
 				// Add class on hide keyword mention.
 				if(options.hideKeywords != null && options.hideKeywords.length > 0) {

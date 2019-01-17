@@ -31,7 +31,7 @@ Vue.component('streamer-page-options', {
 				</div>
 
 				<div class="option-wrapper" style="padding: 10px 0;">
-					<div style="padding-bottom: 5px;">Word Blacklist<option-tooltip name="hideKeywords" title="Any words in this list will be automatically hidden via the below style. Note: If you are a mod for the currently viewed channel, this feature is disabled."></option-tooltip>
+					<div style="padding-bottom: 5px;">Word Blacklist<option-tooltip name="hideKeywords" title="Any words in this list will be automatically hidden via the below style. Note: If you are a mod for the currently viewed channel, this feature is disabled by default."></option-tooltip>
 						<a @click="showWordBlacklist = !showWordBlacklist" style="cursor: pointer; color: #00A7FF; font-size: 12px; padding-left: 5px">
 							{{showWordBlacklist ? 'Hide Blacklist' : 'Show Blacklist'}}
 						</a>
@@ -41,6 +41,7 @@ Vue.component('streamer-page-options', {
 						<div style="padding-left: 10px">
 							<div style="padding-bottom: 3px">Hide Style <option-tooltip name="hideStyle" title="How the word will be hidden. Hovering over the hidden word will reveal it (except for Remove style)."></option-tooltip></div>
 							<b-form-select v-model="hideStyle" :options="hideStyles" class="mb-3 option"></b-form-select>
+							<checkbox-toggle :value.sync="enableHideKeywordsWhenMod" @changed="saveSettings()" label="Enable When Mod" tooltip="By default, the word blacklist feature is disabled on channels you're a mod on so it doesn't get in the way of your awesome modding skills. This option can change that."></checkbox-toggle>
 						</div>
 					</b-collapse>
 				</div>

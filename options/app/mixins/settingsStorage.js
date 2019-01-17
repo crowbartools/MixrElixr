@@ -59,6 +59,7 @@ settingsStorage = {
 						keywords: [],
 						hideKeywords: [],
 						hideStyle: 'blur',
+						enableHideKeywordsWhenMod: false,
 						useCustomFontSize: false,
 						textSize: 15
 					},
