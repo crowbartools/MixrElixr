@@ -436,46 +436,58 @@ $(() => {
 
 		// Auto close interactive
 		if(options.autoCloseInteractive) {
-			let minimizeInteractiveBtn = $('.toggle-interactive');
-			if(minimizeInteractiveBtn != null) {
-				let hideInteractiveTries = 0;
 
-				let hideInteractiveInterval = setInterval(function(){
+			//debugger; // eslint-disable-line no-debugger
+			setTimeout(() => {
+
+				let minimizeInteractiveBtn = $('.toggle-interactive');
+			
+				if(minimizeInteractiveBtn != null && minimizeInteractiveBtn.hasClass('open')) {
+					let hideInteractiveTries = 0;
+
+					let hideInteractiveInterval = setInterval(function(){
 
 					// click the hide button
-					minimizeInteractiveBtn.click();
+						minimizeInteractiveBtn.click();
 					
-					// get a fresh copy of the toggle button, this will reflect any changes in the DOM that 
-					// happenedafter we clicked it
-					let updatedBtn = $('.toggle-interactive');
-						
-					// this will be true if there is a costream and multiple streamers in the costream have
-					// interactive on 
-					if(detectCostreams() && updatedBtn.length === 0){
-						log('Pressed the toggle interactive button successfully.');
-						clearInterval(hideInteractiveInterval);
-
-						// wait half a sec
+					
+					
 						setTimeout(() => {
-							//click X close button
-							$('[icon="MixerBan"]').click();
-							log('Pressed the close interactive button.');
-						}, 100);
+						// get a fresh copy of the toggle button, this will reflect any changes in the DOM that 
+						// happenedafter we clicked it
+							let updatedBtn = $('.toggle-interactive');
+					
+							// this will be true if there is a costream and multiple streamers in the costream have
+							// interactive on 
+							if(detectCostreams() && updatedBtn.length === 0){
+								log('Pressed the toggle interactive button successfully.');
+								clearInterval(hideInteractiveInterval);
 
-					} 
-					// this will be true if theres no costreamer or only one streamer in costream has interactive on
-					else if(updatedBtn.length !== 0 && !updatedBtn.hasClass('open')){
-						log('Hid the interactive panel successfully.');
-						clearInterval(hideInteractiveInterval);
-					} else if (hideInteractiveTries < 10) {
-						hideInteractiveTries++;
-						log('Cant find interactive hide button. Trying again.');
-					} else {
-						clearInterval(hideInteractiveInterval);
-						log('Tried to hide interactive for 10 seconds and failed.');
-					}
-				}, 1000);
-			}		
+								// wait half a sec
+								setTimeout(() => {
+									//click X close button
+									$('[icon="MixerBan"]').click();
+									log('Pressed the close interactive button.');
+								}, 100);
+
+							} 
+							// this will be true if theres no costreamer or only one streamer in costream has interactive on
+							else if(updatedBtn.length !== 0 && !updatedBtn.hasClass('open')){
+								log('Hid the interactive panel successfully.');
+								clearInterval(hideInteractiveInterval);
+							} else if (hideInteractiveTries < 10) {
+								hideInteractiveTries++;
+								log('Cant find interactive hide button. Trying again.');
+							} else {
+								clearInterval(hideInteractiveInterval);
+								log('Tried to hide interactive for 10 seconds and failed.');
+							}
+						}, 100);
+					
+					}, 1000);
+				}		
+
+			},100);			
 		}
 
 		// Host Loop
@@ -531,13 +543,32 @@ $(() => {
 		if(options.autoMute){
 			let muteStreamTries = 0;
 			let autoMuteInterval = setInterval(function(){
-				if( $('.icon-volume_up, .icon-volume_down').length >= 1){
-					$('.icon-volume_up, .icon-volume_down').click();
-					log('Auto muted the stream successfully.');
-					clearInterval(autoMuteInterval);
-				} else if ($('.icon-volume_off').length >= 1) {
-					clearInterval(autoMuteInterval);
-					log('Stream is already muted. No need to mute again.');
+				let volumeOff = $('[icon="volume_off"]');
+				let volumeUp = $('[icon="volume_up"]');
+				let volumeDown = $('[icon="volume_down"]');
+				debugger; //eslint-disable-line no-debugger
+
+				if(volumeOff.length >=1) {
+					if(!volumeOff.attr('hidden')) {
+						log('Stream is already muted. No need to mute again.');
+						clearInterval(autoMuteInterval);
+					} else if(volumeUp.length >= 1 && !volumeUp.attr('hidden')){
+						volumeUp.click();
+						log('Auto muted the stream successfully.');
+						clearInterval(autoMuteInterval);
+					} else if(volumeDown.length >= 1 && !volumeDown.attr('hidden')){
+						volumeUp.click();
+						log('Auto muted the stream successfully.');
+						clearInterval(autoMuteInterval);
+					}
+					else if (muteStreamTries < 10) {
+						muteStreamTries++;
+						log('Cant find auto mute button. Trying again.');
+					} else {
+						clearInterval(autoMuteInterval);
+						log('Tried to auto mute for 10 seconds and failed.');
+					}
+
 				} else if (muteStreamTries < 10) {
 					muteStreamTries++;
 					log('Cant find auto mute button. Trying again.');
@@ -742,7 +773,10 @@ $(() => {
 			// Give chat messages a chat message class for easier targeting.
 			messageContainer.addClass('chat-message');
 
-			var messageAuthor = messageContainer.find('[class*=\'username\']').text().trim();
+			var messageAuthor = messageContainer.find('[class*=\'username\']')
+				.text()
+				.trim()
+				.split(' ')[0]; // we do this to cut out the progression level
 
 			if(options.ignoredUsers.includes(messageAuthor)) {
 				messageContainer.hide();
@@ -754,7 +788,7 @@ $(() => {
 
 			// Give any message with a mention of our user a class.
 			var messageText = messageContainer.find('[class*=\'textComponent\']').text().toLowerCase().trim();
-			console.log(`Message text: ${messageText}`);
+
 			var userTagged = messageContainer.find('.tagComponent').text().toLowerCase().trim().replace('@', '');
 			if(cache.user != null) {
 				var userLowerCase = cache.user.username.toLowerCase();
@@ -822,7 +856,7 @@ $(() => {
 								component.html(text);
 							}
 						});
-					  });	
+					  });	 
 				}
 			}
 
@@ -921,7 +955,8 @@ $(() => {
 											$('.hide-picture-btn').off('click', '**');
 
 											//add updated click event
-											$('.hide-picture-btn').click(function() {
+											$('.hide-picture-btn').click(function(event) {
+												event.stopPropagation();
 												$(this).parent().parent().remove();
 											});
 
@@ -1286,8 +1321,10 @@ $(() => {
 		return new Promise((resolve) => {
 			// Check Mixer API with co-stream ID to see who is participaiting in the co-stream. 
 			let url = 'https://mixer.com/api/v1/channels/'+channelId+'/users?where=username:eq:'+username+'&fields=id';
+
 			$.getJSON(url, function(data) {
-				var groups = data[0]['groups'];
+				if(!data || data.length < 1) return resolve([]);
+				var groups = data[0].groups;
 				var roles = Array();
 
 				// Check each group from API data and insert into roles array.
