@@ -1172,8 +1172,8 @@ $(() => {
 		return new Promise((resolve) => {
 			chrome.storage.sync.get({
 				'streamerPageOptions': null,
-				'homePageOptions': { highlightFavorites: true },
-				'generalOptions': { pinSearchToTop: true }
+				'homePageOptions': { pinSearchToTop: true },
+				'generalOptions': { highlightFavorites: true }
 			}, (options) => {
 				resolve(options);
 			});
