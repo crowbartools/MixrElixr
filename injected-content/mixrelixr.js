@@ -447,14 +447,12 @@ $(() => {
 
 					let hideInteractiveInterval = setInterval(function(){
 
-					// click the hide button
+						// click the hide button
 						minimizeInteractiveBtn.click();
-					
-					
-					
+										
 						setTimeout(() => {
-						// get a fresh copy of the toggle button, this will reflect any changes in the DOM that 
-						// happenedafter we clicked it
+							// get a fresh copy of the toggle button, this will reflect any changes in the DOM that 
+							// happenedafter we clicked it
 							let updatedBtn = $('.toggle-interactive');
 					
 							// this will be true if there is a costream and multiple streamers in the costream have
@@ -888,18 +886,13 @@ $(() => {
 
 
 			if(options.showImagesInline) {
-				var userPermitted = options.inlineImgPermittedUsers.length === 0;
-				if(options.inlineImgPermittedUsers != null && options.inlineImgPermittedUsers.length > 0) {
-					userPermitted = options.inlineImgPermittedUsers.includes(messageAuthor);
-				}
-
+				
 				var userBlacklisted = false;
 				if(options.inlineImgBlacklistedUsers != null && options.inlineImgBlacklistedUsers.length > 0) {
 					userBlacklisted = options.inlineImgBlacklistedUsers.includes(messageAuthor);
 				}
 
-				var shouldShowInlineImage = userPermitted && !userBlacklisted;
-				if(shouldShowInlineImage) {
+				if(!userBlacklisted) {
 					var links = messageContainer.find('a[target=\'_blank\']');
 
 					if(links.length > 0) {
@@ -921,14 +914,22 @@ $(() => {
 										}
 									});
 
-									if(rolePermitted === true){
+									var userTrusted = false;
+									if(options.inlineImgPermittedUsers != null && 
+										options.inlineImgPermittedUsers.length > 0) {
+										userTrusted = options.inlineImgPermittedUsers.includes(messageAuthor);
+									}
+
+									if(rolePermitted === true || userTrusted){
 										var previousImage = messageContainer.find(`img[src='${url}']`);
 
 										//deleted
 										var messageIsDeleted = messageContainer.is('[class^="deleted"]');
 
 										if((previousImage == null || previousImage.length < 1) 
-											&& (messageIsDeleted == null || messageIsDeleted === false || messageIsDeleted.length < 1)) {
+											&& (messageIsDeleted == null || 
+												messageIsDeleted === false || 
+												messageIsDeleted.length < 1)) {
 
 											var inlineImg = 
 												$(`<span style="display:block;">
