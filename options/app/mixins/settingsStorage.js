@@ -67,7 +67,8 @@ settingsStorage = {
 				},
 				homePageOptions: {
 					removeFeatured: false,
-					autoMute: false
+					autoMute: false,
+					pinSearchToTop: true
 				},
 				generalOptions: {
 					showBadge: true,

@@ -155,13 +155,44 @@ $(() => {
 			}
 		}
 
-		if(!settings.homePageOptions) {
-			log('No home page settings saved.');
-			return;
+		//handle searchbar 
+		const pinSearchBar = settings.homePageOptions.pinSearchToTop == null || settings.homePageOptions.pinSearchToTop === true;
+		
+		let searchBar = $('b-browse-channels-header')
+			.children()
+			.find('.control.input');
+		let pageHeader = $('b-desktop-header');
+
+		// add or remove our css classes
+		if(pinSearchBar) {
+			pageHeader.addClass('searchPinned');
+			searchBar.addClass('pinned');		
+		} else {
+			pageHeader.removeClass('searchPinned');
+			searchBar.removeClass('pinned');
+			searchBar.css('top', '');
 		}
 
+		// do initial searchbar position check on load
+		searchbarPositionCheck();
+	
+		// do checks when page scrolled
+		$(window).scroll(function(){
+			searchbarPositionCheck();
+		});
+			
+		// do checks when page resized
+		$(window).on('resize', function(){
+			searchbarPositionCheck();
+		});
+		
+		// do checks when a click happens anywhere in main doc
+		$(document).click(function() {
+			searchbarPositionCheck();
+		});
+
 		// Remove featured streams on homepage
-		if(settings.homePageOptions.removeFeatured){
+		if(settings.homePageOptions && settings.homePageOptions.removeFeatured){
 			$('b-delve-featured-carousel, b-delve-games, b-delve-oom-channels').remove();
 		} else if ($('b-delve-featured-carousel, b-delve-games, b-delve-oom-channels').length === 0){
 			location.reload();
@@ -974,6 +1005,59 @@ $(() => {
 		scrollChatToBottom();
 	}
 
+
+	function searchbarPositionCheck() {
+
+		const pinSearchBar = settings.homePageOptions.pinSearchToTop == null || 
+			settings.homePageOptions.pinSearchToTop === true;
+
+		if(!pinSearchBar) return;
+
+		//see if the header element has the 'collapsed' class (only has it when page is scrolled down a bit)
+		let topNavCollapsed = $('b-desktop-header').hasClass('collapsed'),
+			cachedCollapsed = cache.topNavCollapsed || false,
+			collapsedChanged = topNavCollapsed !== cachedCollapsed;
+
+		let browserWidth = Math.max(
+			document.body.scrollWidth,
+			document.documentElement.scrollWidth,
+			document.body.offsetWidth,
+			document.documentElement.offsetWidth,
+			document.documentElement.clientWidth
+		);
+		
+		let browserCompact = browserWidth < 1770,
+			cachedCompact = cache.browserCompact || false,
+			compactChanged = browserCompact !== cachedCompact;
+
+		// current collapsed and compact state matches current value, nothing new here, return now.
+		if(!collapsedChanged && !compactChanged) return;
+
+		// update our caches
+		cache.topNavCollapsed = topNavCollapsed;
+		cache.browserCompact = browserCompact;
+
+		// find searchbar
+		let searchBar = $('b-browse-channels-header').children().find('.control.input');
+		if(searchBar) {
+			// update searchbar css
+			let topAmount = topNavCollapsed ? 4 : 23;
+			if(browserCompact) {
+				topAmount = topAmount + 60;
+			}
+			searchBar.css('top', topAmount +'px');
+
+			// add or remove box shadow if needed
+			if(compactChanged) {
+				if(browserCompact) {
+					searchBar.css('box-shadow', '0px 0px 5px 2px rgba(0,0,0,0.2)');
+				} else {
+					searchBar.css('box-shadow', 'inherit');
+				}
+			}			
+		}
+	}
+
 	// This inserts a button that toggles favorite status of the specified streamer.
 	// This also modifies the coloration on the user name.
 	function addFavoriteButton(streamerName, isFavorited = false, isCostream = false) {
@@ -1085,14 +1169,12 @@ $(() => {
 	}
 
 	function getSettings() {
-		log('getSettings()');
 		return new Promise((resolve) => {
 			chrome.storage.sync.get({
 				'streamerPageOptions': null,
-				'homePageOptions': null,
-				'generalOptions': { highlightFavorites: true }
+				'homePageOptions': { highlightFavorites: true },
+				'generalOptions': { pinSearchToTop: true }
 			}, (options) => {
-				console.log(options);
 				resolve(options);
 			});
 		});

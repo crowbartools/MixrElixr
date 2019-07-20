@@ -219,3 +219,17 @@ b-channel-info-bar.theaterMode {
 .hide-word-mentioned.hide-remove {
     display: none;
 }
+
+b-desktop-header.searchPinned {
+    z-index: 9 !important;
+}
+
+b-browse-channels-header > div.layout-row > div.control.input.pinned {
+    position: fixed;
+    top: 23px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    opacity: 0.99;      
+    transition: top 300ms cubic-bezier(0.25, 0.8, 0.25, 1);
+}   
