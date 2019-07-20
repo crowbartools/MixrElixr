@@ -48,7 +48,7 @@ Vue.component('streamer-page-options', {
 
 				<div class="option-wrapper" style="margin-bottom: 20px;">
 					<div style="padding-bottom: 5px;">Ignored Users<option-tooltip name="ignoredUsers" title="You will not see messages from users listed here."></option-tooltip></div>
-					<edittable-list class="option" :value.sync="ignoredUsers" :options="viewers" tag-placeholder="Press enter to add user" placeholder="Select or type to add" @changed="saveSettings()"></edittable-list>
+					<user-list class="option" :value.sync="ignoredUsers" @changed="saveSettings()"></user-list>
 				</div>
 
 				<inline-img-toggle :value.sync="showImagesInline" @changed="saveSettings()"></inline-img-toggle>
@@ -56,9 +56,9 @@ Vue.component('streamer-page-options', {
 					<div style="padding-bottom: 5px;">Permitted User Roles<option-tooltip name="permUserRoles" title="See images from anyone in the selected role (and higher), unless the user is blacklisted below."></option-tooltip></div>
 					<b-form-select v-model="lowestUserRoleLinks" :options="userRoles" class="mb-3 option"></b-form-select>
 					<div style="padding-bottom: 5px;">Trusted Users<option-tooltip name="permUsers" title="Images from these users will ALWAYS show, even if they aren't in a permitted role above."></div>
-					<edittable-list class="option" :value.sync="inlineImgPermittedUsers" :options="viewers" tag-placeholder="Press enter to add user" placeholder="Select or type to add" @changed="saveSettings()"></edittable-list>
+					<user-list class="option" :value.sync="inlineImgPermittedUsers" @changed="saveSettings()"></user-list>
 					<div style="padding-bottom: 5px;">Blacklisted Users<option-tooltip name="blacklistedUsers" title="Images from these users will NEVER show, even if they are in a permitted role above."></option-tooltip></div>
-					<edittable-list class="option" :value.sync="inlineImgBlacklistedUsers" :options="viewers" tag-placeholder="Press enter to add user" placeholder="Select or type to add" @changed="saveSettings()"></edittable-list>
+					<user-list class="option" :value.sync="inlineImgBlacklistedUsers" @changed="saveSettings()"></user-list>
 				</div>
 
 				<span class="setting-subcategory">Hosts</span>
@@ -177,22 +177,23 @@ Vue.component('streamer-page-options', {
 
 			return builtModel;
 		},
-		getViewersForCurrentChannel: function() {
+		findMixerViewers: async function(query) {
 			var app = this;
-			app.getCurrentStreamerNameInOpenTab().then((name) => {
-				if(name == null) return;
-				app.$http.get(`https://mixer.com/api/v1/channels/${encodeURIComponent(name)}?fields=id`, {responseType: 'json'})
-					.then((response) => {
-						if(!response.ok) return;
+			app.isLoading = true;
 
-						var id = response.body.id;
-						app.$http.get(`https://mixer.com/api/v1/chats/${id}/users?fields=userName`, {responseType: 'json'})
-							.then((response) => {
-								if(!response.ok) return;
-								app.viewers = response.body.map(v => v.userName);
-							});					
-					});
-			});
+			let response;
+			try {
+				response = await app.$http.get(`https://mixer.com/api/v1/channels?limit=6&noCount=1&scope=all&q=${query}&search=true&fields=token`, {responseType: 'json'});
+			} catch(err) {
+				console.log('error searching for mixer viewers', err);
+			}
+
+			if(response) {
+				let channels = response.data;
+				app.viewers = channels.map(c => c.token);
+			}	
+			
+			app.isLoading = false;
 		}
 	},
 	watch: {
@@ -247,7 +248,8 @@ Vue.component('streamer-page-options', {
 				}
 			},
 			overrideNames: [],
-			viewers: []
+			viewers: [],
+			isLoading: false
 		};
 
 		var defaults = this.getDefaultOptions().streamerPageOptions;
@@ -270,8 +272,6 @@ Vue.component('streamer-page-options', {
 				this.overrideSelected(name);
 			}
 		});
-
-		this.getViewersForCurrentChannel();
 
 		bus.$on('tab-changed', (tab) => {
 			if(tab === 'options') {
