@@ -1,3 +1,5 @@
+const clientId = 'd2158e591bb347931751bef151ee3bf3e5c8cb9608924a7a';
+
 friendFetcher = { 
 	methods: {
 		getMixerId: function() {
@@ -5,7 +7,9 @@ friendFetcher = {
 			return new Promise(function(resolve, reject) {
 
 				var request = new XMLHttpRequest();
+
 				request.open('GET', 'https://mixer.com/api/v1/users/current', true);
+				request.setRequestHeader('Client-ID', clientId);
 
 				request.onload = function() {
 					if (request.status >= 200 && request.status < 400) {
