@@ -163,32 +163,79 @@ $(() => {
 			.find('.control.input');
 		let pageHeader = $('b-desktop-header');
 
+		let searchHeader = $('b-browse-framework').children('header');
+
+		let filterButton = $('b-browse-channels-header')
+			.children()
+			.find('.control.control-filter');
+
+		let filterPanel = $('b-browse-filters');
+
 		// add or remove our css classes
 		if(pinSearchBar) {
+			//remove button text from language dropdown
+			$('.language-button').children('span').text('');
+			//remove button text from filter button
+			let filterText = $('.control-filter').children('.bui-btn').children('span').contents().filter(function(){ return this.nodeType == 3; }).eq(1);
+			filterText.replaceWith('');
+
+			// block click events on filter button, handle show/hide of filter panel on our own
+			let filterBtnHandler = () => {
+				if(pinSearchBar) {
+					let filtersPanel = $('b-browse-filters');
+					if(filtersPanel.hasClass('visible')) {
+						filtersPanel.removeClass('visible');
+					} else {
+						filtersPanel.addClass('visible');
+					}
+					return false;
+				} else {
+					return true;
+				}
+			};
+			$('.control-filter').children('.bui-btn').off('click');
+			$('.control-filter').children('.bui-btn').on('click', filterBtnHandler);
+			
 			pageHeader.addClass('searchPinned');
-			searchBar.addClass('pinned');		
+			searchHeader.addClass('searchPinned');
+			searchBar.addClass('me-pinned-search me-searchbar');
+			filterButton.addClass('me-pinned-search me-filterbtn');
+			filterPanel.addClass('me-filterspanel');		
 		} else {
+			$('.me-pinned-search').css('top', '');
 			pageHeader.removeClass('searchPinned');
-			searchBar.removeClass('pinned');
-			searchBar.css('top', '');
+			searchHeader.removeClass('searchPinned');
+			searchBar.removeClass('me-pinned-search me-searchbar');
+			filterButton.removeClass('me-pinned-search me-filterbtn');
+			filterPanel.removeClass('me-filterspanel');
+			filterPanel.css('top', '');
 		}
 
 		// do initial searchbar position check on load
 		searchbarPositionCheck();
 	
 		// do checks when page scrolled
-		$(window).scroll(function(){
+		$(window).scroll(debounce(function(){
 			searchbarPositionCheck();
-		});
+		}, 1));
 			
 		// do checks when page resized
-		$(window).on('resize', function(){
+		$(window).on('resize', debounce(function(){
 			searchbarPositionCheck();
-		});
+		}, 100));
 		
 		// do checks when a click happens anywhere in main doc
-		$(document).click(function() {
+		$(document).click(function(event) {
 			searchbarPositionCheck();
+
+			let filtersPanel = $('b-browse-filters');
+			if(!filtersPanel[0].contains(event.target)) {
+				if(pinSearchBar) {
+					if(filtersPanel.hasClass('visible')) {
+						filtersPanel.removeClass('visible');
+					}
+				}
+			}
 		});
 
 		// Remove featured streams on homepage
@@ -885,7 +932,7 @@ $(() => {
 								component.html(text);
 							}
 						});
-					  });	 
+				  });	 
 				}
 			}
 
@@ -1038,21 +1085,37 @@ $(() => {
 		cache.browserCompact = browserCompact;
 
 		// find searchbar
-		let searchBar = $('b-browse-channels-header').children().find('.control.input');
-		if(searchBar) {
+		let pinnedItems = $('.me-pinned-search');
+		if(pinnedItems) {
 			// update searchbar css
-			let topAmount = topNavCollapsed ? 4 : 23;
+			let searchTopAmount = topNavCollapsed ? 4 : 23;
 			if(browserCompact) {
-				topAmount = topAmount + 60;
+				searchTopAmount = searchTopAmount + 60;
 			}
-			searchBar.css('top', topAmount +'px');
+			$('.me-searchbar').css('top', searchTopAmount +'px');
+
+			let filterTopAmount = topNavCollapsed ? 12 : 31;
+			if(browserCompact) {
+				filterTopAmount = filterTopAmount + 60;
+			}
+			$('.me-filterbtn').css('top', filterTopAmount +'px');
+
+			let filterPanelTopAmount = topNavCollapsed ? 60 : 79;
+			if(browserCompact) {
+				filterPanelTopAmount = filterPanelTopAmount + 60;
+			}
+			$('.me-filterspanel').css('top', filterPanelTopAmount +'px');
+
+			/*
+			filterButton.addClass('me-pinned-search me-filterbtn');
+			filterPanel.addClass('me-filterspanel');*/
 
 			// add or remove box shadow if needed
 			if(compactChanged) {
 				if(browserCompact) {
-					searchBar.css('box-shadow', '0px 0px 5px 2px rgba(0,0,0,0.2)');
+					pinnedItems.css('box-shadow', '0px 0px 5px 2px rgba(0,0,0,0.2)');
 				} else {
-					searchBar.css('box-shadow', 'inherit');
+					pinnedItems.css('box-shadow', 'inherit');
 				}
 			}			
 		}
@@ -1205,12 +1268,34 @@ $(() => {
 
 	/* Helpers */
 
+	function debounce(func, wait, immediate) {
+		var timeout;
+		
+		return function executedFunction() {
+			var context = this;
+			var args = arguments;
+				
+			var later = function() {
+				timeout = null;
+				if (!immediate) func.apply(context, args);
+			};
+		
+			var callNow = immediate && !timeout;
+			
+			clearTimeout(timeout);
+		
+			timeout = setTimeout(later, wait);
+			
+			if (callNow) func.apply(context, args);
+		};
+	}
+
 	function escapeRegExp(string) {
 		return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 	}
 
 	function log(message) {
-		console.log(`[ME: ${message}]`);
+		console.log(`[MixrElixr: ${message}]`);
 	}
 
 	function getUserRoleRank(role = '') {

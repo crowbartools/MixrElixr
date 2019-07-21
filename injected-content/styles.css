@@ -224,12 +224,61 @@ b-desktop-header.searchPinned {
     z-index: 9 !important;
 }
 
-b-browse-channels-header > div.layout-row > div.control.input.pinned {
+b-browse-channels-header > div > .me-pinned-search,
+b-browse-channels-header > div > .input.me-pinned-search,
+b-browse-channels-header > div > .control-filter.me-pinned-search {
     position: fixed;
+    z-index: 10;     
+    transition: top 300ms cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+b-browse-channels-header > div > .me-pinned-search.me-searchbar {
     top: 23px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 10;
-    opacity: 0.99;      
+}
+
+b-browse-channels-header > div > .me-pinned-search.me-filterbtn {
+    top: 31px;
+    left: 50%;
+    transform: translateX(calc(-50% + 215px));
+}
+
+b-browse-filters.me-filterspanel {
+    position: fixed;
+    top: 79px;
+    z-index: 100;
+    margin: 0 auto;
+    max-width: 1440px;
+    width: 100%;
+    left: 50%;
+    transform: translateX(-50%);
     transition: top 300ms cubic-bezier(0.25, 0.8, 0.25, 1);
-}   
+}
+
+b-browse-framework > header.searchPinned {
+    position: static;
+    background: transparent !important;
+}
+
+/*
+filter btn:
+
+    // cancel auto page scroll (need more specific query id)
+    $(".bui-btn-flat").on('click', (event) => {
+        return false;
+    });
+
+
+filter panel:
+
+    position: fixed;
+    top: 60px;
+    margin: 0 auto;
+    max-width: 1440px;
+    width: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+
+
+*/
