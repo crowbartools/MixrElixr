@@ -200,7 +200,14 @@ $(() => {
 			searchHeader.addClass('searchPinned');
 			searchBar.addClass('me-pinned-search me-searchbar');
 			filterButton.addClass('me-pinned-search me-filterbtn');
-			filterPanel.addClass('me-filterspanel');		
+			filterPanel.addClass('me-filterspanel');
+			
+			searchBar.append(`
+			<div class="elixr-badge-wrapper">
+				<div class="elixr-badge" title="MixrElixr: Pinned search">
+					<img style="height: 10px;width: 10px;transform: translate(1px, -1px);"src="https://raw.githubusercontent.com/crowbartools/MixrElixr/master/resources/images/elixr-light-16.png">
+				</div>
+			</div>`);
 		} else {
 			$('.me-pinned-search').css('top', '');
 			pageHeader.removeClass('searchPinned');
@@ -209,6 +216,7 @@ $(() => {
 			filterButton.removeClass('me-pinned-search me-filterbtn');
 			filterPanel.removeClass('me-filterspanel');
 			filterPanel.css('top', '');
+			$('.elixr-badge-wrapper').remove();
 		}
 
 		// do initial searchbar position check on load
