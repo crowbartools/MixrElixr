@@ -17,11 +17,12 @@ Vue.component('made-with-love', {
                 @ok="hideModal">
                     <h5 class="modal-title">Contributors</h5>
                     <div class="teammember">ebiggz</div>
-                    <div class="teammember">Firebottle</div>                
+                    <div class="teammember">TheLastMage</div>                
                     <div class="teammember">ThePerry</div>
                     <div class="teammember">Carlyndra</div>
                     <div class="teammember">Buttercup</div>
                     <div class="teammember">murfGUY</div>
+                    <div class="teammember">FierySama</div>
                     <h5 class="modal-title" style="padding-top: 20px">Need Help?</h5>
                     <div style="font-size:16px">If you have questions, please reach out to us <a class="light-blue-link" href="https://twitter.com/MixrElixr" target="_blank">on Twitter</a> or post in the #elixr-help channel of <a class="light-blue-link" href="https://discord.gg/2CGrbA4" target="_blank">our Discord</a>.</div>
                     <div class="disclaimer">MixrElixr is neither created nor endorsed by Mixer or Microsoft. It is created by the community for the community.</div>
