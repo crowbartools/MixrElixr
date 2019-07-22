@@ -2,8 +2,9 @@
 $(() => {
 
 	// stuff we need to track across pages
-	var settings = null;
-	var cache = {};
+	let settings = null;
+	let cache = {};
+	let initialPageLoad = true;
 
 	const ElementSelector = {
 		CHAT_CONTAINER: '[class*=\'ChatMessages\']',
@@ -33,15 +34,22 @@ $(() => {
 		});
 	}
 
-	function waitForElementAvailablity(selector) {
-		return new Promise((resolve)=>{
-			function doElementCheck() {
+	function waitForElementAvailablity(selector, checkCount = 40) {
+		return new Promise((resolve, reject)=>{
+			function doElementCheck(counter = 0) {
+
+				if(counter > checkCount) {
+					log(`Couldn't find '${selector}' after ${checkCount} tries!`);
+					return reject();
+				}
+				counter++;
+
 				var element = $(selector);
 				var elementExists = element != null && element.length > 0;
 
 				if(!elementExists) {
 					//spinner still exists, check again in a bit
-					setTimeout(()=> { doElementCheck(); }, 250);
+					setTimeout(()=> { doElementCheck(counter); }, 250);
 				} else {
 					log(`Element '${selector}' found!`);
 					resolve();
@@ -252,6 +260,8 @@ $(() => {
 		} else if ($('b-delve-featured-carousel, b-delve-games, b-delve-oom-channels').length === 0){
 			location.reload();
 		}
+
+		initialPageLoad = false;
 	}
 
 	function getStreamerName() {
@@ -281,7 +291,7 @@ $(() => {
 	function cacheCustomElixrEmotes(channelId){
 		return new Promise((resolve, reject) => {
 			if(channelId === null || channelId === undefined){
-				log('Undefined channel id passed to custom emote cacher.')
+				log('Undefined channel id passed to custom emote cacher.');
 				resolve();
 				return;
 			}
@@ -295,15 +305,15 @@ $(() => {
 			}
 			
 			var ts = new Date().getTime();
-			var rootUrl = "https://crowbartools.com/user-content/emotes/"+channelId+".json?cache="+ts;
+			var rootUrl = 'https://crowbartools.com/user-content/emotes/'+channelId+'.json?cache='+ts;
 			$.getJSON( rootUrl, function(data) {
-				log("Custom emotes retrieved for: " + cache.currentStreamerName);
+				log('Custom emotes retrieved for: ' + cache.currentStreamerName);
 				cache.currentStreamerEmotes = data;
 			})
-			.fail(function() {
-				log("No custom emotes for: " + cache.currentStreamerName);
-				cache.currentStreamerEmotes = NULL;
-			})
+				.fail(function() {
+					log('No custom emotes for: ' + cache.currentStreamerName);
+					cache.currentStreamerEmotes = null;
+				});
 
 			resolve();
 		});
@@ -428,11 +438,71 @@ $(() => {
 				clearInterval(cache.highlightLoop);
 			}
 		}
+
+		initialPageLoad = false;
 	}
 
 
 	function loadStreamerPage(streamerName) {
 		log(`Loading streamer page for: ${streamerName}`);
+
+		if(!settings.streamerPageOptions) {
+			log('No streamer page settings saved.');
+			return;
+		}
+
+		var options = settings.streamerPageOptions.global;
+
+		// override the options if there is streamer specific options available
+		var overrides = settings.streamerPageOptions.overrides;
+		var overrideKeys = Object.keys(overrides);
+		for(var i = 0; i < overrideKeys.length; i++) {
+			var key = overrideKeys[i];
+			if(key.toLowerCase() === streamerName.toLowerCase()) {
+				log(`found override options for ${streamerName}`);
+				options = overrides[key];
+			}
+			break;
+		}
+
+		// Auto Mute Stream
+		if(options.autoMute && initialPageLoad){
+			let muteStreamTries = 0;
+			let autoMuteInterval = setInterval(function(){
+				let volumeOff = $('[icon="volume_off"]');
+				let volumeUp = $('[icon="volume_up"]');
+				let volumeDown = $('[icon="volume_down"]');
+
+				if(volumeOff.length >= 1) {
+					if(!volumeOff.attr('hidden')) {
+						log('Stream is already muted. No need to mute again.');
+						clearInterval(autoMuteInterval);
+					} else if(volumeUp.length >= 1 && !volumeUp.attr('hidden')){
+						volumeUp.click();
+						log('Auto muted the stream successfully.');
+						clearInterval(autoMuteInterval);
+					} else if(volumeDown.length >= 1 && !volumeDown.attr('hidden')){
+						volumeUp.click();
+						log('Auto muted the stream successfully.');
+						clearInterval(autoMuteInterval);
+					}
+					else if (muteStreamTries < 10) {
+						muteStreamTries++;
+						log('Cant find auto mute button. Trying again.');
+					} else {
+						clearInterval(autoMuteInterval);
+						log('Tried to auto mute for 10 seconds and failed.');
+					}
+
+				} else if (muteStreamTries < 10) {
+					muteStreamTries++;
+					log('Cant find auto mute button. Trying again.');
+				} else {
+					clearInterval(autoMuteInterval);
+					log('Tried to auto mute for 10 seconds and failed.');
+				}
+			}, 1000);
+		}
 
 		if(settings.generalOptions.highlightFavorites){
 			// Let's get the Costream ID via API call
@@ -532,77 +602,58 @@ $(() => {
 			$('#ME_favorite-btn').removeClass('faved');
 		}
 
-		if(!settings.streamerPageOptions) {
-			log('No streamer page settings saved.');
-			return;
-		}
-
-		var options = settings.streamerPageOptions.global;
-
-		// override the options if there is streamer specific options available
-		var overrides = settings.streamerPageOptions.overrides;
-		var overrideKeys = Object.keys(overrides);
-		for(var i = 0; i < overrideKeys.length; i++) {
-			var key = overrideKeys[i];
-			if(key.toLowerCase() === streamerName.toLowerCase()) {
-				log(`found override options for ${streamerName}`);
-				options = overrides[key];
-			}
-			break;
-		}
-
 		// Auto close interactive
-		if(options.autoCloseInteractive) {
+		if(options.autoCloseInteractive && initialPageLoad) {
 
-			//debugger; // eslint-disable-line no-debugger
-			setTimeout(() => {
-
-				let minimizeInteractiveBtn = $('.toggle-interactive');
+			waitForElementAvailablity('.toggle-interactive')
+				.then(() => {
+					let minimizeInteractiveBtn = $('.toggle-interactive');
 			
-				if(minimizeInteractiveBtn != null && minimizeInteractiveBtn.hasClass('open')) {
-					let hideInteractiveTries = 0;
+					if(minimizeInteractiveBtn != null && minimizeInteractiveBtn.hasClass('open')) {
+						let hideInteractiveTries = 0;
 
-					let hideInteractiveInterval = setInterval(function(){
+						let hideInteractiveInterval = setInterval(function(){
 
 						// click the hide button
-						minimizeInteractiveBtn.click();
+							minimizeInteractiveBtn.click();
 										
-						setTimeout(() => {
+							setTimeout(() => {
 							// get a fresh copy of the toggle button, this will reflect any changes in the DOM that 
 							// happenedafter we clicked it
-							let updatedBtn = $('.toggle-interactive');
+								let updatedBtn = $('.toggle-interactive');
 					
-							// this will be true if there is a costream and multiple streamers in the costream have
-							// interactive on 
-							if(detectCostreams() && updatedBtn.length === 0){
-								log('Pressed the toggle interactive button successfully.');
-								clearInterval(hideInteractiveInterval);
+								// this will be true if there is a costream and multiple streamers in the costream have
+								// interactive on 
+								if(detectCostreams() && updatedBtn.length === 0){
+									log('Pressed the toggle interactive button successfully.');
+									clearInterval(hideInteractiveInterval);
 
-								// wait half a sec
-								setTimeout(() => {
+									// wait half a sec
+									setTimeout(() => {
 									//click X close button
-									$('[icon="MixerBan"]').click();
-									log('Pressed the close interactive button.');
-								}, 100);
+										$('[icon="MixerBan"]').click();
+										log('Pressed the close interactive button.');
+									}, 200);
 
-							} 
-							// this will be true if theres no costreamer or only one streamer in costream has interactive on
-							else if(updatedBtn.length !== 0 && !updatedBtn.hasClass('open')){
-								log('Hid the interactive panel successfully.');
-								clearInterval(hideInteractiveInterval);
-							} else if (hideInteractiveTries < 10) {
-								hideInteractiveTries++;
-								log('Cant find interactive hide button. Trying again.');
-							} else {
-								clearInterval(hideInteractiveInterval);
-								log('Tried to hide interactive for 10 seconds and failed.');
-							}
-						}, 100);
+								} 
+								// this will be true if theres no costreamer or only one streamer in costream has interactive on
+								else if(updatedBtn.length !== 0 && !updatedBtn.hasClass('open')){
+									log('Hid the interactive panel successfully.');
+									clearInterval(hideInteractiveInterval);
+								} else if (hideInteractiveTries < 10) {
+									hideInteractiveTries++;
+									log('Cant find interactive hide button. Trying again.');
+								} else {
+									clearInterval(hideInteractiveInterval);
+									log('Tried to hide interactive for 10 seconds and failed.');
+								}
+							}, 100);
 					
-					}, 1000);
-				}		
-
-			},100);			
+						}, 1000);
+					}	
+				}).catch(() => {
+					log('Couldnt find interactive, streamer might not have it running.');
+				});		
 		}
 
 		// Host Loop
@@ -650,46 +701,6 @@ $(() => {
 						cache.mutedHost = streamerName;
 					}
 
-				}
-			}, 1000);
-		}
-
-		// Auto Mute Stream
-		if(options.autoMute){
-			let muteStreamTries = 0;
-			let autoMuteInterval = setInterval(function(){
-				let volumeOff = $('[icon="volume_off"]');
-				let volumeUp = $('[icon="volume_up"]');
-				let volumeDown = $('[icon="volume_down"]');
-				debugger; //eslint-disable-line no-debugger
-
-				if(volumeOff.length >=1) {
-					if(!volumeOff.attr('hidden')) {
-						log('Stream is already muted. No need to mute again.');
-						clearInterval(autoMuteInterval);
-					} else if(volumeUp.length >= 1 && !volumeUp.attr('hidden')){
-						volumeUp.click();
-						log('Auto muted the stream successfully.');
-						clearInterval(autoMuteInterval);
-					} else if(volumeDown.length >= 1 && !volumeDown.attr('hidden')){
-						volumeUp.click();
-						log('Auto muted the stream successfully.');
-						clearInterval(autoMuteInterval);
-					}
-					else if (muteStreamTries < 10) {
-						muteStreamTries++;
-						log('Cant find auto mute button. Trying again.');
-					} else {
-						clearInterval(autoMuteInterval);
-						log('Tried to auto mute for 10 seconds and failed.');
-					}
-
-				} else if (muteStreamTries < 10) {
-					muteStreamTries++;
-					log('Cant find auto mute button. Trying again.');
-				} else {
-					clearInterval(autoMuteInterval);
-					log('Tried to auto mute for 10 seconds and failed.');
 				}
 			}, 1000);
 		}
@@ -927,7 +938,7 @@ $(() => {
 					let keywordRegex = new RegExp(`(^|\s)${ename}(\s|$)`, 'gmi');
 					if(keywordRegex.test(messageText)) {
 						let textContainer = messageContainer.find($('[class^="textComponent"]'));
-						let emoteText = messageText.replace(keywordRegex, "<span class='elixr-custom-emote'><img src='"+eurl+"'></span>");
+						let emoteText = messageText.replace(keywordRegex, '<span class=\'elixr-custom-emote\'><img src=\''+eurl+'\'></span>');
 						textContainer.html(emoteText);
 						break;
 					}
@@ -991,7 +1002,7 @@ $(() => {
 								component.html(text);
 							}
 						});
-				  });	 
+					});	 
 				}
 			}
 
@@ -1109,6 +1120,8 @@ $(() => {
 		});
 
 		scrollChatToBottom();
+
+		initialPageLoad = false;
 	}
 
 
