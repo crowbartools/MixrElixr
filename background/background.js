@@ -241,7 +241,7 @@ async function run() {
 
 				console.log('Checking to make sure we aren\'t just a fresh follower.');
 				// we dont want to display a notification if a user just followed this channel while they are live
-				let newFollower = await isNewFollower(followedUser.channelId);				
+				let newFollower = await isNewFollower(followedUser.channelId, currentUserId);				
 				if(!newFollower) {
 					console.log('We aren\'t a fresh follower, trigger notification.');
 					showNotification(followedUser, options);
