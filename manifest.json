@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "MixrElixr",
     "description": "Options and tweaks to improve your Mixer.com viewing experience.",
-    "version": "1.8.0",
+    "version": "2.0.0",
     "short_name": "Elixr",
     "browser_action": {
         "default_icon": "/resources/images/elixr-light-16.png",
@@ -38,7 +38,8 @@
         "scripts": [
             "/resources/js/moment.min.js",
             "/background/background.js"
-        ]
+        ],
+        "persistent": true
     },
     "web_accessible_resources": [
         "images/*"
@@ -48,6 +49,7 @@
         "storage",
         "cookies",
         "notifications",
+        "background",
         "*://mixer.com/*"
     ],
     "applications": {
