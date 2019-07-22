@@ -212,7 +212,7 @@ $(() => {
 			
 			searchBar.append(`
 			<div class="elixr-badge-wrapper">
-				<div class="elixr-badge" title="MixrElixr: Pinned search">
+				<div class="elixr-badge me-tooltip" title="MixrElixr: Pinned search">
 					<img style="height: 10px;width: 10px;transform: translate(1px, -1px);"src="https://raw.githubusercontent.com/crowbartools/MixrElixr/master/resources/images/elixr-light-16.png">
 				</div>
 			</div>`);
@@ -935,7 +935,7 @@ $(() => {
 				for (let emote of emotes) {
 					let ename = escapeRegExp(emote.name);
 					let eurl = encodeURI(emote.url);
-					let keywordRegex = new RegExp(`(^|\s)${ename}(\s|$)`, 'gmi');
+					let keywordRegex = new RegExp(`(^|\\s)${ename}(\\s|$)`, 'gmi');
 					if(keywordRegex.test(messageText)) {
 						let textContainer = messageContainer.find($('[class^="textComponent"]'));
 						let emoteText = messageText.replace(keywordRegex, '<span class=\'elixr-custom-emote\'><img src=\''+eurl+'\'></span>');
