@@ -226,6 +226,24 @@ b-channel-info-bar.theaterMode {
 
 b-desktop-header.searchPinned {
     z-index: 9 !important;
+    height: 60px;
+}
+
+.searchPinned::after  {
+    transition: opacity 50ms cubic-bezier(0.35, 0, 0.25, 1);
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: radial-gradient(farthest-side at 50% 0, rgba(0,0,0,0.5), transparent);
+    opacity: 0;
+    height: 60px;
+    pointer-events: none;
+}
+
+.searchPinned.collapsed::after  {
+    opacity: 1;
 }
 
 b-browse-channels-header > div > .me-pinned-search,

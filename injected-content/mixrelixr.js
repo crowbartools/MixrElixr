@@ -238,6 +238,14 @@ $(() => {
 		// do checks when page resized
 		$(window).on('resize', debounce(function(){
 			searchbarPositionCheck();
+
+			if(pinSearchBar) {
+				setTimeout(() => {
+					let pageHeaderCheck = $('b-desktop-header');
+					pageHeaderCheck.addClass('searchPinned');
+				}, 250);				
+			}
+
 		}, 100));
 		
 		// do checks when a click happens anywhere in main doc
@@ -1623,7 +1631,7 @@ $(() => {
 		meTooltip.tooltipster({
 			animation: 'grow',
 			delay: 10,
-			animationDuration: 150,
+			animationDuration: 100,
 			contentAsHTML: true,
 			theme: 'tooltipster-borderless'
 		});
