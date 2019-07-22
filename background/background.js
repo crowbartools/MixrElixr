@@ -156,9 +156,11 @@ function showNotification(followedUser, options) {
 		text = `${followedUser.streamTitle}${followedUser.gameName ? ` | ${followedUser.gameName}` : ''}`;
 
 	let notificationsMode = options.liveNotificationsMode || 'favorites';
+
+	console.log(`Checking user setting for notification mode: ${notificationsMode}`);
 	
 	if(notificationsMode === 'all' || (notificationsMode === 'favorites' && followedUser.favorite)) {
-		console.log('Displaying notification.');
+		console.log('Displaying notification...');
 		// create notification, this automatically displays it too
 		let notification = new Notification(title, { 
 			body: text, 
@@ -170,6 +172,7 @@ function showNotification(followedUser, options) {
 		});
 
 		if(options.playLiveNotificationSound) {
+			console.log('Playing sound...');
 			let url = '/resources/sounds/notification_alert.mp3';
 			let audio = new Audio(url);
 			audio.volume = 0.1;
@@ -181,6 +184,13 @@ function showNotification(followedUser, options) {
 			event.preventDefault(); 
 			window.open(`https://mixer.com/${followedUser.channelName}`, '_blank');
 		};
+
+		setTimeout((noti) => {
+			console.log('Closed the notification.');
+			noti.close();
+		}, 10000, notification);
+	} else {
+		console.log('User doesn\'t have notifications enabled for this follow type. Not showing notifications.');
 	}
 	
 }
@@ -204,6 +214,8 @@ function updateBadge(onlineCount, favoriteOnline) {
 let currentlyLiveCache = null;
 async function run() {
 
+	console.log('Running online check...');
+
 	let currentUserId = await getCurrentUserId();
 	let follows = await getOnlineFollows(currentUserId);
 	let options = await getGeneralOptions();
@@ -211,9 +223,13 @@ async function run() {
 	follows.forEach(f => {
 		f.favorite = favoriteFriends.includes(f.channelName);
 	});
+
+	console.log(`There are ${follows.length} friend(s) online.`);
     
 	// will be null on our first run
 	if(currentlyLiveCache != null) {
+
+		console.log('Checking if any have gone live since our last check...');
 
 		// loop through all followed channels
 		for(let followedUser of follows) {
@@ -221,9 +237,13 @@ async function run() {
 			// see if this channel has gone live since we last checked
 			if(!currentlyLiveCache.includes(followedUser.channelId)) {
 
+				console.log(`It looks like ${followedUser.channelName} has just gone live.`);
+
+				console.log('Checking to make sure we aren\'t just a fresh follower.');
 				// we dont want to display a notification if a user just followed this channel while they are live
 				let newFollower = await isNewFollower(followedUser.channelId);				
 				if(!newFollower) {
+					console.log('We aren\'t a fresh follower, trigger notification.');
 					showNotification(followedUser, options);
 				}
 
@@ -239,6 +259,7 @@ async function run() {
 	}
 
 	currentlyLiveCache = follows.map(f => f.channelId);
+	console.log('... Completed currently live check.');
 }
 
 

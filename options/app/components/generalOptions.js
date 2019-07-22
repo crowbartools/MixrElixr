@@ -43,6 +43,11 @@ Vue.component('general-options', {
  
 		return dataObj;
 	},
+	watch: {
+		liveNotificationsMode: function() {
+			this.saveSettings();
+		},
+	},
 	methods: {
 		showBadgeChanged: function() {
 			bus.$emit('badge-change', this.showBadge);
