@@ -278,6 +278,37 @@ $(() => {
 		});
 	}
 
+	function cacheCustomElixrEmotes(channelId){
+		return new Promise((resolve, reject) => {
+			if(channelId === null || channelId === undefined){
+				log('Undefined channel id passed to custom emote cacher.')
+				resolve();
+				return;
+			}
+
+			// Gets user emotes if there are any, and caches the results.
+			log('Looking for custom emotes...');
+			if(cache.currentStreamerEmotes != null) {
+				log('Found cached custom emotes for: ' + cache.currentStreamerName);
+				resolve();
+				return;
+			}
+			
+			var ts = new Date().getTime();
+			var rootUrl = "https://crowbartools.com/user-content/emotes/"+channelId+".json?cache="+ts;
+			$.getJSON( rootUrl, function(data) {
+				log("Custom emotes retrieved for: " + cache.currentStreamerName);
+				cache.currentStreamerEmotes = data;
+			})
+			.fail(function() {
+				log("No custom emotes for: " + cache.currentStreamerName);
+				cache.currentStreamerEmotes = NULL;
+			})
+
+			resolve();
+		});
+	}
+
 	// Gets channel id by name
 	function getChannelId(){
 		return getStreamerName().then((name) => {
@@ -291,6 +322,9 @@ $(() => {
 					.done((data) => {
 						cache.currentStreamerId = data.id;
 						log('Got channel id');
+
+						cacheCustomElixrEmotes(data.id);
+
 						resolve(data.id);
 					})
 					.fail(() => {
@@ -399,9 +433,6 @@ $(() => {
 
 	function loadStreamerPage(streamerName) {
 		log(`Loading streamer page for: ${streamerName}`);
-
-		// murfGUY TO DO NOTES:
-		// We should probably make it so that "favorite buttons" are always present, but name highlighting is optional.
 
 		if(settings.generalOptions.highlightFavorites){
 			// Let's get the Costream ID via API call
@@ -783,6 +814,11 @@ $(() => {
 
 		var options = getStreamerOptionsForStreamer(streamerName);
 
+		if(options.customEmotes){
+			// If custom emotes enabled, go try to get our json.
+			cacheCustomElixrEmotes(cache.currentStreamerId);
+		}
+
 		try {
 			cache.userIsMod = await userIsModInCurrentChannel();
 			log(`User is mod: ${cache.userIsMod}`);
@@ -883,7 +919,22 @@ $(() => {
 				}
 			}
 
-			// Add class on keyword mention.
+			if(options.customEmotes && cache.currentStreamerEmotes != null) {
+				var emotes = cache.currentStreamerEmotes[0].emotes;
+				for (let emote of emotes) {
+					let ename = escapeRegExp(emote.name);
+					let eurl = encodeURI(emote.url);
+					let keywordRegex = new RegExp(`(^|\s)${ename}(\s|$)`, 'gmi');
+					if(keywordRegex.test(messageText)) {
+						let textContainer = messageContainer.find($('[class^="textComponent"]'));
+						let emoteText = messageText.replace(keywordRegex, "<span class='elixr-custom-emote'><img src='"+eurl+"'></span>");
+						textContainer.html(emoteText);
+						break;
+					}
+				}
+			}
+			
+			// Replace text with custom emotes.
 			if(options.keywords.length > 0) {
 				options.keywords.forEach(w => {
 					let keywordRegex = new RegExp(`\\b${escapeRegExp(w)}\\b`, 'i');

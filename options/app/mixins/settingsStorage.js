@@ -46,6 +46,7 @@ settingsStorage = {
 						separateChat: false,
 						alternateChatBGColor: false,
 						mentionChatBGColor: false,
+						customEmotes: false,
 						hideDeleted: false,
 						timestampAllMessages: false,
 						showImagesInline: false,
