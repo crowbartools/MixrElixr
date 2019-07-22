@@ -35,7 +35,10 @@
         }
     ],
     "background": {
-        "scripts": ["/background/background.js"]
+        "scripts": [
+            "/resources/js/moment.min.js",
+            "/background/background.js"
+        ]
     },
     "web_accessible_resources": [
         "images/*"
@@ -44,6 +47,7 @@
     "permissions": [
         "storage",
         "cookies",
+        "notifications",
         "*://mixer.com/*"
     ],
     "applications": {

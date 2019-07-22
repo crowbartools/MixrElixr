@@ -73,7 +73,10 @@ settingsStorage = {
 				generalOptions: {
 					showBadge: true,
 					favoriteFriends: [],
-					highlightFavorites: true
+					highlightFavorites: true,		
+					liveNotificationsMode: 'favorites',
+					playLiveNotificationSound: true,
+					liveNotificationSoundType: 'default'
 				}
 			};
 		},
