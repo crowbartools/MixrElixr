@@ -20,6 +20,10 @@
     font-size:11px;
 }
 
+.elixr-custom-emote img{
+    max-width:50px;
+    max-height:50px;
+}
 
 /** Separated Chat Lines **/
 .separated-chat b-channel-chat-message{
