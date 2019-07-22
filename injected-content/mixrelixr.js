@@ -1145,15 +1145,10 @@ $(() => {
 			cachedCollapsed = cache.topNavCollapsed || false,
 			collapsedChanged = topNavCollapsed !== cachedCollapsed;
 
-		let browserWidth = Math.max(
-			document.body.scrollWidth,
-			document.documentElement.scrollWidth,
-			document.body.offsetWidth,
-			document.documentElement.offsetWidth,
-			document.documentElement.clientWidth
-		);
-		
-		let browserCompact = browserWidth < 1770,
+		let logoAndNavBtnsWidth = $('a.logo').outerWidth() + $('nav').outerWidth() + 15;
+		let searchbarStartsAt = $('.me-searchbar').position().left;
+
+		let browserCompact = logoAndNavBtnsWidth >= searchbarStartsAt,
 			cachedCompact = cache.browserCompact || false,
 			compactChanged = browserCompact !== cachedCompact;
 
@@ -1170,25 +1165,22 @@ $(() => {
 			// update searchbar css
 			let searchTopAmount = topNavCollapsed ? 4 : 23;
 			if(browserCompact) {
-				searchTopAmount = searchTopAmount + 60;
+				searchTopAmount = searchTopAmount + (topNavCollapsed ? 60 : 65 );
 			}
 			$('.me-searchbar').css('top', searchTopAmount +'px');
 
 			let filterTopAmount = topNavCollapsed ? 12 : 31;
 			if(browserCompact) {
-				filterTopAmount = filterTopAmount + 60;
+				filterTopAmount = filterTopAmount + (topNavCollapsed ? 60 : 65 );
 			}
 			$('.me-filterbtn').css('top', filterTopAmount +'px');
 
 			let filterPanelTopAmount = topNavCollapsed ? 60 : 79;
 			if(browserCompact) {
-				filterPanelTopAmount = filterPanelTopAmount + 60;
+				filterPanelTopAmount = filterPanelTopAmount + (topNavCollapsed ? 60 : 65 );
 			}
 			$('.me-filterspanel').css('top', filterPanelTopAmount +'px');
 
-			/*
-			filterButton.addClass('me-pinned-search me-filterbtn');
-			filterPanel.addClass('me-filterspanel');*/
 
 			// add or remove box shadow if needed
 			if(compactChanged) {

@@ -226,6 +226,9 @@ b-channel-info-bar.theaterMode {
 
 b-desktop-header.searchPinned {
     z-index: 9 !important;
+}
+
+b-desktop-header.searchPinned.collapsed {
     height: 60px;
 }
 
