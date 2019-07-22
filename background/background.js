@@ -188,7 +188,7 @@ function showNotification(followedUser, options) {
 		setTimeout((noti) => {
 			console.log('Closed the notification.');
 			noti.close();
-		}, 10000, notification);
+		}, 20000, notification);
 	} else {
 		console.log('User doesn\'t have notifications enabled for this follow type. Not showing notifications.');
 	}
