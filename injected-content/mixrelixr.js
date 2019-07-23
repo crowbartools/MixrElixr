@@ -893,7 +893,7 @@ $(() => {
 		// This will run the callback for every message that already exists as well as any new ones added. 
 		// We can use this to do any tweaks and modifications to chat as they come in
 		//message__
-		$.initialize(ElementSelector.CHAT_MESSAGE, function() {
+		$.initialize(ElementSelector.CHAT_MESSAGE, async function() {
 			var messageContainer = $(this);
 
 			if(options.useCustomFontSize) {
@@ -1052,23 +1052,30 @@ $(() => {
 					var links = messageContainer.find('a[target=\'_blank\']');
 
 					if(links.length > 0) {
-						links.each(function() {
+						links.each(async function() {
 							var link = $(this);
 							var url = link.attr('href');
-
+					
 							if(urlIsAnImage(url)) {
 								var lowestPermittedRoleRank = getUserRoleRank(options.lowestUserRoleLinks);
 								var rolePermitted = false;
 
+								let currentStreamerName = await getStreamerName();
+								
 								// Get the author roles in an array.
-								getUserRoles(cache.currentStreamerId, messageAuthor).then((result) => {
+								getUserRoles(cache.currentStreamerId, messageAuthor).then((roles) => {
 									// Check to make sure the correct role is in the user array.
-									result.forEach((r) => {
-										var roleRank = getUserRoleRank(r);
+
+									if(currentStreamerName === messageAuthor) {
+										roles.push('Owner');
+									}
+
+									for(let role of roles) {
+										var roleRank = getUserRoleRank(role);
 										if(roleRank <= lowestPermittedRoleRank) {
 											rolePermitted = true;
 										}
-									});
+									}
 
 									var userTrusted = false;
 									if(options.inlineImgPermittedUsers != null && 
@@ -1076,7 +1083,8 @@ $(() => {
 										userTrusted = options.inlineImgPermittedUsers.includes(messageAuthor);
 									}
 
-									if(rolePermitted === true || userTrusted){
+									if(rolePermitted === true || userTrusted) {
+
 										var previousImage = messageContainer.find(`img[src='${url}']`);
 
 										//deleted
@@ -1560,7 +1568,7 @@ $(() => {
 	function getUserRoles(channelId, username) {
 		return new Promise((resolve) => {
 			// Check Mixer API with co-stream ID to see who is participaiting in the co-stream. 
-			let url = 'https://mixer.com/api/v1/channels/'+channelId+'/users?where=username:eq:'+username+'&fields=id';
+			let url = 'https://mixer.com/api/v1/channels/'+channelId+'/users?where=username:eq:'+username;
 
 			$.getJSON(url, function(data) {
 				if(!data || data.length < 1) return resolve([]);
