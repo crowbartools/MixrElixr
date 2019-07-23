@@ -939,7 +939,7 @@ $(() => {
 			}
 
 			if(options.customEmotes && cache.currentStreamerEmotes != null) {
-				var emotes = cache.currentStreamerEmotes[0].emotes;
+				/*var emotes = cache.currentStreamerEmotes[0].emotes;
 				for (let emote of emotes) {
 					let ename = escapeRegExp(emote.name);
 					let eurl = encodeURI(emote.url);
@@ -950,10 +950,41 @@ $(() => {
 						textContainer.html(emoteText);
 						break;
 					}
-				}
+				}*/
+
+				messageContainer
+					.find('[class*=\'textComponent\']')
+					.each(function() {
+					
+						let component = $(this);
+						let text = component.text();
+						
+						// loop through all emotes
+						let emotes = cache.currentStreamerEmotes[0].emotes;
+						for(let emote of emotes) {
+						
+							// emote name regex
+							let emoteNameRegex = new RegExp(`(?<=^|\s)${escapeRegExp(emote.name)}(?=\s|$)`, 'ig');
+							
+							// replace emote names with img tags
+							text = text.replace(emoteNameRegex, match => {
+								log('found emote match: ' + match);
+								
+								let imgTag =`
+									<span class="elixr-custom-emote" title="Mixr Elixr: Custom emote">
+										<img src="${emote.url}">
+									</span>`;
+								
+								return imgTag;
+							});
+						}
+						
+						// update component html with text containing img tags 
+						component.html(text);
+				});
 			}
 			
-			// Replace text with custom emotes.
+			// highlight keywords
 			if(options.keywords.length > 0) {
 				options.keywords.forEach(w => {
 					let keywordRegex = new RegExp(`\\b${escapeRegExp(w)}\\b`, 'i');
