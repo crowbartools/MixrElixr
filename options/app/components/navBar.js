@@ -6,11 +6,11 @@ Vue.component('nav-bar', {
 			</a>
 			<div class="collapse navbar-collapse" id="navbarNav">
 				<ul class="navbar-nav mr-auto">
-					<li class="nav-item" class="clickable" :class="{active: onlineActive}" @click="changeTab('online')">
-						<a class="nav-link"><i class="fa fa-microphone" aria-hidden="true"></i> Live Now</a>
+					<li class="nav-item clickable me-nav-item" :class="{active: onlineActive}" @click="changeTab('online')">
+						<a class="nav-link">Live Now</a>
 					</li>
-					<li class="nav-item" class="clickable" :class="{active: optionsActive}" @click="changeTab('options')">
-						<a class="nav-link"><i class="fa fa-cog" aria-hidden="true"></i> Options</a>
+					<li class="nav-item clickable" :class="{active: optionsActive}" @click="changeTab('options')">
+						<a class="nav-link">Options</a>
 					</li>
 				</ul>
 				<ul class="navbar-nav flex-row">
