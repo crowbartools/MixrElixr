@@ -8,7 +8,8 @@ bus = new Vue();
 new Vue({
 	el: '#app',
 	data: {
-		activeTab: 'online'
+		activeTab: 'online',
+		navStuck: false
 	},
 	methods: {
 		updateActiveTab: function(tab) {
@@ -27,5 +28,19 @@ new Vue({
 				}
 			}
 		}
+	},
+	mounted: function() {
+
+		let $ = document.querySelector.bind(document);
+
+		let observer = new IntersectionObserver(entries => {
+			let entry = entries[0];
+			
+			let stickyNav = $('.sticky');
+			
+			stickyNav.classList.toggle('stuck', !entry.isIntersecting);
+		});
+
+		observer.observe($('.sentinel'));
 	}
 });

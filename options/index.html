@@ -6,12 +6,16 @@
 		<link type="text/css" rel="stylesheet" href="/resources/bootstrap/bootstrap-vue.css"/>
 		<link rel="stylesheet" href="/resources/font-awesome/css/font-awesome.min.css">	
 		<link rel="stylesheet" href="/resources/css/plugins/vue/vue-multiselect.min.css">
-		<link rel="stylesheet" href="/options/options.css">		
+		<link rel="stylesheet" href="/options/options.css">
+		<link rel="stylesheet" href="/options/mixer-styles.css">		
   	</head>
   	<body>
 		<div id="app" v-cloak>
-			<div class="page-wrapper">
+			<div class="sentinel"></div>
+			<div class="sticky">
 				<nav-bar @tab-changed="updateActiveTab"></nav-bar>
+			</div>
+			<div class="page-wrapper">					
 				<div class="tabs-wrapper" @scroll="addMoreFriendsCheck">
 					<div v-show="activeTab == 'online'" id="onlineFriends" class="tab-content">
 						<online-friends-list></online-friends-list>
@@ -46,6 +50,7 @@
 		<script src="/options/app/components/navBar.js"></script>
 		<script src="/options/app/components/onlineFriendsList.js"></script>
 		<script src="/options/app/components/onlineFriend.js"></script>
+		<script src="/options/app/components/liveChannelCard.js"></script>
 		<script src="/options/app/components/streamerOverrideDropdown.js"></script>
 		<script src="/options/app/components/streamerPageOptions.js"></script>
 		<script src="/options/app/components/generalOptions.js"></script>

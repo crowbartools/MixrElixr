@@ -3,23 +3,25 @@ Vue.component('online-friends-list', {
 	<div>
 		<div v-if="!loadingMixerUser && mixerUserFound"">
 
-			<div class="online-type-title">Favorites <b-badge style="background-color:#0faf27;">{{favorites.length}}</b-badge></div>
+			<div class="online-type-title">
+				<span class="online-title">Favorites</span> <b-badge style="background-color:#0faf27;">{{favorites.length}}</b-badge>
+			</div>
 			<div class="muted online-list-message" v-if="!loadingMixerUser && mixerUserFound && favorites.length === 0 && savedFavoritesList.length !== 0">
 				No one is currently streaming :(
 			</div>
 			<div class="muted online-list-message" v-if="!loadingMixerUser && mixerUserFound && savedFavoritesList.length === 0">
 				No favorites set. Click the <i class="fa fa-star-o" aria-hidden="true"></i> on a streamer to add your first one!
 			</div>
-			<div class="online-friends-wrap" style="margin-bottom: 15px;">
-				<online-friend	v-for="friend in favorites" :friend="friend" :favorite="true" @remove-favorite="favoriteRemoved"></online-friend>
+			<div class="channels-row" style="margin-bottom: 15px;">
+				<live-channel-card v-for="friend in favorites" :friend="friend" :favorite="true" @remove-favorite="favoriteRemoved"></live-channel-card>
 			</div>
 
-			<div class="online-type-title">Following <b-badge style="background-color:#18ABE9;">{{friends.length}}</b-badge></div>
+			<div class="online-type-title"><span class="online-title">Following</span> <b-badge style="background-color:#18ABE9;">{{friends.length}}</b-badge></div>
 			<div class="muted online-list-message" v-if="!loadingMixerUser && mixerUserFound && friends.length === 0">
 				No one is currently streaming :(
 			</div>
-			<div class="online-friends-wrap">
-				<online-friend	v-for="friend in friendsShown" :friend="friend" :favorite="false" @add-favorite="favoriteAdded"></online-friend>
+			<div class="channels-row">
+				<live-channel-card v-for="friend in friendsShown" :friend="friend" :favorite="false" @add-favorite="favoriteAdded"></live-channel-card>
 			</div>
 
 		</div>	
