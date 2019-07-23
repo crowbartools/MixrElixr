@@ -939,18 +939,6 @@ $(() => {
 			}
 
 			if(options.customEmotes && cache.currentStreamerEmotes != null) {
-				/*var emotes = cache.currentStreamerEmotes[0].emotes;
-				for (let emote of emotes) {
-					let ename = escapeRegExp(emote.name);
-					let eurl = encodeURI(emote.url);
-					let keywordRegex = new RegExp(`(^|\\s)${ename}(\\s|$)`, 'gmi');
-					if(keywordRegex.test(messageText)) {
-						let textContainer = messageContainer.find($('[class^="textComponent"]'));
-						let emoteText = messageText.replace(keywordRegex, '<span class=\'elixr-custom-emote\'><img src=\''+eurl+'\'></span>');
-						textContainer.html(emoteText);
-						break;
-					}
-				}*/
 
 				messageContainer
 					.find('[class*=\'textComponent\']')
@@ -971,8 +959,8 @@ $(() => {
 								log('found emote match: ' + match);
 								
 								let imgTag =`
-									<span class="elixr-custom-emote" title="Mixr Elixr: Custom emote">
-										<img src="${emote.url}">
+									<span class="elixr-custom-emote" title="Mixr Elixr: Custom emote '${escapeHTML(emote.name)}'">
+										<img src="${escapeHTML(emote.url)}">
 									</span>`;
 								
 								return imgTag;
@@ -1399,6 +1387,12 @@ $(() => {
 			
 			if (callNow) func.apply(context, args);
 		};
+	}
+
+	function escapeHTML(unsafeText) {
+		let div = document.createElement('div');
+		div.innerText = unsafeText;
+		return div.innerHTML.replace(/"/g, '&quot;');
 	}
 
 	function escapeRegExp(string) {
