@@ -1,6 +1,6 @@
 Vue.component('live-channel-card', {
 	template: `
-		<div class="me-card">
+		<div class="me-card" @mouseover="hover = true" @mouseleave="hover = false, videoReady = false">
 		
 			<a v-bind:href="channelLink" target="_blank">
 
@@ -9,12 +9,33 @@ Vue.component('live-channel-card', {
 				<span class="sr-only">{{friend.viewersCurrent}} viewers </span>
 
 				<div aria-hidden="true" class="thumbnail">
-					<img v-bind:src="channelImgUrl" @error="channelImgFail">
-					<div class="liveAndViewers">
+                    <img v-bind:src="channelImgUrl" @error="channelImgFail">
+                    <video autoplay="true" loop="true" @canplay="if(hover) { videoReady = true }" v-if="hover === true" v-show="videoReady === true" v-bind:src="channelVidUrl"></video>
+                    <div class="liveAndViewers">
+                        <span class="favorite-btn" @click="addOrRemoveFavorite($event)" :id="friend.token + 'fav'">
+                            <i class="fa" :class="favorite ? 'fa-star' : 'fa-star-o'" aria-hidden="true"></i>                     
+                        </span>
+                        <b-tooltip :target="friend.token + 'fav'" :title="favorite ? 'Remove Favorite' : 'Add Favorite'" no-fade="true"></b-tooltip>
+                        
 						<div class="viewersBadge">
 							<i class="fa fa-eye" aria-hidden="true" style="margin-right:5px;"></i>{{friend.viewersCurrent}} 
 						</div>
+                    </div>
+
+                    <div v-if="friend.interactive" class="interactive icon" :id="friend.token + 'interactive'">
+                        <i  class="fa fa-gamepad" title="MixPlay"></i>                  
+                    </div>
+                    <b-tooltip :target="friend.token + 'interactive'" :title="'MixPlay Enabled'" no-fade="true"></b-tooltip>
+
+                    <div v-if="friend.costreamId" class="costream icon" :id="friend.token + friend.costreamId">
+                        <i class="fa fa-users" title="Costream"></i>
+                    </div>
+                    <b-tooltip :target="friend.token + friend.costreamId" :title="'In a Costream'" no-fade="true"></b-tooltip>
+
+                    <div :id="friend.token + friend.audience" class="audience icon" :class="{ eighteen: friend.audience === '18+' }">
+						<span>{{friend.audience}}</span>	
 					</div>
+					<b-tooltip :target="friend.token + friend.audience" :title="'Stream Audience'" no-fade="true"></b-tooltip>
 				</div>
 
 				<div aria-hidden="true" class="footer">
@@ -77,7 +98,6 @@ Vue.component('live-channel-card', {
 			}
 		},
 		channelImgFail: function(e) {
-			console.log('FAILED', e);
 			e.target.style.display='none';
 		}
 	}
