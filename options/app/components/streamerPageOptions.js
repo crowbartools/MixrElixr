@@ -13,7 +13,8 @@ Vue.component('streamer-page-options', {
 				<span class="setting-subcategory">General</span>
 				<checkbox-toggle :value.sync="autoCloseInteractive" @changed="saveSettings()" label="Auto Close MixPlay"></checkbox-toggle>
 				<checkbox-toggle :value.sync="autoCloseCostreams" @changed="saveSettings()" label="Auto Close Costreams" tooltip="This will close all streamers in a costream except for the streamer whom you are visiting."></checkbox-toggle>
-				<checkbox-toggle :value.sync="autoMute" @changed="saveSettings()" label="Auto Mute Streams"></checkbox-toggle>
+                <checkbox-toggle :value.sync="autoMute" @changed="saveSettings()" label="Auto Mute Streams"></checkbox-toggle>
+                <checkbox-toggle :value.sync="autoTheater" @changed="saveSettings()" label="Auto Theater Mode" tooltip="Automatically enters Theater Mode when loading a channel."></checkbox-toggle>
 
 				<span class="setting-subcategory">Chat</span>
 				<checkbox-toggle :value.sync="timestampAllMessages" @changed="saveSettings()" label="Timestamp All Messages" tooltip="Please note that timestamps will only be added to new messages as there is no way for us to tell when previous messages were sent."></checkbox-toggle>

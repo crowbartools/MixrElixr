@@ -451,7 +451,7 @@ $(() => {
 	}
 
 
-	function loadStreamerPage(streamerName) {
+	async function loadStreamerPage(streamerName) {
 		log(`Loading streamer page for: ${streamerName}`);
 
 		if(!settings.streamerPageOptions) {
@@ -471,7 +471,18 @@ $(() => {
 				options = overrides[key];
 			}
 			break;
-		}
+        }
+        
+        // Auto Close Costreams
+		if(options.autoCloseCostreams && initialPageLoad){
+			var costreamPage = detectCostreams();
+			if(costreamPage) {
+				log('Costream detected. Waiting for profiles to load');
+				await closeCostreams(streamerName);
+			} else {
+				log('No costream detected');
+			}
+        }
 
 		// Auto Mute Stream
 		if(options.autoMute && initialPageLoad){
@@ -510,7 +521,7 @@ $(() => {
 					log('Tried to auto mute for 10 seconds and failed.');
 				}
 			}, 1000);
-		}
+        }
 
 		if(settings.generalOptions.highlightFavorites){
 			// Let's get the Costream ID via API call
@@ -608,7 +619,7 @@ $(() => {
 			log('Highlights not active. So we don\'t do this.');
 			$('div.owner-block h2:first-of-type').removeClass('favoriteUsername');
 			$('#ME_favorite-btn').removeClass('faved');
-		}
+        }
 
 		// Auto close interactive
 		if(options.autoCloseInteractive && initialPageLoad) {
@@ -712,9 +723,8 @@ $(() => {
 				}
 			}, 1000);
 		}
-
-		//add theater mode btn
-
+        
+        //add theater mode btn
 		//wait for video controls to load
 		waitForElementAvailablity('.toolbar').then(() => {
 
@@ -739,18 +749,11 @@ $(() => {
 
 				theaterBtn.insertBefore($('#fullscreen-button').parent());
 			}
-		});
-
-		// Auto Close Costreams
-		if(options.autoCloseCostreams){
-			var costreamPage = detectCostreams();
-			if(costreamPage) {
-				log('Costream detected. Waiting for profiles to load');
-				closeCostreams(streamerName);
-			} else {
-				log('No costream detected');
-			}
-		}
+        });
+        
+        if(options.autoTheater && initialPageLoad) {
+            toggleTheaterMode();
+        }
 
 		waitForElementAvailablity(ElementSelector.CHAT_CONTAINER).then(() => {
 			applyChatSettings(streamerName);
@@ -797,23 +800,35 @@ $(() => {
 	}
 
 	function closeCostreams(streamerName) {
-		var profile = $('.costream-rollout .profile');
-		if(profile.length === 0) {
-			// Profile divs have not appeared yet
-			setTimeout(closeCostreams, 500, streamerName);
-		} else {
-			// Profile divs have appeared
-			log('Profiles loaded');
-			profile.each(function() {
-				// Check if profile does NOT contain current streamer's name
-				if($(this).is(':not(:contains(' + streamerName.trim() + '))')) {
-					var closeBtn = $(this).siblings().eq(0).children()[2];
-					if(closeBtn){
-						closeBtn.click();
-					}
-				}
-			});
-		}
+        return new Promise(async resolve => {
+            const profileSelector = '.costream-rollout .profile';
+
+            try {
+                await waitForElementAvailablity(profileSelector);
+            } catch(err) {
+                log("Costream profile never came available.");
+                return resolve();
+            }
+    
+            var profile = $('.costream-rollout .profile');
+    
+            // Profile divs have appeared
+            log('Profiles loaded');
+            profile.each(function() {
+                // Check if profile does NOT contain current streamer's name
+                if($(this).is(':not(:contains(' + streamerName.trim() + '))')) {
+                    var closeBtn = $(this).siblings().eq(0).children()[2];
+                    if(closeBtn){
+                        closeBtn.click();
+                    }
+                }
+            });
+
+            setTimeout(() => {
+                resolve();
+            }, 100);
+        });
+        
 	}
 
 	function detectCostreams() {

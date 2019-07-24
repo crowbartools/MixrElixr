@@ -42,7 +42,8 @@ settingsStorage = {
 				streamerPageOptions: {
 					global: {
 						autoCloseInteractive: false,
-						autoCloseCostreams: false,
+                        autoCloseCostreams: false,
+                        autoTheater: false,
 						separateChat: false,
 						alternateChatBGColor: false,
 						mentionChatBGColor: false,
