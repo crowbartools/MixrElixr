@@ -37,11 +37,21 @@ Vue.component('nav-bar', {
 	},
 	props: ['onlineCount'],
 	methods: {
+        scrollToTop: function(smooth) {
+            document.getElementById("app").scroll({
+                top: 0,
+                left: 0,
+                behavior: smooth ? 'smooth' : undefined
+            });
+        },
 		changeTab: function(tab) {
+            this.scrollToTop(this.activeTab === tab);
 			this.onlineActive = tab === 'online';
-			this.optionsActive = tab === 'options';
+            this.optionsActive = tab === 'options';
+            this.activeTab = tab;
 			this.$emit('tab-changed', tab);
-			bus.$emit('tab-changed', tab);
+            bus.$emit('tab-changed', tab);
+            
 		},
 		serviceStatus: function(){
 			return new Promise(function(resolve, reject) {

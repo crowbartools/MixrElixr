@@ -46,7 +46,7 @@
 .sticky {
     position: sticky;
     top: 0px;
-    height: 70px;
+    height: 60px;
     z-index: 1000;
     transform: translateY(10px);
     background: #212C3D;
@@ -128,6 +128,7 @@ body {
     font-size: 100%;
     width: 680px;
     height: 100%;
+    margin-top: 10px;
     /*overflow: hidden;*/
     background: #212C3D;
 }
