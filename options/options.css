@@ -576,13 +576,15 @@ a.light-blue-link {
 .online-type-title {
     margin-left: 4.5px;
     margin-bottom: 4.5px;
-    
+    display: flex;
+    align-items: center;
 }
 
 .online-title {
     font-family: "Aero Matics", "Segoe UI", sans-serif;
     font-size: 28px;
     font-weight: 400;
+    margin-right: 5px;
 }
 
 .online-list-message {

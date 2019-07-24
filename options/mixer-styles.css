@@ -1,3 +1,35 @@
+input.me-search {
+    background: #131d2c;
+    border-radius: 2px;
+    outline: 0 !important;
+    padding: 0.7em;
+    font-size: 0.9em;
+    color: #fff;
+    border: 2px solid transparent;
+    width: 100%;
+}
+
+.search-icon {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+}
+
+input.me-search:focus {
+    border: 2px solid #00bcf2;
+}
+
+.mixer-icon {
+    transform: translateY(-1px);
+    opacity: 1;
+}
+
+.mixer-icon:hover {
+    opacity: 0.7;
+}
+
+
 .channels-row {
     display: flex;
     flex-flow: row wrap;

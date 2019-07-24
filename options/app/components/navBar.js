@@ -16,6 +16,11 @@ Vue.component('nav-bar', {
 				<ul class="navbar-nav flex-row">
 					<li class="nav-item clickable" class="mixerAlert" v-bind:status="mixerStatus" v-if="mixerStatus !== 'none'">
 						<a href="https://status.mixer.com" target="_blank" class="nav-link" :title="'Mixer Service Status: '+mixerStatus"><i class="fa fa-exclamation-circle" aria-hidden="true"></i></a>
+                    </li>
+                    <li class="nav-item clickable mixer-icon">
+                        <a class="nav-link" href="https://mixer.com" target="_blank">
+                            <img src="/resources/images/MixerMerge_dark.svg" width="16" height="16">
+                        </a>
 					</li>
 					<li class="nav-item clickable">
 						<a class="nav-link" href="https://twitter.com/MixrElixr" target="_blank"><i class="fa fa-twitter" aria-hidden="true"></i></a>
