@@ -10,13 +10,13 @@
 		<link rel="stylesheet" href="/options/mixer-styles.css">		
   	</head>
   	<body>
-		<div id="app" v-cloak>
+		<div id="app" v-cloak @scroll="addMoreFriendsCheck">
 			<div class="sentinel"></div>
 			<div class="sticky">
 				<nav-bar @tab-changed="updateActiveTab"></nav-bar>
 			</div>
 			<div class="page-wrapper">					
-				<div class="tabs-wrapper" @scroll="addMoreFriendsCheck">
+				<div class="tabs-wrapper">
 					<div v-show="activeTab == 'online'" id="onlineFriends" class="tab-content">
 						<online-friends-list></online-friends-list>
 					</div>

@@ -7,7 +7,7 @@ Vue.component('online-friends-list', {
 				<span class="online-title">Favorites</span> <b-badge style="background-color:#0faf27;">{{favorites.length}}</b-badge>
 			</div>
 			<div class="muted online-list-message" v-if="!loadingMixerUser && mixerUserFound && favorites.length === 0 && savedFavoritesList.length !== 0">
-				No one is currently streaming :(
+				No favorites are currently streaming :(
 			</div>
 			<div class="muted online-list-message" v-if="!loadingMixerUser && mixerUserFound && savedFavoritesList.length === 0">
 				No favorites set. Click the <i class="fa fa-star-o" aria-hidden="true"></i> on a streamer to add your first one!
@@ -26,7 +26,7 @@ Vue.component('online-friends-list', {
 
 		</div>	
 		<div v-if="!loadingMixerUser && !mixerUserFound">
-			To view your online friends go to <a href="https://mixer.com" target="_blank">Mixer.com</a> and log in.
+			To see who follow, go to <a href="https://mixer.com" target="_blank">Mixer.com</a> and log in.
 		</div>
 		<div class="muted" v-if="loadingMixerUser">
 			Loading online friends...

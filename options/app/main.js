@@ -15,15 +15,14 @@ new Vue({
 		updateActiveTab: function(tab) {
 			console.log('tab changed: ' + tab);
 			this.activeTab = tab;
-			var container = this.$el.querySelector('.tabs-wrapper');
-			container.scrollTo(0, 0);
 		},	
 		addMoreFriendsCheck: function(){
 			// If we scroll 80% through our current friends, add some more.
 			if(this.activeTab === 'online'){
-				var obj = this.$el.querySelector('.tabs-wrapper');
+                var obj = this.$el;
 				var percent = (obj.scrollHeight - obj.offsetHeight) * .8;
 				if(obj.scrollTop >= percent){
+                    console.log("SCROLLED!");
 					bus.$emit('friends-scrolled');
 				}
 			}
