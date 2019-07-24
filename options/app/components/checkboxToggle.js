@@ -6,7 +6,7 @@ Vue.component('checkbox-toggle', {
             <div class="toggler chrome">
                 <div></div>
             </div>
-            <span style="display:inline-flex;font-size: 18px;color: rgba(228,238,242,.6);font-family: 'Aero Matics', 'Segoe UI', sans-serif;">
+            <span class="option-title">
                 {{label}} <option-tooltip v-if="tooltip != null" :name="tooltipName" :title="tooltip" :type="tooltipType"></option-tooltip>
             </span>
         </label>

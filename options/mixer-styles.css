@@ -1,3 +1,52 @@
+.option-title {
+    display:inline-flex;
+    font-size: 18px;
+    color: rgba(228,238,242,.6);
+    font-family: 'Aero Matics', 'Segoe UI', sans-serif;
+}
+
+/* mixer select box */
+
+.multiselect__tags {
+    border-radius: 0;
+    border: 2px solid #424754;
+    background: #212C3D;
+}
+
+.multiselect__input, .multiselect__single {
+    background: #212C3D;
+    color: white;
+}
+
+.multiselect--above .multiselect__content-wrapper {
+    border-top: 1px solid #424754;
+}
+
+.multiselect__content-wrapper {
+    border: 1px solid #424754;
+    background: #29374A;
+    color: white;
+}
+
+.custom-select {
+    border: 2px solid #424754;
+    color: white;
+    border-radius: 0;
+    background: #212C3D url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='gray' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E") no-repeat right 5px center;
+    background-size: 8px 10px;
+}
+
+.custom-select:focus {
+    border-color: #80bdff;
+    color: white;
+    background: #212C3D url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='gray' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E") no-repeat right 5px center;
+    background-size: 8px 10px;
+    outline: 0;
+}
+
+/* end mixer select box */
+
+
 /* mixer checkbox */
 .control {
     -webkit-user-select: none;

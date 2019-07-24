@@ -10,11 +10,11 @@ Vue.component('general-options', {
 				
 				<checkbox-toggle :value.sync="highlightFavorites" @changed="saveSettings()" label="Highlight Favorites" tooltip="Marks favorite streamers with green highlights while browsing Mixer."></checkbox-toggle>
 
-				<div style="padding-bottom: 5px;">Favorite Streamers<option-tooltip name="favorite" title="Any streamers listed here will show up in the favorites list. If any favorite is streaming, the icon badge will be green instead of blue."></option-tooltip></div>
+				<div style="padding-bottom: 5px;" class="option-title">Favorite Streamers<option-tooltip name="favorite" title="Any streamers listed here will show up in the favorites list. If any favorite is streaming, the icon badge will be green instead of blue."></option-tooltip></div>
 				<edittable-list class="option" :value.sync="favoriteFriends" :options="followingList" tag-placeholder="" placeholder="Search for or select a streamer" @changed="saveSettings()" @add-entry="favoriteAdded" @remove-entry="favoriteRemoved" :auto-close="true"></edittable-list>
 
 				<span class="setting-subcategory">Live Desktop Notifications <option-tooltip name="liveNotifications" title="Settings for desktop notifications when people you follow go live."></option-tooltip></span>
-				<div style="padding-bottom: 5px;">Enable Notifications For</div>
+				<div style="padding-bottom: 5px;" class="option-title">Enable Notifications For</div>
 				<b-form-select v-model="liveNotificationsMode" :options="liveNotificationsModes" class="mb-3 option"></b-form-select>
 				<checkbox-toggle :value.sync="playLiveNotificationSound" @changed="saveSettings()" label="Play Notification Sound"></checkbox-toggle>
 			</div>

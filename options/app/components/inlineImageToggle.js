@@ -1,13 +1,7 @@
 Vue.component('inline-img-toggle', {
 	template: `
 		<span>
-			<label style="display:flex">
-				<label class="switch">
-					<input type="checkbox" v-model.lazy="value" @change="toggleChanged"/>
-					<span class="slider"></span>
-				</label>
-				Show Image Links Inline <option-tooltip v-if="value" name="inline-tt" :title="warningMsg" type="warning"></option-tooltip>
-			</label>
+            <checkbox-toggle :value.sync="value" @changed="toggleChanged()" label="Show Image Links Inline"></checkbox-toggle>
 			<b-modal id="inlineImgWarning"
 					ref="inlineImgWarning"
 					title="Warning"

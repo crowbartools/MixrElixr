@@ -13,7 +13,7 @@ Vue.component('streamer-page-options', {
                 </div>
 			</div>
 			<div class="settings-section-settings">
-				<span class="setting-subcategory" style="margin-top:0;">General</span>
+				<span class="setting-subcategory" style="margin-top:0;">Automation</span>
 				<checkbox-toggle :value.sync="autoCloseInteractive" @changed="saveSettings()" label="Auto Close MixPlay"></checkbox-toggle>
 				<checkbox-toggle :value.sync="autoCloseCostreams" @changed="saveSettings()" label="Auto Close Costreams" tooltip="This will close all streamers in a costream except for the streamer whom you are visiting."></checkbox-toggle>
                 <checkbox-toggle :value.sync="autoMute" @changed="saveSettings()" label="Auto Mute Streams"></checkbox-toggle>
@@ -22,7 +22,7 @@ Vue.component('streamer-page-options', {
 				<span class="setting-subcategory">Chat</span>
 				<checkbox-toggle :value.sync="timestampAllMessages" @changed="saveSettings()" label="Timestamp All Messages" tooltip="Please note that timestamps will only be added to new messages as there is no way for us to tell when previous messages were sent."></checkbox-toggle>
 				<checkbox-toggle :value.sync="mentionChatBGColor" @changed="saveSettings()" label="Highlight When Mentioned" tooltip="Apply a special background behind messages when you are mentioned."></checkbox-toggle>
-				<checkbox-toggle :value.sync="customEmotes" @changed="saveSettings()" label="User Custom MixrElixr Emotes" tooltip="Allows you to see custom MixrElixr emotes that the streamer has set on the Crowbartools.com website."></checkbox-toggle>
+				<checkbox-toggle :value.sync="customEmotes" @changed="saveSettings()" label="Show Custom MixrElixr Emotes" tooltip="Allows you to see custom MixrElixr emotes that the streamer has set on the Crowbartools.com website."></checkbox-toggle>
 				<checkbox-toggle :value.sync="useCustomFontSize" @changed="saveSettings()" label="Use Custom Text Size" tooltip="Allows you to define a custom font size and line height."></checkbox-toggle>
 				<b-collapse v-model="useCustomFontSize" id="useCustomFontSize">
 					<div style="padding: 0px 0 15px 20px;">
@@ -31,12 +31,12 @@ Vue.component('streamer-page-options', {
 					</div> 		
 				</b-collapse>
 				<div class="option-wrapper">
-					<div style="padding-bottom: 5px;">Highlight Keywords<option-tooltip name="highlightKeywords" title="Any messages containing these keywords will have a special background."></option-tooltip></div>
+					<div style="padding-bottom: 5px;" class="option-title">Highlight Keywords<option-tooltip name="highlightKeywords" title="Any messages containing these keywords will have a special background."></option-tooltip></div>
 					<edittable-list class="option" :value.sync="keywords" :options="[]" tag-placeholder="Press enter to add keyword" placeholder="Type to add keyword" @changed="saveSettings()"></edittable-list>
 				</div>
 
 				<div class="option-wrapper" style="padding: 10px 0;">
-					<div style="padding-bottom: 5px;">Word Blacklist<option-tooltip name="hideKeywords" title="Any words in this list will be automatically hidden via the below style. Note: If you are a mod for the currently viewed channel, this feature is disabled by default."></option-tooltip>
+					<div style="padding-bottom: 5px;display: flex;align-items: center;" class="option-title">Word Blacklist<option-tooltip name="hideKeywords" title="Any words in this list will be automatically hidden via the below style. Note: If you are a mod for the currently viewed channel, this feature is disabled by default."></option-tooltip>
 						<a @click="showWordBlacklist = !showWordBlacklist" style="cursor: pointer; color: #00A7FF; font-size: 12px; padding-left: 5px">
 							{{showWordBlacklist ? 'Hide Blacklist' : 'Show Blacklist'}}
 						</a>
@@ -44,7 +44,7 @@ Vue.component('streamer-page-options', {
 					<b-collapse class="mt-2" v-model="showWordBlacklist" id="wordBlacklistCollapse"> 
 						<edittable-list class="option" :value.sync="hideKeywords" :options="[]" tag-placeholder="Press enter to add keyword" placeholder="Type to add keyword" @changed="saveSettings()"></edittable-list>
 						<div style="padding-left: 10px">
-							<div style="padding-bottom: 3px">Hide Style <option-tooltip name="hideStyle" title="How the word will be hidden. Hovering over the hidden word will reveal it (except for Remove style)."></option-tooltip></div>
+							<div style="padding-bottom: 3px" class="option-title">Hide Style <option-tooltip name="hideStyle" title="How the word will be hidden. Hovering over the hidden word will reveal it (except for Remove style)."></option-tooltip></div>
 							<b-form-select v-model="hideStyle" :options="hideStyles" class="mb-3 option"></b-form-select>
 							<checkbox-toggle :value.sync="enableHideKeywordsWhenMod" @changed="saveSettings()" label="Enable When Mod" tooltip="By default, the word blacklist feature is disabled on channels you're a mod on so it doesn't get in the way of your awesome modding skills. This option can change that."></checkbox-toggle>
 						</div>
@@ -52,17 +52,17 @@ Vue.component('streamer-page-options', {
 				</div>
 
 				<div class="option-wrapper" style="margin-bottom: 20px;">
-					<div style="padding-bottom: 5px;">Ignored Users<option-tooltip name="ignoredUsers" title="You will not see messages from users listed here."></option-tooltip></div>
+					<div style="padding-bottom: 5px;" class="option-title">Ignored Users<option-tooltip name="ignoredUsers" title="You will not see messages from users listed here."></option-tooltip></div>
 					<user-list class="option" :value.sync="ignoredUsers" @changed="saveSettings()"></user-list>
 				</div>
 
 				<inline-img-toggle :value.sync="showImagesInline" @changed="saveSettings()"></inline-img-toggle>
 				<div v-show="showImagesInline" class="option-wrapper suboption">
-					<div style="padding-bottom: 5px;">Permitted User Roles<option-tooltip name="permUserRoles" title="See images from anyone in the selected role (and higher), unless the user is blacklisted below."></option-tooltip></div>
+					<div style="padding-bottom: 5px;" class="option-title">Permitted User Roles<option-tooltip name="permUserRoles" title="See images from anyone in the selected role (and higher), unless the user is blacklisted below."></option-tooltip></div>
 					<b-form-select v-model="lowestUserRoleLinks" :options="userRoles" class="mb-3 option"></b-form-select>
-					<div style="padding-bottom: 5px;">Trusted Users<option-tooltip name="permUsers" title="Images from these users will ALWAYS show, even if they aren't in a permitted role above."></div>
+					<div style="padding-bottom: 5px;" class="option-title">Trusted Users<option-tooltip name="permUsers" title="Images from these users will ALWAYS show, even if they aren't in a permitted role above."></div>
 					<user-list class="option" :value.sync="inlineImgPermittedUsers" @changed="saveSettings()"></user-list>
-					<div style="padding-bottom: 5px;">Blacklisted Users<option-tooltip name="blacklistedUsers" title="Images from these users will NEVER show, even if they are in a permitted role above."></option-tooltip></div>
+					<div style="padding-bottom: 5px;" class="option-title">Blacklisted Users<option-tooltip name="blacklistedUsers" title="Images from these users will NEVER show, even if they are in a permitted role above."></option-tooltip></div>
 					<user-list class="option" :value.sync="inlineImgBlacklistedUsers" @changed="saveSettings()"></user-list>
 				</div>
 
