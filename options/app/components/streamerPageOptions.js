@@ -2,15 +2,18 @@ Vue.component('streamer-page-options', {
 	template: `
 		<div class="settings-section">
 			<div class="settings-section-header">
-				<span class="title">Streamer Page</span> <streamer-override-dropdown :overrideNames="overrideNames" 
+                <span class="title">Streamer Page</span> 
+                <div style="margin-right:15px;">
+                    <streamer-override-dropdown :overrideNames="overrideNames" 
 						:selected="selected"
 						@override-added="overrideAdded"
 						@override-selected="overrideSelected"
 						@override-deleted="overrideDeleted">
-					</streamer-override-dropdown>
+                    </streamer-override-dropdown>
+                </div>
 			</div>
 			<div class="settings-section-settings">
-				<span class="setting-subcategory">General</span>
+				<span class="setting-subcategory" style="margin-top:0;">General</span>
 				<checkbox-toggle :value.sync="autoCloseInteractive" @changed="saveSettings()" label="Auto Close MixPlay"></checkbox-toggle>
 				<checkbox-toggle :value.sync="autoCloseCostreams" @changed="saveSettings()" label="Auto Close Costreams" tooltip="This will close all streamers in a costream except for the streamer whom you are visiting."></checkbox-toggle>
                 <checkbox-toggle :value.sync="autoMute" @changed="saveSettings()" label="Auto Mute Streams"></checkbox-toggle>
