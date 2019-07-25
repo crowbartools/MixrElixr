@@ -1000,6 +1000,7 @@ $(() => {
 				cache.currentStreamerEmotes[0].emotes.length > 0 &&
 				chatFromCurrentChannel) {
 
+				let foundEmote = false;
 				messageContainer
 					.find('[class*=\'textComponent\']')
 					.each(function() {
@@ -1028,16 +1029,17 @@ $(() => {
 						// emote name regex
 						let emoteNameRegex = new RegExp(`(?<=^|\\s)(${emoteNameRegexGroup})(?=\\s|$)`, 'igm');
 						
-						let foundEmote = false;
 						// replace emote names with img tags	
 						text = text.replace(emoteNameRegex, match => {
 							log('found emote match: ' + match);
-							foundEmote = true;
+							
 
 							// find the emote based on the match
 							let emote = emotes.find(e => e.name.toLowerCase() === match.toLowerCase());
 
 							if(emote) {
+								foundEmote = true;
+
 								let imgTag =`
 								<span class="elixr-custom-emote me-tooltip" title="Mixr Elixr: Custom emote '${escapeHTML(emote.name)}'" style="display: inline-block;">
 									<img src="${escapeHTML(emote.url)}">
@@ -1056,6 +1058,16 @@ $(() => {
 							component.addClass('me-custom-emote');
 						}
 					});
+
+				let username = messageContainer.find('[class*=\'Username\']');
+				if(username != null && username.length > 0) {
+					let usernameTop = username.position().top;
+
+					let avatar = messageContainer.find('[class*=\'ChatAvatar\']');
+					if(usernameTop > 6 && avatar != null && avatar.length > 0) {
+						avatar.css('top', (usernameTop - 3) + 'px');
+					}
+				}
 			}
 			
 			// highlight keywords
