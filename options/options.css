@@ -444,7 +444,7 @@ input:checked + .slider:before {
     background:#29374A;
     display: flex;
     flex-direction: row;
-    padding-left:20px;
+    padding-left:24.5px;
     align-content: center;
     align-items: center;
     justify-content: space-between;
@@ -459,7 +459,7 @@ input:checked + .slider:before {
     font-family: "Aero Matics", "Segoe UI", sans-serif;
 }
 .settings-section-settings{
-    padding: 15px 20px 20px;
+    padding: 15px 24.5px 20px;
 }
 
 .setting-subcategory {
