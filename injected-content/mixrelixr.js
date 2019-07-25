@@ -250,16 +250,18 @@ $(() => {
 		
 		// do checks when a click happens anywhere in main doc
 		$(document).click(function(event) {
-			searchbarPositionCheck();
+			if(cache.currentPage === 'homepage') {
+				searchbarPositionCheck();
 
-			let filtersPanel = $('b-browse-filters');
-			if(!filtersPanel[0].contains(event.target)) {
-				if(pinSearchBar) {
-					if(filtersPanel.hasClass('visible')) {
-						filtersPanel.removeClass('visible');
+				let filtersPanel = $('b-browse-filters');
+				if(filtersPanel.length > 0 && !filtersPanel[0].contains(event.target)) {
+					if(pinSearchBar) {
+						if(filtersPanel.hasClass('visible')) {
+							filtersPanel.removeClass('visible');
+						}
 					}
 				}
-			}
+			}	
 		});
 
 		// Remove featured streams on homepage
@@ -471,9 +473,9 @@ $(() => {
 				options = overrides[key];
 			}
 			break;
-        }
+		}
         
-        // Auto Close Costreams
+		// Auto Close Costreams
 		if(options.autoCloseCostreams && initialPageLoad){
 			var costreamPage = detectCostreams();
 			if(costreamPage) {
@@ -482,7 +484,7 @@ $(() => {
 			} else {
 				log('No costream detected');
 			}
-        }
+		}
 
 		// Auto Mute Stream
 		if(options.autoMute && initialPageLoad){
@@ -521,7 +523,7 @@ $(() => {
 					log('Tried to auto mute for 10 seconds and failed.');
 				}
 			}, 1000);
-        }
+		}
 
 		if(settings.generalOptions.highlightFavorites){
 			// Let's get the Costream ID via API call
@@ -619,7 +621,7 @@ $(() => {
 			log('Highlights not active. So we don\'t do this.');
 			$('div.owner-block h2:first-of-type').removeClass('favoriteUsername');
 			$('#ME_favorite-btn').removeClass('faved');
-        }
+		}
 
 		// Auto close interactive
 		if(options.autoCloseInteractive && initialPageLoad) {
@@ -723,8 +725,32 @@ $(() => {
 				}
 			}, 1000);
 		}
+
+		// streamer online/offline check
+		if(cache.onlineInterval != null) {
+			clearInterval(cache.onlineInterval);
+		}
+
+		cache.onlineInterval = setInterval(function(){ 
+			let offlineMessage = $('.offline-message');
+
+			let streamerOnline = offlineMessage != null && offlineMessage.length > 0;
+
+			if(cache.streamerOnlineStatus == null) {
+				cache.streamerOnlineStatus = streamerOnline;
+			} else {
+				let onlineStatusChanged = cache.streamerOnlineStatus !== streamerOnline;
+				if(onlineStatusChanged) {
+					// turn off theater mode of streamer went offline
+					if(!streamerOnline && theaterModeEnabled()) {
+						toggleTheaterMode();
+					}
+				}
+				cache.streamerOnlineStatus = streamerOnline;
+			}
+		}, 1000);
         
-        //add theater mode btn
+		//add theater mode btn
 		//wait for video controls to load
 		waitForElementAvailablity('.toolbar').then(() => {
 
@@ -749,15 +775,19 @@ $(() => {
 
 				theaterBtn.insertBefore($('#fullscreen-button').parent());
 			}
-        });
+		});
         
-        if(options.autoTheater && initialPageLoad) {
-            toggleTheaterMode();
-        }
+		if(options.autoTheater && initialPageLoad) {
+			toggleTheaterMode();
+		}
 
 		waitForElementAvailablity(ElementSelector.CHAT_CONTAINER).then(() => {
 			applyChatSettings(streamerName);
 		});
+	}
+
+	function theaterModeEnabled() {
+		return $('body').hasClass('theaterMode');
 	}
 
 	function toggleTheaterMode() {
@@ -800,34 +830,34 @@ $(() => {
 	}
 
 	function closeCostreams(streamerName) {
-        return new Promise(async resolve => {
-            const profileSelector = '.costream-rollout .profile';
+		return new Promise(async resolve => {
+			const profileSelector = '.costream-rollout .profile';
 
-            try {
-                await waitForElementAvailablity(profileSelector);
-            } catch(err) {
-                log("Costream profile never came available.");
-                return resolve();
-            }
+			try {
+				await waitForElementAvailablity(profileSelector);
+			} catch(err) {
+				log('Costream profile never came available.');
+				return resolve();
+			}
     
-            var profile = $('.costream-rollout .profile');
+			var profile = $('.costream-rollout .profile');
     
-            // Profile divs have appeared
-            log('Profiles loaded');
-            profile.each(function() {
-                // Check if profile does NOT contain current streamer's name
-                if($(this).is(':not(:contains(' + streamerName.trim() + '))')) {
-                    var closeBtn = $(this).siblings().eq(0).children()[2];
-                    if(closeBtn){
-                        closeBtn.click();
-                    }
-                }
-            });
+			// Profile divs have appeared
+			log('Profiles loaded');
+			profile.each(function() {
+				// Check if profile does NOT contain current streamer's name
+				if($(this).is(':not(:contains(' + streamerName.trim() + '))')) {
+					var closeBtn = $(this).siblings().eq(0).children()[2];
+					if(closeBtn){
+						closeBtn.click();
+					}
+				}
+			});
 
-            setTimeout(() => {
-                resolve();
-            }, 100);
-        });
+			setTimeout(() => {
+				resolve();
+			}, 100);
+		});
         
 	}
 
@@ -984,7 +1014,7 @@ $(() => {
 						
 						// update component html with text containing img tags 
 						component.html(text);
-				});
+					});
 			}
 			
 			// highlight keywords
@@ -1177,6 +1207,8 @@ $(() => {
 
 	function searchbarPositionCheck() {
 
+		if(cache.currentPage !== 'homepage') return;
+
 		const pinSearchBar = settings.homePageOptions.pinSearchToTop == null || 
 			settings.homePageOptions.pinSearchToTop === true;
 
@@ -1188,7 +1220,8 @@ $(() => {
 			collapsedChanged = topNavCollapsed !== cachedCollapsed;
 
 		let logoAndNavBtnsWidth = $('a.logo').outerWidth() + $('nav').outerWidth() + 15;
-		let searchbarStartsAt = $('.me-searchbar').position().left;
+		let searchbarPosition = $('.me-searchbar').position();
+		let searchbarStartsAt = searchbarPosition ? searchbarPosition.left : 0;
 
 		let browserCompact = logoAndNavBtnsWidth >= searchbarStartsAt,
 			cachedCompact = cache.browserCompact || false,
@@ -1632,6 +1665,7 @@ $(() => {
 
 		//Listen for url changes
 		window.addEventListener('url-change', function() {
+			initialPageLoad = true;
 			runPageLogic();
 		});
 
@@ -1660,6 +1694,16 @@ $(() => {
 			if(cache.currentPage === 'streamer') {
 				console.log(cache.currentStreamerName);
 				sendResponse( { streamerName: cache.currentStreamerName });
+			}
+		}
+	});
+
+
+	//escape press listener
+	$(document).keyup(function(e) {
+		if (e.key === 'Escape' || e.key === 'Esc') {
+			if(theaterModeEnabled()) {
+				toggleTheaterMode();
 			}
 		}
 	});
