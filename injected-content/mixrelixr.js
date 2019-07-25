@@ -809,7 +809,9 @@ $(() => {
 				stage.removeClass('addedBuiAr');
 				stage.removeClass('bui-arContent');
 				$('.stage').removeClass('aspect-16-9');
-			}
+            }
+            
+            $.toast().reset('all');
 			
 		} else {
 
@@ -821,7 +823,24 @@ $(() => {
 				}
 			}
 			setTimeout(() => {
-				theaterElements.addClass('theaterMode');
+                theaterElements.addClass('theaterMode');
+                
+
+                $.toast({
+                    text: `Press <span style="font-weight:bold;">ESC</span> at any time to exit.`,
+                    heading: 'Theater Mode Enabled',                 
+                    showHideTransition: 'fade',
+                    allowToastClose: true,
+                    hideAfter: 4500,
+                    stack: false, 
+                    position: 'top-center',       
+                    bgColor: '#151C29',
+                    textColor: '#fff',
+                    textAlign: 'center',
+                    loader: true, 
+                    loaderBg: '#1FBAED'
+                });
+                    
 			}, 1);
 
 			$('b-stage').addClass('bui-arContent addedBuiAr');
