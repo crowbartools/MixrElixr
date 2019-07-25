@@ -941,6 +941,18 @@ $(() => {
 		$.initialize(ElementSelector.CHAT_MESSAGE, async function() {
 			var messageContainer = $(this);
 
+
+			let chatFromCurrentChannel = true;
+			//$("b-channel-chat-tabs").find(".selected").text()
+			let chatTabs = $('b-channel-chat-tabs');
+			if(chatTabs != null && chatTabs.length > 0) {
+				let selectedTab = chatTabs.find('.selected');
+				if(selectedTab != null && selectedTab.length > 0) {
+					let chatChannelName = selectedTab.text().trim();
+					chatFromCurrentChannel = chatChannelName === cache.currentStreamerName;
+				}
+			}
+
 			if(options.useCustomFontSize) {
 				messageContainer.find('[class*=\'messageContent\']').css('font-size', `${options.textSize}px`);
 				messageContainer.find('[class*=\'messageContent\']').css('line-height', `${options.textSize + 9}px`);
@@ -983,37 +995,66 @@ $(() => {
 				}
 			}
 
-			if(options.customEmotes && cache.currentStreamerEmotes != null) {
+			if(options.customEmotes && 
+				cache.currentStreamerEmotes != null && 
+				cache.currentStreamerEmotes[0].emotes.length > 0 &&
+				chatFromCurrentChannel) {
 
 				messageContainer
 					.find('[class*=\'textComponent\']')
 					.each(function() {
 					
 						let component = $(this);
+
+						// we've already replaced emotes on this, skip it
+						if(component.hasClass('me-custom-emote')) {
+							return;
+						}
+
 						let text = component.text();
 						
 						// loop through all emotes
 						let emotes = cache.currentStreamerEmotes[0].emotes;
+
+						//build emote name group end result will look like: "emoteName1|emoteName2|emoteName3"
+						let emoteNameRegexGroup = '';
 						for(let emote of emotes) {
-						
-							// emote name regex
-							let emoteNameRegex = new RegExp(`(?<=^|\s)${escapeRegExp(emote.name)}(?=\s|$)`, 'ig');
-							
-							// replace emote names with img tags
-							text = text.replace(emoteNameRegex, match => {
-								log('found emote match: ' + match);
-								
-								let imgTag =`
-									<span class="elixr-custom-emote" title="Mixr Elixr: Custom emote '${escapeHTML(emote.name)}'">
-										<img src="${escapeHTML(emote.url)}">
-									</span>`;
-								
-								return imgTag;
-							});
+							if(emoteNameRegexGroup.length > 0) {
+								emoteNameRegexGroup += '|';
+							}
+							emoteNameRegexGroup += escapeRegExp(emote.name);
 						}
+
+						// emote name regex
+						let emoteNameRegex = new RegExp(`(?<=^|\\s)(${emoteNameRegexGroup})(?=\\s|$)`, 'igm');
 						
-						// update component html with text containing img tags 
-						component.html(text);
+						let foundEmote = false;
+						// replace emote names with img tags	
+						text = text.replace(emoteNameRegex, match => {
+							log('found emote match: ' + match);
+							foundEmote = true;
+
+							// find the emote based on the match
+							let emote = emotes.find(e => e.name.toLowerCase() === match.toLowerCase());
+
+							if(emote) {
+								let imgTag =`
+								<span class="elixr-custom-emote me-tooltip" title="Mixr Elixr: Custom emote '${escapeHTML(emote.name)}'" style="display: inline-block;">
+									<img src="${escapeHTML(emote.url)}">
+								</span>`;
+								return imgTag;
+							} else {
+								return match;
+							}
+						});
+						
+						if(foundEmote) {
+							// update component html with text containing img tags
+							component.html(text.trim());
+
+							// tag this component so we dont attempt to look for emotes again
+							component.addClass('me-custom-emote');
+						}
 					});
 			}
 			
@@ -1049,7 +1090,7 @@ $(() => {
 						}
 
 						options.hideKeywords.forEach(w => {
-							let keywordRegex = new RegExp(`\\b${escapeRegExp(w)}\\b`, 'i');
+							let keywordRegex = new RegExp(`\\b${escapeRegExp(w)}\\b`, 'ig');
 
 							let hideStyle = options.hideStyle || 'blur';
 
@@ -1444,7 +1485,7 @@ $(() => {
 	}
 
 	function escapeRegExp(string) {
-		return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+		return string.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&');
 	}
 
 	function log(message) {
