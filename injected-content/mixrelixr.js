@@ -1010,7 +1010,7 @@ $(() => {
 							// loop through all emotes
 							let emotes = Object.values(cache.currentStreamerEmotes.emotes);
 							for(let emote of emotes) {
-								let url = `https://crowbartools.com/user-content/emotes/live/40812/${escapeHTML(emote.filename)}`;
+								let url = `https://crowbartools.com/user-content/emotes/live/${cache.currentStreamerId}/${escapeHTML(emote.filename)}`;
 								let name = escapeHTML(emote.name);
 								emoteList.append(`
 									<span class="elixr-custom-emote me-tooltip me-emote-preview" title="${name}" emote-name="${name}" style="display: inline-block;">
@@ -1133,7 +1133,7 @@ $(() => {
 							if(emote) {
 								foundEmote = true;
 
-								let url = `https://crowbartools.com/user-content/emotes/live/40812/${escapeHTML(emote.filename)}`;
+								let url = `https://crowbartools.com/user-content/emotes/live/${cache.currentStreamerId}/${escapeHTML(emote.filename)}`;
 
 								let imgTag =`
 									<span class="elixr-custom-emote me-tooltip" title="Mixr Elixr: Custom emote '${escapeHTML(emote.name)}'" style="display: inline-block;">
