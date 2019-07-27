@@ -56,7 +56,7 @@ friendFetcher = {
 						var data = JSON.parse(request.responseText);
 
 						// Loop through data and throw in array.
-						for (friend of data){
+						for (let friend of data){
 							followList.push(friend);
 						}
 

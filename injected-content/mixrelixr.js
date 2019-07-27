@@ -829,7 +829,6 @@ $(() => {
 			setTimeout(() => {
 				theaterElements.addClass('theaterMode');
                 
-
 				$.toast({
 					text: 'Press <span style="font-weight:bold;">ESC</span> at any time to exit.',
 					heading: 'Theater Mode Enabled',                 

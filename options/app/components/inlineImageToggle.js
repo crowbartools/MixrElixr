@@ -7,10 +7,10 @@ Vue.component('inline-img-toggle', {
 					title="Warning"
 					header-bg-variant="danger"
 					header-text-variant="light"
-					body-bg-variant="light"
-					body-text-variant="dark"
-					footer-bg-variant="light"
-					footer-text-variant="dark"
+					body-bg-variant="dark"
+					body-text-variant="light"
+					footer-bg-variant="dark"
+					footer-text-variant="light"
 					cancel-title="Nevermind"
 					cancel-variant="link"
 					ok-title="Confirm"
@@ -26,8 +26,8 @@ Vue.component('inline-img-toggle', {
 	props: ['value'],
 	data: function() {
 		return {
-			warningMsg: "Quick heads up: Malicious users could potentionally use inline images to capture your IP address. This is the same risk you take if you were to click a link and open it, but we just want to make sure you are aware before using inline images."
-		}
+			warningMsg: 'Quick heads up: Malicious users could potentionally use inline images to capture your IP address. This is the same risk you take if you were to click a link and open it, but we just want to make sure you are aware before using inline images.'
+		};
 	},
 	watch: {
 		value: function(newValue, oldValue) {
