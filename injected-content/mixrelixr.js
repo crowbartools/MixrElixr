@@ -1003,7 +1003,13 @@ $(() => {
 				waitForModal(modal)
 					.then((emotesContainer) => {
 
-						if(emotesContainer != null && emotesContainer.length > 0) {
+						let classes = emotesContainer.attr('class').split(/\s+/);
+						
+						let isListModal = classes.some((c) => {
+							return c.startsWith('listModal');
+						});
+
+						if(!isListModal) {
 							let customEmotesWrapper = $(`<div><h3 class="elixrEmoteGroupHeader">${cache.currentStreamerName}'s Custom Emotes</h3><div class="elixrEmoteList"></div></div>`);
 							let emoteList = customEmotesWrapper.children('.elixrEmoteList');
 
