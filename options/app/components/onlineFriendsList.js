@@ -39,45 +39,45 @@ Vue.component('online-friends-list', {
 	mixins: [settingsStorage, friendFetcher],
 	data: function() {
 		return {
-            savedFavoritesList: [],
+			savedFavoritesList: [],
 			favorites: [],			
 			friends: [],
-            friendsLimit: 10,
+			friendsLimit: 10,
 			loadingMixerUser: true,
 			mixerUserFound: false,
-            showBadge: true,
-            searchQuery: ""
+			showBadge: true,
+			searchQuery: ''
 		};
-    },
-    watch: {
-        searchQuery: function() {
-            this.friendsLimit = 10;
-        }
-    },
-    computed: {
-        filteredFavorites: function() {
-            if(this.searchQuery == null || this.searchQuery.length < 1) {
-                return this.favorites;
-            }
-            return this.favorites.filter(f => {
-                return f.token.toLowerCase().includes(this.searchQuery.toLowerCase());
-            })
-        },
-        filteredFriends: function() {
-            let sublist = this.friends.slice(0, this.friendsLimit);
-            if(this.searchQuery == null || this.searchQuery.length < 1) {
-                return sublist;
-            }
-            return sublist.filter(f => {
-                return f.token.toLowerCase().includes(this.searchQuery.toLowerCase());
-            })
-        }
-    },
+	},
+	watch: {
+		searchQuery: function() {
+			this.friendsLimit = 10;
+		}
+	},
+	computed: {
+		filteredFavorites: function() {
+			if(this.searchQuery == null || this.searchQuery.length < 1) {
+				return this.favorites;
+			}
+			return this.favorites.filter(f => {
+				return f.token.toLowerCase().includes(this.searchQuery.toLowerCase());
+			});
+		},
+		filteredFriends: function() {
+			let sublist = this.friends.slice(0, this.friendsLimit);
+			if(this.searchQuery == null || this.searchQuery.length < 1) {
+				return sublist;
+			}
+			return this.friends.filter(f => {
+				return f.token.toLowerCase().includes(this.searchQuery.toLowerCase());
+			});
+		}
+	},
 	methods: {
 		addMoreFriendsToView: function(){
-            // This grabs the next 10 friends and shows them.
-            let friendsCount = this.friends.length;
-            let newLimit = this.friendsLimit + 10;
+			// This grabs the next 10 friends and shows them.
+			let friendsCount = this.friends.length;
+			let newLimit = this.friendsLimit + 10;
 			this.friendsLimit = newLimit > friendsCount ? friendsCount : newLimit;
 		},
 		updateIconBadge: function() {
@@ -158,7 +158,7 @@ Vue.component('online-friends-list', {
 				if(friendFind != null && friendFind.length > 0) {
 					let friend = friendFind[0];
 					app.friends = app.friends.concat([friend]).sort((a, b) => b.viewersCurrent - a.viewersCurrent);
-                    app.favorites = app.favorites.filter(f => f.id != friend.id);
+					app.favorites = app.favorites.filter(f => f.id != friend.id);
                     
 					app.friendsLimit = 10;
 				}
@@ -197,12 +197,12 @@ Vue.component('online-friends-list', {
 	created: function() {
 		var app = this;
 		bus.$on('friends-scrolled', function() {
-            console.log('We found more friends!');
-            if(app.friendsLimit < app.friends.length) {
-                console.log("adding more");
-                app.addMoreFriendsToView();
-                console.log(app.friendsLimit);
-            }
+			console.log('We found more friends!');
+			if(app.friendsLimit < app.friends.length) {
+				console.log('adding more');
+				app.addMoreFriendsToView();
+				console.log(app.friendsLimit);
+			}
 		});
 
 		bus.$on('remove-favorite', function(name) {
