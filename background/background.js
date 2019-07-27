@@ -185,10 +185,6 @@ function showNotification(followedUser, options) {
 			window.open(`https://mixer.com/${followedUser.channelName}`, '_blank');
 		};
 
-		setTimeout((noti) => {
-			console.log('Closed the notification.');
-			noti.close();
-		}, 20000, notification);
 	} else {
 		console.log('User doesn\'t have notifications enabled for this follow type. Not showing notifications.');
 	}
