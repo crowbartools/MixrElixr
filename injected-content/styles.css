@@ -19,10 +19,27 @@
     opacity: 0.6;
     font-size:11px;
 }
+ 
+.elixr-custom-emote {
+    vertical-align: bottom;
+}
 
 .elixr-custom-emote img{
+    vertical-align: bottom;
     max-width:50px;
     max-height:50px;
+}
+
+.elixrEmoteGroupHeader {
+    margin: 8px 0 0;
+    font-size: .9em;
+    color: #8f94ae;
+    font-weight: bold;             
+}
+
+.me-emote-preview {
+    cursor: pointer;
+    margin-right: 5px;
 }
 
 /** Separated Chat Lines **/

@@ -80,28 +80,15 @@ $(() => {
 
 			var channelIdOrName = result[2];
 
-			let isName = false;
-			if(isNaN(channelIdOrName)) {
-				isName = true;
-			}
 
-			if(isName) {
-				cache.currentStreamerName = channelIdOrName;
+			getChannelNameById(channelIdOrName).then((name) => {
+				cache.currentStreamerName = name;
 
 				waitForElementAvailablity(ElementSelector.CHAT_CONTAINER).then(() => {
-					applyChatSettings(channelIdOrName);
+					applyChatSettings(name);
 				});
-				
-			} else {
-				getChannelNameById(channelIdOrName).then((name) => {
-					cache.currentStreamerName = name;
 
-					waitForElementAvailablity(ElementSelector.CHAT_CONTAINER).then(() => {
-						applyChatSettings(name);
-					});
-
-				});
-			}
+			});
 		}
 
 		//check if we are on a streamer page by looking for the name in the top right corner.
@@ -110,10 +97,21 @@ $(() => {
 			cache.currentPage = 'streamer';
 
 			// get the streamers name, this also waits for the page to load
-			getStreamerName().then((name) => {
+			getStreamerName().then((channelName) => {
 				log('streamer page loaded...');
-				loadStreamerPage(name);
+				
+				getChannelNameById(channelName).then((name) => {
+					cache.currentStreamerName = name;
+	
+					waitForElementAvailablity(ElementSelector.CHAT_CONTAINER).then(() => {
+						log('loading streamer page options...');
+						loadStreamerPage(name);
+					});
+	
+				});
 			});
+			
+			
 		} else if (homeBlock != null && homeBlock.length > 0){
 			log('looks like we are on the main page');
 			cache.currentPage = 'homepage';
@@ -299,8 +297,9 @@ $(() => {
 	}
 
 	function cacheCustomElixrEmotes(channelId){
-		return new Promise((resolve, reject) => {
-			if(channelId === null || channelId === undefined){
+		return new Promise(resolve => {
+
+			if(channelId == null){
 				log('Undefined channel id passed to custom emote cacher.');
 				resolve();
 				return;
@@ -315,17 +314,16 @@ $(() => {
 			}
 			
 			var ts = new Date().getTime();
-			var rootUrl = 'https://crowbartools.com/user-content/emotes/'+channelId+'.json?cache='+ts;
+			var rootUrl = `https://crowbartools.com/user-content/emotes/live/${channelId}/emotes.json?cache=${ts}`;
 			$.getJSON( rootUrl, function(data) {
 				log('Custom emotes retrieved for: ' + cache.currentStreamerName);
-				cache.currentStreamerEmotes = data;
-			})
-				.fail(function() {
-					log('No custom emotes for: ' + cache.currentStreamerName);
-					cache.currentStreamerEmotes = null;
-				});
-
-			resolve();
+				cache.currentStreamerEmotes = data[0];
+				resolve();
+			}).fail(function() {
+				log('No custom emotes for: ' + cache.currentStreamerName);
+				cache.currentStreamerEmotes = null;
+				resolve();
+			});	
 		});
 	}
 
@@ -395,7 +393,13 @@ $(() => {
 			request.onload = function() {
 				if (request.status >= 200 && request.status < 400) {
 					// Success!
+					log('Got channel data');
 					var data = JSON.parse(request.responseText);
+
+					cache.currentStreamerId = data.id;
+					
+					cacheCustomElixrEmotes(data.id);
+						
 					resolve(data.token);
 				} else {
 					reject('Error getting channel details');
@@ -809,9 +813,9 @@ $(() => {
 				stage.removeClass('addedBuiAr');
 				stage.removeClass('bui-arContent');
 				$('.stage').removeClass('aspect-16-9');
-            }
+			}
             
-            $.toast().reset('all');
+			$.toast().reset('all');
 			
 		} else {
 
@@ -823,23 +827,23 @@ $(() => {
 				}
 			}
 			setTimeout(() => {
-                theaterElements.addClass('theaterMode');
+				theaterElements.addClass('theaterMode');
                 
 
-                $.toast({
-                    text: `Press <span style="font-weight:bold;">ESC</span> at any time to exit.`,
-                    heading: 'Theater Mode Enabled',                 
-                    showHideTransition: 'fade',
-                    allowToastClose: true,
-                    hideAfter: 4500,
-                    stack: false, 
-                    position: 'top-center',       
-                    bgColor: '#151C29',
-                    textColor: '#fff',
-                    textAlign: 'center',
-                    loader: true, 
-                    loaderBg: '#1FBAED'
-                });
+				$.toast({
+					text: 'Press <span style="font-weight:bold;">ESC</span> at any time to exit.',
+					heading: 'Theater Mode Enabled',                 
+					showHideTransition: 'fade',
+					allowToastClose: true,
+					hideAfter: 4500,
+					stack: false, 
+					position: 'top-center',       
+					bgColor: '#151C29',
+					textColor: '#fff',
+					textAlign: 'center',
+					loader: true, 
+					loaderBg: '#1FBAED'
+				});
                     
 			}, 1);
 
@@ -899,7 +903,7 @@ $(() => {
 
 		if(options.customEmotes){
 			// If custom emotes enabled, go try to get our json.
-			cacheCustomElixrEmotes(cache.currentStreamerId);
+			await cacheCustomElixrEmotes(cache.currentStreamerId);
 		}
 
 		try {
@@ -951,6 +955,88 @@ $(() => {
 			$('.elixrTime').remove();
 		}
 
+		let chatFromCurrentChannel = true;
+		let chatTabs = $('b-channel-chat-tabs');
+		if(chatTabs != null && chatTabs.length > 0) {
+			let selectedTab = chatTabs.find('.selected');
+			if(selectedTab != null && selectedTab.length > 0) {
+				let chatChannelName = selectedTab.text().trim();
+				chatFromCurrentChannel = chatChannelName === cache.currentStreamerName;
+			}
+		}
+
+		// get rid of any previous registered callbacks for chat modals
+		$.deinitialize('[class*=\'modal\']');
+
+
+		$.initialize('[class*=\'modal\']', async function() {
+			let modal = $(this);
+
+			
+
+			if(options.customEmotes && 
+					cache.currentStreamerEmotes != null && 
+					cache.currentStreamerEmotes.emotes != null &&
+					chatFromCurrentChannel) {
+
+
+				let waitForModal = function(modal, counter = 0) {
+					return new Promise((resolve, reject) => {
+
+						if(counter >= 10) {
+							return reject();
+						}
+						counter++;
+
+						let emotesContainer = modal.find('[class*=\'container\']');
+
+						if(emotesContainer == null || emotesContainer.length < 1) {
+							setTimeout(() => { 
+								resolve(waitForModal(modal, counter));
+							}, 250);
+						} else {
+							resolve(emotesContainer);
+						}
+					});
+				};
+
+				waitForModal(modal)
+					.then((emotesContainer) => {
+
+						if(emotesContainer != null && emotesContainer.length > 0) {
+							let customEmotesWrapper = $(`<div><h3 class="elixrEmoteGroupHeader">${cache.currentStreamerName}'s Custom Emotes</h3><div class="elixrEmoteList"></div></div>`);
+							let emoteList = customEmotesWrapper.children('.elixrEmoteList');
+
+							// loop through all emotes
+							let emotes = Object.values(cache.currentStreamerEmotes.emotes);
+							for(let emote of emotes) {
+								let url = `https://crowbartools.com/user-content/emotes/live/40812/${escapeHTML(emote.filename)}`;
+								let name = escapeHTML(emote.name);
+								emoteList.append(`
+									<span class="elixr-custom-emote me-tooltip me-emote-preview" title="${name}" emote-name="${name}" style="display: inline-block;">
+										<img src="${url}">
+									</span>`
+								);
+							}
+
+							emotesContainer.prepend(customEmotesWrapper);
+
+							$('.me-emote-preview').off('click');
+							$('.me-emote-preview').on('click', function() {
+
+								let emoteName = $(this).attr('emote-name');
+								let chatTextarea = $('#chat-input').children('textarea');
+								let currentValue = chatTextarea.val();
+								let newValue = `${currentValue}${currentValue === '' ? ' ' : ''}${emoteName} `; 
+								chatTextarea.val(newValue);	
+							});
+						}
+					
+					})
+					.catch(() => {});
+			}
+		});
+
 		// get rid of any previous registered callbacks for chat messages
 		$.deinitialize(ElementSelector.CHAT_MESSAGE);
 
@@ -959,18 +1045,6 @@ $(() => {
 		//message__
 		$.initialize(ElementSelector.CHAT_MESSAGE, async function() {
 			var messageContainer = $(this);
-
-
-			let chatFromCurrentChannel = true;
-			//$("b-channel-chat-tabs").find(".selected").text()
-			let chatTabs = $('b-channel-chat-tabs');
-			if(chatTabs != null && chatTabs.length > 0) {
-				let selectedTab = chatTabs.find('.selected');
-				if(selectedTab != null && selectedTab.length > 0) {
-					let chatChannelName = selectedTab.text().trim();
-					chatFromCurrentChannel = chatChannelName === cache.currentStreamerName;
-				}
-			}
 
 			if(options.useCustomFontSize) {
 				messageContainer.find('[class*=\'messageContent\']').css('font-size', `${options.textSize}px`);
@@ -1016,7 +1090,7 @@ $(() => {
 
 			if(options.customEmotes && 
 				cache.currentStreamerEmotes != null && 
-				cache.currentStreamerEmotes[0].emotes.length > 0 &&
+				cache.currentStreamerEmotes.emotes != null &&
 				chatFromCurrentChannel) {
 
 				let foundEmote = false;
@@ -1034,7 +1108,7 @@ $(() => {
 						let text = component.text();
 						
 						// loop through all emotes
-						let emotes = cache.currentStreamerEmotes[0].emotes;
+						let emotes = Object.values(cache.currentStreamerEmotes.emotes);
 
 						//build emote name group end result will look like: "emoteName1|emoteName2|emoteName3"
 						let emoteNameRegexGroup = '';
@@ -1042,6 +1116,7 @@ $(() => {
 							if(emoteNameRegexGroup.length > 0) {
 								emoteNameRegexGroup += '|';
 							}
+							
 							emoteNameRegexGroup += escapeRegExp(emote.name);
 						}
 
@@ -1052,17 +1127,18 @@ $(() => {
 						text = text.replace(emoteNameRegex, match => {
 							log('found emote match: ' + match);
 							
-
 							// find the emote based on the match
 							let emote = emotes.find(e => e.name.toLowerCase() === match.toLowerCase());
 
 							if(emote) {
 								foundEmote = true;
 
+								let url = `https://crowbartools.com/user-content/emotes/live/40812/${escapeHTML(emote.filename)}`;
+
 								let imgTag =`
-								<span class="elixr-custom-emote me-tooltip" title="Mixr Elixr: Custom emote '${escapeHTML(emote.name)}'" style="display: inline-block;">
-									<img src="${escapeHTML(emote.url)}">
-								</span>`;
+									<span class="elixr-custom-emote me-tooltip" title="Mixr Elixr: Custom emote '${escapeHTML(emote.name)}'" style="display: inline-block;">
+										<img src="${url}">
+									</span>`;
 								return imgTag;
 							} else {
 								return match;
