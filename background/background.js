@@ -6,6 +6,8 @@ const FOLLOWS_URL = `https://mixer.com/api/v1/users/{userId}/follows?fields=id,t
 const TOTAL_COUNT_HEADER = 'x-total-count';
 const FOLLOW_DATE_URL = 'https://mixer.com/api/v1/channels/{channelId}/follow?where=id:eq:{currentUserId}';
 
+let sentNotifications = [];
+
 async function getCurrentUserId() {
 	try {
 		let response = await fetch(CURRENT_USER_URL, {
@@ -31,8 +33,6 @@ async function getOnlineFollows(userId, page = 0, list) {
 	if(list == null) {
 		list = [];
 	}
-
-	//debugger; // eslint-disable-line no-debugger
     
 	if(userId == null) {
 		console.log('Unable to get follows, current user id is null.');
@@ -166,7 +166,7 @@ function showNotification(followedUser, options) {
 			body: text, 
 			icon: icon,
 			badge: icon,
-			tag: 'Mixer',
+			tag: followedUser.channelName,
 			image: image, 
 			silent: true 
 		});
@@ -182,8 +182,15 @@ function showNotification(followedUser, options) {
 		notification.onclick = function(event) {
 			// prevent the browser from focusing the Notification's tab
 			event.preventDefault(); 
-			window.open(`https://mixer.com/${followedUser.channelName}`, '_blank');
+			window.open(`https://mixer.com/${event.srcElement.tag}`, '_blank');
+			sentNotifications = sentNotifications.filter(n => n !== event.srcElement);
 		};
+
+		notification.onclose = function(event) {
+			sentNotifications = sentNotifications.filter(n => n !== event.srcElement);
+		};
+
+		sentNotifications.push(notification);
 
 	} else {
 		console.log('User doesn\'t have notifications enabled for this follow type. Not showing notifications.');
