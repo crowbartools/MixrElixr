@@ -6,16 +6,21 @@ Vue.component('nav-bar', {
 			</a>
 			<div class="collapse navbar-collapse" id="navbarNav">
 				<ul class="navbar-nav mr-auto">
-					<li class="nav-item" class="clickable" :class="{active: onlineActive}" @click="changeTab('online')">
-						<a class="nav-link">Who's Online</a>
+					<li class="nav-item clickable me-nav-item" :class="{active: onlineActive}" @click="changeTab('online')">
+						<a class="nav-link">Live Now</a>
 					</li>
-					<li class="nav-item" class="clickable" :class="{active: optionsActive}" @click="changeTab('options')">
-						<a class="nav-link"><i class="fa fa-cog" aria-hidden="true"></i> Options</a>
+					<li class="nav-item clickable" :class="{active: optionsActive}" @click="changeTab('options')">
+						<a class="nav-link">Options</a>
 					</li>
 				</ul>
 				<ul class="navbar-nav flex-row">
 					<li class="nav-item clickable" class="mixerAlert" v-bind:status="mixerStatus" v-if="mixerStatus !== 'none'">
 						<a href="https://status.mixer.com" target="_blank" class="nav-link" :title="'Mixer Service Status: '+mixerStatus"><i class="fa fa-exclamation-circle" aria-hidden="true"></i></a>
+                    </li>
+                    <li class="nav-item clickable mixer-icon">
+                        <a class="nav-link" href="https://mixer.com" target="_blank">
+                            <img src="/resources/images/MixerMerge_dark.svg" width="16" height="16">
+                        </a>
 					</li>
 					<li class="nav-item clickable">
 						<a class="nav-link" href="https://twitter.com/MixrElixr" target="_blank"><i class="fa fa-twitter" aria-hidden="true"></i></a>
@@ -37,10 +42,21 @@ Vue.component('nav-bar', {
 	},
 	props: ['onlineCount'],
 	methods: {
+        scrollToTop: function(smooth) {
+            document.getElementById("app").scroll({
+                top: 0,
+                left: 0,
+                behavior: smooth ? 'smooth' : undefined
+            });
+        },
 		changeTab: function(tab) {
+            this.scrollToTop(this.activeTab === tab);
 			this.onlineActive = tab === 'online';
-			this.optionsActive = tab === 'options';
+            this.optionsActive = tab === 'options';
+            this.activeTab = tab;
 			this.$emit('tab-changed', tab);
+            bus.$emit('tab-changed', tab);
+            
 		},
 		serviceStatus: function(){
 			return new Promise(function(resolve, reject) {

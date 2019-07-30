@@ -1,22 +1,16 @@
 Vue.component('inline-img-toggle', {
 	template: `
 		<span>
-			<label style="display:flex">
-				<label class="switch">
-					<input type="checkbox" v-model.lazy="value" @change="toggleChanged"/>
-					<span class="slider"></span>
-				</label>
-				Show Image Links Inline <option-tooltip v-if="value" name="inline-tt" :title="warningMsg" type="warning"></option-tooltip>
-			</label>
+            <checkbox-toggle :value.sync="value" @changed="toggleChanged()" label="Show Image Links Inline"></checkbox-toggle>
 			<b-modal id="inlineImgWarning"
 					ref="inlineImgWarning"
 					title="Warning"
 					header-bg-variant="danger"
 					header-text-variant="light"
-					body-bg-variant="light"
-					body-text-variant="dark"
-					footer-bg-variant="light"
-					footer-text-variant="dark"
+					body-bg-variant="dark"
+					body-text-variant="light"
+					footer-bg-variant="dark"
+					footer-text-variant="light"
 					cancel-title="Nevermind"
 					cancel-variant="link"
 					ok-title="Confirm"
@@ -32,8 +26,8 @@ Vue.component('inline-img-toggle', {
 	props: ['value'],
 	data: function() {
 		return {
-			warningMsg: "Quick heads up: Malicious users could potentionally use inline images to capture your IP address. This is the same risk you take if you were to click a link and open it, but we just want to make sure you are aware before using inline images."
-		}
+			warningMsg: 'Quick heads up: Malicious users could potentionally use inline images to capture your IP address. This is the same risk you take if you were to click a link and open it, but we just want to make sure you are aware before using inline images.'
+		};
 	},
 	watch: {
 		value: function(newValue, oldValue) {

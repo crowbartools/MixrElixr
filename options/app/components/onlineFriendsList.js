@@ -2,29 +2,33 @@ Vue.component('online-friends-list', {
 	template: `
 	<div>
 		<div v-if="!loadingMixerUser && mixerUserFound"">
-
-			<div class="online-type-title">Favorites <b-badge style="background-color:#0faf27;">{{favorites.length}}</b-badge></div>
+            <div style="margin: 0 50px 15px;">
+                <search :query.sync="searchQuery" placeholder="Search follows"></search>
+            </div>
+			<div class="online-type-title">
+				<span class="online-title">Favorites</span> <b-badge style="background-color:#0faf27;">{{favorites.length}}</b-badge>
+			</div>
 			<div class="muted online-list-message" v-if="!loadingMixerUser && mixerUserFound && favorites.length === 0 && savedFavoritesList.length !== 0">
-				No one is currently streaming :(
+				No favorites are currently streaming :(
 			</div>
 			<div class="muted online-list-message" v-if="!loadingMixerUser && mixerUserFound && savedFavoritesList.length === 0">
 				No favorites set. Click the <i class="fa fa-star-o" aria-hidden="true"></i> on a streamer to add your first one!
 			</div>
-			<div class="online-friends-wrap" style="margin-bottom: 15px;">
-				<online-friend	v-for="friend in favorites" :friend="friend" :favorite="true" @remove-favorite="favoriteRemoved"></online-friend>
+			<div class="channels-row" style="margin-bottom: 15px;">
+				<live-channel-card v-for="friend in filteredFavorites" v-bind:key="friend.id" :friend="friend" :favorite="true" @remove-favorite="favoriteRemoved"></live-channel-card>
 			</div>
 
-			<div class="online-type-title">Following <b-badge style="background-color:#18ABE9;">{{friends.length}}</b-badge></div>
+			<div class="online-type-title"><span class="online-title">Following</span> <b-badge style="background-color:#18ABE9;">{{friends.length}}</b-badge></div>
 			<div class="muted online-list-message" v-if="!loadingMixerUser && mixerUserFound && friends.length === 0">
 				No one is currently streaming :(
 			</div>
-			<div class="online-friends-wrap">
-				<online-friend	v-for="friend in friendsShown" :friend="friend" :favorite="false" @add-favorite="favoriteAdded"></online-friend>
+			<div class="channels-row">
+				<live-channel-card v-for="friend in filteredFriends" v-bind:key="friend.id" :friend="friend" :favorite="false" @add-favorite="favoriteAdded"></live-channel-card>
 			</div>
 
 		</div>	
 		<div v-if="!loadingMixerUser && !mixerUserFound">
-			To view your online friends go to <a href="https://mixer.com" target="_blank">Mixer.com</a> and log in.
+			To see who follow, go to <a href="https://mixer.com" target="_blank">Mixer.com</a> and log in.
 		</div>
 		<div class="muted" v-if="loadingMixerUser">
 			Loading online friends...
@@ -35,27 +39,46 @@ Vue.component('online-friends-list', {
 	mixins: [settingsStorage, friendFetcher],
 	data: function() {
 		return {
+			savedFavoritesList: [],
 			favorites: [],			
 			friends: [],
-			friendsShown: [],
-			savedFavoritesList: [],
+			friendsLimit: 10,
 			loadingMixerUser: true,
 			mixerUserFound: false,
-			showBadge: true
+			showBadge: true,
+			searchQuery: ''
 		};
+	},
+	watch: {
+		searchQuery: function() {
+			this.friendsLimit = 10;
+		}
+	},
+	computed: {
+		filteredFavorites: function() {
+			if(this.searchQuery == null || this.searchQuery.length < 1) {
+				return this.favorites;
+			}
+			return this.favorites.filter(f => {
+				return f.token.toLowerCase().includes(this.searchQuery.toLowerCase());
+			});
+		},
+		filteredFriends: function() {
+			let sublist = this.friends.slice(0, this.friendsLimit);
+			if(this.searchQuery == null || this.searchQuery.length < 1) {
+				return sublist;
+			}
+			return this.friends.filter(f => {
+				return f.token.toLowerCase().includes(this.searchQuery.toLowerCase());
+			});
+		}
 	},
 	methods: {
 		addMoreFriendsToView: function(){
 			// This grabs the next 10 friends and shows them.
-			var size = 10;
-			var friends = this.friends;
-			var friendsShown = this.friendsShown;
-			var friendsEnd = friendsShown.length + size;
-
-			var newFriends = friends.slice( friendsShown.length, friendsEnd);
-			for(let person in newFriends){
-				friendsShown.push( newFriends[person]);
-			}
+			let friendsCount = this.friends.length;
+			let newLimit = this.friendsLimit + 10;
+			this.friendsLimit = newLimit > friendsCount ? friendsCount : newLimit;
 		},
 		updateIconBadge: function() {
 			var text = '', color = '#18ABE9';
@@ -100,8 +123,6 @@ Vue.component('online-friends-list', {
 					app.favorites = favoritesOnly;
 					app.friends = followingOnly;
 	
-					app.friendsShown = [];
-					app.addMoreFriendsToView();
 					app.updateIconBadge();	
 
 					resolve();
@@ -128,9 +149,7 @@ Vue.component('online-friends-list', {
 					app.favorites = app.favorites.concat([friend]).sort((a, b) => b.viewersCurrent - a.viewersCurrent);
 					app.friends = app.friends.filter(f => f.id != friend.id);
 
-					//reset friends shown array
-					app.friendsShown = [];
-					app.addMoreFriendsToView();
+					app.friendsLimit = 10;
 				}				
 			} else {
 				app.savedFavoritesList = app.savedFavoritesList.filter(n => n !== name);
@@ -140,10 +159,8 @@ Vue.component('online-friends-list', {
 					let friend = friendFind[0];
 					app.friends = app.friends.concat([friend]).sort((a, b) => b.viewersCurrent - a.viewersCurrent);
 					app.favorites = app.favorites.filter(f => f.id != friend.id);
-
-					//reset friends shown array
-					app.friendsShown = [];
-					app.addMoreFriendsToView();
+                    
+					app.friendsLimit = 10;
 				}
 			}
 			
@@ -181,7 +198,11 @@ Vue.component('online-friends-list', {
 		var app = this;
 		bus.$on('friends-scrolled', function() {
 			console.log('We found more friends!');
-			app.addMoreFriendsToView();
+			if(app.friendsLimit < app.friends.length) {
+				console.log('adding more');
+				app.addMoreFriendsToView();
+				console.log(app.friendsLimit);
+			}
 		});
 
 		bus.$on('remove-favorite', function(name) {

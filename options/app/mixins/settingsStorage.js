@@ -4,7 +4,7 @@ settingsStorage = {
 			var app = this;
 			return new Promise((resolve) => {
 				var defaults = this.getDefaultOptions();
-			
+
 				chrome.storage.sync.get({
 					'streamerPageOptions': defaults.streamerPageOptions,
 					'homePageOptions': defaults.homePageOptions,
@@ -19,7 +19,7 @@ settingsStorage = {
 			chrome.storage.sync.set(settings, () => {
 				if(emitEvent) {
 					app.emitSettingUpdatedEvent();
-				}				
+				}
 			});
 		},
 		saveStreamerPageOptions: function(options) {
@@ -42,10 +42,13 @@ settingsStorage = {
 				streamerPageOptions: {
 					global: {
 						autoCloseInteractive: false,
-						autoCloseCostreams: false,
+                        autoCloseCostreams: false,
+                        autoTheater: false,
 						separateChat: false,
 						alternateChatBGColor: false,
 						mentionChatBGColor: false,
+						customEmotes: false,
+						hideDeleted: false,
 						timestampAllMessages: false,
 						showImagesInline: false,
 						lowestUserRoleLinks: 'mod',
@@ -55,18 +58,27 @@ settingsStorage = {
 						autoMute: false,
 						autoMuteOnHost: false,
 						ignoredUsers: [],
-						keywords: []
+						keywords: [],
+						hideKeywords: [],
+						hideStyle: 'blur',
+						enableHideKeywordsWhenMod: false,
+						useCustomFontSize: false,
+						textSize: 15
 					},
 					overrides: {}
 				},
 				homePageOptions: {
 					removeFeatured: false,
-					autoMute: false
+					autoMute: false,
+					pinSearchToTop: true
 				},
 				generalOptions: {
 					showBadge: true,
 					favoriteFriends: [],
-					highlightFavorites: true
+					highlightFavorites: true,		
+					liveNotificationsMode: 'favorites',
+					playLiveNotificationSound: true,
+					liveNotificationSoundType: 'default'
 				}
 			};
 		},

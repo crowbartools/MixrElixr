@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "MixrElixr",
     "description": "Options and tweaks to improve your Mixer.com viewing experience.",
-    "version": "1.4",
+    "version": "2.0.0",
     "short_name": "Elixr",
     "browser_action": {
         "default_icon": "/resources/images/elixr-light-16.png",
@@ -24,26 +24,36 @@
             "css": [
                 "/resources/css/plugins/jquery/tooltipster.bundle.min.css",
                 "/resources/css/plugins/jquery/tooltipster-sideTip-borderless.min.css",
+                "/resources/css/plugins/jquery/jquery.toast.min.css",
+                "/resources/css/plugins/jquery/jquery.modal.min.css",
                 "/injected-content/styles.css"
             ],
             "js": [
                 "/resources/js/jquery.js",
                 "/resources/js/jquery.initialize.js",
                 "/resources/js/plugins/jquery/tooltipster.bundle.min.js",
+                "/resources/js/plugins/jquery/jquery.toast.js",
+                "/resources/js/plugins/jquery/jquery.modal.min.js",
                 "/injected-content/mixrelixr.js"
             ]
         }
     ],
     "background": {
-        "scripts": ["/background/background.js"]
+        "scripts": [
+            "/resources/js/moment.min.js",
+            "/background/background.js"
+        ],
+        "persistent": true
     },
     "web_accessible_resources": [
-        "images/*"
+        "resources/images/*"
     ],
     "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
     "permissions": [
         "storage",
         "cookies",
+        "notifications",
+        "background",
         "*://mixer.com/*"
     ],
     "applications": {

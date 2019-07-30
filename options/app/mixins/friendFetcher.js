@@ -1,3 +1,5 @@
+const clientId = 'd2158e591bb347931751bef151ee3bf3e5c8cb9608924a7a';
+
 friendFetcher = { 
 	methods: {
 		getMixerId: function() {
@@ -5,7 +7,9 @@ friendFetcher = {
 			return new Promise(function(resolve, reject) {
 
 				var request = new XMLHttpRequest();
+
 				request.open('GET', 'https://mixer.com/api/v1/users/current', true);
+				request.setRequestHeader('Client-ID', clientId);
 
 				request.onload = function() {
 					if (request.status >= 200 && request.status < 400) {
@@ -38,7 +42,7 @@ friendFetcher = {
 				console.log('Trying page '+page+' of follows for userId '+userId);
 
 
-				var url = `https://mixer.com/api/v1/users/${userId}/follows?fields=id,online,name,token,viewersCurrent,partnered,costreamId,interactive,type&where=online:eq:true&order=viewersCurrent:desc&limit=${pageSize}&page=${page}`;
+				var url = `https://mixer.com/api/v1/users/${userId}/follows?fields=id,online,name,token,viewersCurrent,partnered,costreamId,interactive,type,audience,user&where=online:eq:true&order=viewersCurrent:desc&limit=${pageSize}&page=${page}`;
 				if(!onlyOnline) {
 					// when we get all followers, we only need the id and their name, cuts down on how much data we bring over the wire
 					url = `https://mixer.com/api/v1/users/${userId}/follows?fields=id,token&limit=${pageSize}&page=${page}`;
@@ -52,7 +56,7 @@ friendFetcher = {
 						var data = JSON.parse(request.responseText);
 
 						// Loop through data and throw in array.
-						for (friend of data){
+						for (let friend of data){
 							followList.push(friend);
 						}
 
