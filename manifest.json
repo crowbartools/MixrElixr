@@ -25,6 +25,7 @@
                 "/resources/css/plugins/jquery/tooltipster.bundle.min.css",
                 "/resources/css/plugins/jquery/tooltipster-sideTip-borderless.min.css",
                 "/resources/css/plugins/jquery/jquery.toast.min.css",
+                "/resources/css/plugins/jquery/jquery.modal.min.css",
                 "/injected-content/styles.css"
             ],
             "js": [
@@ -32,6 +33,7 @@
                 "/resources/js/jquery.initialize.js",
                 "/resources/js/plugins/jquery/tooltipster.bundle.min.js",
                 "/resources/js/plugins/jquery/jquery.toast.js",
+                "/resources/js/plugins/jquery/jquery.modal.min.js",
                 "/injected-content/mixrelixr.js"
             ]
         }
@@ -44,7 +46,7 @@
         "persistent": true
     },
     "web_accessible_resources": [
-        "images/*"
+        "resources/images/*"
     ],
     "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
     "permissions": [

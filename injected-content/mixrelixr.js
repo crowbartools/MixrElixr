@@ -1861,6 +1861,61 @@ $(() => {
 		}
 	});
 
+	function getLastChangeLog() {
+		return new Promise((resolve) => {
+			chrome.storage.sync.get({
+				'internal': { lastChangeLog: null },
+			}, (options) => {
+				resolve(options.internal.lastChangeLog);
+			});
+		});
+	}
+
+	function setLastChangeLog(version) {
+		chrome.storage.sync.set({
+			'internal': {
+				lastChangeLog: version
+			}
+		}, () => {});
+	}
+
+	async function changeLogModalCheck() {
+		let lastChangeLog = await getLastChangeLog();
+		if(lastChangeLog !== '2.0.0') {
+			log('***Showing change log modal***');
+			$(`
+				<div id="mixr-change-log" class="modal">
+					<div style="text-align: center;">
+						<img style="width: 175px;" src="${chrome.runtime.getURL('resources/images/mixrelixr2logo.png')}">
+					</div>
+					<div style="margin-top: 30px;text-align: center;font-size: 14px;">
+						<p>Thanks for using MixrElixr! We have a big update for you and wanted to share the highlights.</p>
+					</div>
+					<div class="changelog-header">Change Log</div>
+					<h2 class="changelog-feature">All New Look and Feel</h2>
+					<p class="changelog-feature-description">To better match Mixer's current theme.</p>
+					<h2 class="changelog-feature">Custom Emotes</h2>
+					<p class="changelog-feature-description">Emotes for everyone! Head to <a href="https://crowbartools.com/emotes" target="_blank">our website</a> to learn more.</p>
+					<h2 class="changelog-feature">Desktop Notifications</h2>
+					<p class="changelog-feature-description">Get notifications when your follows and favorites go live!</p>
+					<h2 class="changelog-feature">Pinned Search</h2>
+					<p class="changelog-feature-description">The searchbar is now pinned to the top on Mixers homepage, where it has always belonged <3</p>
+					<h2 class="changelog-feature">Auto Theater Mode</h2>
+					<p class="changelog-feature-description">New option to automatically go into Theater Mode when loading a channel page.</p>
+					<div style="padding: 12px 0;text-align: center;opacity: 0.8;">
+						<span>Questions? Stop by our <a href="https://discord.gg/2CGrbA4" target="_blank">Discord</a> or send us a <a href="https://twitter.com/mixrelixr" target="_blank">tweet</a>!</span>
+					</div>
+				</div>
+		  `).modal({
+				modalClass: 'modal mixr-modal'
+			});
+
+			setLastChangeLog('2.0.0');
+		}
+	}
+
+	changeLogModalCheck();
+
 	//tooltip listener
 	$.initialize('.me-tooltip', function() {
 		let meTooltip = $(this);

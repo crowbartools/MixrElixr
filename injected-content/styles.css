@@ -31,7 +31,7 @@
 }
 
 .elixrEmoteGroupHeader {
-    margin: 8px 0 0;
+    margin: 8px 0 5px 0;
     font-size: .9em;
     color: #8f94ae;
     font-weight: bold;             
@@ -322,6 +322,33 @@ b-browse-framework > header.searchPinned {
     display:flex;
     align-items: center;
     justify-content: center;
+}
+.jquery-modal.blocker {
+    z-index: 99999999;
+}
+
+.mixr-modal {
+    background: #29374A;
+}
+
+.changelog-header {
+    margin-top: 30px;
+    margin-bottom: 13px;
+    font-family: "Industrywf",sans-serif;
+    text-transform: uppercase;
+    color: #d2d2d2;
+    font-size: 19px;
+}
+
+.changelog-feature {
+    font-weight: bold;
+    font-size: 1.25em;
+    font-family: "Industrywf",sans-serif;
+}
+
+.changelog-feature-description {
+    margin-bottom: 18px;
+    opacity: 0.8;
 }
 
 /*
