@@ -190,6 +190,8 @@ function showNotification(followedUser, options) {
 			sentNotifications = sentNotifications.filter(n => n !== event.srcElement);
 		};
 
+		setTimeout(notification.close.bind(notification), 20000);
+
 		sentNotifications.push(notification);
 
 	} else {
@@ -249,7 +251,6 @@ async function run() {
 					console.log('We aren\'t a fresh follower, trigger notification.');
 					showNotification(followedUser, options);
 				}
-
 			}
 		}
 	}
