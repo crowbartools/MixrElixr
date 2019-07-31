@@ -1081,7 +1081,7 @@ $(() => {
 			}
 
 			// Give any message with a mention of our user a class.
-			var messageText = messageContainer.find('[class*=\'textComponent\']').text().toLowerCase().trim();
+			var messageText = messageContainer.find('span:not([class])').text().toLowerCase().trim();
 
 			var userTagged = messageContainer.find('.tagComponent').text().toLowerCase().trim().replace('@', '');
 			if(cache.user != null) {
@@ -1100,7 +1100,7 @@ $(() => {
 
 				let foundEmote = false;
 				messageContainer
-					.find('[class*=\'textComponent\']')
+					.find('span:not([class])')
 					.each(function() {
 					
 						let component = $(this);
@@ -1110,7 +1110,7 @@ $(() => {
 							return;
 						}
 
-						let text = component.text();
+						let text = component.text().trim();
 						
 						// loop through all emotes
 						let emotes = Object.values(cache.currentStreamerEmotes.emotes);
@@ -1185,7 +1185,7 @@ $(() => {
 				// Add class on hide keyword mention.
 				if(options.hideKeywords != null && options.hideKeywords.length > 0) {
 
-					messageContainer.find('[class*=\'textComponent\']').each(function() {
+					messageContainer.find('span:not([class])').each(function() {
 						let component = $(this);
 
 						let text = component.text();
