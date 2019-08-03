@@ -310,7 +310,7 @@ $(() => {
 			var rootUrl = `https://crowbartools.com/user-content/emotes/global/emotes.json?cache=${ts}`;
 			$.getJSON( rootUrl, function(data) {
 				log('Global emotes retrieved.');
-				cache.globalEmotes = data[0];
+				cache.globalEmotes = data;
 				resolve();
 			}).fail(function() {
 				log('No global emotes were found!');
@@ -320,7 +320,7 @@ $(() => {
 		});
 	}
 
-	function cacheCustomElixrEmotes(channelId){
+	function cacheChannelElixrEmotes(channelId){
 		return new Promise(resolve => {
 			if(channelId == null){
 				log('Undefined channel id passed to custom emote cacher.');
@@ -340,7 +340,7 @@ $(() => {
 			var rootUrl = `https://crowbartools.com/user-content/emotes/live/${channelId}/emotes.json?cache=${ts}`;
 			$.getJSON( rootUrl, function(data) {
 				log('Custom emotes retrieved for: ' + cache.currentStreamerName);
-				cache.currentStreamerEmotes = data[0];
+				cache.currentStreamerEmotes = Array.isArray(data) ? data[0] : data;
 				resolve();
 			}).fail(function() {
 				log('No custom emotes for: ' + cache.currentStreamerName);
@@ -365,7 +365,7 @@ $(() => {
 						log('Got channel id');
 
 						cacheGlobalElixrEmotes();
-						cacheCustomElixrEmotes(data.id);
+						cacheChannelElixrEmotes(data.id);
 
 						resolve(data.id);
 					})
@@ -423,7 +423,7 @@ $(() => {
 					cache.currentStreamerId = data.id;
 					
 					cacheGlobalElixrEmotes();
-					cacheCustomElixrEmotes(data.id);
+					cacheChannelElixrEmotes(data.id);
 						
 					resolve(data.token);
 				} else {
@@ -925,12 +925,12 @@ $(() => {
 
 		var options = getStreamerOptionsForStreamer(streamerName);
 
-		if(options.customEmotes){
+		if(options.customEmotes && options.channelEmotes){
 			// If custom emotes enabled, go try to get our json.
-			await cacheCustomElixrEmotes(cache.currentStreamerId);
+			await cacheChannelElixrEmotes(cache.currentStreamerId);
 		}
 
-		if(options.globalEmotes){
+		if(options.customEmotes && options.globalEmotes){
 			// If global emotes are enabled.
 			await cacheGlobalElixrEmotes();
 		}
@@ -984,15 +984,7 @@ $(() => {
 			$('.elixrTime').remove();
 		}
 
-		let chatFromCurrentChannel = true;
-		let chatTabs = $('b-channel-chat-tabs');
-		if(chatTabs != null && chatTabs.length > 0) {
-			let selectedTab = chatTabs.find('.selected');
-			if(selectedTab != null && selectedTab.length > 0) {
-				let chatChannelName = selectedTab.text().trim();
-				chatFromCurrentChannel = chatChannelName === cache.currentStreamerName;
-			}
-		}
+		
 
 		// get rid of any previous registered callbacks for chat modals
 		$.deinitialize('[class*=\'modal\']');
@@ -1001,75 +993,112 @@ $(() => {
 		$.initialize('[class*=\'modal\']', async function() {
 			let modal = $(this);
 
-			
+			let chatFromCurrentChannel = true;
+			let chatTabs = $('b-channel-chat-tabs');
+			if(chatTabs != null && chatTabs.length > 0) {
+				let selectedTab = chatTabs.find('.selected');
+				if(selectedTab != null && selectedTab.length > 0) {
+					let chatChannelName = selectedTab.text().trim();
+					chatFromCurrentChannel = chatChannelName === cache.currentStreamerName;
+				}
+			}
 
-			if(options.customEmotes && 
-					cache.currentStreamerEmotes != null && 
-					cache.currentStreamerEmotes.emotes != null &&
-					chatFromCurrentChannel) {
+			let showChannelEmotes = options.customEmotes &&
+				options.channelEmotes && 
+				cache.currentStreamerEmotes != null && 
+				cache.currentStreamerEmotes.emotes != null &&
+				chatFromCurrentChannel;
+
+			let showGlobalEmotes = 	options.customEmotes &&
+				options.globalEmotes && 
+				cache.globalEmotes != null && 
+				cache.globalEmotes.emotes != null;
 
 
-				let waitForModal = function(modal, counter = 0) {
-					return new Promise((resolve, reject) => {
+			let waitForModal = function(modal, counter = 0) {
+				return new Promise((resolve, reject) => {
+		
+					if(counter >= 10) {
+						return reject();
+					}
+					counter++;
+		
+					let emotesContainer = modal.find('[class*=\'container\']');
+		
+					if(emotesContainer == null || emotesContainer.length < 1) {
+						setTimeout(() => { 
+							resolve(waitForModal(modal, counter));
+						}, 250);
+					} else {
+						resolve(emotesContainer);
+					}
+				});
+			};
 
-						if(counter >= 10) {
-							return reject();
-						}
-						counter++;
+			waitForModal(modal)
+				.then((emotesContainer) => {
 
-						let emotesContainer = modal.find('[class*=\'container\']');
-
-						if(emotesContainer == null || emotesContainer.length < 1) {
-							setTimeout(() => { 
-								resolve(waitForModal(modal, counter));
-							}, 250);
-						} else {
-							resolve(emotesContainer);
-						}
-					});
-				};
-
-				waitForModal(modal)
-					.then((emotesContainer) => {
-
-						let classes = emotesContainer.attr('class').split(/\s+/);
+					let classes = emotesContainer.attr('class').split(/\s+/);
 						
-						let isListModal = classes.some((c) => {
-							return c.startsWith('listModal');
-						});
+					let isListModal = classes.some((c) => {
+						return c.startsWith('listModal');
+					});
 
-						if(!isListModal) {
-							let customEmotesWrapper = $(`<div><h3 class="elixrEmoteGroupHeader">${cache.currentStreamerName}'s Custom Emotes</h3><div class="elixrEmoteList"></div></div>`);
-							let emoteList = customEmotesWrapper.children('.elixrEmoteList');
+					let addEmotesSection = function(header, emotes, baseUrl) {
+						let customEmotesWrapper = $(`<div><h3 class="elixrEmoteGroupHeader">${header}</h3><div class="elixrEmoteList"></div></div>`);
+						let emoteList = customEmotesWrapper.children('.elixrEmoteList');
 
-							// loop through all emotes
-							let emotes = Object.values(cache.currentStreamerEmotes.emotes);
-							for(let emote of emotes) {
-								let url = `https://crowbartools.com/user-content/emotes/live/${cache.currentStreamerId}/${escapeHTML(emote.filename)}`;
-								let name = escapeHTML(emote.name);
-								emoteList.append(`
-									<span class="elixr-custom-emote me-tooltip me-emote-preview" title="${name}" emote-name="${name}" style="display: inline-block;">
-										<img src="${url}">
-									</span>`
-								);
+						// loop through all emotes
+						for(let emote of emotes) {
+							let url = `${baseUrl}/${escapeHTML(emote.filename)}`;
+							let name = escapeHTML(emote.name);
+							emoteList.append(`
+								<span class="elixr-custom-emote me-tooltip me-emote-preview" title="${name}" emote-name="${name}" style="display: inline-block;">
+									<img src="${url}">
+								</span>`
+							);
+						}
+
+						emotesContainer.prepend(customEmotesWrapper);
+					};
+
+					if(!isListModal) {
+
+						if(showChannelEmotes || showGlobalEmotes) {
+
+							if(showChannelEmotes) {
+
+								let header = `${cache.currentStreamerName}'s Custom Emotes`;
+								let streamerEmotes = Object.values(cache.currentStreamerEmotes.emotes);
+								let baseUrl = `https://crowbartools.com/user-content/emotes/live/${cache.currentStreamerId}/`;
+
+								addEmotesSection(header, streamerEmotes, baseUrl);
+
 							}
 
-							emotesContainer.prepend(customEmotesWrapper);
+							if(showGlobalEmotes) {
+
+								let header = 'MixrElixr Global Emotes';
+								let globalEmotes = Object.values(cache.globalEmotes.emotes);
+								let baseUrl = 'https://crowbartools.com/user-content/emotes/global/';
+
+								addEmotesSection(header, globalEmotes, baseUrl);
+								
+							}
+							
 
 							$('.me-emote-preview').off('click');
 							$('.me-emote-preview').on('click', function() {
-
 								let emoteName = $(this).attr('emote-name');
 								let chatTextarea = $('#chat-input').children('textarea');
 								let currentValue = chatTextarea.val();
 								let newValue = `${currentValue}${currentValue === '' ? ' ' : ''}${emoteName} `; 
 								chatTextarea.val(newValue);	
 							});
-						}
-					
-					})
-					.catch(() => {});
-			}
+						}				
+					}				
+				})
+				.catch(() => {});
 		});
 
 		// get rid of any previous registered callbacks for chat messages
@@ -1123,10 +1152,28 @@ $(() => {
 				}
 			}
 
-			if(options.customEmotes && 
+			let chatFromCurrentChannel = true;
+			let chatTabs = $('b-channel-chat-tabs');
+			if(chatTabs != null && chatTabs.length > 0) {
+				let selectedTab = chatTabs.find('.selected');
+				if(selectedTab != null && selectedTab.length > 0) {
+					let chatChannelName = selectedTab.text().trim();
+					chatFromCurrentChannel = chatChannelName === cache.currentStreamerName;
+				}
+			}
+
+			let showChannelEmotes = options.customEmotes &&
+				options.channelEmotes && 
 				cache.currentStreamerEmotes != null && 
 				cache.currentStreamerEmotes.emotes != null &&
-				chatFromCurrentChannel) {
+				chatFromCurrentChannel;
+
+			let showGlobalEmotes = 	options.customEmotes &&
+				options.globalEmotes && 
+				cache.globalEmotes != null && 
+				cache.globalEmotes.emotes != null;
+
+			if(showChannelEmotes || showGlobalEmotes) {
 
 				let foundEmote = false;
 				messageContainer
@@ -1143,24 +1190,31 @@ $(() => {
 						let text = component.text().trim();
 						
 						// loop through all emotes
-						let channelEmotes = Object.values(cache.currentStreamerEmotes.emotes);
-						let globalEmotes = Object.values(cache.globalEmotes.emotes);
+						let channelEmotes,
+							globalEmotes;
+							
+						let allEmoteNames = [];
 
-						let channelEmoteNames = channelEmotes.map(e => e.name.toLowerCase()),
-							globalEmoteNames = globalEmotes.map(e => e.name.toLowerCase());
-						
-						
-						//concat channel and global emote names, remove dupes
-						let poipes = [...new Set(channelEmoteNames.concat(globalEmoteNames))];
+						if(showChannelEmotes) {
+							channelEmotes = Object.values(cache.currentStreamerEmotes.emotes);
+							allEmoteNames = allEmoteNames.concat(channelEmotes.map(e => e.name.toLowerCase()));
+						}
+
+						if(showGlobalEmotes) {
+							globalEmotes = Object.values(cache.globalEmotes.emotes);
+							allEmoteNames = allEmoteNames.concat(globalEmotes.map(e => e.name.toLowerCase()));
+						}
+
+						//remove dupes
+						allEmoteNames = [...new Set(allEmoteNames)];
 
 						//build emote name group end result will look like: "emoteName1|emoteName2|emoteName3"
 						let emoteNameRegexGroup = '';
-						for(let emote of poipes) {
+						for(let emote of allEmoteNames) {
 							if(emoteNameRegexGroup.length > 0) {
 								emoteNameRegexGroup += '|';
-							}
-							
-							emoteNameRegexGroup += escapeRegExp(emote.name);
+							}							
+							emoteNameRegexGroup += escapeRegExp(emote);
 						}
 
 						// emote name regex
@@ -1171,22 +1225,34 @@ $(() => {
 							log('found emote match: ' + match);
 							
 							// search for channel emote first
-							let emote = channelEmotes.find(e => e.name.toLowerCase() === match.toLowerCase());
+							let emote;
+							if(channelEmotes) {
+								emote = channelEmotes.find(e => e.name.toLowerCase() === match.toLowerCase());
+							}
+							
 
-							//if we didnt find anything, search global
-							if(emote == null) {
+							//if we didnt find anything, search global if enabled
+							let isGlobal = false;
+							if(emote == null && globalEmotes) {
 								emote = globalEmotes.find(e => e.name.toLowerCase() === match.toLowerCase());
+								isGlobal = true;
 							}
 
 							if(emote) {
 								foundEmote = true;
 
-								let url = `https://crowbartools.com/user-content/emotes/live/${cache.currentStreamerId}/${escapeHTML(emote.filename)}`;
+								let url;
+								if(isGlobal) {
+									url = `https://crowbartools.com/user-content/emotes/global/${escapeHTML(emote.filename)}`;
+								} else {
+									url = `https://crowbartools.com/user-content/emotes/live/${cache.currentStreamerId}/${escapeHTML(emote.filename)}`;
+								}								
 
 								let imgTag =`
 									<span class="elixr-custom-emote me-tooltip" title="Mixr Elixr: Custom emote '${escapeHTML(emote.name)}'" style="display: inline-block;">
 										<img src="${url}">
 									</span>`;
+
 								return imgTag;
 							} else {
 								return match;
@@ -1197,20 +1263,27 @@ $(() => {
 							// update component html with text containing img tags
 							component.html(text.trim());
 
+							component.find(".elixr-custom-emote")
+								.children("img")
+								.on("load", function() {
+									log("ONLOAD CALLED!");
+									let username = messageContainer.find('[class*=\'Username\']');
+									if(username != null && username.length > 0) {
+										let usernameTop = username.position().top;
+
+										let avatar = messageContainer.find('[class*=\'ChatAvatar\']');
+										if(usernameTop > 6 && avatar != null && avatar.length > 0) {
+											avatar.css('top', (usernameTop - 3) + 'px');
+										}
+									}
+								});
+
 							// tag this component so we dont attempt to look for emotes again
 							component.addClass('me-custom-emote');
 						}
 					});
 
-				let username = messageContainer.find('[class*=\'Username\']');
-				if(username != null && username.length > 0) {
-					let usernameTop = username.position().top;
-
-					let avatar = messageContainer.find('[class*=\'ChatAvatar\']');
-					if(usernameTop > 6 && avatar != null && avatar.length > 0) {
-						avatar.css('top', (usernameTop - 3) + 'px');
-					}
-				}
+				
 			}
 			
 			// highlight keywords
@@ -1577,7 +1650,7 @@ $(() => {
 	function getSettings() {
 		return new Promise((resolve) => {
 			chrome.storage.sync.get({
-				'streamerPageOptions': null,
+				'streamerPageOptions': { channelEmotes: true, globalEmotes: true },
 				'homePageOptions': { pinSearchToTop: true },
 				'generalOptions': { highlightFavorites: true }
 			}, (options) => {
