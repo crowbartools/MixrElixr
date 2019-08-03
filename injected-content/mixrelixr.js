@@ -1129,8 +1129,13 @@ $(() => {
 			// Gives chat avatar a class for easier targeting.
 			messageContainer.find('[class*=\'ChatAvatar\']').addClass('chat-avatar');
 
-			// Gives badges a calss for easier targeting.
-			messageContainer.find('[class*=\'badge\']').addClass('chat-badge');
+			// Gives badges a class for easier targeting.
+			messageContainer.find('span[class*=\'badge\']').each(function( index ) {
+				// Check background image url for "fan-progression".
+				if($(this).css('background').indexOf('fan-progression')){
+					$(this).addClass('chat-progression');
+				}
+			});
 
 			// Gives chat avatar a class for easier targeting.
 			messageContainer.find('[class*=\'MessageContent\']').addClass('message-content');
@@ -1303,7 +1308,7 @@ $(() => {
 
 			// Hide channel progression.
 			if(options.hideChannelProgression){
-				$('.chat-badge').remove();
+				$('.chat-progression').remove();
 			}
 			
 			// highlight keywords
