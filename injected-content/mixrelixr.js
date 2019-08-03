@@ -1301,6 +1301,7 @@ $(() => {
 				$('.message-content').css('margin-left', '.5em');
 			}
 
+			// Hide channel progression.
 			if(options.hideChannelProgression){
 				$('.chat-badge').remove();
 			}
