@@ -1277,10 +1277,9 @@ $(() => {
 							// update component html with text containing img tags
 							component.html(text.trim());
 
-							component.find(".elixr-custom-emote")
-								.children("img")
-								.on("load", function() {
-									log("ONLOAD CALLED!");
+							component.find('.elixr-custom-emote')
+								.children('img')
+								.on('load', function() {
 									let username = messageContainer.find('[class*=\'Username\']');
 									if(username != null && username.length > 0) {
 										let usernameTop = username.position().top;
@@ -1302,13 +1301,18 @@ $(() => {
 
 			// Hide chat avatars and reposition chat.
 			if(options.hideChatAvatars){
-				$('.chat-avatar').remove();
+				$('.chat-avatar').hide();
 				$('.message-content').css('margin-left', '.5em');
+			} else {
+				$('.chat-avatar').show();
+				$('.message-content').css('margin-left', '36px');
 			}
 
 			// Hide channel progression.
 			if(options.hideChannelProgression){
-				$('.chat-progression').remove();
+				$('.chat-progression').hide();
+			} else {
+				$('.chat-progression').show();
 			}
 			
 			// highlight keywords
