@@ -296,9 +296,32 @@ $(() => {
 		});
 	}
 
+	function cacheGlobalElixrEmotes(){
+		return new Promise(resolve => {
+			// Gets user emotes if there are any, and caches the results.
+			log('Looking for global emotes...');
+			if(cache.globalEmotes != null) {
+				log('Found cached global emotes.');
+				resolve();
+				return;
+			}
+
+			var ts = new Date().getTime();
+			var rootUrl = `https://crowbartools.com/user-content/emotes/global/emotes.json?cache=${ts}`;
+			$.getJSON( rootUrl, function(data) {
+				log('Global emotes retrieved.');
+				cache.globalEmotes = data[0];
+				resolve();
+			}).fail(function() {
+				log('No global emotes were found!');
+				cache.globalEmotes = null;
+				resolve();
+			});	
+		});
+	}
+
 	function cacheCustomElixrEmotes(channelId){
 		return new Promise(resolve => {
-
 			if(channelId == null){
 				log('Undefined channel id passed to custom emote cacher.');
 				resolve();
@@ -341,6 +364,7 @@ $(() => {
 						cache.currentStreamerId = data.id;
 						log('Got channel id');
 
+						cacheGlobalElixrEmotes();
 						cacheCustomElixrEmotes(data.id);
 
 						resolve(data.id);
@@ -398,6 +422,7 @@ $(() => {
 
 					cache.currentStreamerId = data.id;
 					
+					cacheGlobalElixrEmotes();
 					cacheCustomElixrEmotes(data.id);
 						
 					resolve(data.token);
@@ -905,6 +930,11 @@ $(() => {
 			await cacheCustomElixrEmotes(cache.currentStreamerId);
 		}
 
+		if(options.globalEmotes){
+			// If global emotes are enabled.
+			await cacheGlobalElixrEmotes();
+		}
+
 		try {
 			cache.userIsMod = await userIsModInCurrentChannel();
 			log(`User is mod: ${cache.userIsMod}`);
@@ -1113,11 +1143,19 @@ $(() => {
 						let text = component.text().trim();
 						
 						// loop through all emotes
-						let emotes = Object.values(cache.currentStreamerEmotes.emotes);
+						let channelEmotes = Object.values(cache.currentStreamerEmotes.emotes);
+						let globalEmotes = Object.values(cache.globalEmotes.emotes);
+
+						let channelEmoteNames = channelEmotes.map(e => e.name.toLowerCase()),
+							globalEmoteNames = globalEmotes.map(e => e.name.toLowerCase());
+						
+						
+						//concat channel and global emote names, remove dupes
+						let poipes = [...new Set(channelEmoteNames.concat(globalEmoteNames))];
 
 						//build emote name group end result will look like: "emoteName1|emoteName2|emoteName3"
 						let emoteNameRegexGroup = '';
-						for(let emote of emotes) {
+						for(let emote of poipes) {
 							if(emoteNameRegexGroup.length > 0) {
 								emoteNameRegexGroup += '|';
 							}
@@ -1132,8 +1170,13 @@ $(() => {
 						text = text.replace(emoteNameRegex, match => {
 							log('found emote match: ' + match);
 							
-							// find the emote based on the match
-							let emote = emotes.find(e => e.name.toLowerCase() === match.toLowerCase());
+							// search for channel emote first
+							let emote = channelEmotes.find(e => e.name.toLowerCase() === match.toLowerCase());
+
+							//if we didnt find anything, search global
+							if(emote == null) {
+								emote = globalEmotes.find(e => e.name.toLowerCase() === match.toLowerCase());
+							}
 
 							if(emote) {
 								foundEmote = true;

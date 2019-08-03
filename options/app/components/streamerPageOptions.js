@@ -22,6 +22,7 @@ Vue.component('streamer-page-options', {
 				<span class="setting-subcategory">Chat</span>
 				<checkbox-toggle :value.sync="timestampAllMessages" @changed="saveSettings()" label="Timestamp All Messages" tooltip="Please note that timestamps will only be added to new messages as there is no way for us to tell when previous messages were sent."></checkbox-toggle>
 				<checkbox-toggle :value.sync="mentionChatBGColor" @changed="saveSettings()" label="Highlight When Mentioned" tooltip="Apply a special background behind messages when you are mentioned."></checkbox-toggle>
+				<global-emotes-toggle :value.sync="globalEmotes" @changed="saveSettings()"></global-emotes-toggle>
 				<custom-emotes-toggle :value.sync="customEmotes" @changed="saveSettings()"></custom-emotes-toggle>
 				<checkbox-toggle :value.sync="useCustomFontSize" @changed="saveSettings()" label="Use Custom Text Size" tooltip="Allows you to define a custom font size and line height."></checkbox-toggle>
 				<b-collapse v-model="useCustomFontSize" id="useCustomFontSize">
