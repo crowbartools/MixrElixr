@@ -30,6 +30,8 @@ Vue.component('streamer-page-options', {
 				<checkbox-toggle :value.sync="timestampAllMessages" @changed="saveSettings()" label="Timestamp All Messages" tooltip="Please note that timestamps will only be added to new messages as there is no way for us to tell when previous messages were sent."></checkbox-toggle>
 				<checkbox-toggle :value.sync="mentionChatBGColor" @changed="saveSettings()" label="Highlight When Mentioned" tooltip="Apply a special background behind messages when you are mentioned."></checkbox-toggle>			
 				<checkbox-toggle :value.sync="useCustomFontSize" @changed="saveSettings()" label="Use Custom Text Size" tooltip="Allows you to define a custom font size and line height."></checkbox-toggle>
+				<checkbox-toggle :value.sync="hideChatAvatars" @changed="saveSettings()" label="Hide Chat Avatars"></checkbox-toggle>
+				<checkbox-toggle :value.sync="hideChannelProgression" @changed="saveSettings()" label="Hide Channel Progression"></checkbox-toggle>
 				<b-collapse v-model="useCustomFontSize" id="useCustomFontSize">
 					<div style="padding: 0px 0 15px 20px;">
 						<div>Text Size<option-tooltip name="textSize" title="The size of the text."></option-tooltip></div>

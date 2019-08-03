@@ -1126,6 +1126,15 @@ $(() => {
 			// Give chat messages a chat message class for easier targeting.
 			messageContainer.addClass('chat-message');
 
+			// Gives chat avatar a class for easier targeting.
+			messageContainer.find('[class*=\'ChatAvatar\']').addClass('chat-avatar');
+
+			// Gives badges a calss for easier targeting.
+			messageContainer.find('[class*=\'badge\']').addClass('chat-badge');
+
+			// Gives chat avatar a class for easier targeting.
+			messageContainer.find('[class*=\'MessageContent\']').addClass('message-content');
+
 			var messageAuthor = messageContainer.find('[class*=\'username\']')
 				.text()
 				.trim()
@@ -1284,6 +1293,16 @@ $(() => {
 					});
 
 				
+			}
+
+			// Hide chat avatars and reposition chat.
+			if(options.hideChatAvatars){
+				$('.chat-avatar').remove();
+				$('.message-content').css('margin-left', '.5em');
+			}
+
+			if(options.hideChannelProgression){
+				$('.chat-badge').remove();
 			}
 			
 			// highlight keywords

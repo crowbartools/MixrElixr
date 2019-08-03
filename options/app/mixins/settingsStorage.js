@@ -50,6 +50,8 @@ settingsStorage = {
 						customEmotes: false,
 						globalEmotes: true,
 						channelEmotes: true,
+						hideChatAvatars: false,
+						hideChannelProgression: false,
 						hideDeleted: false,
 						timestampAllMessages: false,
 						showImagesInline: false,
