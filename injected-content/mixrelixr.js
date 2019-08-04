@@ -1780,15 +1780,15 @@ $(() => {
 
 		url = new URL(url);
 
-		// Split hostname by period so we get something like
-		// Helps with all of the variations from different domains
-		// ['i', 'imgur', 'com']
-		urlHostArray = url.hostname.split('.');
-
 		// Enforce https
 		if(url.protocol !== "https:"){
 			return false;
 		}
+
+		// Split hostname by period so we get something like
+		// Helps with all of the variations from different domains
+		// ['i', 'imgur', 'com']
+		urlHostArray = url.hostname.split('.');
 
 		// Valid domain list.
 		var validDomains = [
