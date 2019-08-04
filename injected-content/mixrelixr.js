@@ -1052,8 +1052,9 @@ $(() => {
 						for(let emote of emotes) {
 							let url = `${baseUrl}/${escapeHTML(emote.filename)}`;
 							let name = escapeHTML(emote.name);
+							let sizeClass = mapEmoteSizeToClass(emote.maxSize);
 							emoteList.append(`
-								<span class="elixr-custom-emote me-tooltip me-emote-preview" title="${name}" emote-name="${name}" style="display: inline-block;">
+								<span class="elixr-custom-emote ${sizeClass} me-tooltip me-emote-preview" title="${name}" emote-name="${name}" style="display: inline-block;">
 									<img src="${url}">
 								</span>`
 							);
@@ -1260,10 +1261,12 @@ $(() => {
 									url = `https://crowbartools.com/user-content/emotes/global/${escapeHTML(emote.filename)}`;
 								} else {
 									url = `https://crowbartools.com/user-content/emotes/live/${cache.currentStreamerId}/${escapeHTML(emote.filename)}`;
-								}								
+								}
+								
+								let sizeClass = mapEmoteSizeToClass(emote.maxSize);
 
 								let imgTag =`
-									<span class="elixr-custom-emote me-tooltip" title="Mixr Elixr: Custom emote '${escapeHTML(emote.name)}'" style="display: inline-block;">
+									<span class="elixr-custom-emote ${sizeClass} me-tooltip" title="Mixr Elixr: Custom emote '${escapeHTML(emote.name)}'" style="display: inline-block;">
 										<img src="${url}">
 									</span>`;
 
@@ -1305,7 +1308,6 @@ $(() => {
 				$('.message-content').css('margin-left', '.5em');
 			} else {
 				$('.chat-avatar').show();
-				$('.message-content').css('margin-left', '36px');
 			}
 
 			// Hide channel progression.
@@ -2005,6 +2007,18 @@ $(() => {
 			}
 		}
 	});
+
+	function mapEmoteSizeToClass(size) {
+		switch(size) {
+		case 24: 
+			return 'twentyfour';
+		case 30:
+			return 'thirty';
+		case 50:
+		default:
+			return 'fifty';
+		}
+	}
 
 	function getLastChangeLog() {
 		return new Promise((resolve) => {

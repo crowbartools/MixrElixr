@@ -22,12 +22,26 @@
  
 .elixr-custom-emote {
     vertical-align: bottom;
+    margin: 0 5px;
 }
 
-.elixr-custom-emote img{
+.elixr-custom-emote img {
     vertical-align: bottom;
+}
+
+.elixr-custom-emote.fifty img {
     max-width:50px;
     max-height:50px;
+}
+
+.elixr-custom-emote.thirty img {
+    max-width:30px;
+    max-height:30px;
+}
+
+.elixr-custom-emote.twentyfour img {
+    max-width:24px;
+    max-height:24px;
 }
 
 .elixrEmoteGroupHeader {
