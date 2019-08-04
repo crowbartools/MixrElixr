@@ -1772,7 +1772,50 @@ $(() => {
 		}
 	}
 
-	var urlIsAnImage = function(uri) {
+	function checkValidDomain(url){
+		if(typeof URL !== "function"){
+			// url checks not supported in this browser
+			return false;
+		}
+
+		url = new URL(url);
+
+		// Split hostname by period so we get something like
+		// Helps with all of the variations from different domains
+		// ['i', 'imgur', 'com']
+		urlHostArray = url.hostname.split('.');
+
+		// Enforce https
+		if(url.protocol !== "https:"){
+			return false;
+		}
+
+		// Valid domain list.
+		var validDomains = [
+			"imgur",
+			"instagram",
+			"giphy",
+			"tenor",
+			"flickr",
+			"photobucket",
+			"deviantart",
+		]
+
+		// Search hostname array against valid domains.
+		var found = urlHostArray.some(r=> validDomains.includes(r));
+		if(found){
+			return true;
+		}
+
+		return false;
+	}
+
+    var urlIsAnImage = function(uri) {
+		var validDomain = checkValidDomain(uri);
+		if(validDomain === false){
+			return false;
+		}
+
 		//make sure we remove any nasty GET params
 		uri = uri.split('?')[0];
 		//moving on now
