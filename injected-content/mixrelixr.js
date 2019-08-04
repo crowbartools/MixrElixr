@@ -1004,13 +1004,13 @@ $(() => {
 			}
 
 			let showChannelEmotes = options.customEmotes &&
-				options.channelEmotes && 
+				options.channelEmotes !== false &&  
 				cache.currentStreamerEmotes != null && 
 				cache.currentStreamerEmotes.emotes != null &&
 				chatFromCurrentChannel;
 
 			let showGlobalEmotes = 	options.customEmotes &&
-				options.globalEmotes && 
+				options.globalEmotes !== false && 
 				cache.globalEmotes != null && 
 				cache.globalEmotes.emotes != null;
 
@@ -1178,13 +1178,13 @@ $(() => {
 			}
 
 			let showChannelEmotes = options.customEmotes &&
-				options.channelEmotes && 
+				options.channelEmotes !== false &&  
 				cache.currentStreamerEmotes != null && 
 				cache.currentStreamerEmotes.emotes != null &&
 				chatFromCurrentChannel;
 
 			let showGlobalEmotes = 	options.customEmotes &&
-				options.globalEmotes && 
+				options.globalEmotes !== false &&
 				cache.globalEmotes != null && 
 				cache.globalEmotes.emotes != null;
 
