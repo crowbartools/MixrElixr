@@ -1212,12 +1212,12 @@ $(() => {
 
 						if(showChannelEmotes) {
 							channelEmotes = Object.values(cache.currentStreamerEmotes.emotes);
-							allEmoteNames = allEmoteNames.concat(channelEmotes.map(e => e.name.toLowerCase()));
+							allEmoteNames = allEmoteNames.concat(channelEmotes.map(e => e.name));
 						}
 
 						if(showGlobalEmotes) {
 							globalEmotes = Object.values(cache.globalEmotes.emotes);
-							allEmoteNames = allEmoteNames.concat(globalEmotes.map(e => e.name.toLowerCase()));
+							allEmoteNames = allEmoteNames.concat(globalEmotes.map(e => e.name));
 						}
 
 						//remove dupes
@@ -1233,7 +1233,7 @@ $(() => {
 						}
 
 						// emote name regex
-						let emoteNameRegex = new RegExp(`(?<=^|\\s)(${emoteNameRegexGroup})(?=\\s|$)`, 'igm');
+						let emoteNameRegex = new RegExp(`(?<=^|\\s)(${emoteNameRegexGroup})(?=\\s|$)`, 'gm');
 						
 						// replace emote names with img tags	
 						text = text.replace(emoteNameRegex, match => {
@@ -1242,14 +1242,14 @@ $(() => {
 							// search for channel emote first
 							let emote;
 							if(channelEmotes) {
-								emote = channelEmotes.find(e => e.name.toLowerCase() === match.toLowerCase());
+								emote = channelEmotes.find(e => e.name === match);
 							}
 							
 
 							//if we didnt find anything, search global if enabled
 							let isGlobal = false;
 							if(emote == null && globalEmotes) {
-								emote = globalEmotes.find(e => e.name.toLowerCase() === match.toLowerCase());
+								emote = globalEmotes.find(e => e.name === match);
 								isGlobal = true;
 							}
 
