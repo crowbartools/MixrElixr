@@ -215,8 +215,12 @@ function updateBadge(onlineCount, favoriteOnline) {
 	chrome.browserAction.setBadgeBackgroundColor({ color: color});
 }
 
-// array of user ids for users that were live on the previous run
-let currentlyLiveCache = null;
+// cache of user ids
+let currentlyLiveCache = new TTLCache({
+	ttl: 60000 * 30 // 30 mins
+});
+
+let firstRun = true;
 async function run() {
 
 	console.log('Running online check...');
@@ -231,16 +235,14 @@ async function run() {
 
 	console.log(`There are ${follows.length} friend(s) online.`);
     
-	// will be null on our first run
-	if(currentlyLiveCache != null) {
-
+	if(!firstRun) {
 		console.log('Checking if any have gone live since our last check...');
 
 		// loop through all followed channels
 		for(let followedUser of follows) {
 
 			// see if this channel has gone live since we last checked
-			if(!currentlyLiveCache.includes(followedUser.channelId)) {
+			if(currentlyLiveCache.get(followedUser.channelId) == null) {
 
 				console.log(`It looks like ${followedUser.channelName} has just gone live.`);
 
@@ -253,6 +255,8 @@ async function run() {
 				}
 			}
 		}
+	} else {
+		firstRun = false;
 	}
 
 	// update badge
@@ -262,10 +266,10 @@ async function run() {
 		updateBadge(follows.length, favoriteIsOnline);
 	}
 
-	currentlyLiveCache = follows.map(f => f.channelId);
+	//update our cache
+	follows.forEach(f => currentlyLiveCache.put(f.channelId, true));
 	console.log('... Completed currently live check.');
 }
-
 
 console.log('Starting online check interval...');
 // do initial run

@@ -40,6 +40,7 @@
     ],
     "background": {
         "scripts": [
+            "/background/cache.js",
             "/resources/js/moment.min.js",
             "/background/background.js"
         ],
