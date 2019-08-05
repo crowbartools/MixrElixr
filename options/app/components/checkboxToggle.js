@@ -1,15 +1,17 @@
 Vue.component('checkbox-toggle', {
 	template: `
-	<div>
+	<div style="display: flex;align-items: center;">
         <label class="control toggle" :class="{ checked: value }">
             <input type="checkbox"  v-model.lazy="value" @change="valueUpdated">
             <div class="toggler chrome">
                 <div></div>
-            </div>
-            <span class="option-title">
-                {{label}} <option-tooltip v-if="tooltip != null" :name="tooltipName" :title="tooltip" :type="tooltipType"></option-tooltip>
-            </span>
-        </label>
+			</div>
+			<span class="option-title">
+				{{label}} 
+			</span>		
+		</label>
+		<option-tooltip v-if="tooltip != null" :name="tooltipName" :title="tooltip" :type="tooltipType"></option-tooltip>
+		<slot></slot>
 	</div>	
 	`,
 	props: ['value', 'label', 'tooltip', 'tooltipType'],

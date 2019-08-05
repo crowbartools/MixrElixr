@@ -19,10 +19,42 @@
     opacity: 0.6;
     font-size:11px;
 }
+ 
+.elixr-custom-emote {
+    vertical-align: bottom;
+    margin: 0 5px;
+}
 
-.elixr-custom-emote img{
+.elixr-custom-emote img {
+    vertical-align: bottom;
+}
+
+.elixr-custom-emote.fifty img {
     max-width:50px;
     max-height:50px;
+}
+
+.elixr-custom-emote.thirty img {
+    max-width:30px;
+    max-height:30px;
+}
+
+.elixr-custom-emote.twentyfour img {
+    max-width:24px;
+    max-height:24px;
+}
+
+.elixrEmoteGroupHeader {
+    margin: 8px 0 5px 0;
+    font-size: .9em;
+    color: #8f94ae;
+    font-weight: bold;             
+}
+
+.me-emote-preview {
+    cursor: pointer;
+    margin-right: 5px;
+    margin-bottom: 5px; 
 }
 
 /** Separated Chat Lines **/
@@ -311,6 +343,33 @@ b-browse-framework > header.searchPinned {
     display:flex;
     align-items: center;
     justify-content: center;
+}
+.jquery-modal.blocker {
+    z-index: 99999999;
+}
+
+.mixr-modal {
+    background: #29374A;
+}
+
+.changelog-header {
+    margin-top: 30px;
+    margin-bottom: 13px;
+    font-family: "Industrywf",sans-serif;
+    text-transform: uppercase;
+    color: #d2d2d2;
+    font-size: 19px;
+}
+
+.changelog-feature {
+    font-weight: bold;
+    font-size: 1.25em;
+    font-family: "Industrywf",sans-serif;
+}
+
+.changelog-feature-description {
+    margin-bottom: 18px;
+    opacity: 0.8;
 }
 
 /*

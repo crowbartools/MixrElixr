@@ -6,6 +6,8 @@ const FOLLOWS_URL = `https://mixer.com/api/v1/users/{userId}/follows?fields=id,t
 const TOTAL_COUNT_HEADER = 'x-total-count';
 const FOLLOW_DATE_URL = 'https://mixer.com/api/v1/channels/{channelId}/follow?where=id:eq:{currentUserId}';
 
+let sentNotifications = [];
+
 async function getCurrentUserId() {
 	try {
 		let response = await fetch(CURRENT_USER_URL, {
@@ -31,8 +33,6 @@ async function getOnlineFollows(userId, page = 0, list) {
 	if(list == null) {
 		list = [];
 	}
-
-	//debugger; // eslint-disable-line no-debugger
     
 	if(userId == null) {
 		console.log('Unable to get follows, current user id is null.');
@@ -166,7 +166,7 @@ function showNotification(followedUser, options) {
 			body: text, 
 			icon: icon,
 			badge: icon,
-			tag: 'Mixer',
+			tag: followedUser.channelName,
 			image: image, 
 			silent: true 
 		});
@@ -182,13 +182,18 @@ function showNotification(followedUser, options) {
 		notification.onclick = function(event) {
 			// prevent the browser from focusing the Notification's tab
 			event.preventDefault(); 
-			window.open(`https://mixer.com/${followedUser.channelName}`, '_blank');
+			window.open(`https://mixer.com/${event.srcElement.tag}`, '_blank');
+			sentNotifications = sentNotifications.filter(n => n !== event.srcElement);
 		};
 
-		setTimeout((noti) => {
-			console.log('Closed the notification.');
-			noti.close();
-		}, 20000, notification);
+		notification.onclose = function(event) {
+			sentNotifications = sentNotifications.filter(n => n !== event.srcElement);
+		};
+
+		setTimeout(notification.close.bind(notification), 20000);
+
+		sentNotifications.push(notification);
+
 	} else {
 		console.log('User doesn\'t have notifications enabled for this follow type. Not showing notifications.');
 	}
@@ -210,8 +215,12 @@ function updateBadge(onlineCount, favoriteOnline) {
 	chrome.browserAction.setBadgeBackgroundColor({ color: color});
 }
 
-// array of user ids for users that were live on the previous run
-let currentlyLiveCache = null;
+// cache of user ids
+let currentlyLiveCache = new TTLCache({
+	ttl: 60000 * 30 // 30 mins
+});
+
+let firstRun = true;
 async function run() {
 
 	console.log('Running online check...');
@@ -226,16 +235,14 @@ async function run() {
 
 	console.log(`There are ${follows.length} friend(s) online.`);
     
-	// will be null on our first run
-	if(currentlyLiveCache != null) {
-
+	if(!firstRun) {
 		console.log('Checking if any have gone live since our last check...');
 
 		// loop through all followed channels
 		for(let followedUser of follows) {
 
 			// see if this channel has gone live since we last checked
-			if(!currentlyLiveCache.includes(followedUser.channelId)) {
+			if(currentlyLiveCache.get(followedUser.channelId) == null) {
 
 				console.log(`It looks like ${followedUser.channelName} has just gone live.`);
 
@@ -246,9 +253,10 @@ async function run() {
 					console.log('We aren\'t a fresh follower, trigger notification.');
 					showNotification(followedUser, options);
 				}
-
 			}
 		}
+	} else {
+		firstRun = false;
 	}
 
 	// update badge
@@ -258,10 +266,10 @@ async function run() {
 		updateBadge(follows.length, favoriteIsOnline);
 	}
 
-	currentlyLiveCache = follows.map(f => f.channelId);
+	//update our cache
+	follows.forEach(f => currentlyLiveCache.put(f.channelId, true));
 	console.log('... Completed currently live check.');
 }
-
 
 console.log('Starting online check interval...');
 // do initial run

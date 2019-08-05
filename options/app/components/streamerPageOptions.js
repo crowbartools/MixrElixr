@@ -19,11 +19,19 @@ Vue.component('streamer-page-options', {
                 <checkbox-toggle :value.sync="autoMute" @changed="saveSettings()" label="Auto Mute Streams"></checkbox-toggle>
                 <checkbox-toggle :value.sync="autoTheater" @changed="saveSettings()" label="Auto Theater Mode" tooltip="Automatically enters Theater Mode when loading a channel."></checkbox-toggle>
 
+				<span class="setting-subcategory">Emotes</span>
+				<custom-emotes-toggle :value.sync="customEmotes" @changed="masterEmotesSwitchToggled()"></custom-emotes-toggle>
+				<div v-show="customEmotes" class="option-wrapper suboption">
+					<checkbox-toggle :value.sync="globalEmotes" label="Enable Global Emotes" @changed="saveSettings()" tooltip="Global emotes are a set of emotes curated by the MixrElixr team that are available in all channels."></checkbox-toggle>
+					<checkbox-toggle :value.sync="channelEmotes" label="Enable Channel Emotes" @changed="saveSettings()" tooltip="Channel emotes are set by the channel owner and reviewed by the MixrElixr team. They are only available in the given channel."></checkbox-toggle>
+				</div>
+				
 				<span class="setting-subcategory">Chat</span>
 				<checkbox-toggle :value.sync="timestampAllMessages" @changed="saveSettings()" label="Timestamp All Messages" tooltip="Please note that timestamps will only be added to new messages as there is no way for us to tell when previous messages were sent."></checkbox-toggle>
-				<checkbox-toggle :value.sync="mentionChatBGColor" @changed="saveSettings()" label="Highlight When Mentioned" tooltip="Apply a special background behind messages when you are mentioned."></checkbox-toggle>
-				<checkbox-toggle :value.sync="customEmotes" @changed="saveSettings()" label="Show Custom MixrElixr Emotes" tooltip="Allows you to see custom MixrElixr emotes that the streamer has set on the Crowbartools.com website."></checkbox-toggle>
+				<checkbox-toggle :value.sync="mentionChatBGColor" @changed="saveSettings()" label="Highlight When Mentioned" tooltip="Apply a special background behind messages when you are mentioned."></checkbox-toggle>			
 				<checkbox-toggle :value.sync="useCustomFontSize" @changed="saveSettings()" label="Use Custom Text Size" tooltip="Allows you to define a custom font size and line height."></checkbox-toggle>
+				<checkbox-toggle :value.sync="hideChatAvatars" @changed="saveSettings()" label="Hide Chat Avatars"></checkbox-toggle>
+				<checkbox-toggle :value.sync="hideChannelProgression" @changed="saveSettings()" label="Hide Channel Levels"></checkbox-toggle>
 				<b-collapse v-model="useCustomFontSize" id="useCustomFontSize">
 					<div style="padding: 0px 0 15px 20px;">
 						<div>Text Size<option-tooltip name="textSize" title="The size of the text."></option-tooltip></div>
@@ -144,6 +152,15 @@ Vue.component('streamer-page-options', {
 				app.overrides = streamerPageOptions.overrides;
 				app.overrideNames = app.getOverrideNames();
 			});
+		},
+		masterEmotesSwitchToggled: function() {
+			var app = this;
+			let emotesEnabled = app.customEmotes;
+			if(emotesEnabled) {
+				app.globalEmotes = true;
+				app.channelEmotes = true;
+			}
+			app.saveSettings();
 		},
 		getOverrideNames: function() {
 			return Object.keys(this.overrides);
