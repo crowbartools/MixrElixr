@@ -100,6 +100,10 @@ $(() => {
                 $('.stage').addClass('me-video-stage');
             });
 
+            waitForElementAvailablity("[class*=\'chatContainer\']").then(() => {
+                $("[class*=\'chatContainer\']").addClass('me-chat-container');
+            });
+
 			// get the streamers name, this also waits for the page to load
 			getStreamerName().then((channelName) => {
 				log('streamer page loaded...');
@@ -835,6 +839,8 @@ $(() => {
             $(".channel-info-container").show();
             $('.stage').addClass('me-video-stage');
 
+            $(".me-chat-container").removeClass("theaterMode");
+
 			//hacky way to toggle "position: relative" on and off to force the chat element to rerender with proper positioning
 			setTimeout(() => {
 				$('.chat').addClass('relative');
@@ -884,6 +890,7 @@ $(() => {
 			$('b-stage').addClass('bui-arContent addedBuiAr');
             $('.stage').addClass('aspect-16-9 theaterMode');
             $('.stage').removeClass('me-video-stage');
+            $(".me-chat-container").addClass("theaterMode");
             $(".channel-info-container").hide();
 		}
 	}

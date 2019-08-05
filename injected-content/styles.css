@@ -150,6 +150,10 @@ body.theaterMode {
     background: #0b0f15;
 }
 
+.me-chat-container.theaterMode {
+    background: #181b20;
+}
+
 b-desktop-header.theaterMode {
     opacity: 0!important;
     display: none;
