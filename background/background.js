@@ -186,10 +186,6 @@ function showNotification(followedUser, options) {
 			sentNotifications = sentNotifications.filter(n => n !== event.srcElement);
 		};
 
-		notification.onclose = function(event) {
-			sentNotifications = sentNotifications.filter(n => n !== event.srcElement);
-		};
-
 		setTimeout(notification.close.bind(notification), 20000);
 
 		sentNotifications.push(notification);
