@@ -133,6 +133,13 @@ b-channel-info-bar.theaterMode {
     max-height: 100% !important;
 }
 
+b-channel-page-wrapper .stage.aspect-16-9.me-video-stage, 
+b-channel-page-wrapper .stage.me-video-stage, 
+b-channel-page-wrapper .stage:not(.aspect-16-9).me-video-stage{
+    height: calc(100vh - 120px);
+    max-height: calc(100vh - 120px);
+}
+
 .chat.theaterMode {
     background: #161D29!important;
     top: 0px !important;

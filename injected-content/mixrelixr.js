@@ -461,7 +461,7 @@ $(() => {
 			return;
 		}
 
-		var options = settings.streamerPageOptions.global;
+        var options = settings.streamerPageOptions.global;
 
 		// override the options if there is streamer specific options available
 		var overrides = settings.streamerPageOptions.overrides;
@@ -473,7 +473,11 @@ $(() => {
 				options = overrides[key];
 			}
 			break;
-		}
+        }
+
+        waitForElementAvailablity(".stage").then(() => {
+            $('.stage').addClass('me-video-stage');
+        });
         
 		// Auto Close Costreams
 		if(options.autoCloseCostreams && initialPageLoad){
@@ -844,7 +848,7 @@ $(() => {
 			}, 1);
 
 			$('b-stage').addClass('bui-arContent addedBuiAr');
-			$('.stage').addClass('aspect-16-9 theaterMode');
+            $('.stage').addClass('aspect-16-9 theaterMode');
 		}
 	}
 
