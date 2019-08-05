@@ -94,15 +94,15 @@ $(() => {
 		//check if we are on a streamer page by looking for the name in the top right corner.
 		else if(channelBlock != null  && channelBlock.length > 0) {
 			log('detected streamer page...');
-            cache.currentPage = 'streamer';
+			cache.currentPage = 'streamer';
             
-            waitForElementAvailablity(".stage").then(() => {
-                $('.stage').addClass('me-video-stage');
-            });
+			waitForElementAvailablity('.stage').then(() => {
+				$('.stage').addClass('me-video-stage');
+			});
 
-            waitForElementAvailablity("[class*=\'chatContainer\']").then(() => {
-                $("[class*=\'chatContainer\']").addClass('me-chat-container');
-            });
+			waitForElementAvailablity('[class*=\'chatContainer\']').then(() => {
+				$('[class*=\'chatContainer\']').addClass('me-chat-container');
+			});
 
 			// get the streamers name, this also waits for the page to load
 			getStreamerName().then((channelName) => {
@@ -496,25 +496,25 @@ $(() => {
 		if(!settings.streamerPageOptions) {
 			log('No streamer page settings saved.');
 			return;
-        }
+		}
         
-        console.log(settings);
+		console.log(settings);
 
-        var options = settings.streamerPageOptions.global;
+		var options = settings.streamerPageOptions.global;
 
 		// override the options if there is streamer specific options available
-        var overrides = settings.streamerPageOptions.overrides;
-        if(overrides) {
-            var overrideKeys = Object.keys(overrides);
-            for(var i = 0; i < overrideKeys.length; i++) {
-                var key = overrideKeys[i];
-                if(key.toLowerCase() === streamerName.toLowerCase()) {
-                    log(`found override options for ${streamerName}`);
-                    options = overrides[key];
-                }
-                break;
-            }
-        }
+		var overrides = settings.streamerPageOptions.overrides;
+		if(overrides) {
+			var overrideKeys = Object.keys(overrides);
+			for(var i = 0; i < overrideKeys.length; i++) {
+				var key = overrideKeys[i];
+				if(key.toLowerCase() === streamerName.toLowerCase()) {
+					log(`found override options for ${streamerName}`);
+					options = overrides[key];
+				}
+				break;
+			}
+		}
         
 		// Auto Close Costreams
 		if(options.autoCloseCostreams && initialPageLoad){
@@ -835,11 +835,11 @@ $(() => {
 		var theaterElements = 
 			$('body,b-desktop-header,b-channel-info-bar,.profile-header,.profile-blocks, b-notifications,.channel-page,b-desktop-header,.chat,.stage.aspect-16-9');
 		if(theaterElements.hasClass('theaterMode')) {
-            theaterElements.removeClass('theaterMode');
-            $(".channel-info-container").show();
-            $('.stage').addClass('me-video-stage');
+			theaterElements.removeClass('theaterMode');
+			$('.channel-info-container').show();
+			$('.stage').addClass('me-video-stage');
 
-            $(".me-chat-container").removeClass("theaterMode");
+			$('.me-chat-container').removeClass('theaterMode');
 
 			//hacky way to toggle "position: relative" on and off to force the chat element to rerender with proper positioning
 			setTimeout(() => {
@@ -853,7 +853,7 @@ $(() => {
 			if(stage != null && stage.length > 0) {
 				stage.removeClass('addedBuiAr');
 				stage.removeClass('bui-arContent');
-                $('.stage').removeClass('aspect-16-9');              
+				$('.stage').removeClass('aspect-16-9');              
 			}
             
 			$.toast().reset('all');
@@ -888,10 +888,10 @@ $(() => {
 			}, 1);
 
 			$('b-stage').addClass('bui-arContent addedBuiAr');
-            $('.stage').addClass('aspect-16-9 theaterMode');
-            $('.stage').removeClass('me-video-stage');
-            $(".me-chat-container").addClass("theaterMode");
-            $(".channel-info-container").hide();
+			$('.stage').addClass('aspect-16-9 theaterMode');
+			$('.stage').removeClass('me-video-stage');
+			$('.me-chat-container').addClass('theaterMode');
+			$('.channel-info-container').hide();
 		}
 	}
 
@@ -1792,7 +1792,7 @@ $(() => {
 	}
 
 	function checkValidDomain(url){
-		if(typeof URL !== "function"){
+		if(typeof URL !== 'function'){
 			// url checks not supported in this browser
 			return false;
 		}
@@ -1800,7 +1800,7 @@ $(() => {
 		url = new URL(url);
 
 		// Enforce https
-		if(url.protocol !== "https:"){
+		if(url.protocol !== 'https:'){
 			return false;
 		}
 
@@ -1811,14 +1811,14 @@ $(() => {
 
 		// Valid domain list.
 		var validDomains = [
-			"imgur",
-			"instagram",
-			"giphy",
-			"tenor",
-			"flickr",
-			"photobucket",
-			"deviantart",
-		]
+			'imgur',
+			'instagram',
+			'giphy',
+			'tenor',
+			'flickr',
+			'photobucket',
+			'deviantart',
+		];
 
 		// Search hostname array against valid domains.
 		var found = urlHostArray.some(r=> validDomains.includes(r));
@@ -1829,7 +1829,7 @@ $(() => {
 		return false;
 	}
 
-    var urlIsAnImage = function(uri) {
+	var urlIsAnImage = function(uri) {
 		var validDomain = checkValidDomain(uri);
 		if(validDomain === false){
 			return false;
