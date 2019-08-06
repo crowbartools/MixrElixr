@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="popup.css">
+    <link type="text/css" rel="stylesheet" href="/resources/bootstrap/bootstrap.min.css"/>
+    <link type="text/css" rel="stylesheet" href="/resources/bootstrap/bootstrap-vue.css"/>
+    <link rel="stylesheet" href="/resources/font-awesome/css/font-awesome.min.css">	
+    <link rel="stylesheet" href="/resources/css/plugins/vue/vue-multiselect.min.css">
+    <link rel="stylesheet" href="/options/mixer-styles.css">		
+    <% if (NODE_ENV === 'development') { %>
+    <!-- Load some resources only in development environment -->
+    <% } %>
+  </head>
+  <body>
+    <div id="app">
+
+    </div>
+    <script src="/resources/js/lodash.js"></script>	
+		<script src="/resources/js/vue.min.js"></script>
+		<script src="/resources/js/polyfill.min.js"></script>
+		<script src="/resources/bootstrap/bootstrap-vue.js"></script>
+		<script src="/resources/js/plugins/vue/vue-multiselect.min.js"></script>
+		<script src="/resources/js/plugins/vue/vue-resource.js"></script>
+		<script src="/resources/js/plugins/vue/vue-slider-component.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>

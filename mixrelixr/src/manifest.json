@@ -1,0 +1,19 @@
+{
+  "name": "mixrelixr",
+  "description": "A browser extension that allows users to modify and improve their Mixer.com experience.",
+  "version": null,
+  "manifest_version": 2,
+  "icons": {
+    "48": "icons/icon_48.png",
+    "128": "icons/icon_128.png"
+  },
+  "browser_action": {
+    "default_title": "mixrelixr",
+    "default_popup": "popup/popup.html"
+  },
+  "background": {
+    "scripts": [
+      "background.js"
+    ]
+  }
+}
