@@ -1,7 +1,7 @@
 <template>
     <span>
         <i :id="name" class="fa e-tooltip" :class="iconType"></i>
-        <b-tooltip :target="name" :title="title" :placement="placement" :triggers="triggers" no-fade="true"></b-tooltip>
+        <b-tooltip :target="name" :title="title" :placement="placement" :triggers="triggers" :no-fade="true"></b-tooltip>
     </span>
 </template>
 

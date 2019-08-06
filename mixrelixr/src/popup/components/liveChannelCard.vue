@@ -13,7 +13,7 @@
                     <span class="favorite-btn" @click="addOrRemoveFavorite($event)" :id="friend.token + 'fav'">
                         <i class="fa" :class="favorite ? 'fa-star' : 'fa-star-o'" aria-hidden="true"></i>                     
                     </span>
-                    <b-tooltip :target="friend.token + 'fav'" :title="favorite ? 'Remove Favorite' : 'Add Favorite'" no-fade="true"></b-tooltip>
+                    <b-tooltip :target="friend.token + 'fav'" :title="favorite ? 'Remove Favorite' : 'Add Favorite'" :no-fade="true"></b-tooltip>
                     
                     <div class="viewersBadge">
                         <i class="fa fa-eye" aria-hidden="true" style="margin-right:5px;"></i>{{friend.viewersCurrent}} 
@@ -23,17 +23,17 @@
                 <div v-if="friend.interactive" class="interactive icon" :id="friend.token + 'interactive'">
                     <i  class="fa fa-gamepad" title="MixPlay"></i>                  
                 </div>
-                <b-tooltip :target="friend.token + 'interactive'" :title="'MixPlay Enabled'" no-fade="true"></b-tooltip>
+                <b-tooltip :target="friend.token + 'interactive'" :title="'MixPlay Enabled'" :no-fade="true"></b-tooltip>
 
                 <div v-if="friend.costreamId" class="costream icon" :id="friend.token + friend.costreamId">
                     <i class="fa fa-users" title="Costream"></i>
                 </div>
-                <b-tooltip :target="friend.token + friend.costreamId" :title="'In a Costream'" no-fade="true"></b-tooltip>
+                <b-tooltip :target="friend.token + friend.costreamId" :title="'In a Costream'" :no-fade="true"></b-tooltip>
 
                 <div :id="friend.token + friend.audience" class="audience icon" :class="{ eighteen: friend.audience === '18+' }">
                     <span>{{friend.audience}}</span>	
                 </div>
-                <b-tooltip :target="friend.token + friend.audience" :title="'Stream Audience'" no-fade="true"></b-tooltip>
+                <b-tooltip :target="friend.token + friend.audience" :title="'Stream Audience'" :no-fade="true"></b-tooltip>
             </div>
 
             <div aria-hidden="true" class="footer">

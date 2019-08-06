@@ -24,8 +24,41 @@
 
 <script>
 export default {
-  data() {
-    return {};
+  data: function() {
+      return {
+        activeTab: 'online',
+        navStuck: false
+    }
+  },
+  methods: {
+    updateActiveTab: function(tab) {
+      console.log('tab changed: ' + tab);
+      this.activeTab = tab;
+    },
+    addMoreFriendsCheck: function() {
+      // If we scroll 80% through our current friends, add some more.
+      if (this.activeTab === 'online') {
+        var obj = this.$el;
+        var percent = (obj.scrollHeight - obj.offsetHeight) * 0.8;
+        if (obj.scrollTop >= percent) {
+          console.log('SCROLLED!');
+          bus.$emit('friends-scrolled');
+        }
+      }
+    },
+  },
+  mounted: function() {
+    let $ = document.querySelector.bind(document);
+
+    let observer = new IntersectionObserver(entries => {
+      let entry = entries[0];
+
+      let stickyNav = $('.sticky');
+
+      stickyNav.classList.toggle('stuck', !entry.isIntersecting);
+    });
+
+    observer.observe($('.sentinel'));
   },
 };
 </script>

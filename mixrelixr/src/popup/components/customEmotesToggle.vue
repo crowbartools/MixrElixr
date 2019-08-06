@@ -14,7 +14,7 @@
 					body-text-variant="light"
 					footer-bg-variant="dark"
 					footer-text-variant="light"
-					ok-only="true"
+					:ok-only="true"
 					ok-title="Ok">
 				<h4 style="font-weight: 400;">What are Custom Emotes?</h4>
 				<p style="font-size: 15px;color: #e0e0e0;">Custom emotes are emotes uploaded to our website and are available to all viewers that have MixrElixr installed.</p>

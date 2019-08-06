@@ -7,12 +7,12 @@
             ref="teamModal"
             size="sm"
             title="The Team"
-            hide-header="true"
+            :hide-header="true"
             body-bg-variant="dark"
             body-text-variant="light"
             footer-bg-variant="dark"
             footer-text-variant="light"
-            ok-only="true"
+            :ok-only="true"
             @ok="hideModal">
                 <h5 class="modal-title">Contributors</h5>
                 <div class="teammember">ebiggz</div>

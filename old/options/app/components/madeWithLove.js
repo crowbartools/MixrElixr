@@ -13,7 +13,7 @@ Vue.component('made-with-love', {
                 body-text-variant="light"
                 footer-bg-variant="dark"
                 footer-text-variant="light"
-                ok-only="true"
+                :ok-only="true"
                 @ok="hideModal">
                     <h5 class="modal-title">Contributors</h5>
                     <div class="teammember">ebiggz</div>
