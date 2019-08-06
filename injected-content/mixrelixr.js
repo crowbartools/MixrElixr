@@ -26,7 +26,7 @@ $(() => {
 				} else {
 					log('Spinner is gone, the page should be loaded.');
 					//spinner is gone, lets party
-					setTimeout(()=> { resolve(); }, 100);
+					setTimeout(()=> { resolve(); }, 10);
 				}
 			}
 
@@ -34,7 +34,7 @@ $(() => {
 		});
 	}
 
-	function waitForElementAvailablity(selector, checkCount = 100) {
+	function waitForElementAvailablity(selector, checkCount = 30) {
 		return new Promise((resolve, reject)=>{
 			function doElementCheck(counter = 0) {
 
@@ -49,7 +49,7 @@ $(() => {
 
 				if(!elementExists) {
 					//spinner still exists, check again in a bit
-					setTimeout(()=> { doElementCheck(counter); }, 10);
+					setTimeout(()=> { doElementCheck(counter); }, 100);
 				} else {
 					log(`Element '${selector}' found!`);
 					resolve();
@@ -63,7 +63,7 @@ $(() => {
 	function applySiteWideChanges() {
 		if(settings.generalOptions.simplifiedTopBar !== false) {
 
-			waitForElementAvailablity('.language-selector').then(() => {
+		    waitForElementAvailablity('.language-selector').then(() => {
 
 				$('.language-selector').addClass('me-simplified-topbar');
 
@@ -79,10 +79,52 @@ $(() => {
 
 				$('b-embers-button').addClass('me-simplified-topbar');
 
-			});
+            });
 
-			
-			
+            waitForElementAvailablity('.logo').then(() => {
+
+				$('.logo').addClass('me-simplified-topbar');
+
+            });
+
+            waitForElementAvailablity("[routerlink='/browse/all']").then(() => {
+                $("[routerlink='/browse/all']").hide();
+            });
+
+            waitForElementAvailablity("[routerlink='/browse/games']").then(() => {
+                $("[routerlink='/browse/games']").hide();
+            });
+
+            waitForElementAvailablity("[routerlink='/browse/teams']").then(() => {
+                $("[routerlink='/browse/teams']").hide();
+            });
+
+            waitForElementAvailablity("[routerlink='/browse/following']").then(() => {
+
+                let browseDropdown = $(`
+                     <div class="me-dropdown">
+                         <button class="me-dropbtn">BROWSE</button>
+                         <div id="myDropdown" class="me-dropdown-content">
+                             <a href="/browse/all">${$("[routerlink='/browse/all']").text()}</a>
+                             <a href="/browse/games">${$("[routerlink='/browse/games']").text()}</a>
+                             <a href="/browse/teams">${$("[routerlink='/browse/teams']").text()}</a>
+                         </div>
+                     </div>
+                 `);
+ 
+                 browseDropdown.on("mouseenter", () => {
+                     document.getElementById("myDropdown").classList.toggle("me-dropdown-show");
+                 });
+ 
+                 browseDropdown.on("mouseleave", () => {
+                     document.getElementById("myDropdown").classList.toggle("me-dropdown-show");
+                 });
+ 
+                 $("[routerlink='/browse/following']").after(browseDropdown);
+
+                 searchbarPositionCheck();
+ 
+             });			
 		}
 	}
 
@@ -242,12 +284,12 @@ $(() => {
 			filterButton.addClass('me-pinned-search me-filterbtn');
 			filterPanel.addClass('me-filterspanel');
 			
-			searchBar.append(`
+			/*searchBar.append(`
 			<div class="elixr-badge-wrapper">
 				<div class="elixr-badge me-tooltip" title="MixrElixr: Pinned search">
 					<img style="height: 10px;width: 10px;transform: translate(1px, -1px);"src="https://raw.githubusercontent.com/crowbartools/MixrElixr/master/resources/images/elixr-light-16.png">
 				</div>
-			</div>`);
+			</div>`);*/
 		} else {
 			$('.me-pinned-search').css('top', '');
 			pageHeader.removeClass('searchPinned');
@@ -300,7 +342,7 @@ $(() => {
 		if(settings.homePageOptions && settings.homePageOptions.removeFeatured){
 			$('b-delve-featured-carousel, b-delve-games, b-delve-oom-channels').remove();
 		} else if ($('b-delve-featured-carousel, b-delve-games, b-delve-oom-channels').length === 0){
-			location.reload();
+			//location.reload();
 		}
 
 		initialPageLoad = false;

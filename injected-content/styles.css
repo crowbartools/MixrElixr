@@ -185,12 +185,55 @@ b-channel-page-wrapper .stage:not(.aspect-16-9).me-video-stage{
     position: relative !important;
 }
 
-
-/**      Current Issues w/ new mixer theaterMode 
-        -- Chat box goes away when theater mode is off (Uncomment lines 135 to 141 to see this bug)
-        -- transition times don't work with the new ui removals i've added  **/
-
 /* End Theater Mode */
+
+/* Dropdown */
+.me-dropbtn {
+    background-color: transparent;
+    color: #9fa4ae;
+    height: 60px;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .me-dropbtn:hover,
+  .me-dropdown:hover > .me-dropbtn {
+    background-color: #43526D;
+    color: white;
+  }
+  
+  .me-dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .me-dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #43526D;
+    min-width: 160px;
+    overflow: auto;
+    z-index: 1;
+  }
+  
+  .me-dropdown-content a {
+    color: #9fa4ae;
+    padding: 12px 16px;
+    height: 50px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    text-transform: uppercase;
+    font-family: "Industrywf",sans-serif !important;
+  }
+  
+  .me-dropdown a:hover {color:white;}
+
+  .me-dropdown-show {display: block;}
+
+  /* end dropdown */
 
 /** Favorite Highlights **/
 /** Favorite Highlights & Favorites UI **/
@@ -419,6 +462,21 @@ b-embers-button.me-simplified-topbar > div > div:hover {
 b-embers-button.me-simplified-topbar > div > div > div {
     display: none;
 }
+
+.logo.me-simplified-topbar {
+    margin: 0 0 0px 20px !important;
+    min-width: 0 !important;
+}
+
+.logo.me-simplified-topbar > .full {
+    display: none !important;
+}
+
+.logo.me-simplified-topbar > .merge {
+    display: block !important;
+}
+
+
 
 /*
 
