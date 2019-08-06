@@ -14,11 +14,6 @@
     "watch": "npm run build -- --watch",
     "watch:dev": "cross-env HMR=true npm run build:dev -- --watch"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "pretty-quick --staged"
-    }
-  },
   "dependencies": {
     "axios": "^0.19.0",
     "vue": "^2.6.10",

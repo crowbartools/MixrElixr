@@ -6,64 +6,61 @@
  * Released under the MIT license
  * https://github.com/timpler/jquery.initialize/blob/master/LICENSE
  */
-;(function ($) {
-    
-    "use strict";
-    
-    // MutationSelectorObserver represents a selector and it's associated initialization callback.
-    var MutationSelectorObserver = function (selector, callback) {
-        this.selector = selector;
-        this.callback = callback;
+(function($) {
+  'use strict';
+
+  // MutationSelectorObserver represents a selector and it's associated initialization callback.
+  var MutationSelectorObserver = function(selector, callback) {
+    this.selector = selector;
+    this.callback = callback;
+  };
+
+  // List of MutationSelectorObservers.
+  var msobservers = [];
+  function initialize(selector, callback) {
+    // Wrap the callback so that we can ensure that it is only
+    // called once per element.
+    var seen = [];
+    var callbackOnce = function() {
+      if (seen.indexOf(this) == -1) {
+        seen.push(this);
+        $(this).each(callback);
+      }
     };
 
-    // List of MutationSelectorObservers.
-    var msobservers = [];
-    function initialize(selector, callback) {
+    // See if the selector matches any elements already on the page.
+    $(selector).each(callbackOnce);
 
-        // Wrap the callback so that we can ensure that it is only
-        // called once per element.
-        var seen = [];
-        var callbackOnce = function () {
-            if (seen.indexOf(this) == -1) {
-                seen.push(this);
-                $(this).each(callback);
-            }
-        };
+    // Then, add it to the list of selector observers.
+    msobservers.push(new MutationSelectorObserver(selector, callbackOnce));
+  }
 
-        // See if the selector matches any elements already on the page.
-        $(selector).each(callbackOnce);
+  // The MutationObserver watches for when new elements are added to the DOM.
+  var observer = new MutationObserver(function(mutations) {
+    // For each MutationSelectorObserver currently registered.
+    for (var j = 0; j < msobservers.length; j++) {
+      $(msobservers[j].selector).each(msobservers[j].callback);
+    }
+  });
 
-        // Then, add it to the list of selector observers.
-        msobservers.push(new MutationSelectorObserver(selector, callbackOnce));
-    };
+  // Observe the entire document.
+  observer.observe(document.documentElement, { childList: true, subtree: true, attributes: true });
 
-    // The MutationObserver watches for when new elements are added to the DOM.
-    var observer = new MutationObserver(function (mutations) {
+  // Deprecated API (does not work with jQuery >= 3.1.1):
+  $.fn.initialize = function(callback) {
+    initialize(this.selector, callback);
+  };
+  $.initialize = function(selector, callback) {
+    initialize(selector, callback);
+  };
 
-        // For each MutationSelectorObserver currently registered.
-        for (var j = 0; j < msobservers.length; j++) {
-            $(msobservers[j].selector).each(msobservers[j].callback);
-        }
-    });
+  //remove any previous observers for this selector
+  $.fn.deinitialize = function() {
+    var selector = this.selector;
+    msobservers = msobservers.filter(o => o.selector != selector);
+  };
 
-    // Observe the entire document.
-    observer.observe(document.documentElement, {childList: true, subtree: true, attributes: true});
-
-    // Deprecated API (does not work with jQuery >= 3.1.1):
-    $.fn.initialize = function (callback) {
-        initialize(this.selector, callback);
-    };
-    $.initialize = function (selector, callback) {
-        initialize(selector, callback);
-    };
-
-    //remove any previous observers for this selector
-    $.fn.deinitialize = function () {
-        var selector = this.selector;
-        msobservers = msobservers.filter((o) => o.selector != selector);
-    };
-
-    $.deinitialize = function (selector) {
-        msobservers = msobservers.filter((o) => o.selector != selector);
-    };
+  $.deinitialize = function(selector) {
+    msobservers = msobservers.filter(o => o.selector != selector);
+  };
 })(jQuery);
