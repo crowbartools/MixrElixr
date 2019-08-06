@@ -17,5 +17,12 @@
     "scripts": [
       "background.js"
     ]
-  }
+  },
+  "permissions": [
+    "storage",
+    "cookies",
+    "notifications",
+    "background",
+    "*://mixer.com/*"
+  ]
 }

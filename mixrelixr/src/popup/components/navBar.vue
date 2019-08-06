@@ -45,7 +45,7 @@ export default {
 	props: ['onlineCount'],
 	methods: {
         scrollToTop: function(smooth) {
-            document.getElementById("app").scroll({
+            document.getElementById("app-wrapper").scroll({
                 top: 0,
                 left: 0,
                 behavior: smooth ? 'smooth' : undefined

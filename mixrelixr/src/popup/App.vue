@@ -1,5 +1,5 @@
 <template>
-  <div v-cloak @scroll="addMoreFriendsCheck">
+  <div v-cloak @scroll="addMoreFriendsCheck" id="app-wrapper">
     <div class="sentinel"></div>
     <div class="sticky">
       <nav-bar @tab-changed="updateActiveTab"></nav-bar>

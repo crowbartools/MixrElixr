@@ -13,9 +13,9 @@
         </div>
         <div class="settings-section-settings">
             <span class="setting-subcategory" style="margin-top:0;">Automation</span>
-            <checkbox-toggle :value.sync="autoCloseInteractive" @changed="saveSettings()" label="Auto Close MixPlay"></checkbox-toggle>
+            <checkbox-toggle :value.sync="autoCloseInteractive" @changed="saveSettings()" label="Auto Close MixPlay" ></checkbox-toggle>
             <checkbox-toggle :value.sync="autoCloseCostreams" @changed="saveSettings()" label="Auto Close Costreams" tooltip="This will close all streamers in a costream except for the streamer whom you are visiting."></checkbox-toggle>
-            <checkbox-toggle :value.sync="autoMute" @changed="saveSettings()" label="Auto Mute Streams"></checkbox-toggle>
+            <checkbox-toggle :value.sync="autoMute" @changed="saveSettings()" label="Auto Mute Streams" ></checkbox-toggle>
             <checkbox-toggle :value.sync="autoTheater" @changed="saveSettings()" label="Auto Theater Mode" tooltip="Automatically enters Theater Mode when loading a channel."></checkbox-toggle>
 
             <span class="setting-subcategory">Emotes</span>
@@ -27,10 +27,10 @@
             
             <span class="setting-subcategory">Chat</span>
             <checkbox-toggle :value.sync="timestampAllMessages" @changed="saveSettings()" label="Timestamp All Messages" tooltip="Please note that timestamps will only be added to new messages as there is no way for us to tell when previous messages were sent."></checkbox-toggle>
-            <checkbox-toggle :value.sync="mentionChatBGColor" @changed="saveSettings()" label="Highlight When Mentioned" tooltip="Apply a special background behind messages when you are mentioned."></checkbox-toggle>			
-            <checkbox-toggle :value.sync="useCustomFontSize" @changed="saveSettings()" label="Use Custom Text Size" tooltip="Allows you to define a custom font size and line height."></checkbox-toggle>
+            <checkbox-toggle :value.sync="mentionChatBGColor" @changed="saveSettings()" label="Highlight When Mentioned" tooltip="Apply a special background behind messages when you are mentioned."></checkbox-toggle>        
             <checkbox-toggle :value.sync="hideChatAvatars" @changed="saveSettings()" label="Hide Chat Avatars"></checkbox-toggle>
             <checkbox-toggle :value.sync="hideChannelProgression" @changed="saveSettings()" label="Hide Channel Levels"></checkbox-toggle>
+            <checkbox-toggle :value.sync="useCustomFontSize" @changed="saveSettings()" label="Use Custom Text Size" tooltip="Allows you to define a custom font size and line height."></checkbox-toggle>
             <b-collapse v-model="useCustomFontSize" id="useCustomFontSize">
                 <div style="padding: 0px 0 15px 20px;">
                     <div>Text Size<option-tooltip name="textSize" title="The size of the text."></option-tooltip></div>
@@ -75,7 +75,7 @@
 
             <span class="setting-subcategory">Hosts</span>
             <checkbox-toggle :value.sync="autoForwardOnHost" @changed="saveSettings()" label="Redirect on Host" tooltip="If the channel you are viewing hosts someone else, this will automatically redirect you to the hosted channel."></checkbox-toggle>
-            <checkbox-toggle :value.sync="autoMuteOnHost" @changed="saveSettings()" label="Auto Mute Stream on Host"></checkbox-toggle>
+            <checkbox-toggle :value.sync="autoMuteOnHost" @changed="saveSettings()" label="Auto Mute Stream on Host" ></checkbox-toggle>
         </div>
     </div>
 </template>
