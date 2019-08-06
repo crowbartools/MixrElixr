@@ -1,6 +1,6 @@
 const clientId = 'd2158e591bb347931751bef151ee3bf3e5c8cb9608924a7a';
 
-friendFetcher = { 
+global.friendFetcher = { 
 	methods: {
 		getMixerId: function() {
 			// This gets a channel id using a mixer username.

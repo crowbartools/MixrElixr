@@ -1,4 +1,4 @@
-settingsStorage = {
+global.settingsStorage = {
 	methods: {
 		fetchSettings: function() {
 			var app = this;

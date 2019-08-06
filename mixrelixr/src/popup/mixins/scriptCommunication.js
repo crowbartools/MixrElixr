@@ -1,4 +1,4 @@
-scriptCommunication = {
+global.scriptCommunication = {
 	methods: {
 		getCurrentStreamerNameInOpenTab: function() {
 			return new Promise((resolve) => {

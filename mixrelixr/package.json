@@ -1,7 +1,7 @@
 {
   "name": "mixrelixr",
-  "version": "3.0.0",
-  "description": "A browser extension that allows users to modify and improve their Mixer.com experience.",
+  "version": "2.2.0",
+  "description": "A browser extension that enhances the Mixer.com experience by providing options, tweaks, and new features.",
   "author": "Team Crowbar",
   "license": "GNU v3.0",
   "scripts": {
@@ -16,7 +16,13 @@
   },
   "dependencies": {
     "axios": "^0.19.0",
+    "bootstrap": "^4.3.1",
+    "bootstrap-vue": "^2.0.0-rc.27",
+    "lodash": "^4.17.15",
     "vue": "^2.6.10",
+    "vue-multiselect": "^2.1.6",
+    "vue-resource": "^1.5.1",
+    "vue-slider-component": "^3.0.34",
     "webextension-polyfill": "^0.3.1"
   },
   "devDependencies": {

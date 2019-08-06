@@ -6,13 +6,14 @@
 </template>
 
 <script>
+import debounce from 'lodash/debounce';
 export default {
     data() {
         return {};
     },
     props: ['placeholder', 'query'],
     methods: {
-        valueUpdated: _.debounce(function() {
+        valueUpdated: debounce(function() {
             this.$emit('update:query', this.query);
             this.$emit('changed');
         }, 350)
