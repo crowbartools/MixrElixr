@@ -22,11 +22,11 @@ $(() => {
 
 				if(spinnerExists) {
 					//spinner still exists, check again in a bit
-					setTimeout(()=> { doPageCheck(); }, 250);
+					setTimeout(()=> { doPageCheck(); }, 10);
 				} else {
 					log('Spinner is gone, the page should be loaded.');
 					//spinner is gone, lets party
-					setTimeout(()=> { resolve(); }, 750);
+					setTimeout(()=> { resolve(); }, 100);
 				}
 			}
 
@@ -58,6 +58,32 @@ $(() => {
 
 			doElementCheck();
 		});
+	}
+
+	function applySiteWideChanges() {
+		if(settings.generalOptions.simplifiedTopBar !== false) {
+
+			waitForElementAvailablity('.language-selector').then(() => {
+
+				$('.language-selector').addClass('me-simplified-topbar');
+
+			});
+
+			waitForElementAvailablity('b-notifications').then(() => {
+
+				$('b-notifications').addClass('me-simplified-topbar');
+
+			});
+
+			waitForElementAvailablity('b-embers-button').then(() => {
+
+				$('b-embers-button').addClass('me-simplified-topbar');
+
+			});
+
+			
+			
+		}
 	}
 
 	function runPageLogic() {
@@ -117,9 +143,7 @@ $(() => {
 					});
 	
 				});
-			});
-			
-			
+			});			
 		} else if (homeBlock != null && homeBlock.length > 0){
 			log('looks like we are on the main page');
 			cache.currentPage = 'homepage';
@@ -129,6 +153,8 @@ $(() => {
 			loadOtherPage();
 			log('looks like we\'re on some other page');
 		}
+
+		applySiteWideChanges();
 	}
 
 	function loadHomepage(){

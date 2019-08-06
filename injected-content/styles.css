@@ -376,6 +376,50 @@ b-browse-framework > header.searchPinned {
     opacity: 0.8;
 }
 
+.me-simplified-topbar {
+    margin-right: 0 !important;
+}
+
+.me-simplified-topbar > b-language-selector > button > span {
+    display: none;
+}
+
+.me-simplified-topbar > b-language-selector > button > bui-icon:not(.icon-web) {
+    display: none;
+}
+
+
+.me-simplified-topbar .icon-InternetWithController {
+    line-height: 1.2;
+}
+
+b-notifications.me-simplified-topbar {
+    margin: 0 3px 0 5px !important;
+}
+
+.me-simplified-topbar .flyout-menu {
+    background: #364558;
+    border-radius: 20px;
+    margin-right: 0 !important;
+}
+
+b-embers-button.me-simplified-topbar > div > div {
+    margin-left: 0 !important;
+    border: none !important;
+    padding: none !important;
+}
+
+b-embers-button.me-simplified-topbar > div > div:hover {
+    margin-left: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    opacity: 0.7;
+}
+
+b-embers-button.me-simplified-topbar > div > div > div {
+    display: none;
+}
+
 /*
 
 background: #182e48;
