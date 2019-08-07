@@ -15,9 +15,26 @@
   },
   "background": {
     "scripts": [
-      "background.js"
-    ]
+        "/background/background.js"
+    ],
+    "persistent": true
   },
+  "content_scripts": [
+    {
+        "matches": [
+            "*://mixer.com/*"
+        ],
+        "exclude_globs": [
+            "*/api/*"
+        ],
+        "css": [
+            "/injected-content/injected-content.css"
+        ],
+        "js": [
+            "/injected-content/injected-content.js"
+        ]
+    }
+  ],
   "permissions": [
     "storage",
     "cookies",

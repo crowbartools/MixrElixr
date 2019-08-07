@@ -10,6 +10,9 @@ module.exports = {
     browser: true,
     webextensions: true,
   },
+  globals: {
+    "$": true
+  },
   extends: [
     // https://github.com/vuejs/eslint-plugin-vue#priority-a-essential-error-prevention
     // consider switching to `plugin:vue/strongly-recommended` or `plugin:vue/recommended` for stricter rules.
@@ -27,5 +30,7 @@ module.exports = {
     'generator-star-spacing': 'off',
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'allow-empty-reject': true,
+    'allowEmptyReject': true
   },
 };

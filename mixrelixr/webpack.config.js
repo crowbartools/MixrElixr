@@ -10,8 +10,9 @@ const config = {
   mode: process.env.NODE_ENV,
   context: __dirname + '/src',
   entry: {
-    background: './background.js',
+    'background/background': './background/background.js',
     'popup/popup': './popup/popup.js',
+    'injected-content/injected-content': './injected-content/mixrelixr.js',
   },
   output: {
     path: __dirname + '/dist',
