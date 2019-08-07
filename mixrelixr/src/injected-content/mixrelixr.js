@@ -80,7 +80,7 @@ $(() => {
   }
 
   function applySiteWideChanges() {
-    if (settings.generalOptions.simplifiedTopBar !== false) {
+    if (settings.generalOptions.declutterTopBar !== false) {
       waitForElementAvailablity('.language-selector').then(() => {
         $('.language-selector').addClass('me-simplified-topbar');
       });

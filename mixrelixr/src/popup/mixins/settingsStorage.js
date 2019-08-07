@@ -81,6 +81,7 @@ global.settingsStorage = {
           pinSearchToTop: true,
         },
         generalOptions: {
+          declutterTopBar: true,
           showBadge: true,
           favoriteFriends: [],
           highlightFavorites: true,

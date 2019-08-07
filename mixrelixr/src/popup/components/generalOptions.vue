@@ -5,6 +5,9 @@
         </div>
         <div class="settings-section-settings" style="padding-bottom: 0;">
         <div class="option-wrapper">
+
+            <checkbox-toggle :value.sync="declutterTopBar" @changed="saveSettings()" label="Declutter The Top Navbar" tooltip="Condense nav links, simplify other buttons, and use the condensed Mixer logo"></checkbox-toggle>
+
             <checkbox-toggle :value.sync="showBadge" @changed="showBadgeChanged()" label="Currently Online Count Badge" tooltip="Whether or not you want the number of currently streaming friends displaying as a badge on the Elixr icon."></checkbox-toggle>
             
             <checkbox-toggle :value.sync="highlightFavorites" @changed="saveSettings()" label="Highlight Favorites" tooltip="Marks favorite streamers with green highlights while browsing Mixer."></checkbox-toggle>
