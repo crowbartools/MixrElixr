@@ -3,12 +3,15 @@ import './scss/injected-styles.scss';
 
 //import deps
 import $ from 'jquery';
-window.jQuery = $;
+global.jQuery = $;
+global.$ = global.jQuery;
 
 require('tooltipster');
 require('jquery-modal');
 require('./plugins/jquery.initialize');
 require('jquery-toast-plugin');
+
+global.browser = require('webextension-polyfill');
 
 // on document ready
 $(() => {
@@ -35,13 +38,13 @@ $(() => {
           // spinner still exists, check again in a bit
           setTimeout(() => {
             doPageCheck();
-          }, 250);
+          }, 10);
         } else {
           log('Spinner is gone, the page should be loaded.');
           // spinner is gone, lets party
           setTimeout(() => {
             resolve();
-          }, 750);
+          }, 10);
         }
       }
 
@@ -74,6 +77,67 @@ $(() => {
 
       doElementCheck();
     });
+  }
+
+  function applySiteWideChanges() {
+    if (settings.generalOptions.simplifiedTopBar !== false) {
+      waitForElementAvailablity('.language-selector').then(() => {
+        $('.language-selector').addClass('me-simplified-topbar');
+      });
+
+      waitForElementAvailablity('b-notifications').then(() => {
+        $('b-notifications').addClass('me-simplified-topbar');
+      });
+
+      waitForElementAvailablity('b-embers-button').then(() => {
+        $('b-embers-button').addClass('me-simplified-topbar');
+      });
+
+      waitForElementAvailablity('.logo').then(() => {
+        $('.logo').addClass('me-simplified-topbar');
+      });
+
+      waitForElementAvailablity(".nav-link[routerlink='/browse/all']").then(() => {
+        $(".nav-link[routerlink='/browse/all']").hide();
+      });
+
+      waitForElementAvailablity(".nav-link[routerlink='/browse/games']").then(() => {
+        $(".nav-link[routerlink='/browse/games']").hide();
+      });
+
+      waitForElementAvailablity(".nav-link[routerlink='/me/partnership/apply']").then(() => {
+        $(".nav-link[routerlink='/me/partnership/apply']").hide();
+      });
+
+      waitForElementAvailablity(".nav-link[routerlink='/browse/following']").then(() => {
+
+        let dropdownExists = $(".me-dropdown") && $(".me-dropdown").length > 0;
+        if (dropdownExists) return;
+
+        let browseDropdown = $(`
+                 <div class="me-dropdown">
+                     <button class="me-dropbtn">BROWSE</button>
+                     <div id="myDropdown" class="me-dropdown-content">
+                         <a class="me-dd-nav" routerlink="/browse/all" href="/browse/all" >${$(".nav-link[routerlink='/browse/all']").text()}</a>
+                         <a class="me-dd-nav" routerlink="/browse/games" href="/browse/games">${$(".nav-link[routerlink='/browse/games']").text()}</a>
+                         <a class="me-dd-nav" routerlink="/me/partnership/apply" href="/me/partnership/apply">${$(".nav-link[routerlink='/me/partnership/apply']").text()}</a>
+                     </div>
+                 </div>
+             `);
+
+        browseDropdown.on('mouseenter', () => {
+          document.getElementById('myDropdown').classList.toggle('me-dropdown-show');
+        });
+
+        browseDropdown.on('mouseleave', () => {
+          document.getElementById('myDropdown').classList.toggle('me-dropdown-show');
+        });
+
+        $(".nav-link[routerlink='/browse/following']").after(browseDropdown);
+
+        searchbarPositionCheck();
+      });
+    }
   }
 
   function runPageLogic() {
@@ -136,6 +200,8 @@ $(() => {
       loadOtherPage();
       log("looks like we're on some other page");
     }
+
+    applySiteWideChanges();
   }
 
   function loadHomepage() {
@@ -246,12 +312,14 @@ $(() => {
       filterButton.addClass('me-pinned-search me-filterbtn');
       filterPanel.addClass('me-filterspanel');
 
+      /*
       searchBar.append(`
 			<div class="elixr-badge-wrapper">
 				<div class="elixr-badge me-tooltip" title="MixrElixr: Pinned search">
 					<img style="height: 10px;width: 10px;transform: translate(1px, -1px);"src="https://raw.githubusercontent.com/crowbartools/MixrElixr/master/resources/images/elixr-light-16.png">
 				</div>
-			</div>`);
+            </div>`);
+        */
     } else {
       $('.me-pinned-search').css('top', '');
       pageHeader.removeClass('searchPinned');
@@ -308,7 +376,7 @@ $(() => {
     if (settings.homePageOptions && settings.homePageOptions.removeFeatured) {
       $('b-delve-featured-carousel, b-delve-games, b-delve-oom-channels').remove();
     } else if ($('b-delve-featured-carousel, b-delve-games, b-delve-oom-channels').length === 0) {
-      location.reload();
+      //location.reload();
     }
 
     initialPageLoad = false;
@@ -545,7 +613,7 @@ $(() => {
       return;
     }
 
-    let options = settings.streamerPageOptions.global;
+    let options = settings.streamerPageOptions.global || {};
 
     // override the options if there is streamer specific options available
     let overrides = settings.streamerPageOptions.overrides;
@@ -1050,6 +1118,12 @@ $(() => {
     // remove all prev custom timestamps if feature is turned off
     if (!options.timestampAllMessages) {
       $('.elixrTime').remove();
+    }
+
+    if (options.hideChatHeaders) {
+        $(".transcluded-section").hide();
+    } else {
+        $(".transcluded-section").show();
     }
 
     // get rid of any previous registered callbacks for chat modals
@@ -1681,10 +1755,10 @@ $(() => {
   function getStreamerOptionsForStreamer(streamerName) {
     if (!settings.streamerPageOptions) {
       log('No streamer page settings saved.');
-      return;
+      return {};
     }
 
-    let options = settings.streamerPageOptions.global;
+    let options = settings.streamerPageOptions.global || {};
 
     // override the options if there is streamer specific options available
     let overrides = settings.streamerPageOptions.overrides;

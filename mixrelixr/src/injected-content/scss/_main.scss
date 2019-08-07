@@ -286,6 +286,7 @@ b-desktop-header.searchPinned.collapsed {
     opacity: 0;
     height: 60px;
     pointer-events: none;
+    z-index: 1;
 }
 
 .searchPinned.collapsed::after  {
