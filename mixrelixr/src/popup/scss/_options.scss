@@ -86,34 +86,34 @@ body {
     justify-content: center;
 }
 
-body > div::-webkit-scrollbar {
+#app-wrapper::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
-body > div::-webkit-scrollbar-button {
+#app-wrapper::-webkit-scrollbar-button {
   width: 0px;
   height: 0px;
 }
-body > div::-webkit-scrollbar-thumb {
+#app-wrapper::-webkit-scrollbar-thumb {
   background:#4D5664;
   border-radius: 22px;
 }
-body > div::-webkit-scrollbar-track {
+#app-wrapper::-webkit-scrollbar-track {
   background: #212C3D;
   border: 0px none #ffffff;
   border-radius: 0px;
 }
-body > div::-webkit-scrollbar-track:hover {
+#app-wrapper::-webkit-scrollbar-track:hover {
   background: #212C3D;
 }
-body > div::-webkit-scrollbar-track:active {
+#app-wrapper::-webkit-scrollbar-track:active {
   background:#212C3D;
 }
-body > div::-webkit-scrollbar-corner {
+#app-wrapper::-webkit-scrollbar-corner {
   background: transparent;
 }
 
-body > div::-webkit-scrollbar {
+#app-wrapper::-webkit-scrollbar {
     width: 7px;
 }
 
@@ -148,7 +148,7 @@ body > div::-webkit-scrollbar {
       width: 7px;
 }
 
-body > div {
+#app-wrapper {
     height: 600px;
     overflow-y: auto;
     background: #212C3D;

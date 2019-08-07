@@ -229,8 +229,9 @@ export default {
 		},
 		useCustomFontSize: function(val) {
 			if (val) {
-				this.$nextTick(() => { 
-					this.$refs.textSizeSlider.refresh();
+				this.$nextTick(() => {
+                    console.log(this.$refs);
+					//this.$refs.textSizeSlider.refresh();
 				});
 			} else {
 				//reset values to default
