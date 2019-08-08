@@ -94,8 +94,8 @@ export default {
 					color = '#0faf27';
 				}
 			}
-			chrome.browserAction.setBadgeText({text: text});
-			chrome.browserAction.setBadgeBackgroundColor({ color: color});
+			browser.browserAction.setBadgeText({text: text});
+			browser.browserAction.setBadgeBackgroundColor({ color: color});
 		},
 		loadFriends: function() {
 			var app = this;
