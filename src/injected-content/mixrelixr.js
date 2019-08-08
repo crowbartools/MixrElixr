@@ -1761,6 +1761,12 @@ $(() => {
     let cachedCollapsed = cache.topNavCollapsed || false;
     let collapsedChanged = topNavCollapsed !== cachedCollapsed;
 
+    if (topNavCollapsed) {
+        $('.me-searchbar').addClass("me-nav-collapsed");
+    } else {
+        $('.me-searchbar').removeClass("me-nav-collapsed");
+    }
+
     let logoAndNavBtnsWidth = $('a.logo').outerWidth() + $('nav').outerWidth() + 15;
     let searchbarPosition = $('.me-searchbar').position();
     let searchbarStartsAt = searchbarPosition ? searchbarPosition.left : 0;

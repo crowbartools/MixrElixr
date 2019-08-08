@@ -10,7 +10,8 @@
     "prettier:write": "npm run prettier -- --write",
     "build": "cross-env NODE_ENV=production webpack --hide-modules",
     "build:dev": "cross-env NODE_ENV=development webpack --hide-modules",
-    "build-zip": "node scripts/build-zip.js",
+    "build-zip": "npm run build && node scripts/build-zip.js",
+    "build-zip:chrome": "cross-env NODE_ENV=production BROWSER=chrome webpack --hide-modules && node scripts/build-zip.js",
     "watch": "npm run build -- --watch",
     "watch:dev": "cross-env HMR=true npm run build:dev -- --watch"
   },
