@@ -9,6 +9,11 @@ import './scss/styles.scss';
 // the app
 import App from './App';
 
+// our mixins
+import './mixins/friendFetcher';
+import './mixins/scriptCommunication';
+import './mixins/settingsStorage';
+
 // components
 import checkboxToggle from './components/checkboxToggle.vue';
 import optionTooltip from './components/optionTooltip.vue';
@@ -28,13 +33,13 @@ import search from './components/search.vue';
 import customEmotesToggle from './components/customEmotesToggle.vue';
 import globalEmotesToggle from './components/globalEmotesToggle.vue';
 
-global.browser = require('webextension-polyfill');
-Vue.prototype.$browser = global.browser;
-
 // our mixins
 require('./mixins/friendFetcher');
 require('./mixins/scriptCommunication');
 require('./mixins/settingsStorage');
+
+global.browser = require('webextension-polyfill');
+Vue.prototype.$browser = global.browser;
 
 Vue.use(BootstrapVue);
 

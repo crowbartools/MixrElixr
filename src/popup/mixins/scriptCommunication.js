@@ -1,3 +1,4 @@
+import browser from 'webextension-polyfill';
 global.scriptCommunication = {
   methods: {
     getCurrentStreamerNameInOpenTab: function() {

@@ -1,3 +1,5 @@
+import browser from 'webextension-polyfill';
+
 global.settingsStorage = {
   methods: {
     fetchSettings: function() {
