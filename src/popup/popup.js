@@ -6,11 +6,6 @@ import VueSlider from 'vue-slider-component';
 
 import './scss/styles.scss';
 
-// our mixins
-import './mixins/friendFetcher';
-import './mixins/scriptCommunication';
-import './mixins/settingsStorage';
-
 // the app
 import App from './App';
 
@@ -35,6 +30,11 @@ import globalEmotesToggle from './components/globalEmotesToggle.vue';
 
 global.browser = require('webextension-polyfill');
 Vue.prototype.$browser = global.browser;
+
+// our mixins
+require('./mixins/friendFetcher');
+require('./mixins/scriptCommunication');
+require('./mixins/settingsStorage');
 
 Vue.use(BootstrapVue);
 
@@ -66,5 +66,5 @@ global.bus = new Vue();
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
-  render: h => h(App),
+  render: h => h(App)
 });
