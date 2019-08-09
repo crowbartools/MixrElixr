@@ -85,7 +85,7 @@ export default {
 		updateIconBadge: function() {
 			var text = '', color = '#18ABE9';
 			var friends = this.friends, favorites = this.favorites;
-			if(this.showBadge && friends != null && favorites != null) {
+			if(this.showBadge !== false && friends != null && favorites != null) {
 				let onlineCount = friends.length + favorites.length;
 				if(onlineCount > 0) {
 					text = onlineCount.toString();

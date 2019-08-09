@@ -431,8 +431,9 @@ $(() => {
         log('Global emotes retrieved.');
         cache.globalEmotes = data;
         resolve();
-      }).fail(function() {
+      }).fail(function(_, textStatus, error) {
         log('No global emotes were found!');
+        console.log(error);
         cache.globalEmotes = null;
         resolve();
       });
@@ -461,8 +462,9 @@ $(() => {
         log('Custom emotes retrieved for: ' + cache.currentStreamerName);
         cache.currentStreamerEmotes = Array.isArray(data) ? data[0] : data;
         resolve();
-      }).fail(function() {
+      }).fail(function(_, textStatus, error) {
         log('No custom emotes for: ' + cache.currentStreamerName);
+        console.log(error);
         cache.currentStreamerEmotes = null;
         resolve();
       });
@@ -1067,12 +1069,12 @@ $(() => {
 
     let options = getStreamerOptionsForStreamer(streamerName);
 
-    if (options.customEmotes && options.channelEmotes) {
+    if (options.customEmotes !== false && options.channelEmotes !== false) {
       // If custom emotes enabled, go try to get our json.
       await cacheChannelElixrEmotes(cache.currentStreamerId);
     }
 
-    if (options.customEmotes && options.globalEmotes) {
+    if (options.customEmotes !== false && options.globalEmotes !== false) {
       // If global emotes are enabled.
       await cacheGlobalElixrEmotes();
     }
@@ -1484,22 +1486,23 @@ $(() => {
       }
 
       let showChannelEmotes =
-        options.customEmotes !== null &&
+        options.customEmotes !== false &&
         options.channelEmotes !== false &&
         cache.currentStreamerEmotes != null &&
         cache.currentStreamerEmotes.emotes != null &&
         chatFromCurrentChannel;
 
-      let showGlobalEmotes = options.customEmotes !== null &&
+      let showGlobalEmotes = options.customEmotes !== false &&
         options.globalEmotes !== false &&
         cache.globalEmotes != null &&
         cache.globalEmotes.emotes != null;
 
+      console.log("EMOTE BLOCK");
       if (showChannelEmotes || showGlobalEmotes) {
         let foundEmote = false;
         messageContainer.find('span:not([class])').each(function() {
           let component = $(this);
-
+          console.log("CHECKING FOR EMOTES");
           // we've already replaced emotes on this, skip it
           if (component.hasClass('me-custom-emote')) {
             return;
@@ -1534,11 +1537,22 @@ $(() => {
             emoteNameRegexGroup += escapeRegExp(emote);
           }
 
+          let regexPattern = `(?:^|\\s)${emoteNameRegexGroup}(?:\\s|$)`;
+
           // emote name regex
-          let emoteNameRegex = new RegExp(`(?<=^|\\s)(${emoteNameRegexGroup})(?=\\s|$)`, 'gm');
+          let emoteNameRegex;
+          try {
+            emoteNameRegex = new RegExp(regexPattern, 'gm');
+          } catch (err) {
+            console.log("REGEX ERROR!", err);
+          }
+
+          //html escape current text
+          text = escapeHTML(text);
 
           // replace emote names with img tags
           text = text.replace(emoteNameRegex, match => {
+            match = match && match.trim();
             log('found emote match: ' + match);
 
             // search for channel emote first
