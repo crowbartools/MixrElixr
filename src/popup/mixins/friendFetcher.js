@@ -101,6 +101,6 @@ global.friendFetcher = {
             reject(err);
           });
       });
-    },
-  },
+    }
+  }
 };

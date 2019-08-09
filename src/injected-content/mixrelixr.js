@@ -1149,7 +1149,7 @@ $(() => {
 
       if (showChannelEmotes || showGlobalEmotes) {
         let autocompleteMenu = $(`
-          <ul class="me-autocomplete">
+          <ul class="me-autocomplete" role="listbox">
           </ul>
         `);
 
@@ -1169,7 +1169,7 @@ $(() => {
             let name = escapeHTML(emote.name);
 
             autocompleteMenu.append(`
-              <li>
+              <li role="option">
                 <button class="me-autocomplete-emote me-tooltip" title="MixrElixr Global Emote">
                   <span class="elixr-custom-emote twentyfour me-emotes-preview" style="display: inline-block;">
                     <img src="${url}">
@@ -1761,6 +1761,12 @@ $(() => {
     let cachedCollapsed = cache.topNavCollapsed || false;
     let collapsedChanged = topNavCollapsed !== cachedCollapsed;
 
+    if (topNavCollapsed) {
+        $('.me-searchbar').addClass("me-nav-collapsed");
+    } else {
+        $('.me-searchbar').removeClass("me-nav-collapsed");
+    }
+
     let logoAndNavBtnsWidth = $('a.logo').outerWidth() + $('nav').outerWidth() + 15;
     let searchbarPosition = $('.me-searchbar').position();
     let searchbarStartsAt = searchbarPosition ? searchbarPosition.left : 0;
@@ -1919,18 +1925,11 @@ $(() => {
   }
 
   function getSettings() {
-    return new Promise(resolve => {
-      chrome.storage.sync.get(
-        {
-          streamerPageOptions: { channelEmotes: true, globalEmotes: true },
-          homePageOptions: { pinSearchToTop: true },
-          generalOptions: { highlightFavorites: true }
-        },
-        options => {
-          resolve(options);
-        }
-      );
-    });
+    return browser.storage.sync.get({
+        streamerPageOptions: { channelEmotes: true, globalEmotes: true },
+        homePageOptions: { pinSearchToTop: true },
+        generalOptions: { highlightFavorites: true }
+      });
   }
 
   function runUrlWatcher() {
@@ -2168,14 +2167,12 @@ $(() => {
 
   function syncFavorites(favorites) {
     log('Syncing Favorites list: ' + favorites);
-    chrome.storage.sync.set(
+    browser.storage.sync.set(
       {
         generalOptions: {
           favoriteFriends: favorites
         }
-      },
-      () => {}
-    );
+      });
   }
 
   // Checks the Mixer API to find a co-stream id.
@@ -2258,7 +2255,7 @@ $(() => {
   });
 
   // listen for an event from the Options page. This fires everytime the user updates a setting
-  chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.settingsUpdated) {
       loadSettings().then(() => {
         runPageLogic();
@@ -2293,27 +2290,24 @@ $(() => {
   }
 
   function getLastChangeLog() {
-    return new Promise(resolve => {
-      chrome.storage.sync.get(
-        {
-          internal: { lastChangeLog: null }
-        },
-        options => {
-          resolve(options.internal.lastChangeLog);
-        }
-      );
-    });
+      return browser.storage.sync.get(
+          {
+            internal: {
+              lastChangeLog: null
+            }
+          }
+      ).then(options => {
+          return options.internal.lastChangeLog;
+      });
   }
 
   function setLastChangeLog(version) {
-    chrome.storage.sync.set(
+    browser.storage.sync.set(
       {
         internal: {
           lastChangeLog: version
         }
-      },
-      () => {}
-    );
+      });
   }
 
   async function changeLogModalCheck() {
@@ -2323,7 +2317,7 @@ $(() => {
       $(`
 				<div id="mixr-change-log" class="modal">
 					<div style="text-align: center;">
-						<img style="width: 175px;" src="${chrome.runtime.getURL('resources/images/mixrelixr2logo.png')}">
+						<img style="width: 175px;" src="${browser.runtime.getURL('resources/images/mixrelixr2logo.png')}">
 					</div>
 					<div style="margin-top: 30px;text-align: center;font-size: 14px;">
 						<p>Thanks for using MixrElixr! We have a big update for you and wanted to share the highlights.</p>

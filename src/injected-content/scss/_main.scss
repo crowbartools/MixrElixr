@@ -330,6 +330,12 @@ b-browse-framework > header.searchPinned {
     background: transparent !important;
 }
 
+.me-searchbar {
+    &:not(.me-nav-collapsed) > input {
+        border: 2px #1a2d57 solid !important;
+    }
+}
+
 .elixr-badge-wrapper {
     position: absolute;
     width: 100%;

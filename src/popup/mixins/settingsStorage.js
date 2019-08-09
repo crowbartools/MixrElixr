@@ -1,25 +1,20 @@
+import browser from 'webextension-polyfill';
+
 global.settingsStorage = {
   methods: {
     fetchSettings: function() {
-      var app = this;
-      return new Promise(resolve => {
-        var defaults = this.getDefaultOptions();
+      let app = this;
+      let defaults = app.getDefaultOptions();
 
-        chrome.storage.sync.get(
-          {
-            streamerPageOptions: defaults.streamerPageOptions,
-            homePageOptions: defaults.homePageOptions,
-            generalOptions: defaults.generalOptions,
-          },
-          function(data) {
-            resolve(data);
-          }
-        );
+      return browser.storage.sync.get({
+        streamerPageOptions: defaults.streamerPageOptions,
+        homePageOptions: defaults.homePageOptions,
+        generalOptions: defaults.generalOptions
       });
     },
     saveAllSettings: function(settings, emitEvent = true) {
-      var app = this;
-      chrome.storage.sync.set(settings, () => {
+      let app = this;
+      browser.storage.sync.set(settings).then(() => {
         if (emitEvent) {
           app.emitSettingUpdatedEvent();
         }
@@ -27,17 +22,17 @@ global.settingsStorage = {
     },
     saveStreamerPageOptions: function(options) {
       this.saveAllSettings({
-        streamerPageOptions: options,
+        streamerPageOptions: options
       });
     },
     saveHomePageOptions: function(options) {
       this.saveAllSettings({
-        homePageOptions: options,
+        homePageOptions: options
       });
     },
     saveGeneralOptions: function(options) {
       this.saveAllSettings({
-        generalOptions: options,
+        generalOptions: options
       });
     },
     getDefaultOptions: function() {
@@ -71,14 +66,14 @@ global.settingsStorage = {
             hideStyle: 'blur',
             enableHideKeywordsWhenMod: false,
             useCustomFontSize: false,
-            textSize: 15,
+            textSize: 15
           },
-          overrides: {},
+          overrides: {}
         },
         homePageOptions: {
           removeFeatured: false,
           autoMute: false,
-          pinSearchToTop: true,
+          pinSearchToTop: true
         },
         generalOptions: {
           declutterTopBar: true,
@@ -87,18 +82,18 @@ global.settingsStorage = {
           highlightFavorites: true,
           liveNotificationsMode: 'favorites',
           playLiveNotificationSound: true,
-          liveNotificationSoundType: 'default',
-        },
+          liveNotificationSoundType: 'default'
+        }
       };
     },
     emitSettingUpdatedEvent: function() {
       // let the content script on whatever tab know the settings have been updated
-      chrome.tabs.query({}, function(tabs) {
+      browser.tabs.query({}).then(tabs => {
         var message = { settingsUpdated: true };
-        for (var i = 0; i < tabs.length; ++i) {
-          chrome.tabs.sendMessage(tabs[i].id, message);
+        for (let tab of tabs) {
+          browser.tabs.sendMessage(tab.id, message);
         }
       });
-    },
-  },
+    }
+  }
 };
