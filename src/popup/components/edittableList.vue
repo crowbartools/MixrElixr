@@ -43,6 +43,7 @@ export default {
 			this.$emit('add-entry', entry);
 		},
 		removeEntry: function(entry) {
+			this.value = this.value.filter(e => e != entry);
 			this.modelUpdated();
 			this.$emit('remove-entry', entry);
 		},

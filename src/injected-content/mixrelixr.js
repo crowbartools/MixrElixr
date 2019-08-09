@@ -52,7 +52,7 @@ $(() => {
     });
   }
 
-  function waitForElementAvailablity(selector, checkCount = 100) {
+  function waitForElementAvailablity(selector, checkCount = 100, timeout = 0) {
     return new Promise((resolve, reject) => {
       function doElementCheck(counter = 0) {
         if (counter > checkCount) {
@@ -70,12 +70,16 @@ $(() => {
             doElementCheck(counter);
           }, 10);
         } else {
-          log(`Element '${selector}' found!`);
-          resolve();
+          setTimeout(() => {
+            log(`Element '${selector}' found!`);
+            resolve();
+          }, 10);
         }
       }
 
-      doElementCheck();
+      setTimeout(() => {
+        doElementCheck();
+      }, timeout);
     });
   }
 
@@ -617,7 +621,7 @@ $(() => {
 
     // override the options if there is streamer specific options available
     let overrides = settings.streamerPageOptions.overrides;
-    if (overrides) {
+    if (overrides != null) {
       let overrideKeys = Object.keys(overrides);
       for (let i = 0; i < overrideKeys.length; i++) {
         let key = overrideKeys[i];
@@ -1009,10 +1013,13 @@ $(() => {
 
   function closeCostreams(streamerName) {
     return new Promise(async resolve => {
+
+      log("Closing feeds for everyone except " + streamerName);
+
       const profileSelector = '.costream-rollout .profile';
 
       try {
-        await waitForElementAvailablity(profileSelector);
+        await waitForElementAvailablity(profileSelector, 100, 250);
       } catch (err) {
         log('Costream profile never came available.');
         return resolve();
@@ -1023,9 +1030,11 @@ $(() => {
       // Profile divs have appeared
       log('Profiles loaded');
       profile.each(function() {
-        // Check if profile does NOT contain current streamer's name
-        if ($(this).is(':not(:contains(' + streamerName.trim() + '))')) {
-          let closeBtn = $(this)
+        log($(this).text());
+        let streamerFeed = $(this);
+        let text = streamerFeed.text();
+        if (text && !text.includes(streamerName.trim())) {
+          let closeBtn = streamerFeed
             .siblings()
             .eq(0)
             .children()[2];
@@ -1053,6 +1062,8 @@ $(() => {
       log('No streamer page settings saved.');
       return;
     }
+
+    log("Applying chat settings...");
 
     let options = getStreamerOptionsForStreamer(streamerName);
 
@@ -1093,7 +1104,7 @@ $(() => {
     }
 
     // Keyword BG Color
-    if (options.keywords.length > 0) {
+    if (options.keywords && options.keywords.length > 0) {
       let chatContainer = $('.elixr-chat-container');
       if (chatContainer != null && chatContainer.length > 0) {
         chatContainer.addClass('chat-keyword-bg');
@@ -1127,20 +1138,20 @@ $(() => {
     }
 
     let removeEmoteAutoComplete = () => {
-      let currentMenu = $(".me-autocomplete");
+      /*let currentMenu = $(".me-autocomplete");
         if (currentMenu != null && currentMenu.length > 0) {
           currentMenu.remove();
-        }
+        }*/
     };
 
     let renderEmoteAutoComplete = function(query) {
-
-      let showChannelEmotes = options.customEmotes &&
+      /*
+      let showChannelEmotes = options.customEmotes !== false &&
         options.channelEmotes !== false &&
         cache.currentStreamerEmotes != null &&
         cache.currentStreamerEmotes.emotes != null;
 
-      let showGlobalEmotes = options.customEmotes &&
+      let showGlobalEmotes = options.customEmotes !== false &&
         options.globalEmotes !== false &&
         cache.globalEmotes != null &&
         cache.globalEmotes.emotes != null;
@@ -1231,12 +1242,12 @@ $(() => {
       } else {
         removeEmoteAutoComplete();
       }
+      */
     };
 
     waitForElementAvailablity("[class*='webComposerBlock']").then(() => {
-
+      /*
       let keyupFunc = () => {
-        console.log("KEYUP");
         let allText = $("#chat-input").children("textarea").val();
         if (allText && allText.trim().length > 0 && !allText.endsWith(" ")) {
           let words = allText.split(" ");
@@ -1256,7 +1267,7 @@ $(() => {
       $("#chat-input").children("textarea").off("keyup", keyupFunc);
 
       $("#chat-input").children("textarea").on("keyup", keyupFunc);
-
+      */
     });
 
     // get rid of any previous registered callbacks for chat modals
@@ -1275,10 +1286,16 @@ $(() => {
         }
       }
 
-      let showChannelEmotes =
-        options.customEmotes && options.channelEmotes !== false && cache.currentStreamerEmotes != null && cache.currentStreamerEmotes.emotes != null && chatFromCurrentChannel;
+      let showChannelEmotes = options.customEmotes !== false &&
+        options.channelEmotes !== false &&
+        cache.currentStreamerEmotes != null &&
+        cache.currentStreamerEmotes.emotes != null &&
+        chatFromCurrentChannel;
 
-      let showGlobalEmotes = options.customEmotes && options.globalEmotes !== false && cache.globalEmotes != null && cache.globalEmotes.emotes != null;
+      let showGlobalEmotes = options.customEmotes !== false &&
+        options.globalEmotes !== false &&
+        cache.globalEmotes != null &&
+        cache.globalEmotes.emotes != null;
 
       let waitForModal = function(modal, counter = 0) {
         return new Promise((resolve, reject) => {
@@ -1374,6 +1391,42 @@ $(() => {
         messageContainer.find("[class*='messageContent']").css('line-height', '');
       }
 
+      // Gives chat avatar a class for easier targeting.
+      messageContainer.find("[class*='MessageContent']").addClass('message-content');
+
+      // Gives chat avatar a class for easier targeting.
+      messageContainer.find("[class*='ChatAvatar']").addClass('chat-avatar');
+
+      // Gives badges a class for easier targeting.
+      waitForElementAvailablity("span[class*='badge']").then(() => {
+        messageContainer.find("span[class*='badge']").each(function() {
+          // Check background image url for "fan-progression".
+          if ($(this).css('background').indexOf('fan-progression')) {
+              $(this).addClass('chat-progression');
+          }
+
+          // Hide channel progression.
+          if (options.hideChannelProgression) {
+            $('.chat-progression').hide();
+          } else {
+            $('.chat-progression').show();
+          }
+
+        });
+      });
+
+
+      // Hide chat avatars and reposition chat.
+      if (options.hideChatAvatars) {
+        $('.chat-avatar').hide();
+        $('.message-content').css('margin-left', '.5em');
+      } else {
+        if ($('.chat-avatar').is(":hidden")) {
+          $('.chat-avatar').show();
+          $('.message-content').css('margin-left', '36px');
+        }
+      }
+
       let alreadyChecked = messageContainer.attr('elixrfied');
       // check to see if we have already looked at this chat messsage.
       if (alreadyChecked) {
@@ -1384,31 +1437,13 @@ $(() => {
       // Give chat messages a chat message class for easier targeting.
       messageContainer.addClass('chat-message');
 
-      // Gives chat avatar a class for easier targeting.
-      messageContainer.find("[class*='ChatAvatar']").addClass('chat-avatar');
-
-      // Gives badges a class for easier targeting.
-      messageContainer.find("span[class*='badge']").each(function() {
-        // Check background image url for "fan-progression".
-        if (
-          $(this)
-            .css('background')
-            .indexOf('fan-progression')
-        ) {
-          $(this).addClass('chat-progression');
-        }
-      });
-
-      // Gives chat avatar a class for easier targeting.
-      messageContainer.find("[class*='MessageContent']").addClass('message-content');
-
       let messageAuthor = messageContainer
         .find("[class*='username']")
         .text()
         .trim()
         .split(' ')[0]; // we do this to cut out the progression level
 
-      if (options.ignoredUsers.includes(messageAuthor)) {
+      if (options.ignoredUsers && options.ignoredUsers.includes(messageAuthor)) {
         messageContainer.hide();
       } else {
         if (!messageContainer.is(':visible')) {
@@ -1449,9 +1484,16 @@ $(() => {
       }
 
       let showChannelEmotes =
-        options.customEmotes && options.channelEmotes !== false && cache.currentStreamerEmotes != null && cache.currentStreamerEmotes.emotes != null && chatFromCurrentChannel;
+        options.customEmotes !== null &&
+        options.channelEmotes !== false &&
+        cache.currentStreamerEmotes != null &&
+        cache.currentStreamerEmotes.emotes != null &&
+        chatFromCurrentChannel;
 
-      let showGlobalEmotes = options.customEmotes && options.globalEmotes !== false && cache.globalEmotes != null && cache.globalEmotes.emotes != null;
+      let showGlobalEmotes = options.customEmotes !== null &&
+        options.globalEmotes !== false &&
+        cache.globalEmotes != null &&
+        cache.globalEmotes.emotes != null;
 
       if (showChannelEmotes || showGlobalEmotes) {
         let foundEmote = false;
@@ -1559,23 +1601,8 @@ $(() => {
         });
       }
 
-      // Hide chat avatars and reposition chat.
-      if (options.hideChatAvatars) {
-        $('.chat-avatar').hide();
-        $('.message-content').css('margin-left', '.5em');
-      } else {
-        $('.chat-avatar').show();
-      }
-
-      // Hide channel progression.
-      if (options.hideChannelProgression) {
-        $('.chat-progression').hide();
-      } else {
-        $('.chat-progression').show();
-      }
-
       // highlight keywords
-      if (options.keywords.length > 0) {
+      if (options.keywords && options.keywords.length > 0) {
         options.keywords.forEach(w => {
           let keywordRegex = new RegExp(`\\b${escapeRegExp(w)}\\b`, 'i');
           if (keywordRegex.test(messageText)) {
@@ -1901,14 +1928,17 @@ $(() => {
 
     // override the options if there is streamer specific options available
     let overrides = settings.streamerPageOptions.overrides;
-    let overrideKeys = Object.keys(overrides);
-    for (let i = 0; i < overrideKeys.length; i++) {
-      let key = overrideKeys[i];
-      if (key.toLowerCase() === streamerName.toLowerCase()) {
-        options = overrides[key];
-        break;
+    if (overrides != null) {
+      let overrideKeys = Object.keys(overrides);
+      for (let i = 0; i < overrideKeys.length; i++) {
+        let key = overrideKeys[i];
+        if (key.toLowerCase() === streamerName.toLowerCase()) {
+          options = overrides[key];
+          break;
+        }
       }
     }
+
 
     return options;
   }

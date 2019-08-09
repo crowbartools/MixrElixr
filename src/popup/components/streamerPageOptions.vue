@@ -301,7 +301,7 @@ export default {
 		bus.$on('tab-changed', (tab) => {
 			if(tab === 'options') {
 				this.$nextTick(() => {
-					this.$refs.textSizeSlider.refresh();
+					//this.$refs.textSizeSlider.refresh();
 				});			
 			}		
 		});

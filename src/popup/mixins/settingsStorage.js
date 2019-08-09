@@ -14,11 +14,17 @@ global.settingsStorage = {
     },
     saveAllSettings: function(settings, emitEvent = true) {
       let app = this;
-      browser.storage.sync.set(settings).then(() => {
-        if (emitEvent) {
-          app.emitSettingUpdatedEvent();
-        }
-      });
+      browser.storage.sync
+        .set(settings)
+        .then(() => {
+          console.log('SAVED SETTINGS!');
+          if (emitEvent) {
+            app.emitSettingUpdatedEvent();
+          }
+        })
+        .catch(reason => {
+          console.log('ERROR WHEN SAVING SETTINGS: ' + reason);
+        });
     },
     saveStreamerPageOptions: function(options) {
       this.saveAllSettings({
@@ -45,7 +51,7 @@ global.settingsStorage = {
             separateChat: false,
             alternateChatBGColor: false,
             mentionChatBGColor: false,
-            customEmotes: false,
+            customEmotes: true,
             globalEmotes: true,
             channelEmotes: true,
             hideChatAvatars: false,
@@ -91,7 +97,9 @@ global.settingsStorage = {
       browser.tabs.query({}).then(tabs => {
         var message = { settingsUpdated: true };
         for (let tab of tabs) {
-          browser.tabs.sendMessage(tab.id, message);
+          browser.tabs.sendMessage(tab.id, message).catch(reason => {
+            console.log('couldnt send message to tab: ' + reason, tab);
+          });
         }
       });
     }
