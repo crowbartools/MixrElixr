@@ -44,15 +44,15 @@ const main = () => {
 
   let browserSuffix = '';
   let browserType = process.env.BROWSER;
-  if (browserType === 'chrome') {
-    browserSuffix = '-chrome';
+  if (browserType === 'firefox') {
+    browserSuffix = '-firefox';
   }
   const zipFilename = `${name}-v${version}${browserSuffix}.zip`;
 
   makeDestZipDirIfNotExists();
 
   buildZip(DEST_DIR, DEST_ZIP_DIR, zipFilename)
-    .then(() => console.info('OK'))
+    .then(() => console.info('DONE'))
     .catch(console.err);
 };
 

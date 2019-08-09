@@ -11,8 +11,8 @@
     "build": "cross-env NODE_ENV=production webpack --hide-modules",
     "build:dev": "cross-env NODE_ENV=development webpack --hide-modules",
     "build-zip": "npm run build && node scripts/build-zip.js",
-    "build-zip:chrome": "cross-env NODE_ENV=production BROWSER=chrome webpack --hide-modules && cross-env BROWSER=chrome node scripts/build-zip.js",
-    "build-zips": "npm run build-zip && npm run build-zip:chrome",
+    "build-zip:firefox": "cross-env NODE_ENV=production BROWSER=firefox webpack --hide-modules && cross-env BROWSER=firefox node scripts/build-zip.js",
+    "build-zips": "npm run build-zip && npm run build-zip:firefox",
     "watch": "npm run build -- --watch",
     "watch:dev": "cross-env HMR=true npm run build:dev -- --watch"
   },

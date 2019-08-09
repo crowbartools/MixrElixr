@@ -86,7 +86,7 @@ const config = {
           }
 
           let browserType = process.env.BROWSER;
-          if (browserType === 'chrome') {
+          if (browserType !== 'firefox') {
             // remove the applications config section that chrome doesnt like
             delete jsonContent['applications'];
           }
