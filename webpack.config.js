@@ -85,10 +85,8 @@ const config = {
             jsonContent['content_security_policy'] = "script-src 'self' 'unsafe-eval'; object-src 'self'";
           }
 
-          console.log('**********************BROWSER TYPE****************');
           let browserType = process.env.BROWSER;
-          console.log(browserType);
-          if (browserType === 'chrome') {
+          if (browserType !== 'firefox') {
             // remove the applications config section that chrome doesnt like
             delete jsonContent['applications'];
           }

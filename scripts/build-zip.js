@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+// #!/usr/bin/env node
 
 const fs = require('fs');
 const path = require('path');
@@ -12,7 +12,7 @@ const extractExtensionData = () => {
 
   return {
     name: extPackageJson.name,
-    version: extPackageJson.version,
+    version: extPackageJson.version
   };
 };
 
@@ -41,12 +41,18 @@ const buildZip = (src, dist, zipFilename) => {
 
 const main = () => {
   const { name, version } = extractExtensionData();
-  const zipFilename = `${name}-v${version}.zip`;
+
+  let browserSuffix = '';
+  let browserType = process.env.BROWSER;
+  if (browserType === 'firefox') {
+    browserSuffix = '-firefox';
+  }
+  const zipFilename = `${name}-v${version}${browserSuffix}.zip`;
 
   makeDestZipDirIfNotExists();
 
   buildZip(DEST_DIR, DEST_ZIP_DIR, zipFilename)
-    .then(() => console.info('OK'))
+    .then(() => console.info('DONE'))
     .catch(console.err);
 };
 

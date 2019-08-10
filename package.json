@@ -1,6 +1,6 @@
 {
   "name": "mixrelixr",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "A browser extension that enhances the Mixer.com experience by providing options, tweaks, and new features.",
   "author": "Team Crowbar",
   "license": "GNU v3.0",
@@ -9,9 +9,13 @@
     "prettier": "prettier \"src/**/*.{js,vue}\"",
     "prettier:write": "npm run prettier -- --write",
     "build": "cross-env NODE_ENV=production webpack --hide-modules",
+    "build:firefox": "cross-env NODE_ENV=production BROWSER=firefox webpack --hide-modules",
     "build:dev": "cross-env NODE_ENV=development webpack --hide-modules",
+    "build:dev:firefox": "cross-env NODE_ENV=development BROWSER=firefox webpack --hide-modules",
     "build-zip": "npm run build && node scripts/build-zip.js",
-    "build-zip:chrome": "cross-env NODE_ENV=production BROWSER=chrome webpack --hide-modules && node scripts/build-zip.js",
+    "build-zip:firefox": "npm run build:firefox && cross-env BROWSER=firefox node scripts/build-zip.js",
+    "build-zips": "npm run build-zip && npm run build-zip:firefox",
+    "firefox-review": "npm install && npm run build:firefox",
     "watch": "npm run build -- --watch",
     "watch:dev": "cross-env HMR=true npm run build:dev -- --watch"
   },

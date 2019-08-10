@@ -17,8 +17,8 @@ async function getCurrentUserId() {
     let response = await fetch(CURRENT_USER_URL, {
       credentials: 'include',
       headers: {
-        'Client-ID': ELIXR_CLIENT_ID,
-      },
+        'Client-ID': ELIXR_CLIENT_ID
+      }
     });
     if (response.ok) {
       let user = await response.json();
@@ -49,8 +49,8 @@ async function getOnlineFollows(userId, page = 0, list) {
     let response = await fetch(followsUrl, {
       credentials: 'include',
       headers: {
-        'Client-ID': ELIXR_CLIENT_ID,
-      },
+        'Client-ID': ELIXR_CLIENT_ID
+      }
     });
     if (response.ok) {
       let liveFollows = await response.json();
@@ -62,7 +62,7 @@ async function getOnlineFollows(userId, page = 0, list) {
             channelName: f.token,
             avatarUrl: f.user && f.user.avatarUrl,
             streamTitle: f.name,
-            gameName: f.type && f.type.name,
+            gameName: f.type && f.type.name
           };
         })
       );
@@ -95,8 +95,8 @@ async function getFollowDate(channelId, currentUserId) {
     let response = await fetch(followDateUrl, {
       credentials: 'include',
       headers: {
-        'Client-ID': ELIXR_CLIENT_ID,
-      },
+        'Client-ID': ELIXR_CLIENT_ID
+      }
     });
     if (response.ok) {
       let followerData = await response.json();
@@ -141,8 +141,8 @@ function getGeneralOptions() {
         highlightFavories: false,
         liveNotificationsMode: 'favorites',
         playLiveNotificationSound: true,
-        liveNotificationSoundType: 'default',
-      },
+        liveNotificationSoundType: 'default'
+      }
     })
     .then(data => {
       return data.generalOptions;
@@ -168,7 +168,7 @@ function showNotification(followedUser, options) {
       badge: icon,
       tag: followedUser.channelName,
       image: image,
-      silent: true,
+      silent: true
     });
 
     if (options.playLiveNotificationSound) {
@@ -211,7 +211,7 @@ function updateBadge(onlineCount, favoriteOnline) {
 
 // cache of user ids
 let currentlyLiveCache = new TTLCache({
-  ttl: 60000 * 30, // 30 mins
+  ttl: 60000 * 30 // 30 mins
 });
 
 let firstRun = true;
@@ -251,9 +251,9 @@ async function run() {
   }
 
   // update badge
-  if (options.showBadge) {
+  if (options.showBadge !== false) {
     let favoriteIsOnline = follows.some(f => favoriteFriends.includes(f.channelName));
-
+    console.log('Updating badge...');
     updateBadge(follows.length, favoriteIsOnline);
   }
 
