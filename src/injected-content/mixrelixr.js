@@ -1497,12 +1497,10 @@ $(() => {
         cache.globalEmotes != null &&
         cache.globalEmotes.emotes != null;
 
-      console.log("EMOTE BLOCK");
       if (showChannelEmotes || showGlobalEmotes) {
         let foundEmote = false;
         messageContainer.find('span:not([class])').each(function() {
           let component = $(this);
-          console.log("CHECKING FOR EMOTES");
           // we've already replaced emotes on this, skip it
           if (component.hasClass('me-custom-emote')) {
             return;
@@ -1537,7 +1535,7 @@ $(() => {
             emoteNameRegexGroup += escapeRegExp(emote);
           }
 
-          let regexPattern = `(?:^|\\s)${emoteNameRegexGroup}(?:\\s|$)`;
+          let regexPattern = `(?:^|\\s)(?:${emoteNameRegexGroup})(?=\\s|$)`;
 
           // emote name regex
           let emoteNameRegex;
