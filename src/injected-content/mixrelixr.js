@@ -1,6 +1,8 @@
 //import styles
 import './scss/injected-styles.scss';
 
+import { waitForElementAvailablity } from './utils';
+
 //import deps
 import $ from 'jquery';
 global.jQuery = $;
@@ -52,7 +54,7 @@ $(() => {
     });
   }
 
-  function waitForElementAvailablity(selector, checkCount = 100, timeout = 0) {
+  /*function waitForElementAvailablity(selector, checkCount = 100, timeout = 0) {
     return new Promise((resolve, reject) => {
       function doElementCheck(counter = 0) {
         if (counter > checkCount) {
@@ -81,7 +83,7 @@ $(() => {
         doElementCheck();
       }, timeout);
     });
-  }
+  }*/
 
   function applySiteWideChanges() {
     if (settings.generalOptions.declutterTopBar !== false) {
