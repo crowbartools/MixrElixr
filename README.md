@@ -2,7 +2,7 @@
   <img src="https://i.imgur.com/vJVeWKj.png">
 </p>
 
-A Google Chrome extension that provides options and tweaks to improve your [Mixer.com](http://mixer.com) viewing experience. Built with love by the [Firebot](https://github.com/Firebottle/Firebot) team.
+A browser extension that provides options and tweaks to improve your [Mixer.com](http://mixer.com) viewing experience. Built with love by the [Firebot](https://github.com/Firebottle/Firebot) team.
 
 If you have questions, concerns, need help, or just want to say hi, you can reach out to us [on Twitter](http://twitter.com/mixrelixr) or join our [Discord channel](https://discord.gg/tTmMbrG).
 
