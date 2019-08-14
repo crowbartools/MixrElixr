@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://i.imgur.com/vJVeWKj.png">
+  <img src="https://i.imgur.com/LtkgWYX.png">
 </p>
 
 A browser extension that provides options and tweaks to improve your [Mixer.com](http://mixer.com) viewing experience. Built with love by the [Firebot](https://github.com/Firebottle/Firebot) team.
