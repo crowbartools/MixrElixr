@@ -74,6 +74,9 @@
                 <user-list class="option" :value.sync="inlineImgBlacklistedUsers" @changed="saveSettings()"></user-list>
             </div>
 
+            <span class="setting-subcategory">Page</span>
+            <checkbox-toggle :value.sync="largerVideo" @changed="saveSettings()" label="Larger Video Feed" tooltip="Bumps channel content down a bit so the video feed is larger by default."></checkbox-toggle>
+
             <span class="setting-subcategory">Hosts</span>
             <checkbox-toggle :value.sync="autoForwardOnHost" @changed="saveSettings()" label="Redirect on Host" tooltip="If the channel you are viewing hosts someone else, this will automatically redirect you to the hosted channel."></checkbox-toggle>
             <checkbox-toggle :value.sync="autoMuteOnHost" @changed="saveSettings()" label="Auto Mute Stream on Host" ></checkbox-toggle>

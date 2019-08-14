@@ -254,7 +254,15 @@ async function run() {
   if (options.showBadge !== false) {
     let favoriteIsOnline = follows.some(f => favoriteFriends.includes(f.channelName));
     console.log('Updating badge...');
-    updateBadge(follows.length, favoriteIsOnline);
+
+    let onlineCount;
+    if (options.onlyShowFavoritesCount) {
+      onlineCount = follows.filter(f => f.favorite).length;
+    } else {
+      onlineCount = follows.length;
+    }
+
+    updateBadge(onlineCount, favoriteIsOnline);
   }
 
   // update our cache

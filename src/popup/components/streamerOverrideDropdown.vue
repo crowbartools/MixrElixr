@@ -24,7 +24,7 @@
             <b-form-input type="text"
                         placeholder="Name"
                         v-model="newName" ref="nameInput" @keyup.native.enter="handleOk"></b-form-input>
-            <span v-if="newNameError" style="color:red; margin-top: 10px;">Please enter a name!</span>
+            <span v-if="newNameError" style="color:red; margin-top: 10px;">Please enter a streamers name!</span>
         </b-modal>
     </span>  
 </template>
@@ -60,7 +60,9 @@ export default {
 						app.newName = name;
 					}
 				}
-			});
+			}, () => {
+                console.log("Couldnt find current streamer name");
+            });
 
 			app.$refs.nameInput.focus();
 		},
@@ -84,9 +86,13 @@ export default {
 			this.$emit('override-added', nameCopy);
 
 			this.clearName();
-			this.$refs.newOverrideModal.hide();
 
-			this.selectOverride(nameCopy);
+            this.selectOverride(nameCopy);
+            
+            // Hide the modal manually
+            this.$nextTick(() => {
+                this.$refs.newOverrideModal.hide();
+            });
 		}
 	}
 };

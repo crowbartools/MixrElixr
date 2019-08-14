@@ -72,7 +72,8 @@ global.settingsStorage = {
             hideStyle: 'blur',
             enableHideKeywordsWhenMod: false,
             useCustomFontSize: false,
-            textSize: 15
+            textSize: 15,
+            largerVideo: true
           },
           overrides: {}
         },
@@ -84,6 +85,7 @@ global.settingsStorage = {
         generalOptions: {
           declutterTopBar: true,
           showBadge: true,
+          onlyShowFavoritesCount: false,
           favoriteFriends: [],
           highlightFavorites: true,
           liveNotificationsMode: 'favorites',

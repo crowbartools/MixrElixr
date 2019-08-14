@@ -176,10 +176,6 @@ $(() => {
       log('detected streamer page...');
       cache.currentPage = 'streamer';
 
-      waitForElementAvailablity('.stage').then(() => {
-        $('.stage').addClass('me-video-stage');
-      });
-
       waitForElementAvailablity("[class*='chatContainer']").then(() => {
         $("[class*='chatContainer']").addClass('me-chat-container');
       });
@@ -637,6 +633,14 @@ $(() => {
       }
     }
 
+    waitForElementAvailablity('.stage').then(() => {
+        if (options.largerVideo === false) {
+            $('.stage').removeClass('me-video-stage');
+        } else {
+            $('.stage').addClass('me-video-stage');
+        }
+    });
+
     // Auto Close Costreams
     if (options.autoCloseCostreams && initialPageLoad) {
       let costreamPage = detectCostreams();
@@ -1018,39 +1022,30 @@ $(() => {
   function closeCostreams(streamerName) {
     return new Promise(async resolve => {
 
+        if (streamerName == null) return resolve();
+
       log("Closing feeds for everyone except " + streamerName);
 
       const profileSelector = '.costream-rollout .profile';
 
-      try {
-        await waitForElementAvailablity(profileSelector, 100, 250);
-      } catch (err) {
-        log('Costream profile never came available.');
-        return resolve();
-      }
+      $.deinitialize(profileSelector);
+      $.initialize(profileSelector, function() {
+        //if (!initialPageLoad) return;
 
-      let profile = $('.costream-rollout .profile');
-
-      // Profile divs have appeared
-      log('Profiles loaded');
-      profile.each(function() {
-        log($(this).text());
         let streamerFeed = $(this);
         let text = streamerFeed.text();
-        if (text && !text.includes(streamerName.trim())) {
-          let closeBtn = streamerFeed
-            .siblings()
-            .eq(0)
-            .children()[2];
-          if (closeBtn) {
-            closeBtn.click();
-          }
+        if (text && text.trim() !== streamerName.trim()) {
+            let closeBtn = streamerFeed
+                .siblings()
+                .eq(0)
+                .children()[2];
+            if (closeBtn) {
+                closeBtn.click();
+            }
         }
       });
 
-      setTimeout(() => {
-        resolve();
-      }, 100);
+      resolve();
     });
   }
 
@@ -2306,7 +2301,6 @@ $(() => {
       });
     } else if (request.query === 'currentStreamerName') {
       if (cache.currentPage === 'streamer') {
-        console.log(cache.currentStreamerName);
         sendResponse({ streamerName: cache.currentStreamerName });
       }
     }
