@@ -1,5 +1,17 @@
 import moment from 'moment';
 import TTLCache from './TTLCache';
+
+import Bowser from 'bowser';
+const browserEnv = Bowser.getParser(window.navigator.userAgent);
+const onlyLocalStorage = browserEnv.satisfies({
+  Linux: {
+    Chrome: '>0'
+  },
+  'Chrome OS': {
+    Chrome: '>0'
+  }
+});
+
 global.browser = require('webextension-polyfill');
 
 // constants
@@ -133,7 +145,9 @@ async function isNewFollower(channelId, currentUserId) {
 }
 
 function getGeneralOptions() {
-  return browser.storage.sync
+  let storage = onlyLocalStorage ? browser.storage.local : browser.storage.sync;
+
+  return storage
     .get({
       generalOptions: {
         showBadge: true,

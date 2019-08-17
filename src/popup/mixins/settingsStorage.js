@@ -1,12 +1,26 @@
 import browser from 'webextension-polyfill';
 
+import Bowser from 'bowser';
+const browserEnv = Bowser.getParser(window.navigator.userAgent);
+const onlyLocalStorage = browserEnv.satisfies({
+  Linux: {
+    Chrome: '>0'
+  },
+  'Chrome OS': {
+    Chrome: '>0'
+  }
+});
+
 global.settingsStorage = {
   methods: {
     fetchSettings: function() {
       let app = this;
       let defaults = app.getDefaultOptions();
 
-      return browser.storage.sync.get({
+      console.log('ONLY LOCAL STORAGE?', onlyLocalStorage);
+
+      let storage = onlyLocalStorage ? browser.storage.local : browser.storage.sync;
+      return storage.get({
         streamerPageOptions: defaults.streamerPageOptions,
         homePageOptions: defaults.homePageOptions,
         generalOptions: defaults.generalOptions
@@ -14,10 +28,10 @@ global.settingsStorage = {
     },
     saveAllSettings: function(settings, emitEvent = true) {
       let app = this;
-      browser.storage.sync
+      let storage = onlyLocalStorage ? browser.storage.local : browser.storage.sync;
+      storage
         .set(settings)
         .then(() => {
-          console.log('SAVED SETTINGS!');
           if (emitEvent) {
             app.emitSettingUpdatedEvent();
           }

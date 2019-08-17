@@ -5,6 +5,18 @@ import { waitForElementAvailablity } from './utils';
 
 //import deps
 import $ from 'jquery';
+
+import Bowser from 'bowser';
+const browserEnv = Bowser.getParser(window.navigator.userAgent);
+const onlyLocalStorage = browserEnv.satisfies({
+  Linux: {
+    Chrome: '>0'
+  },
+  'Chrome OS': {
+    Chrome: '>0'
+  }
+});
+
 global.jQuery = $;
 global.$ = global.jQuery;
 
@@ -1964,7 +1976,9 @@ $(() => {
   }
 
   function getSettings() {
-    return browser.storage.sync.get({
+    let storage = onlyLocalStorage ? browser.storage.local : browser.storage.sync;
+
+    return storage.get({
         streamerPageOptions: { channelEmotes: true, globalEmotes: true },
         homePageOptions: { pinSearchToTop: true },
         generalOptions: { highlightFavorites: true }
@@ -2206,7 +2220,10 @@ $(() => {
 
   function syncFavorites(favorites) {
     log('Syncing Favorites list: ' + favorites);
-    browser.storage.sync.set(
+
+    let storage = onlyLocalStorage ? browser.storage.local : browser.storage.sync;
+
+    storage.set(
       {
         generalOptions: {
           favoriteFriends: favorites
@@ -2328,19 +2345,22 @@ $(() => {
   }
 
   function getLastChangeLog() {
-      return browser.storage.sync.get(
-          {
-            internal: {
-              lastChangeLog: null
-            }
-          }
-      ).then(options => {
-          return options.internal.lastChangeLog;
-      });
+    let storage = onlyLocalStorage ? browser.storage.local : browser.storage.sync;
+
+    return storage.get(
+        {
+        internal: {
+            lastChangeLog: null
+        }
+    }
+    ).then(options => {
+        return options.internal.lastChangeLog;
+    });
   }
 
   function setLastChangeLog(version) {
-    browser.storage.sync.set(
+    let storage = onlyLocalStorage ? browser.storage.local : browser.storage.sync;
+    storage.set(
       {
         internal: {
           lastChangeLog: version
