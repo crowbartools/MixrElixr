@@ -13,7 +13,7 @@
     "build:dev": "cross-env NODE_ENV=development webpack --hide-modules",
     "build:dev:firefox": "cross-env NODE_ENV=development BROWSER=firefox webpack --hide-modules",
     "build-zip": "npm run build && node scripts/build-zip.js",
-    "build-zip:firefox": "npm run build:firefox && cross-env BROWSER=firefox node scripts/build-zip.js",
+    "build-zip:firefox": "npm run build:firefox && cross-env BROWSER=firefox node scripts/build-zip.js && node scripts/build-firefox-source-zip.js",
     "build-zips": "npm run build-zip && npm run build-zip:firefox",
     "firefox-review": "npm install && npm run build:firefox",
     "watch": "npm run build -- --watch",
