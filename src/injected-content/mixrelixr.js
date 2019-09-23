@@ -1968,8 +1968,6 @@ $(() => {
     return new Promise(resolve => {
       getSettings().then(savedSettings => {
         settings = savedSettings;
-        console.log('got settings');
-        console.log(settings);
         resolve();
       });
     });
@@ -2218,17 +2216,23 @@ $(() => {
     return favorites;
   }
 
-  function syncFavorites(favorites) {
+  async function syncFavorites(favorites) {
     log('Syncing Favorites list: ' + favorites);
 
     let storage = onlyLocalStorage ? browser.storage.local : browser.storage.sync;
 
+    if (!settings) {
+        await loadSettings();
+    }
+
+    let generalOptions = settings.generalOptions || {};
+    generalOptions.favoriteFriends = favorites;
+
     storage.set(
       {
-        generalOptions: {
-          favoriteFriends: favorites
-        }
-      });
+        generalOptions: generalOptions
+      }
+    );
   }
 
   // Checks the Mixer API to find a co-stream id.

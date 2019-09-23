@@ -17,8 +17,6 @@ global.settingsStorage = {
       let app = this;
       let defaults = app.getDefaultOptions();
 
-      console.log('ONLY LOCAL STORAGE?', onlyLocalStorage);
-
       let storage = onlyLocalStorage ? browser.storage.local : browser.storage.sync;
       return storage.get({
         streamerPageOptions: defaults.streamerPageOptions,
@@ -51,8 +49,12 @@ global.settingsStorage = {
       });
     },
     saveGeneralOptions: function(options) {
-      this.saveAllSettings({
-        generalOptions: options
+      let app = this;
+      app.fetchSettings().then(data => {
+        let combinedOptions = { ...data.generalOptions, ...options };
+        this.saveAllSettings({
+          generalOptions: combinedOptions
+        });
       });
     },
     getDefaultOptions: function() {
@@ -103,7 +105,7 @@ global.settingsStorage = {
           favoriteFriends: [],
           highlightFavorites: true,
           liveNotificationsMode: 'favorites',
-          playLiveNotificationSound: true,
+          playLiveNotificationSound: false,
           liveNotificationSoundType: 'default'
         }
       };
