@@ -933,28 +933,52 @@ $(() => {
 
     // add theater mode btn
     // wait for video controls to load
-    waitForElementAvailablity('.toolbar').then(() => {
+    waitForElementAvailablity('.spectre-player').then(() => {
       if ($('[theater-mode-btn-container]').length < 1) {
-        // copy the fullscreen button so we can make it into the theater btn
-        let theaterBtn = $('#fullscreen-button')
-          .parent()
-          .clone();
 
-        // add an attr for us to check for it later
-        theaterBtn.attr('theater-mode-btn-container', '');
-        theaterBtn.attr('title', 'MixrElixr: Theater Mode');
+        let findFullscreenBtn = () => {
+          log("attempting to create theater mode button...");
 
-        theaterBtn.addClass('me-tooltip');
+          // copy the fullscreen button so we can make it into the theater btn
+          let fullscreenBtn = $(".spectre-player")
+            .children("div")
+            .children().eq(1)
+            .children().eq(2)
+            .children()
+            .children().eq(1)
+            .children().eq(4);
 
-        // change the icon
-        theaterBtn.find('span.set-material').text('event_seat');
+          if (fullscreenBtn.length < 1) {
+            log("Couldnt find fullscreen button... trying again in a bit.");
+            setTimeout(() => findFullscreenBtn(), 500);
+            return;
+          }
 
-        // add click handler
-        theaterBtn.on('click', function() {
-          toggleTheaterMode();
-        });
+          log("Found fullscreen button!");
 
-        theaterBtn.insertBefore($('#fullscreen-button').parent());
+          let theaterBtn = fullscreenBtn.clone();
+
+          // add an attr for us to check for it later
+          theaterBtn.attr('theater-mode-btn-container', '');
+
+          // change the icon
+          theaterBtn.find('i').text('event_seat');
+
+          // change tooltip text
+          theaterBtn.find('span').text('MixrElixr: Theater Mode');
+
+          // add click handler
+          theaterBtn.on('click', function() {
+            toggleTheaterMode();
+          });
+
+          theaterBtn.insertBefore(fullscreenBtn);
+        };
+
+
+        setTimeout(() => {
+          findFullscreenBtn();
+        }, 250);
       }
     });
 
@@ -1790,6 +1814,11 @@ $(() => {
           }
         }
       }
+
+      setTimeout(() => {
+        scrollChatIfCloseToBottom(options.textSize);
+      }, 10);
+
     });
 
     scrollChatToBottom();
@@ -1931,6 +1960,25 @@ $(() => {
       buttonTarget.html('<span>&#9734;</span>');
       buttonTarget.removeClass('faved');
       userNameTarget.removeClass('favoriteUsername');
+    }
+  }
+
+  function scrollChatIfCloseToBottom(textSize) {
+    let chatContainer = $('.elixr-chat-container');
+    let current = chatContainer.scrollTop();
+    let height = chatContainer[0].scrollHeight - chatContainer.height();
+    let percent = (current / height) * 100;
+
+    // Some dirty math to decrease our minimum percent the bigger the user
+    // has set their text to be (Because one long message could scroll things down farther)
+    let minimumPercent = 96.5;
+    if (textSize >= 16) {
+      let scaled = textSize - 16;
+      let offset = scaled / 10;
+      minimumPercent -= offset;
+    }
+    if (percent >= minimumPercent && percent < 100) {
+      scrollChatToBottom();
     }
   }
 
