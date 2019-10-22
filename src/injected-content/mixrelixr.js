@@ -387,11 +387,12 @@ $(() => {
     });
 
     // Remove featured streams on homepage
-    if (settings.homePageOptions && settings.homePageOptions.removeFeatured) {
-      $('b-delve-featured-carousel, b-delve-games, b-delve-oom-channels').remove();
-    } else if ($('b-delve-featured-carousel, b-delve-games, b-delve-oom-channels').length === 0) {
-      //location.reload();
-    }
+    waitForElementAvailablity('b-delve-featured-carousel').then(() => {
+      if (settings.homePageOptions && settings.homePageOptions.removeFeatured) {
+        $('b-delve-featured-carousel, b-delve-games, b-delve-oom-channels').remove();
+      }
+      log('Homepage carousel is loaded.');
+    });
 
     initialPageLoad = false;
   }
