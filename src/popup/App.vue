@@ -41,7 +41,6 @@ export default {
         var obj = this.$el;
         var percent = (obj.scrollHeight - obj.offsetHeight) * 0.8;
         if (obj.scrollTop >= percent) {
-          console.log('SCROLLED!');
           bus.$emit('friends-scrolled');
         }
       }

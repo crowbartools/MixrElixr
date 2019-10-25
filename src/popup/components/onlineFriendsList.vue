@@ -47,7 +47,8 @@ export default {
 			friendsLimit: 10,
 			loadingMixerUser: true,
 			mixerUserFound: false,
-			showBadge: true,
+            showBadge: true,
+            onlyFavoritesCount: false,
 			searchQuery: ''
 		};
 	},
@@ -86,7 +87,12 @@ export default {
 			var text = '', color = '#18ABE9';
 			var friends = this.friends, favorites = this.favorites;
 			if(this.showBadge !== false && friends != null && favorites != null) {
-				let onlineCount = friends.length + favorites.length;
+                let onlineCount;
+                if(this.onlyFavoritesCount){
+                    onlineCount = favorites.length;
+                } else {
+                    onlineCount = friends.length + favorites.length;
+                }
 				if(onlineCount > 0) {
 					text = onlineCount.toString();
 				}
@@ -108,7 +114,8 @@ export default {
 
 					app.savedFavoritesList = favoriteFriends;
 
-					app.showBadge = values[0].generalOptions.showBadge;
+                    app.showBadge = values[0].generalOptions.showBadge;
+                    app.onlyFavoritesCount = values[0].generalOptions.onlyShowFavoritesCount;
 		
 					let onlineFriends = values[1];
 		
@@ -164,8 +171,7 @@ export default {
                     
 					app.friendsLimit = 10;
 				}
-			}
-			
+			}			
 
 			app.updateIconBadge();
 
@@ -215,8 +221,9 @@ export default {
 			app.updateFavorite(name, true, false);
 		});
 
-		bus.$on('badge-change', function(showBadge) {
-			app.showBadge = showBadge;
+		bus.$on('badge-update', function(showBadge, favoritesOnly) {
+            app.showBadge = showBadge;
+            app.onlyFavoritesCount = favoritesOnly;
 			app.updateIconBadge();
 		});
 	}

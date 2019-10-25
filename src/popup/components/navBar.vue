@@ -18,7 +18,7 @@
                 </li>
                 <li class="nav-item clickable mixer-icon">
                     <a class="nav-link" href="https://mixer.com" target="_blank">
-                        <img src="/popup/resources/images/MixerMerge_dark.svg" width="16" height="16">
+                        <img src="/popup/resources/images/MixerMerge_Dark.svg" width="16" height="16">
                     </a>
                 </li>
                 <li class="nav-item clickable">

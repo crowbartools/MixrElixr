@@ -11,10 +11,9 @@
                 <video autoplay="true" loop="true" v-if="hover === true" v-show="videoReady === true" v-bind:src="channelVidUrl"></video>
                 <div class="liveAndViewers">
                     <span class="favorite-btn" @click="addOrRemoveFavorite($event)" :id="friend.token + 'fav'">
-                        <i class="fa" :class="favorite ? 'fa-star' : 'fa-star-o'" aria-hidden="true"></i>                     
+                        <i class="fa" :class="favorite ? 'fa-star' : 'fa-star-o'" aria-hidden="true"></i>
                     </span>
                     <b-tooltip :target="friend.token + 'fav'" :title="favorite ? 'Remove Favorite' : 'Add Favorite'" :no-fade="true"></b-tooltip>
-                    
                     <div class="viewersBadge">
                         <i class="fa fa-eye" aria-hidden="true" style="margin-right:5px;"></i>{{friend.viewersCurrent}} 
                     </div>
@@ -43,13 +42,16 @@
                 <div class="titles">
                     <h2>
                         <div class="truncated-text">
-                            <div class="wrapper" :aria-label="channelTitle"> {{channelTitle}} </div>
+                            <div class="wrapper" :aria-label="channelTitle" :id="friend.token + friend.title">
+                                {{channelTitle}}
+                                <b-tooltip :target="friend.token + friend.title" :title="channelTitle" :no-fade="true" placement="bottom"></b-tooltip>
+                            </div>
                         </div>
                     </h2>
                     <small> {{friend.token}} </small>
                     <small>
                         <div class="truncated-text">
-                            <div class="wrapper" :aria-label="channelGame"> {{channelGame}} </div>
+                            <div class="wrapper" :aria-label="channelGame" :id="friend.token + friend.game"> {{channelGame}} </div>
                         </div>
                     </small>
                 </div>

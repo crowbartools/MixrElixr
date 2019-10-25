@@ -1,8 +1,22 @@
 //import styles
 import './scss/injected-styles.scss';
 
+import { waitForElementAvailablity } from './utils';
+
 //import deps
 import $ from 'jquery';
+
+import Bowser from 'bowser';
+const browserEnv = Bowser.getParser(window.navigator.userAgent);
+const onlyLocalStorage = browserEnv.satisfies({
+  Linux: {
+    Chrome: '>0'
+  },
+  'Chrome OS': {
+    Chrome: '>0'
+  }
+});
+
 global.jQuery = $;
 global.$ = global.jQuery;
 
@@ -52,7 +66,7 @@ $(() => {
     });
   }
 
-  function waitForElementAvailablity(selector, checkCount = 100, timeout = 0) {
+  /*function waitForElementAvailablity(selector, checkCount = 100, timeout = 0) {
     return new Promise((resolve, reject) => {
       function doElementCheck(counter = 0) {
         if (counter > checkCount) {
@@ -81,7 +95,7 @@ $(() => {
         doElementCheck();
       }, timeout);
     });
-  }
+  }*/
 
   function applySiteWideChanges() {
     if (settings.generalOptions.declutterTopBar !== false) {
@@ -173,10 +187,6 @@ $(() => {
     } else if (channelBlock != null && channelBlock.length > 0) {
       log('detected streamer page...');
       cache.currentPage = 'streamer';
-
-      waitForElementAvailablity('.stage').then(() => {
-        $('.stage').addClass('me-video-stage');
-      });
 
       waitForElementAvailablity("[class*='chatContainer']").then(() => {
         $("[class*='chatContainer']").addClass('me-chat-container');
@@ -377,11 +387,12 @@ $(() => {
     });
 
     // Remove featured streams on homepage
-    if (settings.homePageOptions && settings.homePageOptions.removeFeatured) {
-      $('b-delve-featured-carousel, b-delve-games, b-delve-oom-channels').remove();
-    } else if ($('b-delve-featured-carousel, b-delve-games, b-delve-oom-channels').length === 0) {
-      //location.reload();
-    }
+    waitForElementAvailablity('b-delve-featured-carousel').then(() => {
+      if (settings.homePageOptions && settings.homePageOptions.removeFeatured) {
+        $('b-delve-featured-carousel, b-delve-games, b-delve-oom-channels').remove();
+      }
+      log('Homepage carousel is loaded.');
+    });
 
     initialPageLoad = false;
   }
@@ -635,6 +646,14 @@ $(() => {
       }
     }
 
+    waitForElementAvailablity('.stage').then(() => {
+        if (options.largerVideo === false) {
+            $('.stage').removeClass('me-video-stage');
+        } else {
+            $('.stage').addClass('me-video-stage');
+        }
+    });
+
     // Auto Close Costreams
     if (options.autoCloseCostreams && initialPageLoad) {
       let costreamPage = detectCostreams();
@@ -648,39 +667,7 @@ $(() => {
 
     // Auto Mute Stream
     if (options.autoMute && initialPageLoad) {
-      let muteStreamTries = 0;
-      let autoMuteInterval = setInterval(function() {
-        let volumeOff = $('[icon="volume_off"]');
-        let volumeUp = $('[icon="volume_up"]');
-        let volumeDown = $('[icon="volume_down"]');
-
-        if (volumeOff.length >= 1) {
-          if (!volumeOff.attr('hidden')) {
-            log('Stream is already muted. No need to mute again.');
-            clearInterval(autoMuteInterval);
-          } else if (volumeUp.length >= 1 && !volumeUp.attr('hidden')) {
-            volumeUp.click();
-            log('Auto muted the stream successfully.');
-            clearInterval(autoMuteInterval);
-          } else if (volumeDown.length >= 1 && !volumeDown.attr('hidden')) {
-            volumeUp.click();
-            log('Auto muted the stream successfully.');
-            clearInterval(autoMuteInterval);
-          } else if (muteStreamTries < 10) {
-            muteStreamTries++;
-            log('Cant find auto mute button. Trying again.');
-          } else {
-            clearInterval(autoMuteInterval);
-            log('Tried to auto mute for 10 seconds and failed.');
-          }
-        } else if (muteStreamTries < 10) {
-          muteStreamTries++;
-          log('Cant find auto mute button. Trying again.');
-        } else {
-          clearInterval(autoMuteInterval);
-          log('Tried to auto mute for 10 seconds and failed.');
-        }
-      }, 1000);
+        triggerAutomute();
     }
 
     if (settings.generalOptions.highlightFavorites) {
@@ -866,23 +853,7 @@ $(() => {
 
           // Auto mute when a stream hosts someone.
           if (updatedOptions.autoMuteOnHost && streamerName !== cache.mutedHost) {
-            let muteStreamTries = 0;
-            let autoMuteInterval = setInterval(function() {
-              if ($('.icon-volume_up, .icon-volume_down').length >= 1) {
-                $('.icon-volume_up, .icon-volume_down').click();
-                log('Auto muted the stream successfully.');
-                clearInterval(autoMuteInterval);
-              } else if ($('.icon-volume_off').length >= 1) {
-                clearInterval(autoMuteInterval);
-                log('Stream is already muted. No need to mute again.');
-              } else if (muteStreamTries < 10) {
-                muteStreamTries++;
-                log('Cant find auto mute button. Trying again.');
-              } else {
-                clearInterval(autoMuteInterval);
-                log('Tried to auto mute for 10 seconds and failed.');
-              }
-            }, 1000);
+            triggerAutomute();
             cache.mutedHost = streamerName;
           }
         }
@@ -915,28 +886,52 @@ $(() => {
 
     // add theater mode btn
     // wait for video controls to load
-    waitForElementAvailablity('.toolbar').then(() => {
+    waitForElementAvailablity('.spectre-player').then(() => {
       if ($('[theater-mode-btn-container]').length < 1) {
-        // copy the fullscreen button so we can make it into the theater btn
-        let theaterBtn = $('#fullscreen-button')
-          .parent()
-          .clone();
 
-        // add an attr for us to check for it later
-        theaterBtn.attr('theater-mode-btn-container', '');
-        theaterBtn.attr('title', 'MixrElixr: Theater Mode');
+        let findFullscreenBtn = () => {
+          log("attempting to create theater mode button...");
 
-        theaterBtn.addClass('me-tooltip');
+          // copy the fullscreen button so we can make it into the theater btn
+          let fullscreenBtn = $(".spectre-player")
+            .children("div")
+            .children().eq(1)
+            .children().eq(2)
+            .children()
+            .children().eq(1)
+            .children().eq(4);
 
-        // change the icon
-        theaterBtn.find('span.set-material').text('event_seat');
+          if (fullscreenBtn.length < 1) {
+            log("Couldnt find fullscreen button... trying again in a bit.");
+            setTimeout(() => findFullscreenBtn(), 500);
+            return;
+          }
 
-        // add click handler
-        theaterBtn.on('click', function() {
-          toggleTheaterMode();
-        });
+          log("Found fullscreen button!");
 
-        theaterBtn.insertBefore($('#fullscreen-button').parent());
+          let theaterBtn = fullscreenBtn.clone();
+
+          // add an attr for us to check for it later
+          theaterBtn.attr('theater-mode-btn-container', '');
+
+          // change the icon
+          theaterBtn.find('i').text('event_seat');
+
+          // change tooltip text
+          theaterBtn.find('span').text('MixrElixr: Theater Mode');
+
+          // add click handler
+          theaterBtn.on('click', function() {
+            toggleTheaterMode();
+          });
+
+          theaterBtn.insertBefore(fullscreenBtn);
+        };
+
+
+        setTimeout(() => {
+          findFullscreenBtn();
+        }, 250);
       }
     });
 
@@ -954,7 +949,7 @@ $(() => {
   }
 
   function toggleTheaterMode() {
-    let theaterElements = $('body,b-desktop-header,b-channel-info-bar,.profile-header,.profile-blocks, b-notifications,.channel-page,b-desktop-header,.chat,.stage.aspect-16-9');
+    let theaterElements = $('body,b-desktop-header, b-nav-host > div, b-channel-info-bar,.profile-header,.profile-blocks, b-notifications,.channel-page,b-desktop-header,.chat,.stage.aspect-16-9');
     if (theaterElements.hasClass('theaterMode')) {
       theaterElements.removeClass('theaterMode');
       $('.channel-info-container').show();
@@ -1016,39 +1011,30 @@ $(() => {
   function closeCostreams(streamerName) {
     return new Promise(async resolve => {
 
+        if (streamerName == null) return resolve();
+
       log("Closing feeds for everyone except " + streamerName);
 
       const profileSelector = '.costream-rollout .profile';
 
-      try {
-        await waitForElementAvailablity(profileSelector, 100, 250);
-      } catch (err) {
-        log('Costream profile never came available.');
-        return resolve();
-      }
+      $.deinitialize(profileSelector);
+      $.initialize(profileSelector, function() {
+        //if (!initialPageLoad) return;
 
-      let profile = $('.costream-rollout .profile');
-
-      // Profile divs have appeared
-      log('Profiles loaded');
-      profile.each(function() {
-        log($(this).text());
         let streamerFeed = $(this);
         let text = streamerFeed.text();
-        if (text && !text.includes(streamerName.trim())) {
-          let closeBtn = streamerFeed
-            .siblings()
-            .eq(0)
-            .children()[2];
-          if (closeBtn) {
-            closeBtn.click();
-          }
+        if (text && text.trim() !== streamerName.trim()) {
+            let closeBtn = streamerFeed
+                .siblings()
+                .eq(0)
+                .children()[2];
+            if (closeBtn) {
+                closeBtn.click();
+            }
         }
       });
 
-      setTimeout(() => {
-        resolve();
-      }, 100);
+      resolve();
     });
   }
 
@@ -1781,6 +1767,11 @@ $(() => {
           }
         }
       }
+
+      setTimeout(() => {
+        scrollChatIfCloseToBottom(options.textSize);
+      }, 10);
+
     });
 
     scrollChatToBottom();
@@ -1925,6 +1916,25 @@ $(() => {
     }
   }
 
+  function scrollChatIfCloseToBottom(textSize) {
+    let chatContainer = $('.elixr-chat-container');
+    let current = chatContainer.scrollTop();
+    let height = chatContainer[0].scrollHeight - chatContainer.height();
+    let percent = (current / height) * 100;
+
+    // Some dirty math to decrease our minimum percent the bigger the user
+    // has set their text to be (Because one long message could scroll things down farther)
+    let minimumPercent = 96.5;
+    if (textSize >= 16) {
+      let scaled = textSize - 16;
+      let offset = scaled / 10;
+      minimumPercent -= offset;
+    }
+    if (percent >= minimumPercent && percent < 100) {
+      scrollChatToBottom();
+    }
+  }
+
   function scrollChatToBottom() {
     let chatContainer = $('.elixr-chat-container');
     chatContainer.scrollTop(chatContainer[0].scrollHeight);
@@ -1959,15 +1969,15 @@ $(() => {
     return new Promise(resolve => {
       getSettings().then(savedSettings => {
         settings = savedSettings;
-        console.log('got settings');
-        console.log(settings);
         resolve();
       });
     });
   }
 
   function getSettings() {
-    return browser.storage.sync.get({
+    let storage = onlyLocalStorage ? browser.storage.local : browser.storage.sync;
+
+    return storage.get({
         streamerPageOptions: { channelEmotes: true, globalEmotes: true },
         homePageOptions: { pinSearchToTop: true },
         generalOptions: { highlightFavorites: true }
@@ -2207,14 +2217,23 @@ $(() => {
     return favorites;
   }
 
-  function syncFavorites(favorites) {
+  async function syncFavorites(favorites) {
     log('Syncing Favorites list: ' + favorites);
-    browser.storage.sync.set(
+
+    let storage = onlyLocalStorage ? browser.storage.local : browser.storage.sync;
+
+    if (!settings) {
+        await loadSettings();
+    }
+
+    let generalOptions = settings.generalOptions || {};
+    generalOptions.favoriteFriends = favorites;
+
+    storage.set(
       {
-        generalOptions: {
-          favoriteFriends: favorites
-        }
-      });
+        generalOptions: generalOptions
+      }
+    );
   }
 
   // Checks the Mixer API to find a co-stream id.
@@ -2304,7 +2323,6 @@ $(() => {
       });
     } else if (request.query === 'currentStreamerName') {
       if (cache.currentPage === 'streamer') {
-        console.log(cache.currentStreamerName);
         sendResponse({ streamerName: cache.currentStreamerName });
       }
     }
@@ -2331,20 +2349,47 @@ $(() => {
     }
   }
 
+  function triggerAutomute() {
+    log("attempting to auto mute...");
+    waitForElementAvailablity('.spectre-player').then(() => {
+        log("Found video toolbar!");
+        let muteButton = $(".spectre-player")
+            .children("div")
+            .children().eq(1)
+            .children().eq(2)
+            .children()
+            .children().eq(1)
+            .children().eq(1)
+            .children("button");
+
+        let muteBtnType = muteButton.children("i").text();
+
+        log("Checking if stream is already muted...");
+
+        if (muteBtnType !== "volume_off") {
+            log("muting stream!");
+            muteButton.click();
+        }
+    });
+  }
+
   function getLastChangeLog() {
-      return browser.storage.sync.get(
-          {
-            internal: {
-              lastChangeLog: null
-            }
-          }
-      ).then(options => {
-          return options.internal.lastChangeLog;
-      });
+    let storage = onlyLocalStorage ? browser.storage.local : browser.storage.sync;
+
+    return storage.get(
+        {
+        internal: {
+            lastChangeLog: null
+        }
+    }
+    ).then(options => {
+        return options.internal.lastChangeLog;
+    });
   }
 
   function setLastChangeLog(version) {
-    browser.storage.sync.set(
+    let storage = onlyLocalStorage ? browser.storage.local : browser.storage.sync;
+    storage.set(
       {
         internal: {
           lastChangeLog: version
@@ -2387,7 +2432,7 @@ $(() => {
     }
   }
 
-  changeLogModalCheck();
+  //changeLogModalCheck();
 
   // tooltip listener
   $.initialize('.me-tooltip', function() {

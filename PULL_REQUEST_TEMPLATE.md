@@ -10,10 +10,6 @@ We must be able to understand the design of your change from this description.
 
 -->
 
-### Alternate Designs
-
-<!-- Explain what other alternates were considered and why the proposed version was selected -->
-
 ### Benefits
 
 <!-- What benefits will be realized by the code change? -->
@@ -24,7 +20,7 @@ We must be able to understand the design of your change from this description.
 
 ### Applicable Issues
 
-<!-- Enter any applicable Issues here -->
+<!-- Enter any applicable Issues (link them or reference their ID) here -->
 
 
 > Note:

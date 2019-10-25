@@ -1,12 +1,24 @@
 import browser from 'webextension-polyfill';
 
+import Bowser from 'bowser';
+const browserEnv = Bowser.getParser(window.navigator.userAgent);
+const onlyLocalStorage = browserEnv.satisfies({
+  Linux: {
+    Chrome: '>0'
+  },
+  'Chrome OS': {
+    Chrome: '>0'
+  }
+});
+
 global.settingsStorage = {
   methods: {
     fetchSettings: function() {
       let app = this;
       let defaults = app.getDefaultOptions();
 
-      return browser.storage.sync.get({
+      let storage = onlyLocalStorage ? browser.storage.local : browser.storage.sync;
+      return storage.get({
         streamerPageOptions: defaults.streamerPageOptions,
         homePageOptions: defaults.homePageOptions,
         generalOptions: defaults.generalOptions
@@ -14,10 +26,10 @@ global.settingsStorage = {
     },
     saveAllSettings: function(settings, emitEvent = true) {
       let app = this;
-      browser.storage.sync
+      let storage = onlyLocalStorage ? browser.storage.local : browser.storage.sync;
+      storage
         .set(settings)
         .then(() => {
-          console.log('SAVED SETTINGS!');
           if (emitEvent) {
             app.emitSettingUpdatedEvent();
           }
@@ -37,8 +49,12 @@ global.settingsStorage = {
       });
     },
     saveGeneralOptions: function(options) {
-      this.saveAllSettings({
-        generalOptions: options
+      let app = this;
+      app.fetchSettings().then(data => {
+        let combinedOptions = { ...data.generalOptions, ...options };
+        this.saveAllSettings({
+          generalOptions: combinedOptions
+        });
       });
     },
     getDefaultOptions: function() {
@@ -72,7 +88,8 @@ global.settingsStorage = {
             hideStyle: 'blur',
             enableHideKeywordsWhenMod: false,
             useCustomFontSize: false,
-            textSize: 15
+            textSize: 15,
+            largerVideo: true
           },
           overrides: {}
         },
@@ -84,10 +101,11 @@ global.settingsStorage = {
         generalOptions: {
           declutterTopBar: true,
           showBadge: true,
+          onlyShowFavoritesCount: false,
           favoriteFriends: [],
           highlightFavorites: true,
           liveNotificationsMode: 'favorites',
-          playLiveNotificationSound: true,
+          playLiveNotificationSound: false,
           liveNotificationSoundType: 'default'
         }
       };

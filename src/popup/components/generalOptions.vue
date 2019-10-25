@@ -8,8 +8,12 @@
 
             <checkbox-toggle :value.sync="declutterTopBar" @changed="saveSettings()" label="Declutter The Top Navbar" tooltip="Condense nav links, simplify other buttons, and use the condensed Mixer logo"></checkbox-toggle>
 
-            <checkbox-toggle :value.sync="showBadge" @changed="showBadgeChanged()" label="Currently Online Count Badge" tooltip="Whether or not you want the number of currently streaming friends displaying as a badge on the Elixr icon."></checkbox-toggle>
-            
+            <checkbox-toggle :value.sync="showBadge" @changed="badgeUpdate()" label="Show Live Now Count" tooltip="Whether or not you want the number of currently live follows displaying as a badge on the Elixr icon."></checkbox-toggle>
+
+            <div v-show="showBadge" class="option-wrapper suboption" style="margin-bottom: 7px;">
+                <checkbox-toggle :value.sync="onlyShowFavoritesCount" @changed="badgeUpdate()" label="Only Show Live Favorites Count" tooltip="Only show the number of currently live favorites in the badge."></checkbox-toggle>
+            </div>
+
             <checkbox-toggle :value.sync="highlightFavorites" @changed="saveSettings()" label="Highlight Favorites" tooltip="Marks favorite streamers with green highlights while browsing Mixer."></checkbox-toggle>
 
             <div style="padding-bottom: 5px;" class="option-title">Favorite Streamers<option-tooltip name="favorite" title="Any streamers listed here will show up in the favorites list. If any favorite is streaming, the icon badge will be green instead of blue."></option-tooltip></div>
@@ -53,10 +57,11 @@ export default {
         },
     },
     methods: {
-        showBadgeChanged: function() {
-            bus.$emit('badge-change', this.showBadge);
+        badgeUpdate: function() {       
             this.saveSettings();
+            bus.$emit('badge-update', this.showBadge, this.onlyShowFavoritesCount);
         },
+        
         favoriteAdded: function(name) {
             bus.$emit('add-favorite', name);
         },
