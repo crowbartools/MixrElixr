@@ -667,39 +667,7 @@ $(() => {
 
     // Auto Mute Stream
     if (options.autoMute && initialPageLoad) {
-      let muteStreamTries = 0;
-      let autoMuteInterval = setInterval(function() {
-        let volumeOff = $('[icon="volume_off"]');
-        let volumeUp = $('[icon="volume_up"]');
-        let volumeDown = $('[icon="volume_down"]');
-
-        if (volumeOff.length >= 1) {
-          if (!volumeOff.attr('hidden')) {
-            log('Stream is already muted. No need to mute again.');
-            clearInterval(autoMuteInterval);
-          } else if (volumeUp.length >= 1 && !volumeUp.attr('hidden')) {
-            volumeUp.click();
-            log('Auto muted the stream successfully.');
-            clearInterval(autoMuteInterval);
-          } else if (volumeDown.length >= 1 && !volumeDown.attr('hidden')) {
-            volumeUp.click();
-            log('Auto muted the stream successfully.');
-            clearInterval(autoMuteInterval);
-          } else if (muteStreamTries < 10) {
-            muteStreamTries++;
-            log('Cant find auto mute button. Trying again.');
-          } else {
-            clearInterval(autoMuteInterval);
-            log('Tried to auto mute for 10 seconds and failed.');
-          }
-        } else if (muteStreamTries < 10) {
-          muteStreamTries++;
-          log('Cant find auto mute button. Trying again.');
-        } else {
-          clearInterval(autoMuteInterval);
-          log('Tried to auto mute for 10 seconds and failed.');
-        }
-      }, 1000);
+        triggerAutomute();
     }
 
     if (settings.generalOptions.highlightFavorites) {
@@ -885,23 +853,7 @@ $(() => {
 
           // Auto mute when a stream hosts someone.
           if (updatedOptions.autoMuteOnHost && streamerName !== cache.mutedHost) {
-            let muteStreamTries = 0;
-            let autoMuteInterval = setInterval(function() {
-              if ($('.icon-volume_up, .icon-volume_down').length >= 1) {
-                $('.icon-volume_up, .icon-volume_down').click();
-                log('Auto muted the stream successfully.');
-                clearInterval(autoMuteInterval);
-              } else if ($('.icon-volume_off').length >= 1) {
-                clearInterval(autoMuteInterval);
-                log('Stream is already muted. No need to mute again.');
-              } else if (muteStreamTries < 10) {
-                muteStreamTries++;
-                log('Cant find auto mute button. Trying again.');
-              } else {
-                clearInterval(autoMuteInterval);
-                log('Tried to auto mute for 10 seconds and failed.');
-              }
-            }, 1000);
+            triggerAutomute();
             cache.mutedHost = streamerName;
           }
         }
@@ -997,7 +949,7 @@ $(() => {
   }
 
   function toggleTheaterMode() {
-    let theaterElements = $('body,b-desktop-header,b-channel-info-bar,.profile-header,.profile-blocks, b-notifications,.channel-page,b-desktop-header,.chat,.stage.aspect-16-9');
+    let theaterElements = $('body,b-desktop-header, b-nav-host > div, b-channel-info-bar,.profile-header,.profile-blocks, b-notifications,.channel-page,b-desktop-header,.chat,.stage.aspect-16-9');
     if (theaterElements.hasClass('theaterMode')) {
       theaterElements.removeClass('theaterMode');
       $('.channel-info-container').show();
@@ -2397,6 +2349,30 @@ $(() => {
     }
   }
 
+  function triggerAutomute() {
+    log("attempting to auto mute...");
+    waitForElementAvailablity('.spectre-player').then(() => {
+        log("Found video toolbar!");
+        let muteButton = $(".spectre-player")
+            .children("div")
+            .children().eq(1)
+            .children().eq(2)
+            .children()
+            .children().eq(1)
+            .children().eq(1)
+            .children("button");
+
+        let muteBtnType = muteButton.children("i").text();
+
+        log("Checking if stream is already muted...");
+
+        if (muteBtnType !== "volume_off") {
+            log("muting stream!");
+            muteButton.click();
+        }
+    });
+  }
+
   function getLastChangeLog() {
     let storage = onlyLocalStorage ? browser.storage.local : browser.storage.sync;
 
@@ -2456,7 +2432,7 @@ $(() => {
     }
   }
 
-  changeLogModalCheck();
+  //changeLogModalCheck();
 
   // tooltip listener
   $.initialize('.me-tooltip', function() {

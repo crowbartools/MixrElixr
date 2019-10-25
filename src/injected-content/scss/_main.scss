@@ -160,6 +160,10 @@ b-desktop-header.theaterMode {
     visibility: hidden;
 }
 
+b-nav-host > div.theaterMode {
+    display: none;
+}
+
 b-channel-info-bar.theaterMode {
     display: none;
     visibility: hidden;

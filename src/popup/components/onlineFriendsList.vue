@@ -171,8 +171,7 @@ export default {
                     
 					app.friendsLimit = 10;
 				}
-			}
-			
+			}			
 
 			app.updateIconBadge();
 
