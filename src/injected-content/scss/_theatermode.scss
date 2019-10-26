@@ -1,0 +1,108 @@
+/*Theater Mode*/
+.channel-page > header,
+.profile-header,
+.profile-blocks,
+.user,
+.channel-page,
+.channel-page > aside,
+b-notifications {
+    transition: 0.5s;
+}
+
+.profile-header.theaterMode,
+.profile-blocks.theaterMode {
+    display:none!important;
+    visibility: hidden !important;
+}
+
+.channel-page.theaterMode,
+.channel-page > aside.theaterMode {
+    background: #0b0f15!important;
+}
+
+.channel-page.theaterMode {
+    //margin-top: 30px!important;
+    //max-height: 100%!important;
+    height: calc(100vh) !important;
+    max-height: calc(100vh) !important;
+}
+
+.channel-page > aside.theaterMode {
+    //padding-top: 0px!important;
+}
+
+.channel-page.theaterMode > section {
+    //height: 100%;
+}
+
+body.theaterMode {
+    background: #0b0f15;
+}
+
+.me-chat-container.theaterMode {
+    background: #181b20;
+}
+
+b-desktop-header.theaterMode {
+    opacity: 0!important;
+    display: none;
+    visibility: hidden;
+}
+
+body.theaterMode b-mobile-header, 
+body.theaterMode b-nav-host {
+    display: none;
+}
+
+b-channel-info-bar.theaterMode > .info-bar {
+    //display: none;
+    //visibility: hidden;
+    opacity: 0;
+    transition: 0.3s;
+    background: #0000006b !important;
+    box-shadow: none !important;
+}
+
+.toggle-interactive.theaterMode, 
+b-skills-button-host-component.theaterMode {
+    z-index: 99999;
+}
+
+b-nav-host > div.theaterMode {
+    display: none;
+}
+
+.channel-info-container.theaterMode {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+}
+
+.channel-info-container.theaterMode .skills-tray-container {
+    top: 84px !important;
+    bottom: 0 !important;
+}
+
+
+.stage.aspect-16-9.theaterMode {
+    height: calc(100vh) !important;
+    max-height: calc(100vh) !important;
+}
+
+b-channel-page-wrapper .stage.aspect-16-9.me-video-stage, 
+b-channel-page-wrapper .stage.me-video-stage, 
+b-channel-page-wrapper .stage:not(.aspect-16-9).me-video-stage{
+    height: calc(100vh - 120px);
+    max-height: calc(100vh - 120px);
+}
+
+.chat.theaterMode {
+    background: #161D29!important;
+    top: 0px !important;
+}
+
+.chat.relative {
+    position: relative !important;
+}
+
+/* End Theater Mode */

@@ -33,6 +33,7 @@ $(() => {
   let settings = null;
   let cache = {};
   let initialPageLoad = true;
+  let theaterMode = false;
 
   const ElementSelector = {
     CHAT_CONTAINER: "[class*='ChatMessages']",
@@ -426,6 +427,16 @@ $(() => {
     });
   }
 
+  // theater mode listeners
+  let infoBarShowHide = debounce(function(shouldShow) {
+    if (theaterMode) {
+      if (document.hasFocus()) {
+        let opacityValue = shouldShow ? "1" : "0";
+        $("b-channel-info-bar > .info-bar").css("opacity", opacityValue);
+      }
+    }
+  }, 250);
+
   function cacheGlobalElixrEmotes() {
     return new Promise(resolve => {
       // Gets user emotes if there are any, and caches the results.
@@ -669,6 +680,19 @@ $(() => {
     if (options.autoMute && initialPageLoad) {
         triggerAutomute();
     }
+
+    $(".channel-page").on("mouseover", function() {
+      infoBarShowHide(true);
+    });
+
+    $(".channel-page").on("mouseout", function() {
+      infoBarShowHide(false);
+    });
+
+    $(".channel-page").on("click", function() {
+      infoBarShowHide(true);
+    });
+
 
     if (settings.generalOptions.highlightFavorites) {
       // Let's get the Costream ID via API call
@@ -949,10 +973,11 @@ $(() => {
   }
 
   function toggleTheaterMode() {
-    let theaterElements = $('body,b-desktop-header, b-nav-host > div, b-channel-info-bar,.profile-header,.profile-blocks, b-notifications,.channel-page,b-desktop-header,.chat,.stage.aspect-16-9');
+    let theaterElements = $('body,b-desktop-header, .channel-info-container, .toggle-interactive, b-skills-button-host-component, b-nav-host > div, b-channel-info-bar,.profile-header,.profile-blocks, b-notifications,.channel-page,b-desktop-header,.chat,.stage.aspect-16-9');
     if (theaterElements.hasClass('theaterMode')) {
+      theaterMode = false;
+      $("b-channel-info-bar > .info-bar").css("opacity", "1");
       theaterElements.removeClass('theaterMode');
-      $('.channel-info-container').show();
       $('.stage').addClass('me-video-stage');
 
       $('.me-chat-container').removeClass('theaterMode');
@@ -974,6 +999,7 @@ $(() => {
 
       $.toast().reset('all');
     } else {
+      theaterMode = true;
       let minimizeInteractiveBtn = $('.hide-interactive');
       if (minimizeInteractiveBtn != null) {
         let isHideBtn = $('.icon-indeterminate_check_box');
@@ -1004,7 +1030,6 @@ $(() => {
       $('.stage').addClass('aspect-16-9 theaterMode');
       $('.stage').removeClass('me-video-stage');
       $('.me-chat-container').addClass('theaterMode');
-      $('.channel-info-container').hide();
     }
   }
 
@@ -1362,6 +1387,44 @@ $(() => {
         .catch(() => {});
     });
 
+    // Gives badges a class for easier targeting.
+    /*waitForElementAvailablity("span[class*='badge']").then(() => {
+      if (options.hideChannelProgression) {
+        $('.chat-progression').hide();
+      } else {
+        $('.chat-progression').show();
+      }
+    });*/
+
+    $("#elixr-chat-styles").remove();
+
+    $("body").prepend(`
+      <style id="elixr-chat-styles">
+
+       ${options.useCustomFontSize ? `
+          .elixr-chat-container > div > div > div {
+              font-size: ${options.textSize}px;
+              line-height: ${options.textSize + 9}px;
+              ${options.hideChatAvatars ? "margin-left: .5em;" : ""}
+          }
+       ` : ''}
+    
+       ${options.hideChatAvatars ? `               
+        .elixr-chat-container > div > div > img {
+            display: none;
+        }
+        ` : ''}
+
+       ${options.hideChannelProgression ? `               
+        .elixr-chat-container > div > div > div > span > span {
+            display: none;
+        }
+       ` : ''}
+       
+      </style>
+    `);
+
+
     // get rid of any previous registered callbacks for chat messages
     $.deinitialize(ElementSelector.CHAT_MESSAGE);
 
@@ -1371,41 +1434,35 @@ $(() => {
     $.initialize(ElementSelector.CHAT_MESSAGE, async function() {
       let messageContainer = $(this);
 
-      if (options.useCustomFontSize) {
+      /*if (options.useCustomFontSize) {
         messageContainer.find("[class*='messageContent']").css('font-size', `${options.textSize}px`);
         messageContainer.find("[class*='messageContent']").css('line-height', `${options.textSize + 9}px`);
       } else {
         messageContainer.find("[class*='messageContent']").css('font-size', '');
         messageContainer.find("[class*='messageContent']").css('line-height', '');
-      }
+      }*/
 
       // Gives chat avatar a class for easier targeting.
-      messageContainer.find("[class*='MessageContent']").addClass('message-content');
+      //messageContainer.find("[class*='MessageContent']").addClass('message-content');
 
       // Gives chat avatar a class for easier targeting.
-      messageContainer.find("[class*='ChatAvatar']").addClass('chat-avatar');
+      //messageContainer.find("[class*='ChatAvatar']").addClass('chat-avatar');
 
-      // Gives badges a class for easier targeting.
-      waitForElementAvailablity("span[class*='badge']").then(() => {
-        messageContainer.find("span[class*='badge']").each(function() {
-          // Check background image url for "fan-progression".
-          if ($(this).css('background').indexOf('fan-progression')) {
-              $(this).addClass('chat-progression');
-          }
+      /*messageContainer.find("span[class*='badge']").each(function() {
+        // Check background image url for "fan-progression".
+        if ($(this).css('background').indexOf('fan-progression')) {
+            $(this).addClass('chat-progression');
+        }
 
-          // Hide channel progression.
-          if (options.hideChannelProgression) {
-            $('.chat-progression').hide();
-          } else {
-            $('.chat-progression').show();
-          }
-
-        });
-      });
+        // Hide channel progression.
+        if (options.hideChannelProgression) {
+          $('.chat-progression').hide();
+        }
+      });*/
 
 
       // Hide chat avatars and reposition chat.
-      if (options.hideChatAvatars) {
+      /*if (options.hideChatAvatars) {
         $('.chat-avatar').hide();
         $('.message-content').css('margin-left', '.5em');
       } else {
@@ -1413,7 +1470,7 @@ $(() => {
           $('.chat-avatar').show();
           $('.message-content').css('margin-left', '36px');
         }
-      }
+      }*/
 
       let alreadyChecked = messageContainer.attr('elixrfied');
       // check to see if we have already looked at this chat messsage.
