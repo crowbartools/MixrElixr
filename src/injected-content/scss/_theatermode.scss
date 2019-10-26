@@ -35,6 +35,10 @@ b-notifications {
     //height: 100%;
 }
 
+.channel-page.theaterMode b-host-bar {
+    display: none !important;
+}
+
 body.theaterMode {
     background: #0b0f15;
 }
@@ -63,7 +67,7 @@ b-channel-info-bar.theaterMode > .info-bar {
     box-shadow: none !important;
 }
 
-.toggle-interactive.theaterMode, 
+.channel-info-container.theaterMode .toggle-interactive, 
 b-skills-button-host-component.theaterMode {
     z-index: 99999;
 }
