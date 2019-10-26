@@ -1123,7 +1123,7 @@ $(() => {
       } else {
         chatScrollGlued = false;
       }
-    }, 15);
+    }, 100);
 
     $('.elixr-chat-container').off("scroll", updateScrollGlue);
     $('.elixr-chat-container').on("scroll", updateScrollGlue);
@@ -1643,7 +1643,7 @@ $(() => {
                     scrollChatToBottom();
                     log("Scrolling to bottom!");
                   }
-                }, 50);
+                }, 5);
               });
 
             // tag this component so we dont attempt to look for emotes again
