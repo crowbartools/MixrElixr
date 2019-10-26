@@ -35,6 +35,8 @@ $(() => {
   let initialPageLoad = true;
   let theaterMode = false;
 
+  let scrollStuck = true;
+
   const ElementSelector = {
     CHAT_CONTAINER: "[class*='ChatMessages']",
     CHAT_MESSAGE: "div[class*='message_']"
@@ -1107,6 +1109,27 @@ $(() => {
       .children()
       .addClass('elixr-chat-container');
 
+    let updateScrollStuck = debounce(function() {
+      let chatContainer = $('.elixr-chat-container');
+
+      let current = chatContainer.scrollTop();
+      let height = chatContainer[0].scrollHeight - chatContainer.height();
+      let percent = (current / height) * 100;
+
+      let minimumPercent = 99;
+
+      if (percent >= minimumPercent) {
+        scrollStuck = true;
+      } else {
+        scrollStuck = false;
+      }
+      log("chat scroll is stuck: " + scrollStuck);
+    }, 15);
+
+    $('.elixr-chat-container').off("scroll", updateScrollStuck);
+    $('.elixr-chat-container').on("scroll", updateScrollStuck);
+
+
     // Mention BG Color
     if (options.mentionChatBGColor) {
       let chatContainer = $('.elixr-chat-container');
@@ -1615,6 +1638,13 @@ $(() => {
                     avatar.css('top', usernameTop - 3 + 'px');
                   }
                 }
+
+                setTimeout(() => {
+                  if (scrollStuck) {
+                    scrollChatToBottom();
+                    log("Scrolling to bottom!");
+                  }
+                }, 50);
               });
 
             // tag this component so we dont attempt to look for emotes again
@@ -1791,14 +1821,11 @@ $(() => {
           }
         }
       }
-
-      setTimeout(() => {
-        scrollChatIfCloseToBottom(options.textSize);
-      }, 10);
-
     });
 
-    scrollChatToBottom();
+    setTimeout(() => {
+      scrollChatToBottom();
+    }, 10);
 
     initialPageLoad = false;
   }
