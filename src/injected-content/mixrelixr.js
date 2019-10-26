@@ -423,15 +423,26 @@ $(() => {
     });
   }
 
-  // theater mode listeners
-  let infoBarShowHide = debounce(function(shouldShow) {
+  let hideTimeout;
+  let infoBarShown = false;
+  function hideInfoBar() {
     if (theaterMode) {
-      if (document.hasFocus()) {
-        let opacityValue = shouldShow ? "1" : "0";
-        $("b-channel-info-bar > .info-bar").css("opacity", opacityValue);
-      }
+      $("b-channel-info-bar > .info-bar").css("opacity", "0");
+      infoBarShown = false;
     }
-  }, 250);
+  }
+
+  // theater mode listeners
+  let infoBarShowHide = debounce(function() {
+    if (theaterMode) {
+      if (!infoBarShown) {
+        $("b-channel-info-bar > .info-bar").css("opacity", "1");
+        infoBarShown = true;
+      }
+      clearTimeout(hideTimeout);
+      hideTimeout = setTimeout(hideInfoBar, 3000);
+    }
+  }, 50);
 
   function cacheGlobalElixrEmotes() {
     return new Promise(resolve => {
@@ -677,16 +688,8 @@ $(() => {
         triggerAutomute();
     }
 
-    $(".channel-page").on("mouseover", function() {
-      infoBarShowHide(true);
-    });
-
-    $(".channel-page").on("mouseout", function() {
-      infoBarShowHide(false);
-    });
-
-    $(".channel-page").on("click", function() {
-      infoBarShowHide(true);
+    $(".channel-page").on("mousemove", function() {
+      infoBarShowHide();
     });
 
 
@@ -972,6 +975,8 @@ $(() => {
     let theaterElements = $('body,b-desktop-header, .channel-info-container, b-skills-button-host-component, b-nav-host > div, b-channel-info-bar,.profile-header,.profile-blocks, b-notifications,.channel-page,b-desktop-header,.chat,.stage.aspect-16-9');
     if (theaterElements.hasClass('theaterMode')) {
       theaterMode = false;
+      clearTimeout(hideTimeout);
+      infoBarShown = true;
       $("b-channel-info-bar > .info-bar").css("opacity", "1");
       theaterElements.removeClass('theaterMode');
       $('.stage').addClass('me-video-stage');
