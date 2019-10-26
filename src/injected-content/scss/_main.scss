@@ -111,86 +111,6 @@
     opacity: 0.6;
 }
 
-/*Theater Mode*/
-.channel-page > header,
-.profile-header,
-.profile-blocks,
-.user,
-.channel-page,
-.channel-page > aside,
-b-notifications {
-    transition: 0.5s;
-}
-
-.profile-header.theaterMode,
-.profile-blocks.theaterMode {
-    display:none!important;
-    visibility: hidden !important;
-}
-
-.channel-page.theaterMode,
-.channel-page > aside.theaterMode {
-    background: #0b0f15!important;
-}
-
-.channel-page.theaterMode {
-    margin-top: 30px!important;
-    max-height: 100%!important;
-}
-
-.channel-page > aside.theaterMode {
-    padding-top: 0px!important;
-}
-
-.channel-page.theaterMode > section {
-    height: 100%;
-}
-
-body.theaterMode {
-    background: #0b0f15;
-}
-
-.me-chat-container.theaterMode {
-    background: #181b20;
-}
-
-b-desktop-header.theaterMode {
-    opacity: 0!important;
-    display: none;
-    visibility: hidden;
-}
-
-b-nav-host > div.theaterMode {
-    display: none;
-}
-
-b-channel-info-bar.theaterMode {
-    display: none;
-    visibility: hidden;
-}
-
-.stage.aspect-16-9.theaterMode {
-    max-height: 100% !important;
-}
-
-b-channel-page-wrapper .stage.aspect-16-9.me-video-stage, 
-b-channel-page-wrapper .stage.me-video-stage, 
-b-channel-page-wrapper .stage:not(.aspect-16-9).me-video-stage{
-    height: calc(100vh - 120px);
-    max-height: calc(100vh - 120px);
-}
-
-.chat.theaterMode {
-    background: #161D29!important;
-    top: 0px !important;
-}
-
-.chat.relative {
-    position: relative !important;
-}
-
-/* End Theater Mode */
-
 /* Dropdown */
 .me-dropbtn {
     background-color: transparent;
@@ -349,14 +269,14 @@ b-browse-channels-header > div > .control-filter.me-pinned-search {
 }
 
 b-browse-channels-header > div > .me-pinned-search.me-searchbar {
-    top: 3px;
+    top: 23px;
     left: 50%;
     transform: translateX(-50%);
     z-index:50;
 }
 
 b-browse-channels-header > div > .me-pinned-search.me-filterbtn {
-    top: 11px;
+    top: 31px;
     left: 50%;
     transform: translateX(calc(-50% + 215px));
     z-index:50;

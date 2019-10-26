@@ -33,6 +33,9 @@ $(() => {
   let settings = null;
   let cache = {};
   let initialPageLoad = true;
+  let theaterMode = false;
+
+  let chatScrollGlued = true;
 
   const ElementSelector = {
     CHAT_CONTAINER: "[class*='ChatMessages']",
@@ -99,35 +102,31 @@ $(() => {
 
   function applySiteWideChanges() {
     if (settings.generalOptions.declutterTopBar !== false) {
-      waitForElementAvailablity('.language-selector').then(() => {
+      /*waitForElementAvailablity('.language-selector').then(() => {
         $('.language-selector').addClass('me-simplified-topbar');
-      });
+      });*/
 
-      waitForElementAvailablity('b-notifications').then(() => {
+      /*waitForElementAvailablity('b-notifications').then(() => {
         $('b-notifications').addClass('me-simplified-topbar');
       });
 
       waitForElementAvailablity('b-embers-button').then(() => {
         $('b-embers-button').addClass('me-simplified-topbar');
-      });
+      });*/
 
-      waitForElementAvailablity('.logo').then(() => {
-        $('.logo').addClass('me-simplified-topbar');
-      });
-
-      waitForElementAvailablity(".nav-link[routerlink='/browse/all']").then(() => {
+      /*waitForElementAvailablity(".nav-link[routerlink='/browse/all']").then(() => {
         $(".nav-link[routerlink='/browse/all']").hide();
       });
 
       waitForElementAvailablity(".nav-link[routerlink='/browse/games']").then(() => {
         $(".nav-link[routerlink='/browse/games']").hide();
+      });*/
+
+      waitForElementAvailablity("a[href='/dashboard/onboarding']").then(() => {
+        $("a[href='/dashboard/onboarding']").hide();
       });
 
-      waitForElementAvailablity(".nav-link[routerlink='/me/partnership/apply']").then(() => {
-        $(".nav-link[routerlink='/me/partnership/apply']").hide();
-      });
-
-      waitForElementAvailablity(".nav-link[routerlink='/browse/following']").then(() => {
+      /*waitForElementAvailablity(".nav-link[routerlink='/browse/following']").then(() => {
 
         let dropdownExists = $(".me-dropdown") && $(".me-dropdown").length > 0;
         if (dropdownExists) return;
@@ -154,7 +153,7 @@ $(() => {
         $(".nav-link[routerlink='/browse/following']").after(browseDropdown);
 
         searchbarPositionCheck();
-      });
+      });*/
     }
   }
 
@@ -273,7 +272,7 @@ $(() => {
     let searchBar = $('b-browse-channels-header')
       .children()
       .find('.control.input');
-    let pageHeader = $('b-desktop-header');
+    let pageHeader = $('b-nav-host');
 
     let searchHeader = $('b-browse-framework').children('header');
 
@@ -363,7 +362,7 @@ $(() => {
 
         if (pinSearchBar) {
           setTimeout(() => {
-            let pageHeaderCheck = $('b-desktop-header');
+            let pageHeaderCheck = $('b-nav-host');
             pageHeaderCheck.addClass('searchPinned');
           }, 250);
         }
@@ -425,6 +424,27 @@ $(() => {
       }
     });
   }
+
+  let hideTimeout;
+  let infoBarShown = false;
+  function hideInfoBar() {
+    if (theaterMode) {
+      $("b-channel-info-bar > .info-bar").css("opacity", "0");
+      infoBarShown = false;
+    }
+  }
+
+  // theater mode listeners
+  let infoBarShowHide = debounce(function() {
+    if (theaterMode) {
+      if (!infoBarShown) {
+        $("b-channel-info-bar > .info-bar").css("opacity", "1");
+        infoBarShown = true;
+      }
+      clearTimeout(hideTimeout);
+      hideTimeout = setTimeout(hideInfoBar, 3000);
+    }
+  }, 50);
 
   function cacheGlobalElixrEmotes() {
     return new Promise(resolve => {
@@ -669,6 +689,11 @@ $(() => {
     if (options.autoMute && initialPageLoad) {
         triggerAutomute();
     }
+
+    $(".channel-page").on("mousemove", function() {
+      infoBarShowHide();
+    });
+
 
     if (settings.generalOptions.highlightFavorites) {
       // Let's get the Costream ID via API call
@@ -949,10 +974,13 @@ $(() => {
   }
 
   function toggleTheaterMode() {
-    let theaterElements = $('body,b-desktop-header, b-nav-host > div, b-channel-info-bar,.profile-header,.profile-blocks, b-notifications,.channel-page,b-desktop-header,.chat,.stage.aspect-16-9');
+    let theaterElements = $('body,b-desktop-header, .channel-info-container, b-skills-button-host-component, b-nav-host > div, b-channel-info-bar,.profile-header,.profile-blocks, b-notifications,.channel-page,b-desktop-header,.chat,.stage.aspect-16-9');
     if (theaterElements.hasClass('theaterMode')) {
+      theaterMode = false;
+      clearTimeout(hideTimeout);
+      infoBarShown = true;
+      $("b-channel-info-bar > .info-bar").css("opacity", "1");
       theaterElements.removeClass('theaterMode');
-      $('.channel-info-container').show();
       $('.stage').addClass('me-video-stage');
 
       $('.me-chat-container').removeClass('theaterMode');
@@ -974,37 +1002,40 @@ $(() => {
 
       $.toast().reset('all');
     } else {
-      let minimizeInteractiveBtn = $('.hide-interactive');
-      if (minimizeInteractiveBtn != null) {
-        let isHideBtn = $('.icon-indeterminate_check_box');
-        if (isHideBtn != null && isHideBtn.length > 0) {
-          minimizeInteractiveBtn.click();
+      const isLive = $(".offline-message").length < 1;
+      if (isLive) {
+        theaterMode = true;
+        let minimizeInteractiveBtn = $('.hide-interactive');
+        if (minimizeInteractiveBtn != null) {
+          let isHideBtn = $('.icon-indeterminate_check_box');
+          if (isHideBtn != null && isHideBtn.length > 0) {
+            minimizeInteractiveBtn.click();
+          }
         }
+        setTimeout(() => {
+          theaterElements.addClass('theaterMode');
+
+          $.toast({
+            text: 'Press <span style="font-weight:bold;">ESC</span> at any time to exit.',
+            heading: 'Theater Mode Enabled',
+            showHideTransition: 'fade',
+            allowToastClose: true,
+            hideAfter: 4500,
+            stack: false,
+            position: 'top-center',
+            bgColor: '#151C29',
+            textColor: '#fff',
+            textAlign: 'center',
+            loader: true,
+            loaderBg: '#1FBAED'
+          });
+        }, 1);
+
+        $('b-stage').addClass('bui-arContent addedBuiAr');
+        $('.stage').addClass('aspect-16-9 theaterMode');
+        $('.stage').removeClass('me-video-stage');
+        $('.me-chat-container').addClass('theaterMode');
       }
-      setTimeout(() => {
-        theaterElements.addClass('theaterMode');
-
-        $.toast({
-          text: 'Press <span style="font-weight:bold;">ESC</span> at any time to exit.',
-          heading: 'Theater Mode Enabled',
-          showHideTransition: 'fade',
-          allowToastClose: true,
-          hideAfter: 4500,
-          stack: false,
-          position: 'top-center',
-          bgColor: '#151C29',
-          textColor: '#fff',
-          textAlign: 'center',
-          loader: true,
-          loaderBg: '#1FBAED'
-        });
-      }, 1);
-
-      $('b-stage').addClass('bui-arContent addedBuiAr');
-      $('.stage').addClass('aspect-16-9 theaterMode');
-      $('.stage').removeClass('me-video-stage');
-      $('.me-chat-container').addClass('theaterMode');
-      $('.channel-info-container').hide();
     }
   }
 
@@ -1077,6 +1108,26 @@ $(() => {
     $(ElementSelector.CHAT_CONTAINER)
       .children()
       .addClass('elixr-chat-container');
+
+    let updateScrollGlue = debounce(function() {
+      let chatContainer = $('.elixr-chat-container');
+
+      let current = chatContainer.scrollTop();
+      let height = chatContainer[0].scrollHeight - chatContainer.height();
+      let percent = (current / height) * 100;
+
+      let minimumPercent = 99;
+
+      if (percent >= minimumPercent) {
+        chatScrollGlued = true;
+      } else {
+        chatScrollGlued = false;
+      }
+    }, 100);
+
+    $('.elixr-chat-container').off("scroll", updateScrollGlue);
+    $('.elixr-chat-container').on("scroll", updateScrollGlue);
+
 
     // Mention BG Color
     if (options.mentionChatBGColor) {
@@ -1362,6 +1413,44 @@ $(() => {
         .catch(() => {});
     });
 
+    // Gives badges a class for easier targeting.
+    /*waitForElementAvailablity("span[class*='badge']").then(() => {
+      if (options.hideChannelProgression) {
+        $('.chat-progression').hide();
+      } else {
+        $('.chat-progression').show();
+      }
+    });*/
+
+    $("#elixr-chat-styles").remove();
+
+    $("body").prepend(`
+      <style id="elixr-chat-styles">
+
+       ${options.useCustomFontSize ? `
+          .elixr-chat-container div[class^="messageContent"] {
+              font-size: ${options.textSize}px;
+              line-height: ${options.textSize + 9}px;
+              ${options.hideChatAvatars ? "margin-left: .5em;" : ""}
+          }
+       ` : ''}
+    
+       ${options.hideChatAvatars ? `               
+        .elixr-chat-container img[class^="ChatAvatar"] {
+            display: none;
+        }
+        ` : ''}
+
+       ${options.hideChannelProgression ? `               
+        .elixr-chat-container div[class^="messageContent"] span[class^="badge"] {
+            display: none;
+        }
+       ` : ''}
+       
+      </style>
+    `);
+
+
     // get rid of any previous registered callbacks for chat messages
     $.deinitialize(ElementSelector.CHAT_MESSAGE);
 
@@ -1371,55 +1460,12 @@ $(() => {
     $.initialize(ElementSelector.CHAT_MESSAGE, async function() {
       let messageContainer = $(this);
 
-      if (options.useCustomFontSize) {
-        messageContainer.find("[class*='messageContent']").css('font-size', `${options.textSize}px`);
-        messageContainer.find("[class*='messageContent']").css('line-height', `${options.textSize + 9}px`);
-      } else {
-        messageContainer.find("[class*='messageContent']").css('font-size', '');
-        messageContainer.find("[class*='messageContent']").css('line-height', '');
-      }
-
-      // Gives chat avatar a class for easier targeting.
-      messageContainer.find("[class*='MessageContent']").addClass('message-content');
-
-      // Gives chat avatar a class for easier targeting.
-      messageContainer.find("[class*='ChatAvatar']").addClass('chat-avatar');
-
-      // Gives badges a class for easier targeting.
-      waitForElementAvailablity("span[class*='badge']").then(() => {
-        messageContainer.find("span[class*='badge']").each(function() {
-          // Check background image url for "fan-progression".
-          if ($(this).css('background').indexOf('fan-progression')) {
-              $(this).addClass('chat-progression');
-          }
-
-          // Hide channel progression.
-          if (options.hideChannelProgression) {
-            $('.chat-progression').hide();
-          } else {
-            $('.chat-progression').show();
-          }
-
-        });
-      });
-
-
-      // Hide chat avatars and reposition chat.
-      if (options.hideChatAvatars) {
-        $('.chat-avatar').hide();
-        $('.message-content').css('margin-left', '.5em');
-      } else {
-        if ($('.chat-avatar').is(":hidden")) {
-          $('.chat-avatar').show();
-          $('.message-content').css('margin-left', '36px');
-        }
-      }
-
       let alreadyChecked = messageContainer.attr('elixrfied');
       // check to see if we have already looked at this chat messsage.
       if (alreadyChecked) {
         return;
       }
+
       messageContainer.attr('elixrfied', 'true');
 
       // Give chat messages a chat message class for easier targeting.
@@ -1591,6 +1637,13 @@ $(() => {
                     avatar.css('top', usernameTop - 3 + 'px');
                   }
                 }
+
+                setTimeout(() => {
+                  if (chatScrollGlued) {
+                    scrollChatToBottom();
+                    log("Scrolling to bottom!");
+                  }
+                }, 5);
               });
 
             // tag this component so we dont attempt to look for emotes again
@@ -1767,14 +1820,11 @@ $(() => {
           }
         }
       }
-
-      setTimeout(() => {
-        scrollChatIfCloseToBottom(options.textSize);
-      }, 10);
-
     });
 
-    scrollChatToBottom();
+    setTimeout(() => {
+      scrollChatToBottom();
+    }, 10);
 
     initialPageLoad = false;
   }
@@ -1787,7 +1837,7 @@ $(() => {
     if (!pinSearchBar) return;
 
     // see if the header element has the 'collapsed' class (only has it when page is scrolled down a bit)
-    let topNavCollapsed = $('b-desktop-header').hasClass('collapsed');
+    let topNavCollapsed = $('b-notifications').hasClass('headerCollapsed');
     let cachedCollapsed = cache.topNavCollapsed || false;
     let collapsedChanged = topNavCollapsed !== cachedCollapsed;
 
