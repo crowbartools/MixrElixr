@@ -269,14 +269,14 @@ b-browse-channels-header > div > .control-filter.me-pinned-search {
 }
 
 b-browse-channels-header > div > .me-pinned-search.me-searchbar {
-    top: 3px;
+    top: 23px;
     left: 50%;
     transform: translateX(-50%);
     z-index:50;
 }
 
 b-browse-channels-header > div > .me-pinned-search.me-filterbtn {
-    top: 11px;
+    top: 31px;
     left: 50%;
     transform: translateX(calc(-50% + 215px));
     z-index:50;

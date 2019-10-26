@@ -274,7 +274,7 @@ $(() => {
     let searchBar = $('b-browse-channels-header')
       .children()
       .find('.control.input');
-    let pageHeader = $('b-desktop-header');
+    let pageHeader = $('b-nav-host');
 
     let searchHeader = $('b-browse-framework').children('header');
 
@@ -364,7 +364,7 @@ $(() => {
 
         if (pinSearchBar) {
           setTimeout(() => {
-            let pageHeaderCheck = $('b-desktop-header');
+            let pageHeaderCheck = $('b-nav-host');
             pageHeaderCheck.addClass('searchPinned');
           }, 250);
         }
@@ -999,37 +999,40 @@ $(() => {
 
       $.toast().reset('all');
     } else {
-      theaterMode = true;
-      let minimizeInteractiveBtn = $('.hide-interactive');
-      if (minimizeInteractiveBtn != null) {
-        let isHideBtn = $('.icon-indeterminate_check_box');
-        if (isHideBtn != null && isHideBtn.length > 0) {
-          minimizeInteractiveBtn.click();
+      const isLive = $(".offline-message").length < 1;
+      if (isLive) {
+        theaterMode = true;
+        let minimizeInteractiveBtn = $('.hide-interactive');
+        if (minimizeInteractiveBtn != null) {
+          let isHideBtn = $('.icon-indeterminate_check_box');
+          if (isHideBtn != null && isHideBtn.length > 0) {
+            minimizeInteractiveBtn.click();
+          }
         }
+        setTimeout(() => {
+          theaterElements.addClass('theaterMode');
+
+          $.toast({
+            text: 'Press <span style="font-weight:bold;">ESC</span> at any time to exit.',
+            heading: 'Theater Mode Enabled',
+            showHideTransition: 'fade',
+            allowToastClose: true,
+            hideAfter: 4500,
+            stack: false,
+            position: 'top-center',
+            bgColor: '#151C29',
+            textColor: '#fff',
+            textAlign: 'center',
+            loader: true,
+            loaderBg: '#1FBAED'
+          });
+        }, 1);
+
+        $('b-stage').addClass('bui-arContent addedBuiAr');
+        $('.stage').addClass('aspect-16-9 theaterMode');
+        $('.stage').removeClass('me-video-stage');
+        $('.me-chat-container').addClass('theaterMode');
       }
-      setTimeout(() => {
-        theaterElements.addClass('theaterMode');
-
-        $.toast({
-          text: 'Press <span style="font-weight:bold;">ESC</span> at any time to exit.',
-          heading: 'Theater Mode Enabled',
-          showHideTransition: 'fade',
-          allowToastClose: true,
-          hideAfter: 4500,
-          stack: false,
-          position: 'top-center',
-          bgColor: '#151C29',
-          textColor: '#fff',
-          textAlign: 'center',
-          loader: true,
-          loaderBg: '#1FBAED'
-        });
-      }, 1);
-
-      $('b-stage').addClass('bui-arContent addedBuiAr');
-      $('.stage').addClass('aspect-16-9 theaterMode');
-      $('.stage').removeClass('me-video-stage');
-      $('.me-chat-container').addClass('theaterMode');
     }
   }
 
@@ -1844,7 +1847,7 @@ $(() => {
     if (!pinSearchBar) return;
 
     // see if the header element has the 'collapsed' class (only has it when page is scrolled down a bit)
-    let topNavCollapsed = $('b-desktop-header').hasClass('collapsed');
+    let topNavCollapsed = $('b-notifications').hasClass('headerCollapsed');
     let cachedCollapsed = cache.topNavCollapsed || false;
     let collapsedChanged = topNavCollapsed !== cachedCollapsed;
 
