@@ -35,7 +35,7 @@ $(() => {
   let initialPageLoad = true;
   let theaterMode = false;
 
-  let scrollStuck = true;
+  let chatScrollGlued = true;
 
   const ElementSelector = {
     CHAT_CONTAINER: "[class*='ChatMessages']",
@@ -1109,7 +1109,7 @@ $(() => {
       .children()
       .addClass('elixr-chat-container');
 
-    let updateScrollStuck = debounce(function() {
+    let updateScrollGlue = debounce(function() {
       let chatContainer = $('.elixr-chat-container');
 
       let current = chatContainer.scrollTop();
@@ -1119,15 +1119,14 @@ $(() => {
       let minimumPercent = 99;
 
       if (percent >= minimumPercent) {
-        scrollStuck = true;
+        chatScrollGlued = true;
       } else {
-        scrollStuck = false;
+        chatScrollGlued = false;
       }
-      log("chat scroll is stuck: " + scrollStuck);
     }, 15);
 
-    $('.elixr-chat-container').off("scroll", updateScrollStuck);
-    $('.elixr-chat-container').on("scroll", updateScrollStuck);
+    $('.elixr-chat-container').off("scroll", updateScrollGlue);
+    $('.elixr-chat-container').on("scroll", updateScrollGlue);
 
 
     // Mention BG Color
@@ -1640,7 +1639,7 @@ $(() => {
                 }
 
                 setTimeout(() => {
-                  if (scrollStuck) {
+                  if (chatScrollGlued) {
                     scrollChatToBottom();
                     log("Scrolling to bottom!");
                   }
