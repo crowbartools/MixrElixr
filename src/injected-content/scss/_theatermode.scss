@@ -39,6 +39,10 @@ b-notifications {
     display: none !important;
 }
 
+.channel-page.theaterMode b-vod-bar {
+    display: none !important;
+}
+
 body.theaterMode {
     background: #0b0f15;
 }

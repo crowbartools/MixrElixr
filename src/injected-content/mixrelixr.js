@@ -918,15 +918,26 @@ $(() => {
           log("attempting to create theater mode button...");
 
           // copy the fullscreen button so we can make it into the theater btn
-          let fullscreenBtn = $(".spectre-player")
+          let fullscreenBtn;
+
+
+          /*$(".spectre-player")
             .children("div")
             .children().eq(1)
             .children().eq(2)
             .children()
             .children().eq(1)
-            .children().eq(4);
+            .children().eq(4);*/
 
-          if (fullscreenBtn.length < 1) {
+          let icons = $("i.material-icons");
+          icons.each(function() {
+            let icon = $(this);
+            if (icon.text() == "fullscreen") {
+              fullscreenBtn = icon.parent().parent();
+            }
+          });
+
+          if (fullscreenBtn != null && fullscreenBtn.length < 1) {
             log("Couldnt find fullscreen button... trying again in a bit.");
             setTimeout(() => findFullscreenBtn(), 500);
             return;
@@ -952,7 +963,6 @@ $(() => {
 
           theaterBtn.insertBefore(fullscreenBtn);
         };
-
 
         setTimeout(() => {
           findFullscreenBtn();
@@ -1428,7 +1438,7 @@ $(() => {
       <style id="elixr-chat-styles">
 
        ${options.useCustomFontSize ? `
-          .elixr-chat-container div[class^="messageContent"] {
+          b-chat-client-host-component div div[class^="messageContent"] {
               font-size: ${options.textSize}px;
               line-height: ${options.textSize + 9}px;
               ${options.hideChatAvatars ? "margin-left: .5em;" : ""}
@@ -1436,13 +1446,13 @@ $(() => {
        ` : ''}
     
        ${options.hideChatAvatars ? `               
-        .elixr-chat-container img[class^="ChatAvatar"] {
+        b-chat-client-host-component div img[class^="ChatAvatar"] {
             display: none;
         }
         ` : ''}
 
        ${options.hideChannelProgression ? `               
-        .elixr-chat-container div[class^="messageContent"] span[class^="badge"] {
+        b-chat-client-host-component div div[class^="messageContent"] span[class^="badge"] {
             display: none;
         }
        ` : ''}
