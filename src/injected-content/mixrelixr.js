@@ -918,15 +918,26 @@ $(() => {
           log("attempting to create theater mode button...");
 
           // copy the fullscreen button so we can make it into the theater btn
-          let fullscreenBtn = $(".spectre-player")
+          let fullscreenBtn;
+
+
+          /*$(".spectre-player")
             .children("div")
             .children().eq(1)
             .children().eq(2)
             .children()
             .children().eq(1)
-            .children().eq(4);
+            .children().eq(4);*/
 
-          if (fullscreenBtn.length < 1) {
+          let icons = $("i.material-icons");
+          icons.each(function() {
+            let icon = $(this);
+            if (icon.text() == "fullscreen") {
+              fullscreenBtn = icon.parent().parent();
+            }
+          });
+
+          if (fullscreenBtn != null && fullscreenBtn.length < 1) {
             log("Couldnt find fullscreen button... trying again in a bit.");
             setTimeout(() => findFullscreenBtn(), 500);
             return;
@@ -952,7 +963,6 @@ $(() => {
 
           theaterBtn.insertBefore(fullscreenBtn);
         };
-
 
         setTimeout(() => {
           findFullscreenBtn();
