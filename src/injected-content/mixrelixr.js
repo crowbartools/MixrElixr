@@ -1428,7 +1428,7 @@ $(() => {
       <style id="elixr-chat-styles">
 
        ${options.useCustomFontSize ? `
-          .elixr-chat-container div[class^="messageContent"] {
+          b-chat-client-host-component div div[class^="messageContent"] {
               font-size: ${options.textSize}px;
               line-height: ${options.textSize + 9}px;
               ${options.hideChatAvatars ? "margin-left: .5em;" : ""}
@@ -1436,13 +1436,13 @@ $(() => {
        ` : ''}
     
        ${options.hideChatAvatars ? `               
-        .elixr-chat-container img[class^="ChatAvatar"] {
+        b-chat-client-host-component div img[class^="ChatAvatar"] {
             display: none;
         }
         ` : ''}
 
        ${options.hideChannelProgression ? `               
-        .elixr-chat-container div[class^="messageContent"] span[class^="badge"] {
+        b-chat-client-host-component div div[class^="messageContent"] span[class^="badge"] {
             display: none;
         }
        ` : ''}
