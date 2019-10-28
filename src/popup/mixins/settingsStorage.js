@@ -106,7 +106,8 @@ global.settingsStorage = {
           highlightFavorites: true,
           liveNotificationsMode: 'favorites',
           playLiveNotificationSound: false,
-          liveNotificationSoundType: 'default'
+          liveNotificationSoundType: 'default',
+          theme: 'default'
         }
       };
     },

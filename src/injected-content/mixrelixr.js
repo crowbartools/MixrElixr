@@ -6,6 +6,8 @@ import { waitForElementAvailablity } from './utils';
 //import deps
 import $ from 'jquery';
 
+import * as siteWide from './pages/site-wide';
+
 import Bowser from 'bowser';
 const browserEnv = Bowser.getParser(window.navigator.userAgent);
 const onlyLocalStorage = browserEnv.satisfies({
@@ -69,15 +71,6 @@ $(() => {
     });
   }
 
-  function applySiteWideChanges() {
-    if (settings.generalOptions.declutterTopBar !== false) {
-
-      waitForElementAvailablity("a[href='/dashboard/onboarding']").then(() => {
-        $("a[href='/dashboard/onboarding']").hide();
-      });
-    }
-  }
-
   function runPageLogic() {
     // Channel dectection
     let channelBlock = $('b-channel-page-wrapper');
@@ -135,7 +128,9 @@ $(() => {
       log("looks like we're on some other page");
     }
 
-    applySiteWideChanges();
+    if (!initialPageLoad) {
+        siteWide.apply(settings);
+    }
   }
 
   function loadHomepage() {
@@ -316,9 +311,9 @@ $(() => {
         log('Found it in the cache: ' + cache.currentStreamerName);
         return resolve(cache.currentStreamerName.trim());
       }
-      // double check it's still here
-      let channelBlock = $('b-channel-profile');
-      if (channelBlock != null && channelBlock.length > 0) {
+
+      waitForElementAvailablity('b-channel-profile').then(() => {
+        let channelBlock = $('b-channel-profile');
         let name = channelBlock
           .find('h2')
           .first()
@@ -329,12 +324,12 @@ $(() => {
           resolve(name.trim());
         } else {
           setTimeout(() => {
-            getStreamerName();
-          }, 250);
+            getStreamerName().then((foundName) => {
+                resolve(foundName);
+            });
+          }, 10);
         }
-      } else {
-        reject();
-      }
+      });
     });
   }
 
@@ -1338,7 +1333,7 @@ $(() => {
        ` : ''}
     
        ${options.hideChatAvatars ? `               
-          b-chat-client-host-component div img[class^="ChatAvatar"] {
+          b-chat-client-host-component img[class*="ChatAvatar"] {
               display: none;
           }
 
@@ -2249,27 +2244,37 @@ $(() => {
     });
   }
 
-  waitForPageLoad().then(() => {
-    log('page loaded');
-
-    // Listen for url changes
-    window.addEventListener('url-change', function() {
-      initialPageLoad = true;
-      runPageLogic();
-    });
-
+  function loadUserAndSettings() {
     let userInfoLoad = loadUserInfo();
     let settingsLoad = loadSettings();
 
     // wait for both user info and settings to load.
-    Promise.all([userInfoLoad, settingsLoad]).then(() => {
-      // run page logic for the first load
-      runPageLogic();
+    Promise.all([userInfoLoad, settingsLoad])
+        .then(() => {
 
-      // then let the url watcher trigger it from then on
-      runUrlWatcher();
-    });
-  });
+            siteWide.apply(settings);
+
+            return waitForPageLoad();
+        })
+        .then(() => {
+            log('page loaded');
+
+            // Listen for url changes
+            window.addEventListener('url-change', function() {
+                initialPageLoad = true;
+                runPageLogic();
+            });
+
+            // run page logic for the first load
+            runPageLogic();
+
+            // then let the url watcher trigger it from then on
+            runUrlWatcher();
+
+        });
+  }
+
+  loadUserAndSettings();
 
   // listen for an event from the Options page. This fires everytime the user updates a setting
   browser.runtime.onMessage.addListener((request, _, sendResponse) => {

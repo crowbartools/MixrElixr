@@ -1,0 +1,62 @@
+body.elixr-dark {
+
+    background: #202428 !important;
+
+    .is-stuck header {
+        background: #202428 !important;
+    }
+
+    b-browse-channels-header .input > input {
+        background: #161819;
+    }
+
+    b-nav-host div[class^="navContainer"][class*="collapsed"] div[class^="content"] {
+        background: #2E333A !important;
+    }
+
+    b-channel-web-page {
+        background-image: linear-gradient(to top, rgba(8, 8, 9, 0.8), rgba(25, 25, 25, 0.95)) !important;
+    }
+
+    .game-card, .card > a, b-media-card-footer {
+        background: #2d3136 !important;
+    }
+
+    .info-bar {
+        background: #2E333A !important;
+    }
+
+    .profile-header, .profile-blocks {
+        background: #262A30 !important;
+    }
+
+    [class*="chatContainer_"], .chat.layout-column {
+        background: #262A30 !important;
+    }
+
+    [class^="webComposerBlock"] {
+        background: #262A30 !important;
+    }
+
+    [class^="sticker__"] {
+        background: #30343a !important;
+    }
+
+    .menu-area {
+        background: #1b1e22 !important;
+    }
+
+    .initial-loading-overlay {
+        background: #262A30;
+        transition: opacity 300ms linear, background 300ms linear;
+    }
+
+    b-upsell-creative-host > div > div[class^="multiPromoWrapper"],
+    b-upsell-creative-host > div > div[class^="wrapper"] {
+        background: #262A30 !important;
+    }
+
+    b-channel-chat-tabs {
+        background: #22262B;
+    }
+}
