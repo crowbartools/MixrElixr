@@ -2272,7 +2272,7 @@ $(() => {
   });
 
   // listen for an event from the Options page. This fires everytime the user updates a setting
-  browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  browser.runtime.onMessage.addListener((request, _, sendResponse) => {
     if (request.settingsUpdated) {
       loadSettings().then(() => {
         runPageLogic();
