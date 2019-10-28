@@ -69,91 +69,12 @@ $(() => {
     });
   }
 
-  /*function waitForElementAvailablity(selector, checkCount = 100, timeout = 0) {
-    return new Promise((resolve, reject) => {
-      function doElementCheck(counter = 0) {
-        if (counter > checkCount) {
-          log(`Couldn't find '${selector}' after ${checkCount} tries!`);
-          return reject();
-        }
-        counter++;
-
-        let element = $(selector);
-        let elementExists = element != null && element.length > 0;
-
-        if (!elementExists) {
-          // spinner still exists, check again in a bit
-          setTimeout(() => {
-            doElementCheck(counter);
-          }, 10);
-        } else {
-          setTimeout(() => {
-            log(`Element '${selector}' found!`);
-            resolve();
-          }, 10);
-        }
-      }
-
-      setTimeout(() => {
-        doElementCheck();
-      }, timeout);
-    });
-  }*/
-
   function applySiteWideChanges() {
     if (settings.generalOptions.declutterTopBar !== false) {
-      /*waitForElementAvailablity('.language-selector').then(() => {
-        $('.language-selector').addClass('me-simplified-topbar');
-      });*/
-
-      /*waitForElementAvailablity('b-notifications').then(() => {
-        $('b-notifications').addClass('me-simplified-topbar');
-      });
-
-      waitForElementAvailablity('b-embers-button').then(() => {
-        $('b-embers-button').addClass('me-simplified-topbar');
-      });*/
-
-      /*waitForElementAvailablity(".nav-link[routerlink='/browse/all']").then(() => {
-        $(".nav-link[routerlink='/browse/all']").hide();
-      });
-
-      waitForElementAvailablity(".nav-link[routerlink='/browse/games']").then(() => {
-        $(".nav-link[routerlink='/browse/games']").hide();
-      });*/
 
       waitForElementAvailablity("a[href='/dashboard/onboarding']").then(() => {
         $("a[href='/dashboard/onboarding']").hide();
       });
-
-      /*waitForElementAvailablity(".nav-link[routerlink='/browse/following']").then(() => {
-
-        let dropdownExists = $(".me-dropdown") && $(".me-dropdown").length > 0;
-        if (dropdownExists) return;
-
-        let browseDropdown = $(`
-                 <div class="me-dropdown">
-                     <button class="me-dropbtn">BROWSE</button>
-                     <div id="myDropdown" class="me-dropdown-content">
-                         <a class="me-dd-nav" routerlink="/browse/all" href="/browse/all" >${$(".nav-link[routerlink='/browse/all']").text()}</a>
-                         <a class="me-dd-nav" routerlink="/browse/games" href="/browse/games">${$(".nav-link[routerlink='/browse/games']").text()}</a>
-                         <a class="me-dd-nav" routerlink="/me/partnership/apply" href="/me/partnership/apply">${$(".nav-link[routerlink='/me/partnership/apply']").text()}</a>
-                     </div>
-                 </div>
-             `);
-
-        browseDropdown.on('mouseenter', () => {
-          document.getElementById('myDropdown').classList.toggle('me-dropdown-show');
-        });
-
-        browseDropdown.on('mouseleave', () => {
-          document.getElementById('myDropdown').classList.toggle('me-dropdown-show');
-        });
-
-        $(".nav-link[routerlink='/browse/following']").after(browseDropdown);
-
-        searchbarPositionCheck();
-      });*/
     }
   }
 
@@ -325,14 +246,6 @@ $(() => {
       filterButton.addClass('me-pinned-search me-filterbtn');
       filterPanel.addClass('me-filterspanel');
 
-      /*
-      searchBar.append(`
-			<div class="elixr-badge-wrapper">
-				<div class="elixr-badge me-tooltip" title="MixrElixr: Pinned search">
-					<img style="height: 10px;width: 10px;transform: translate(1px, -1px);"src="https://raw.githubusercontent.com/crowbartools/MixrElixr/master/resources/images/elixr-light-16.png">
-				</div>
-            </div>`);
-        */
     } else {
       $('.me-pinned-search').css('top', '');
       pageHeader.removeClass('searchPinned');
@@ -920,15 +833,6 @@ $(() => {
           // copy the fullscreen button so we can make it into the theater btn
           let fullscreenBtn;
 
-
-          /*$(".spectre-player")
-            .children("div")
-            .children().eq(1)
-            .children().eq(2)
-            .children()
-            .children().eq(1)
-            .children().eq(4);*/
-
           let icons = $("i.material-icons");
           icons.each(function() {
             let icon = $(this);
@@ -1060,8 +964,6 @@ $(() => {
 
       $.deinitialize(profileSelector);
       $.initialize(profileSelector, function() {
-        //if (!initialPageLoad) return;
-
         let streamerFeed = $(this);
         let text = streamerFeed.text();
         if (text && text.trim() !== streamerName.trim()) {
@@ -1423,15 +1325,6 @@ $(() => {
         .catch(() => {});
     });
 
-    // Gives badges a class for easier targeting.
-    /*waitForElementAvailablity("span[class*='badge']").then(() => {
-      if (options.hideChannelProgression) {
-        $('.chat-progression').hide();
-      } else {
-        $('.chat-progression').show();
-      }
-    });*/
-
     $("#elixr-chat-styles").remove();
 
     $("body").prepend(`
@@ -1441,14 +1334,17 @@ $(() => {
           b-chat-client-host-component div div[class^="messageContent"] {
               font-size: ${options.textSize}px;
               line-height: ${options.textSize + 9}px;
-              ${options.hideChatAvatars ? "margin-left: .5em;" : ""}
           }
        ` : ''}
     
        ${options.hideChatAvatars ? `               
-        b-chat-client-host-component div img[class^="ChatAvatar"] {
-            display: none;
-        }
+          b-chat-client-host-component div img[class^="ChatAvatar"] {
+              display: none;
+          }
+
+          b-chat-client-host-component div div[class^="messageContent"] {
+              margin-left: .5em;
+          }
         ` : ''}
 
        ${options.hideChannelProgression ? `               
