@@ -30,6 +30,13 @@ body.elixr-dark {
         background: #262A30 !important;
     }
 
+    div[class*="container"][class*="modal"] {
+        background: #212224 !important;
+        h1 {
+            background: #1e1f20;
+        }
+    }
+
     [class*="chatContainer_"], .chat.layout-column {
         background: #262A30 !important;
     }
