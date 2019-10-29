@@ -6,42 +6,44 @@
     bottom: calc(100% + 8px);
     background: #29374a;
     box-shadow: 0 6px 6px -3px rgba(0,0,0,.2), 0 10px 14px 1px rgba(0,0,0,.14), 0 4px 18px 3px rgba(0,0,0,.12);
-    margin-bottom: 0.4em;
-    max-height: 30vh;
-    overflow-y: auto;
-    padding: 0;
-    list-style: none;
-    li {
-        list-style-type: none;
-        padding: 0;
-        margin: 0;
-        display: inline-block;
-        button {
-            width: auto;
-            display: flex;
-            align-items: center;
-            background: none;
-            border: 0;
-            outline: 0!important;
-            text-align: left;
-            cursor: pointer;
-            color: #fff;
-            line-height: 30px;
-            padding: 4px 8px;
-            font-size: .9em;
+    margin-bottom: 0.4em;  
+    padding: 0; 
+    ul {
+        list-style: none;
+        max-height: 30vh;
+        overflow-y: auto;
+        li {
             list-style-type: none;
-            &:hover, &.selected {
-                background: #0065dc;
-            }
-            .me-emotes-preview {
-                position: relative;
-                display: inline-flex;
-            }
-            span {               
-                font-size: .8em;
-                margin-left: .1em;
-            }
-        } 
+            padding: 0;
+            margin: 0;
+            display: inline-block;
+            button {
+                width: auto;
+                display: flex;
+                align-items: center;
+                background: none;
+                border: 0;
+                outline: 0!important;
+                text-align: left;
+                cursor: pointer;
+                color: #fff;
+                line-height: 30px;
+                padding: 4px 8px;
+                font-size: .9em;
+                list-style-type: none;
+                &:hover, &.selected {
+                    background: #0065dc;
+                }
+                .me-emotes-preview {
+                    position: relative;
+                    display: inline-flex;
+                }
+                span {               
+                    font-size: .8em;
+                    margin-left: .1em;
+                }
+            } 
+        }
     }
     .me-autocomplete-footer {
         height: 20px;
@@ -56,5 +58,5 @@
         b {
             font-weight: bold;
         }
-    }
+    }   
 }

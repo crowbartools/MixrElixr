@@ -21,18 +21,8 @@ b-notifications {
 }
 
 .channel-page.theaterMode {
-    //margin-top: 30px!important;
-    //max-height: 100%!important;
     height: calc(100vh) !important;
     max-height: calc(100vh) !important;
-}
-
-.channel-page > aside.theaterMode {
-    //padding-top: 0px!important;
-}
-
-.channel-page.theaterMode > section {
-    //height: 100%;
 }
 
 .channel-page.theaterMode b-host-bar {
@@ -63,17 +53,20 @@ body.theaterMode b-nav-host {
 }
 
 b-channel-info-bar.theaterMode > .info-bar {
-    //display: none;
-    //visibility: hidden;
     opacity: 0;
     transition: 0.3s;
     background: #0000006b !important;
     box-shadow: none !important;
 }
 
-.channel-info-container.theaterMode .toggle-interactive, 
+.channel-info-container.theaterMode .toggle-interactive,
+.channel-info-container.theaterMode .toggle-interact-menu,
 b-skills-button-host-component.theaterMode {
     z-index: 99999;
+}
+
+.channel-info-container.theaterMode .toggle-interactive.open {
+    background-color: #000000d6 !important;
 }
 
 b-nav-host > div.theaterMode {
