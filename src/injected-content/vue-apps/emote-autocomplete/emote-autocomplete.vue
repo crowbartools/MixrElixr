@@ -15,6 +15,7 @@
 </template>
 
 <script>
+import { updateChatTextfield } from '../../utils';
 export default {
     data: function() {
         return {
@@ -83,7 +84,8 @@ export default {
 
             let textArea = $("#chat-input").children("textarea");
             let currentText = textArea.val();
-            textArea.val(currentText + nameMinusQuery);
+
+            updateChatTextfield(currentText + nameMinusQuery);
 
             this.query = "";
             

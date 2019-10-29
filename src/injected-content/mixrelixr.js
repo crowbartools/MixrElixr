@@ -1,7 +1,7 @@
 //import styles
 import './scss/injected-styles.scss';
 
-import { waitForElementAvailablity } from './utils';
+import { waitForElementAvailablity, updateChatTextfield, debounce } from './utils';
 
 // vue apps
 import * as autocompleteAppBinder from './vue-apps/emote-autocomplete/emote-autocomplete-binder';
@@ -1189,7 +1189,7 @@ $(() => {
                 let chatTextarea = $('#chat-input').children('textarea');
                 let currentValue = chatTextarea.val();
                 let newValue = `${currentValue}${currentValue === '' ? ' ' : ''}${emoteName} `;
-                chatTextarea.val(newValue);
+                updateChatTextfield(newValue);
               });
             }
           }
@@ -1834,28 +1834,6 @@ $(() => {
   }
 
   /* Helpers */
-
-  function debounce(func, wait, immediate) {
-    let timeout;
-
-    return function executedFunction() {
-      let context = this;
-      let args = arguments;
-
-      let later = function() {
-        timeout = null;
-        if (!immediate) func.apply(context, args);
-      };
-
-      let callNow = immediate && !timeout;
-
-      clearTimeout(timeout);
-
-      timeout = setTimeout(later, wait);
-
-      if (callNow) func.apply(context, args);
-    };
-  }
 
   function escapeHTML(unsafeText) {
     let div = document.createElement('div');

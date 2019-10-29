@@ -40,3 +40,32 @@ export function debounce(func, wait, immediate) {
         if (callNow) func.apply(context, args);
     };
 }
+
+export function updateChatTextfield(newString) {
+
+    //remove prev
+    if ($("#chatTextUpdate").length > 0) {
+        $("#chatTextUpdate").remove();
+    }
+
+    let scrpt = document.createElement('script');
+
+    scrpt.setAttribute("id", "chatTextUpdate");
+
+    scrpt.innerText = `
+        console.log("Elixr: Starting chat text update...");
+
+        var meChatTextArea = document.getElementById("chat-input").childNodes[0];
+
+        var nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
+        nativeInputValueSetter.call(meChatTextArea, "${newString}");
+
+        var meInputEvent = new Event('input', { bubbles: true });
+        meInputEvent.simulated = true;
+        meChatTextArea.dispatchEvent(meInputEvent);
+
+        console.log("Elixr: Finished chat text update.");          
+    `;
+
+    document.head.appendChild(scrpt);
+}
