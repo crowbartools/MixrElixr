@@ -3,6 +3,9 @@ import './scss/injected-styles.scss';
 
 import { waitForElementAvailablity } from './utils';
 
+// vue apps
+import * as autocompleteAppBinder from './vue-apps/emote-autocomplete/emote-autocomplete-binder';
+
 //import deps
 import $ from 'jquery';
 
@@ -1083,137 +1086,11 @@ $(() => {
         $(".transcluded-section").show();
     }
 
-    let removeEmoteAutoComplete = () => {
-      /*let currentMenu = $(".me-autocomplete");
-        if (currentMenu != null && currentMenu.length > 0) {
-          currentMenu.remove();
-        }*/
-    };
-
-    let renderEmoteAutoComplete = function(query) {
-      /*
-      let showChannelEmotes = options.customEmotes !== false &&
-        options.channelEmotes !== false &&
-        cache.currentStreamerEmotes != null &&
-        cache.currentStreamerEmotes.emotes != null;
-
-      let showGlobalEmotes = options.customEmotes !== false &&
-        options.globalEmotes !== false &&
-        cache.globalEmotes != null &&
-        cache.globalEmotes.emotes != null;
-
-      let foundEmote = false;
-
-      if (showChannelEmotes || showGlobalEmotes) {
-        let autocompleteMenu = $(`
-          <ul class="me-autocomplete" role="listbox">
-          </ul>
-        `);
-
-        if (showGlobalEmotes) {
-          let globalEmotes = Object.values(cache.globalEmotes.emotes);
-          for (let emote of globalEmotes) {
-
-            let matches = emote.name.startsWith(query);
-            if (!matches) {
-              continue;
-            }
-            foundEmote = true;
-
-            let baseUrl = `https://crowbartools.com/user-content/emotes/global/`;
-
-            let url = `${baseUrl}/${escapeHTML(emote.filename)}`;
-            let name = escapeHTML(emote.name);
-
-            autocompleteMenu.append(`
-              <li role="option">
-                <button class="me-autocomplete-emote me-tooltip" title="MixrElixr Global Emote">
-                  <span class="elixr-custom-emote twentyfour me-emotes-preview" style="display: inline-block;">
-                    <img src="${url}">
-                  </span>
-                  <span class="emote-name">${name}</span>
-                </button>
-              </li>
-            `);
-          }
-        }
-
-        if (showChannelEmotes) {
-          let channelEmotes = Object.values(cache.currentStreamerEmotes.emotes);
-          for (let emote of channelEmotes) {
-
-            let matches = emote.name.startsWith(query);
-            if (!matches) {
-              continue;
-            }
-            foundEmote = true;
-
-            let baseUrl = `https://crowbartools.com/user-content/emotes/live/${cache.currentStreamerId}/`;
-
-            let url = `${baseUrl}/${escapeHTML(emote.filename)}`;
-            let name = escapeHTML(emote.name);
-
-            autocompleteMenu.append(`
-              <li>
-                <button class="me-autocomplete-emote me-tooltip" title="MixrElixr Channel Emote">
-                  <span class="elixr-custom-emote twentyfour me-emotes-preview" style="display: inline-block;">
-                    <img src="${url}">
-                  </span>
-                  <span class="emote-name">${name}</span>
-                </button>
-              </li>
-            `);
-          }
-        }
-
-        removeEmoteAutoComplete();
-
-        if (foundEmote) {
-          $("[class*='webComposerBlock']").prepend(autocompleteMenu);
-
-          $('.me-autocomplete-emote').off('click');
-          $('.me-autocomplete-emote').on('click', function() {
-            let emoteName = $(this).children('.emote-name').text();
-            let chatTextarea = $('#chat-input').children('textarea');
-            let currentValue = chatTextarea.val();
-            let regex = new RegExp(`${query}$`);
-            let newValue = currentValue.replace(regex, emoteName);
-            chatTextarea.val(newValue);
-            setTimeout(() => {
-              removeEmoteAutoComplete();
-            }, 10);
-
-          });
-        }
-      } else {
-        removeEmoteAutoComplete();
-      }
-      */
-    };
-
     waitForElementAvailablity("[class*='webComposerBlock']").then(() => {
-      /*
-      let keyupFunc = () => {
-        let allText = $("#chat-input").children("textarea").val();
-        if (allText && allText.trim().length > 0 && !allText.endsWith(" ")) {
-          let words = allText.split(" ");
-          if (words.length > 0) {
-            let lastWord = words[words.length - 1];
-            if (lastWord != null && lastWord.trim().length > 0) {
-              renderEmoteAutoComplete(lastWord);
-            } else {
-              removeEmoteAutoComplete();
-            }
-          }
-        } else {
-          removeEmoteAutoComplete();
-        }
-      };
 
-      $("#chat-input").children("textarea").off("keyup", keyupFunc);
+      // bind custom emote auto complete app
+      autocompleteAppBinder.bindEmoteAutocompleteApp(cache.globalEmotes, cache.currentStreamerEmotes, cache.currentStreamerId);
 
-      $("#chat-input").children("textarea").on("keyup", keyupFunc);
-      */
     });
 
     // get rid of any previous registered callbacks for chat modals

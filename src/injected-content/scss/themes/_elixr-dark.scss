@@ -64,6 +64,14 @@ body.elixr-dark {
     }
 
     b-channel-chat-tabs {
-        background: #22262B;
+        background: #22262B !important;
+    }
+
+    .me-autocomplete {
+        background: #181b1f;
+    }
+
+    [class*="listModal_"] {
+        background: #202429 !important;
     }
 }
