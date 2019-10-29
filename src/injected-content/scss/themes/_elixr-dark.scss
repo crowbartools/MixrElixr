@@ -1,13 +1,17 @@
 body.elixr-dark {
 
-    background: #202428 !important;
+    background: #0f1215 !important;
 
     .is-stuck header {
-        background: #202428 !important;
+        background: #0f1215 !important;
     }
 
-    b-browse-channels-header .input > input {
-        background: #161819;
+    .control.input > input {
+        background: #1d2021 !important;
+    }
+
+    b-app .view-area {
+        background: #1d243a;
     }
 
     b-nav-host div[class^="navContainer"][class*="collapsed"] div[class^="content"] {
@@ -26,8 +30,12 @@ body.elixr-dark {
         background: #2E333A !important;
     }
 
+    .info-bar .viewers {
+        background: #22262C !important;
+    }
+
     .profile-header, .profile-blocks {
-        background: #262A30 !important;
+        background: #212429 !important;
     }
 
     div[class*="container"][class*="modal"] {
@@ -45,7 +53,7 @@ body.elixr-dark {
         background: #262A30 !important;
     }
 
-    [class^="sticker__"] {
+    [class^="sticker__"], [class^="attributionContents_"] {
         background: #30343a !important;
     }
 
@@ -71,7 +79,19 @@ body.elixr-dark {
         background: #181b1f;
     }
 
+    .me-searchbar:not(.me-nav-collapsed) > input {
+        border-color: #313131 !important;
+    }
+
     [class*="listModal_"] {
         background: #202429 !important;
+    }
+
+    [class*="moreMenuWrap_"] {
+        background: #16191ff2 !important;
+    }
+
+    .skills-tray-container {
+        background: #24282d !important;
     }
 }
