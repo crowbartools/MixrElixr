@@ -1,10 +1,17 @@
 //import styles
 import './scss/injected-styles.scss';
 
-import { waitForElementAvailablity, updateChatTextfield, debounce } from './utils';
+import {
+    waitForElementAvailablity,
+    debounce,
+    log,
+    escapeHTML,
+    escapeRegExp
+} from './utils';
 
 // vue apps
 import * as autocompleteAppBinder from './vue-apps/emote-autocomplete/emote-autocomplete-binder';
+import { handleEmoteModal } from './emotes/emote-modal-handler';
 
 //import deps
 import $ from 'jquery';
@@ -1094,109 +1101,7 @@ $(() => {
 
     });
 
-    // get rid of any previous registered callbacks for chat modals
-    $.deinitialize("[class*='modal']");
-
-    $.initialize("[class*='modal']", async function() {
-      let modal = $(this);
-
-      let chatFromCurrentChannel = true;
-      let chatTabs = $('b-channel-chat-tabs');
-      if (chatTabs != null && chatTabs.length > 0) {
-        let selectedTab = chatTabs.find('.selected');
-        if (selectedTab != null && selectedTab.length > 0) {
-          let chatChannelName = selectedTab.text().trim();
-          chatFromCurrentChannel = chatChannelName === cache.currentStreamerName;
-        }
-      }
-
-      let showChannelEmotes = options.customEmotes !== false &&
-        options.channelEmotes !== false &&
-        cache.currentStreamerEmotes != null &&
-        cache.currentStreamerEmotes.emotes != null &&
-        chatFromCurrentChannel;
-
-      let showGlobalEmotes = options.customEmotes !== false &&
-        options.globalEmotes !== false &&
-        cache.globalEmotes != null &&
-        cache.globalEmotes.emotes != null;
-
-      let waitForModal = function(modal, counter = 0) {
-        return new Promise((resolve, reject) => {
-          if (counter >= 10) {
-            return reject();
-          }
-          counter++;
-
-          let emotesContainer = modal.find("[class*='container']");
-
-          if (emotesContainer == null || emotesContainer.length < 1) {
-            setTimeout(() => {
-              resolve(waitForModal(modal, counter));
-            }, 250);
-          } else {
-            resolve(emotesContainer);
-          }
-        });
-      };
-
-      waitForModal(modal)
-        .then(emotesContainer => {
-          let classes = emotesContainer.attr('class').split(/\s+/);
-
-          let isListModal = classes.some(c => {
-            return c.startsWith('listModal');
-          });
-
-          let addEmotesSection = function(header, emotes, baseUrl) {
-            let customEmotesWrapper = $(`<div><h3 class="elixrEmoteGroupHeader">${header}</h3><div class="elixrEmoteList"></div></div>`);
-            let emoteList = customEmotesWrapper.children('.elixrEmoteList');
-
-            // loop through all emotes
-            for (let emote of emotes) {
-              let url = `${baseUrl}/${escapeHTML(emote.filename)}`;
-              let name = escapeHTML(emote.name);
-              let sizeClass = mapEmoteSizeToClass(emote.maxSize);
-              emoteList.append(`
-								<span class="elixr-custom-emote ${sizeClass} me-tooltip me-emote-preview" title="${name}" emote-name="${name}" style="display: inline-block;">
-									<img src="${url}">
-								</span>`);
-            }
-
-            emotesContainer.prepend(customEmotesWrapper);
-          };
-
-          if (!isListModal) {
-            if (showChannelEmotes || showGlobalEmotes) {
-              if (showChannelEmotes) {
-                let header = `${cache.currentStreamerName}'s Custom Emotes`;
-                let streamerEmotes = Object.values(cache.currentStreamerEmotes.emotes);
-                let baseUrl = `https://crowbartools.com/user-content/emotes/live/${cache.currentStreamerId}/`;
-
-                addEmotesSection(header, streamerEmotes, baseUrl);
-              }
-
-              if (showGlobalEmotes) {
-                let header = 'MixrElixr Global Emotes';
-                let globalEmotes = Object.values(cache.globalEmotes.emotes);
-                let baseUrl = 'https://crowbartools.com/user-content/emotes/global/';
-
-                addEmotesSection(header, globalEmotes, baseUrl);
-              }
-
-              $('.me-emote-preview').off('click');
-              $('.me-emote-preview').on('click', function() {
-                let emoteName = $(this).attr('emote-name');
-                let chatTextarea = $('#chat-input').children('textarea');
-                let currentValue = chatTextarea.val();
-                let newValue = `${currentValue}${currentValue === '' ? ' ' : ''}${emoteName} `;
-                updateChatTextfield(newValue);
-              });
-            }
-          }
-        })
-        .catch(() => {});
-    });
+    handleEmoteModal(options, cache);
 
     $("#elixr-chat-styles").remove();
 
@@ -1835,20 +1740,6 @@ $(() => {
   }
 
   /* Helpers */
-
-  function escapeHTML(unsafeText) {
-    let div = document.createElement('div');
-    div.innerText = unsafeText;
-    return div.innerHTML.replace(/"/g, '&quot;');
-  }
-
-  function escapeRegExp(string) {
-    return string.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&');
-  }
-
-  function log(message) {
-    console.log(`[MixrElixr: ${message}]`);
-  }
 
   function getUserRoleRank(role = '') {
     switch (role) {

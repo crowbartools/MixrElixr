@@ -41,6 +41,16 @@ export function debounce(func, wait, immediate) {
     };
 }
 
+export function escapeHTML(unsafeText) {
+    let div = document.createElement('div');
+    div.innerText = unsafeText;
+    return div.innerHTML.replace(/"/g, '&quot;');
+}
+
+export function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&');
+}
+
 export function updateChatTextfield(newString) {
 
     //remove prev
