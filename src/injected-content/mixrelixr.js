@@ -872,7 +872,8 @@ $(() => {
       }
     });
 
-    if (options.autoTheater && initialPageLoad) {
+    let urlParams = new URLSearchParams(window.location.search);
+    if (options.autoTheater && initialPageLoad && !urlParams.has("clip")) {
       toggleTheaterMode();
     }
 
