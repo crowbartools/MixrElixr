@@ -23,6 +23,9 @@
             <div style="padding-bottom: 5px;" class="option-title">Enable Notifications For</div>
             <b-form-select v-model="liveNotificationsMode" :options="liveNotificationsModes" class="mb-3 option"></b-form-select>
             <checkbox-toggle :value.sync="playLiveNotificationSound" @changed="saveSettings()" label="Play Notification Sound"></checkbox-toggle>
+
+            <span class="setting-subcategory">Mixer Theme</span>
+            <b-form-select v-model="theme" :options="themes" class="mb-3 option"></b-form-select>
         </div>
         </div>
     </div>
@@ -38,6 +41,10 @@ export default {
                 { value: 'none', text: 'No one' },
                 { value: 'favorites', text: 'Favorites only' },
                 { value: 'all', text: 'All' }
+            ],
+            themes: [
+                { value: 'default', text: 'Default' },
+                { value: 'elixr-dark', text: 'Dark' }
             ]
         };
 
@@ -108,6 +115,11 @@ export default {
         bus.$on('favorites-updated', function(favList) {
             app.favoriteFriends = favList;
         });
+    },
+    watch: {
+        theme: function() {
+            this.saveSettings();
+        }
     }
 };
 </script>
