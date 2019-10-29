@@ -43,7 +43,7 @@ export default {
                 { value: 'all', text: 'All' }
             ],
             themes: [
-                { value: 'default', text: 'Mixer Default' },
+                { value: 'default', text: 'Default' },
                 { value: 'elixr-dark', text: 'Dark' }
             ]
         };
