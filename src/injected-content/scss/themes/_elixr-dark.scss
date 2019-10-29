@@ -22,7 +22,7 @@ body.elixr-dark {
         background: #2d3136 !important;
     }
 
-    .info-bar {
+    b-channel-info-bar:not(.theaterMode) > .info-bar {
         background: #2E333A !important;
     }
 
