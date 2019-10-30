@@ -1177,12 +1177,12 @@ $(() => {
       }
 
       if (shouldHide) {
-          messageContainer.hide();
+          messageContainer.parent().hide();
           return;
       }
 
       if (messageType !== "regular-message") {
-        messageContainer.show();
+        messageContainer.parent().show();
       }
 
       let alreadyChecked = messageContainer.attr('elixrfied');
