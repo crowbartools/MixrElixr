@@ -1,7 +1,7 @@
 <template>
     <div class="settings-section">
         <div class="settings-section-header">
-            <span class="title">Streamer Page</span> 
+            <span class="title">Channel Page</span> 
             <div style="margin-right:15px;">
                 <streamer-override-dropdown :overrideNames="overrideNames" 
                     :selected="selected"
@@ -38,6 +38,15 @@
                     <vue-slider ref="textSizeSlider" v-model="textSize" v-bind="textSizeSliderOptions"></vue-slider>
                 </div> 		
             </b-collapse>
+
+            <div class="option-wrapper" style="margin: 15px 0;">
+                <div style="padding-bottom: 5px;" class="option-title">Skills & Embers</div>
+                <checkbox-toggle :value.sync="hideSkillEffects" @changed="saveSettings()" label="Hide Skill Animations" tooltip="Hides skill effect animations that happen on top of chat."></checkbox-toggle>
+                <checkbox-toggle :value.sync="hideSkillMessages" @changed="saveSettings()" label="Hide Skill Messages" tooltip="Hides 'skill used' messages in chat. EX: 'ebiggz used GIF / 5,000 sparks'"></checkbox-toggle>
+                <checkbox-toggle :value.sync="hideStickers" @changed="saveSettings()" label="Hide Stickers"></checkbox-toggle>
+                <checkbox-toggle :value.sync="hideEmberMessages" @changed="saveSettings()" label="Hide Ember Messages" tooltip="Hides ember donation messages inside chat."></checkbox-toggle>
+            </div>
+
             <div class="option-wrapper">
                 <div style="padding-bottom: 5px;" class="option-title">Highlight Keywords<option-tooltip name="highlightKeywords" title="Any messages containing these keywords will have a special background."></option-tooltip></div>
                 <edittable-list class="option" :value.sync="keywords" :options="[]" tag-placeholder="Press enter to add keyword" placeholder="Type to add keyword" @changed="saveSettings()"></edittable-list>

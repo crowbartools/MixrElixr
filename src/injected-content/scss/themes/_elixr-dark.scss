@@ -79,6 +79,13 @@ body.elixr-dark {
         background: #181b1f;
     }
 
+    .me-emote-tabs {
+        background: rgb(36, 38, 39);
+        .me-emote-tab.me-tab-selected {
+            background: #171819;
+        }
+    }
+
     .me-searchbar:not(.me-nav-collapsed) > input {
         border-color: #313131 !important;
     }

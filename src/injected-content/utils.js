@@ -41,6 +41,32 @@ export function debounce(func, wait, immediate) {
     };
 }
 
+export function escapeHTML(unsafeText) {
+    let div = document.createElement('div');
+    div.innerText = unsafeText;
+    return div.innerHTML.replace(/"/g, '&quot;');
+}
+
+export function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&');
+}
+
+export function determineMessageType(message) {
+    /*if (message.find("span[class*='stickerMessage_']").length > 0) {
+        return "ember-donation";
+    }*/
+
+    if (message.find("div[class*='sticker_']").length > 0) {
+        return "sticker";
+    }
+
+    if (message.find("img[class*='skillIcon_']").length > 0) {
+        return "skill-used";
+    }
+
+    return "regular-message";
+}
+
 export function updateChatTextfield(newString) {
 
     //remove prev
