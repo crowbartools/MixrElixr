@@ -1,18 +1,18 @@
 <template>
     <span>
         <b-dropdown id="ddown1" v-bind:text="selected" variant="link" right class="m-md-2 white-link">
-            <b-dropdown-item  @click="selectOverride('Global')">Global</b-dropdown-item>
-            <b-dropdown-header id="header1">Streamer Overrides</b-dropdown-header>
+            <b-dropdown-item  @click="selectOverride('Global')">Global<option-tooltip name="globalOr" title="Global settings apply to all channels that don't have an override created."></option-tooltip></b-dropdown-item>
+            <b-dropdown-header id="header1">Channel Overrides<option-tooltip name="channelOrs" title="Channel overrides allow you to have different settings on a channel by channel basis."></option-tooltip></b-dropdown-header>
             <b-dropdown-item aria-describedby="header1" v-for="(name, index) in overrideNames" :key="index" @click="selectOverride(name)">{{name}}</b-dropdown-item>
             <b-dropdown-item v-if="overrideNames.length === 0" disabled>None</b-dropdown-item>
             <b-dropdown-divider></b-dropdown-divider>
-            <b-dropdown-item @click="showModal">+ Add Streamer</b-dropdown-item>
-            <b-dropdown-item @click="deleteOverride" v-if="selected !== 'Global'" style="color: red"><i class="fa fa-trash"></i> Delete {{selected}}</b-dropdown-item>
+            <b-dropdown-item @click="showModal">+ Add Channel Override</b-dropdown-item>
+            <b-dropdown-item @click="deleteOverride" v-if="selected !== 'Global'" style="color: red"><i class="fa fa-trash"></i> Delete '{{selected}}' Override</b-dropdown-item>
         </b-dropdown>
         <b-modal id="newOverrideModal"
                 ref="newOverrideModal"
                 size="sm"
-                title="Enter Streamer Name"
+                title="Enter channel Name"
                 header-bg-variant="dark"
                 header-text-variant="light"
                 body-bg-variant="dark"
@@ -24,7 +24,7 @@
             <b-form-input type="text"
                         placeholder="Name"
                         v-model="newName" ref="nameInput" @keyup.native.enter="handleOk"></b-form-input>
-            <span v-if="newNameError" style="color:red; margin-top: 10px;">Please enter a streamers name!</span>
+            <span v-if="newNameError" style="color:red; margin-top: 10px;">Please enter a channel name!</span>
         </b-modal>
     </span>  
 </template>

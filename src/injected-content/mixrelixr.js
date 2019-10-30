@@ -6,7 +6,8 @@ import {
     debounce,
     log,
     escapeHTML,
-    escapeRegExp
+    escapeRegExp,
+    determineMessageType
 } from './utils';
 
 // vue apps
@@ -1130,6 +1131,19 @@ $(() => {
             display: none;
         }
        ` : ''}
+
+
+       ${options.hideSkillEffects ? `               
+        #skills-chat-wrapper {
+            display: none;
+        }
+       ` : ''}
+
+       ${options.hideEmberMessages ? `               
+            b-chat-client-host-component div div[class*="stickerMessage_"] {
+                display: none;
+            }
+       ` : ''}
        
       </style>
     `);
@@ -1143,6 +1157,33 @@ $(() => {
     // message__
     $.initialize(ElementSelector.CHAT_MESSAGE, async function() {
       let messageContainer = $(this);
+
+      const messageType = determineMessageType(messageContainer);
+
+      let shouldHide = false;
+      switch (messageType) {
+          case "ember-donation":
+            shouldHide = options.hideEmberMessages;
+            break;
+          case "sticker":
+            shouldHide = options.hideStickers;
+            break;
+          case "skill-used":
+            shouldHide = options.hideSkillMessages;
+            break;
+          case "regular-message":
+          default:
+             break;
+      }
+
+      if (shouldHide) {
+          messageContainer.hide();
+          return;
+      }
+
+      if (messageType !== "regular-message") {
+        messageContainer.show();
+      }
 
       let alreadyChecked = messageContainer.attr('elixrfied');
       // check to see if we have already looked at this chat messsage.
@@ -2009,6 +2050,8 @@ $(() => {
             // Listen for url changes
             window.addEventListener('url-change', function() {
                 initialPageLoad = true;
+                cache.currentStreamerName = null;
+                cache.currentStreamerId = null;
                 runPageLogic();
             });
 
@@ -2058,7 +2101,7 @@ $(() => {
   }
 
   function triggerAutomute() {
-    log("attempting to auto mute...");
+    log("Attempting to auto mute...");
     waitForElementAvailablity('.spectre-player').then(() => {
         log("Found video toolbar!");
         let muteButton = $(".spectre-player")
@@ -2075,7 +2118,7 @@ $(() => {
         log("Checking if stream is already muted...");
 
         if (muteBtnType !== "volume_off") {
-            log("muting stream!");
+            log("Muting stream!");
             muteButton.click();
         }
     });

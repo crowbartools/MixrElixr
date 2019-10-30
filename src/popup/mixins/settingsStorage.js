@@ -89,7 +89,11 @@ global.settingsStorage = {
             enableHideKeywordsWhenMod: false,
             useCustomFontSize: false,
             textSize: 15,
-            largerVideo: true
+            largerVideo: true,
+            hideSkillEffects: false,
+            hideSkillMessages: false,
+            hideStickers: false,
+            hideEmberMessages: false
           },
           overrides: {}
         },

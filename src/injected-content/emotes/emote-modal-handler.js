@@ -43,7 +43,7 @@ export function handleEmoteModal(options, cache) {
                 if (showChannelEmotes || showGlobalEmotes) {
 
                     emotesContainer.addClass("mixer-emotes-wrapper");
-                    emotesContainer.hide();
+                    emotesContainer.show();
 
                     if ($(".me-emote-tabs").length > 0) {
                         $(".me-emote-tabs").remove();
@@ -51,11 +51,11 @@ export function handleEmoteModal(options, cache) {
 
                     $(`
                         <div class="me-emote-tabs">
-                            <div class="me-emote-tab elixr me-tab-selected">
-                                <img src="${browser.runtime.getURL('resources/images/elixr-light-128.png')}">
-                            </div>
-                            <div class="me-emote-tab mixer">
+                            <div class="me-emote-tab me-tooltip mixer  me-tab-selected" title="Mixer Emotes">
                                 <img src="${browser.runtime.getURL('resources/images/MixerMerge_Dark.svg')}">
+                            </div>
+                            <div class="me-emote-tab me-tooltip elixr" title="MixrElixr Emotes">
+                                <img src="${browser.runtime.getURL('resources/images/elixr-light-128.png')}">
                             </div>
                         </div>
                     `).insertBefore(emotesContainer);
@@ -84,6 +84,7 @@ export function handleEmoteModal(options, cache) {
                     }
 
                     let elixrEmotesContainer = $(`<div class="me-emotes-wrapper"></div>`);
+                    elixrEmotesContainer.hide();
 
                     if (showGlobalEmotes) {
                         let header = 'MixrElixr Global Emotes';
