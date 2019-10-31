@@ -1,6 +1,7 @@
 body.elixr-dark {
-
-    background: #0f1215 !important;
+    &:not(.app-text-dir-ltr) {
+        background: #0f1215 !important;
+    }
 
     .is-stuck header {
         background: #0f1215 !important;
