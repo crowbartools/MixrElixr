@@ -927,6 +927,10 @@ $(() => {
 
       $('.me-chat-container').removeClass('theaterMode');
 
+      if ($("#me-quick-host-button").length > 0) {
+        $("#me-quick-host-button").remove();
+      }
+
       // hacky way to toggle "position: relative" on and off to force the chat element to rerender with proper positioning
       setTimeout(() => {
         $('.chat').addClass('relative');
@@ -946,7 +950,9 @@ $(() => {
     } else {
       const isLive = $(".offline-message").length < 1;
       if (isLive) {
+
         theaterMode = true;
+
         let minimizeInteractiveBtn = $('.hide-interactive');
         if (minimizeInteractiveBtn != null) {
           let isHideBtn = $('.icon-indeterminate_check_box');
@@ -954,6 +960,26 @@ $(() => {
             minimizeInteractiveBtn.click();
           }
         }
+
+        if ($("#me-quick-host-button").length > 0) {
+          $("#me-quick-host-button").remove();
+        }
+
+        const currentViewerCount = $("b-channel-info-bar").find(".viewers.layout-row");
+        $(`
+          <div id="me-quick-host-button">
+            <div>Host</div>
+          </div>
+        `).insertAfter(currentViewerCount);
+
+        const onQuickHostClick = function() {
+          $("b-channel-owners-block").find(".menu-btn").click();
+          $("b-host-target-button").children("button").click();
+        };
+
+        $("#me-quick-host-button").off("click", onQuickHostClick);
+        $("#me-quick-host-button").on("click", onQuickHostClick);
+
         setTimeout(() => {
           theaterElements.addClass('theaterMode');
 
@@ -962,7 +988,7 @@ $(() => {
             heading: 'Theater Mode Enabled',
             showHideTransition: 'fade',
             allowToastClose: true,
-            hideAfter: 4500,
+            hideAfter: 3000,
             stack: false,
             position: 'top-center',
             bgColor: '#151C29',
