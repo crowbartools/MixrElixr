@@ -51,8 +51,11 @@ export default {
         scrollSelectedIntoView: function() {
             let selectedEmote = this.filteredEmotes[this.selectedEmoteIndex];
             if(selectedEmote) {
-                let emoteElementId = this.getEmoteElementId(selectedEmote);
-                document.getElementById(emoteElementId).scrollIntoView(false);
+                const emoteElementId = this.getEmoteElementId(selectedEmote);
+                const element = document.getElementById(emoteElementId)
+                if(element) {
+                    element.scrollIntoView(false);
+                }
             }  
         },
         incrementSelectedEmote: function() {
