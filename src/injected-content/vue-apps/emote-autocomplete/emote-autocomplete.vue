@@ -30,7 +30,7 @@ export default {
     },
     computed: {
         filteredEmotes: function() {
-            return this.emotes.filter(e => e.name.startsWith(this.query))
+            return this.emotes.filter(e => e.name.toLowerCase().startsWith(this.query.toLowerCase()))
         },
         showMenu: function() {
             return this.query != null && this.query.length > 0 && this.filteredEmotes.length > 0;
@@ -98,12 +98,13 @@ export default {
             }
         },
         autocompleteEmote: function(emote) {
-            let nameMinusQuery = emote.name.substring(this.query.length, emote.name.length) + " ";
-
             let textArea = $("#chat-input").children("textarea");
+
             let currentText = textArea.val();
 
-            updateChatTextfield(currentText + nameMinusQuery);
+            let currentMinusQuery = currentText.substring(0, currentText.length - this.query.length);
+
+            updateChatTextfield(currentMinusQuery + emote.name + " ");
 
             this.query = "";
             
