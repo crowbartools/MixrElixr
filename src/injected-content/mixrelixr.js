@@ -10,8 +10,11 @@ import {
     determineMessageType
 } from './utils';
 
+import * as api from "./api";
+
 // vue apps
 import * as autocompleteAppBinder from './vue-apps/emote-autocomplete/emote-autocomplete-binder';
+import * as slowChatTimerAppBinder from './vue-apps/slow-chat-timer/slow-chat-timer-binder';
 import { handleEmoteModal } from './emotes/emote-modal-handler';
 
 //import deps
@@ -101,13 +104,20 @@ $(() => {
 
       let channelIdOrName = result[2];
 
-      getChannelNameById(channelIdOrName).then(name => {
-        cache.currentStreamerName = name;
+      api.getChannelData(channelIdOrName).then(channelData => {
+          cache.currentStreamerId = channelData.id;
 
-        waitForElementAvailablity(ElementSelector.CHAT_CONTAINER).then(() => {
-          applyChatSettings(name);
-        });
+          cacheGlobalElixrEmotes();
+          cacheChannelElixrEmotes(channelData.id);
+
+          let channelName = channelData.token;
+          cache.currentStreamerName = channelName;
+
+          waitForElementAvailablity(ElementSelector.CHAT_CONTAINER).then(() => {
+            applyChatSettings(channelName);
+          });
       });
+
     } else if (channelBlock != null && channelBlock.length > 0) {
       log('detected streamer page...');
       cache.currentPage = 'streamer';
@@ -120,15 +130,27 @@ $(() => {
       getStreamerName().then(channelName => {
         log('streamer page loaded...');
 
-        getChannelNameById(channelName).then(name => {
-          cache.currentStreamerName = name;
+        api.getChannelData(channelName).then(channelData => {
+          cache.currentStreamerId = channelData.id;
+
+          cacheGlobalElixrEmotes();
+          cacheChannelElixrEmotes(channelData.id);
+
+          let channelName = channelData.token;
+          cache.currentStreamerName = channelName;
+
+          let slowChatCooldown = channelData.preferences["channel:slowchat"];
+          cache.slowChatCooldown = slowChatCooldown;
+          log(`Set slow chat cooldown to: ${slowChatCooldown}`);
 
           waitForElementAvailablity(ElementSelector.CHAT_CONTAINER).then(() => {
             log('loading streamer page options...');
-            loadStreamerPage(name);
+            loadStreamerPage(channelName);
           });
         });
       });
+
+
     } else if (homeBlock != null && homeBlock.length > 0) {
       log('looks like we are on the main page');
       cache.currentPage = 'homepage';
@@ -467,7 +489,6 @@ $(() => {
         $.get(`https://mixer.com/api/v1/channels/${id}/users/mod?where=username:eq:${userLowerCase}&fields=username`)
           .done(data => {
             let isMod = data.length > 0;
-            log('User is mod');
             resolve(isMod);
           })
           .fail(() => {
@@ -906,6 +927,10 @@ $(() => {
 
       $('.me-chat-container').removeClass('theaterMode');
 
+      if ($("#me-quick-host-button").length > 0) {
+        $("#me-quick-host-button").remove();
+      }
+
       // hacky way to toggle "position: relative" on and off to force the chat element to rerender with proper positioning
       setTimeout(() => {
         $('.chat').addClass('relative');
@@ -925,7 +950,9 @@ $(() => {
     } else {
       const isLive = $(".offline-message").length < 1;
       if (isLive) {
+
         theaterMode = true;
+
         let minimizeInteractiveBtn = $('.hide-interactive');
         if (minimizeInteractiveBtn != null) {
           let isHideBtn = $('.icon-indeterminate_check_box');
@@ -933,6 +960,26 @@ $(() => {
             minimizeInteractiveBtn.click();
           }
         }
+
+        if ($("#me-quick-host-button").length > 0) {
+          $("#me-quick-host-button").remove();
+        }
+
+        const currentViewerCount = $("b-channel-info-bar").find(".viewers.layout-row");
+        $(`
+          <div id="me-quick-host-button">
+            <div>Host</div>
+          </div>
+        `).insertAfter(currentViewerCount);
+
+        const onQuickHostClick = function() {
+          $("b-channel-owners-block").find(".menu-btn").click();
+          $("b-host-target-button").children("button").click();
+        };
+
+        $("#me-quick-host-button").off("click", onQuickHostClick);
+        $("#me-quick-host-button").on("click", onQuickHostClick);
+
         setTimeout(() => {
           theaterElements.addClass('theaterMode');
 
@@ -941,7 +988,7 @@ $(() => {
             heading: 'Theater Mode Enabled',
             showHideTransition: 'fade',
             allowToastClose: true,
-            hideAfter: 4500,
+            hideAfter: 3000,
             stack: false,
             position: 'top-center',
             bgColor: '#151C29',
@@ -1100,6 +1147,10 @@ $(() => {
       // bind custom emote auto complete app
       autocompleteAppBinder.bindEmoteAutocompleteApp(cache.globalEmotes, cache.currentStreamerEmotes, cache.currentStreamerId);
 
+      // bind slow chat app
+      if (cache.slowChatCooldown >= 2000 && !cache.userIsMod && options.showSlowChatCooldownTimer !== false) {
+        slowChatTimerAppBinder.bindSlowChatTimerApp(cache.slowChatCooldown);
+      }
     });
 
     handleEmoteModal(options, cache);
@@ -1191,6 +1242,8 @@ $(() => {
         return;
       }
 
+
+
       messageContainer.attr('elixrfied', 'true');
 
       // Give chat messages a chat message class for easier targeting.
@@ -1201,6 +1254,10 @@ $(() => {
         .text()
         .trim()
         .split(' ')[0]; // we do this to cut out the progression level
+
+      if (messageType === "regular-message" && messageAuthor === cache.user.username && !cache.userIsMod) {
+          slowChatTimerAppBinder.messageDetected();
+      }
 
       if (options.ignoredUsers && options.ignoredUsers.includes(messageAuthor)) {
         messageContainer.hide();
@@ -2190,9 +2247,9 @@ $(() => {
     let meTooltip = $(this);
 
     meTooltip.tooltipster({
-      animation: 'grow',
+      animation: 'fade',
       delay: 10,
-      animationDuration: 100,
+      animationDuration: 50,
       contentAsHTML: true,
       theme: 'tooltipster-borderless'
     });

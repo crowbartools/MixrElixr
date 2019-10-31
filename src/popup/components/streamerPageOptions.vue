@@ -31,6 +31,7 @@
             <checkbox-toggle :value.sync="hideChatAvatars" @changed="saveSettings()" label="Hide Viewer Avatars"></checkbox-toggle>
             <checkbox-toggle :value.sync="hideChannelProgression" @changed="saveSettings()" label="Hide Progression Levels"></checkbox-toggle>
             <checkbox-toggle :value.sync="hideChatHeaders" @changed="saveSettings()" label="Hide Upsell/Leaderboard Banners" tooltip="Hides the item purchase and leaderboard banners at the top of the chat view."></checkbox-toggle>
+			<checkbox-toggle :value.sync="showSlowChatCooldownTimer" @changed="saveSettings()" label="Slow Chat Cooldown Timer" tooltip="Display a timer showing your current slow chat cooldown status (shows up once cooldown starts and only if cooldown is 2 secs or longer)"></checkbox-toggle>  
             <checkbox-toggle :value.sync="useCustomFontSize" @changed="saveSettings()" label="Use Custom Text Size" tooltip="Allows you to define a custom font size and line height."></checkbox-toggle>
             <b-collapse v-model="useCustomFontSize" id="useCustomFontSize">
                 <div style="padding: 0px 0 15px 20px;">

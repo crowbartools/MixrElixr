@@ -409,41 +409,12 @@ b-embers-button.me-simplified-topbar > div > div > div {
     display: block !important;
 }
 
-
-
-/*
-
-background: #182e48;
-    border-right: unset;
-    top: 13px;
-    left: -20px;
-    width: 20px;
-    height: 20px;
-    border-radius: 9px;
-    border-bottom-right-radius: 0;
-    border-top-right-radius: 0;
-
-    transform: translate(2px,-1px);
-*/
-
-/*
-filter btn:
-
-    // cancel auto page scroll (need more specific query id)
-    $(".bui-btn-flat").on('click', (event) => {
-        return false;
-    });
-
-
-filter panel:
-
-    position: fixed;
-    top: 60px;
-    margin: 0 auto;
-    max-width: 1440px;
-    width: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-
-
-*/
+#me-quick-host-button {
+    font-size: 13px;
+    color: #09afff;
+    margin-left: 10px;
+    cursor: pointer;
+    &:hover {
+        opacity: 0.7;
+    }
+}
