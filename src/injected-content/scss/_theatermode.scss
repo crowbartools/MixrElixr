@@ -90,6 +90,10 @@ b-nav-host > div.theaterMode {
     max-height: calc(100vh) !important;
 }
 
+.stage.theaterMode [class*="dismiss-beachball"] {
+    top: 70px !important;
+}
+
 b-channel-page-wrapper .stage.aspect-16-9.me-video-stage, 
 b-channel-page-wrapper .stage.me-video-stage, 
 b-channel-page-wrapper .stage:not(.aspect-16-9).me-video-stage{
