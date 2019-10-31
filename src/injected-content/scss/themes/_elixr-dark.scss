@@ -101,4 +101,61 @@ body.elixr-dark {
     .skills-tray-container {
         background: #24282d !important;
     }
+    
+    [class*="dialog_"] {
+        background-color: #12151a !important;
+
+        [class*="tile_"] {
+            background-color: #2b2e36 !important;
+        }
+
+        [class*="shadowTop_"] {
+            background: linear-gradient(0deg, rgba(33, 44, 61, 0) 0%, #090c11 100%) !important;
+        }
+
+        [class*="shadowBottom_"] {
+            background: linear-gradient(180deg, rgba(33, 44, 61, 0) 0%, #0d1117 100%) !important;
+        }
+    }
+
+    .dialog {
+        background-color: #12151a !important;
+        border: 2px solid #1A1D21 !important;
+    }
+
+    bui-dialog-actions {
+        border-top: 2px solid #1A1D21 !important;
+        background: #12151A !important;
+    }
+
+    bui-dialog-header {
+        border-bottom: 2px solid #1A1D21 !important;
+    }
+
+    b-browse-loader::before {
+        background: linear-gradient(#0f121500, #0f1215 70%) !important;
+    }
+
+    b-ghost-browse-card > div.content {
+        background: #292c30 !important;
+        box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.82), 0px 2px 2px 0px rgba(11, 9, 9, 0.55), 0px 3px 1px -2px rgba(0, 0, 0, 0.82) !important;
+    }
+
+    .dropdown.notifications {
+        background: #12151A !important;
+    }
+
+    b-user-triggered-notification:hover, 
+    b-went-live-notification:hover, 
+    b-sub-anniversary-notification:hover {
+        background: #191d24 !important;
+    }
+
+    .notification-link:hover {
+        background: none !important;
+    }
+
+    [class*="locales_"] {
+        background: #0e1115 !important;
+    }
 }
