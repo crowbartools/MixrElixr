@@ -121,7 +121,7 @@ function keyupListener(e) {
         let words = allText.split(" ");
         if (words.length > 0) {
             let lastWord = words[words.length - 1];
-            if (lastWord != null && lastWord.trim().length > 1) {
+            if (lastWord != null && lastWord.trim().length >= 3) {
                 query = lastWord;
             }
         }
