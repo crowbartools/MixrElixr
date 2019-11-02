@@ -29,6 +29,7 @@
     "jquery-toast-plugin": "^1.3.2",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
+    "simulant": "^0.2.2",
     "tooltipster": "^4.2.6",
     "vue": "^2.6.10",
     "vue-multiselect": "^2.1.6",

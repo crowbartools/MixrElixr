@@ -1,3 +1,4 @@
+import * as simulant from "simulant";
 export function log(message) {
     console.log(`[MixrElixr] ${message}`);
 }
@@ -68,30 +69,11 @@ export function determineMessageType(message) {
 }
 
 export function updateChatTextfield(newString) {
+    let textAreaElement = $("#chat-input").children("textarea");
 
-    //remove prev
-    if ($("#chatTextUpdate").length > 0) {
-        $("#chatTextUpdate").remove();
-    }
-
-    let scrpt = document.createElement('script');
-
-    scrpt.setAttribute("id", "chatTextUpdate");
-
-    scrpt.innerText = `
-        console.log("Elixr: Starting chat text update...");
-
-        var meChatTextArea = document.getElementById("chat-input").childNodes[0];
-
-        var nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
-        nativeInputValueSetter.call(meChatTextArea, "${newString}");
-
-        var meInputEvent = new Event('input', { bubbles: true });
-        meInputEvent.simulated = true;
-        meChatTextArea.dispatchEvent(meInputEvent);
-
-        console.log("Elixr: Finished chat text update.");          
-    `;
-
-    document.head.appendChild(scrpt);
+    simulant.fire(textAreaElement[0], simulant('focus'));
+    textAreaElement.val(newString);
+    simulant.fire(textAreaElement[0], simulant('input'));
+    simulant.fire(textAreaElement[0], simulant('change'));
+    simulant.fire(textAreaElement[0], simulant('blur'));
 }
