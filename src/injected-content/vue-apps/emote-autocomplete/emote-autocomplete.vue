@@ -46,13 +46,13 @@ export default {
     },
     methods: {
         getEmoteElementId: function(emote) {
-            return (emote.global ? "global-" : "channel-") + emote.name
+            return (emote.global ? "global-" : "channel-") + emote.name;
         },
         scrollSelectedIntoView: function() {
             let selectedEmote = this.filteredEmotes[this.selectedEmoteIndex];
             if(selectedEmote) {
                 const emoteElementId = this.getEmoteElementId(selectedEmote);
-                const element = document.getElementById(emoteElementId)
+                const element = document.getElementById(emoteElementId);
                 if(element) {
                     element.scrollIntoView(false);
                 }
@@ -72,6 +72,68 @@ export default {
             } else {
                 this.selectedEmoteIndex--;
             }
+            this.scrollSelectedIntoView();
+        },
+        computeRows: function() {
+            const rects = [...this.$el.getElementsByClassName('me-autocomplete-emote')].map(el => el.getBoundingClientRect());
+            const rows = [[]];
+            var currentRowHeight = Math.floor(rects[0].y);
+            for (let i = 0; i < rects.length; i++){
+                if (Math.floor(rects[i].y) == currentRowHeight){
+                    rows[rows.length - 1].push({index: i, pos: rects[i].x});
+                }
+                else{
+                    rows.push([]);
+                    currentRowHeight = Math.floor(rects[i].y);
+                    rows[rows.length - 1].push({index: i, pos: rects[i].x});
+                }
+            }
+            return rows;
+        },
+        incrementSelectedEmoteRow: function() {
+            const rows = this.computeRows();
+            
+            const currentRowIndex = rows.findIndex(row => row.find(posData => posData.index === this.selectedEmoteIndex));
+            let targetRowIndex;
+            if (currentRowIndex >= rows.length - 1) {
+                if (this.selectedEmoteIndex == this.filteredEmotes.length - 1) {
+                    this.selectedEmoteIndex = 0;
+                } else {
+                    this.selectedEmoteIndex = this.filteredEmotes.length - 1;
+                }
+                this.scrollSelectedIntoView();
+                return;
+            } else {
+                targetRowIndex = currentRowIndex + 1;
+            }
+
+            const currentPos = rows[currentRowIndex].find(posData => posData.index === this.selectedEmoteIndex).pos;
+            this.selectedEmoteIndex = rows[targetRowIndex]
+                .reduce((result, next) => Math.abs(currentPos - next.pos) < Math.abs(currentPos - result.pos) ? next : result).index;
+
+            this.scrollSelectedIntoView();
+        },
+        decrementSelectedEmoteRow: function() {
+            const rows = this.computeRows();
+
+            const currentRowIndex = rows.findIndex(row => row.find(posData => posData.index === this.selectedEmoteIndex));
+            let targetRowIndex;
+            if (currentRowIndex <= 0) {
+                if (this.selectedEmoteIndex == 0) {
+                    this.selectedEmoteIndex = this.filteredEmotes.length - 1;
+                } else {
+                    this.selectedEmoteIndex = 0;
+                }
+                this.scrollSelectedIntoView();
+                return;
+            } else {
+                targetRowIndex = currentRowIndex - 1;
+            }
+
+            const currentPos = rows[currentRowIndex].find(posData => posData.index === this.selectedEmoteIndex).pos;
+            this.selectedEmoteIndex = rows[targetRowIndex]
+                .reduce((result, next) => Math.abs(currentPos - next.pos) < Math.abs(currentPos - result.pos) ? next : result).index;
+
             this.scrollSelectedIntoView();
         },
         isSelected: function(index) {

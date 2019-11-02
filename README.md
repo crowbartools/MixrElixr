@@ -1,15 +1,15 @@
 <p align="center">
-  <img src="https://i.imgur.com/vJVeWKj.png">
+  <img src="https://i.imgur.com/LtkgWYX.png">
 </p>
 
-A Google Chrome extension that provides options and tweaks to improve your [Mixer.com](http://mixer.com) viewing experience. Built with love by the [Firebot](https://github.com/Firebottle/Firebot) team.
+A browser extension that enhances your [Mixer.com](http://mixer.com) viewing experience with custom emotes, new features, and a ton of options. Built with love by the [Firebot](https://github.com/Firebottle/Firebot) team.
 
 If you have questions, concerns, need help, or just want to say hi, you can reach out to us [on Twitter](http://twitter.com/mixrelixr) or join our [Discord channel](https://discord.gg/tTmMbrG).
 
 >**Disclaimer**: MixrElixr is neither created nor endorsed by Mixer or Microsoft. It is created by the community for the community.
 
 ## How To Use
-1) Install the extension from the [Google Web Store](https://chrome.google.com/webstore/detail/mixrelixr/mmfbdcekojokeeonagpnlpoklelkcjon).
+1) Install the extension from the [Google Web Store](https://chrome.google.com/webstore/detail/mixrelixr/mmfbdcekojokeeonagpnlpoklelkcjon) or [Firefox Addon Store](https://addons.mozilla.org/en-US/firefox/addon/mixrelixr/).
 2) Change settings to your liking (click on the Elixr icon in the browser toolbar)
 3) Visit  [Mixer](http://mixer.com) and enjoy!
 

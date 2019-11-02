@@ -64,42 +64,40 @@ export function bindEmoteAutocompleteApp(globalEmotesCache, channelEmotesCache, 
 }
 
 function keydownListener(e) {
-    let child = app.$children[0] || {};
+    const child = app.$children[0] || {};
 
-    switch (e.which) {
-        case 37: //left
-        case 38: // up
-            if (child.showMenu) {
+    if (child.showMenu) {
+        switch (e.which) {
+            case 37: //left
                 child.decrementSelectedEmote();
                 e.preventDefault();
                 e.stopPropagation();
                 return false;
-            }
-            break;
-        case 39: // right
-        case 40: // down
-            if (child.showMenu) {
+            case 38: // up
+                child.decrementSelectedEmoteRow();
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            case 39: // right
                 child.incrementSelectedEmote();
                 e.preventDefault();
                 e.stopPropagation();
                 return false;
-            }
-            break;
-        case 13: // enter
-            if (child.showMenu) {
+            case 40: // down
+                child.incrementSelectedEmoteRow();
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            case 13: // enter
                 child.query = "";
-            }
-            break;
-        case 9: // tab
-            if (child.showMenu) {
+                break;
+            case 9: // tab
                 child.autocompleteSelectedEmote();
                 e.preventDefault();
                 e.stopPropagation();
                 e.stopImmediatePropagation();
                 return false;
-            }
-            break;
-
+        }
     }
 }
 
