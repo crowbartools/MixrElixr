@@ -24,7 +24,7 @@
 				<h4 style="margin-top:1.5rem;font-weight: 400;">How do I upload emotes for my channel?</h4>
 				<p style="font-size: 15px;color: #e0e0e0;">If you would like to upload emotes for your own channel, you can do so by going to <a href="https://crowbartools.com/emotes" target="_blank">crowbartools.com/emotes</a></p>
 				<h4 style="margin-top:1.5rem;font-weight: 400;">Do I have to be a Partner?</h4>
-				<p>Nope! However, we do have some small account age/follower requirements. Visit our website for more info.</p>
+				<p style="font-size: 15px;color: #e0e0e0;">Nope! However, we do have some small account age/follower requirements. Visit <a href="https://crowbartools.com/emotes" target="_blank">our website</a> for more info.</p>
 			</b-modal>
 		</span>
 </template>
