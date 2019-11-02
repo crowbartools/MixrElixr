@@ -23,6 +23,7 @@
                 <div class="teammember">murfGUY</div>
                 <div class="teammember">FierySama</div>
                 <div class="teammember">PhantomThiefZero</div>
+                <div class="teammember">Unlocked</div>
                 <h5 class="modal-title" style="padding-top: 20px">Need Help?</h5>
                 <div style="font-size:16px">If you have questions, please reach out to us <a class="light-blue-link" href="https://twitter.com/MixrElixr" target="_blank">on Twitter</a> or post in the #elixr-help channel of <a class="light-blue-link" href="https://discord.gg/2CGrbA4" target="_blank">our Discord</a>.</div>
                 <div class="disclaimer">MixrElixr is neither created nor endorsed by Mixer or Microsoft. It is created by the community for the community.</div>
@@ -48,3 +49,9 @@ export default {
     }
 };
 </script>
+
+<style lang="scss">
+ #teamModal {
+     text-align: center;
+ }
+</style>
