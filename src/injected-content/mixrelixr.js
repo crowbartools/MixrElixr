@@ -1255,8 +1255,10 @@ $(() => {
         .trim()
         .split(' ')[0]; // we do this to cut out the progression level
 
-      if (messageType === "regular-message" && messageAuthor === cache.user.username && !cache.userIsMod) {
-          slowChatTimerAppBinder.messageDetected();
+      if (cache.user != null) {
+        if (messageType === "regular-message" && messageAuthor === cache.user.username && !cache.userIsMod) {
+            slowChatTimerAppBinder.messageDetected();
+        }
       }
 
       if (options.ignoredUsers && options.ignoredUsers.includes(messageAuthor)) {
