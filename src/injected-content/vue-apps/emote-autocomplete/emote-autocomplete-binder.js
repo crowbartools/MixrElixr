@@ -2,12 +2,22 @@ import Vue from "vue";
 import AutocompleteApp from "./emote-autocomplete";
 import { waitForElementAvailablity, debounce } from "../../utils";
 
+
 let app = null;
 export function bindEmoteAutocompleteApp(options, globalEmotesCache, channelEmotesCache, currentStreamerId) {
 
-    //remove previous
+    //clean up any previous
     if ($("#me-emote-autocomplete").length > 0) {
         $("#me-emote-autocomplete").remove();
+    }
+
+    let keyupListenerFunc = debounce(keyupListener, 100);
+
+    $("#chat-input").children("textarea").off("keyup", keyupListenerFunc);
+    $("#chat-input").children("textarea").off("keydown", keydownListenerFunc);
+
+    if (options.enableEmoteAutocomplete === false) {
+        return;
     }
 
     let showGlobalEmotes =
@@ -54,13 +64,9 @@ export function bindEmoteAutocompleteApp(options, globalEmotesCache, channelEmot
 
     child.currentStreamerId = currentStreamerId;
 
-    let keyupListenerFunc = debounce(keyupListener, 100);
     let keydownListenerFunc = keydownListener;
 
-    $("#chat-input").children("textarea").off("keyup", keyupListenerFunc);
     $("#chat-input").children("textarea").on("keyup", keyupListenerFunc);
-
-    $("#chat-input").children("textarea").off("keydown", keydownListenerFunc);
     $("#chat-input").children("textarea").on("keydown", keydownListenerFunc);
 
     const chatSendBtnListener = function() {

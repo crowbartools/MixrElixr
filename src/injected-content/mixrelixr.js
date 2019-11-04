@@ -1242,8 +1242,6 @@ $(() => {
         return;
       }
 
-
-
       messageContainer.attr('elixrfied', 'true');
 
       // Give chat messages a chat message class for easier targeting.

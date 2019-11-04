@@ -23,6 +23,7 @@
             <div v-show="customEmotes" class="option-wrapper suboption">
                 <checkbox-toggle :value.sync="globalEmotes" label="Enable Global Emotes" @changed="saveSettings()" tooltip="Global emotes are a set of emotes curated by the MixrElixr team that are available in all channels."></checkbox-toggle>
                 <checkbox-toggle :value.sync="channelEmotes" label="Enable Channel Emotes" @changed="saveSettings()" tooltip="Channel emotes are set by the channel owner and reviewed by the MixrElixr team. They are only available in the given channel."></checkbox-toggle>
+				<checkbox-toggle :value.sync="enableEmoteAutocomplete" label="Enable Emote Autocomplete Menu" @changed="saveSettings()" tooltip="Enables the emote autocomplete menu when typing in the chat textbox."></checkbox-toggle>
             </div>
             
             <span class="setting-subcategory">Chat</span>

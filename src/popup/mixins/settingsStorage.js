@@ -70,6 +70,7 @@ global.settingsStorage = {
             customEmotes: true,
             globalEmotes: true,
             channelEmotes: true,
+            enableEmoteAutocomplete: true,
             hideChatAvatars: false,
             hideChannelProgression: false,
             hideChatHeaders: false,
