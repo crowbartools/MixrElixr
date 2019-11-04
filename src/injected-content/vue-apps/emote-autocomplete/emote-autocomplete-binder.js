@@ -3,21 +3,33 @@ import AutocompleteApp from "./emote-autocomplete";
 import { waitForElementAvailablity, debounce } from "../../utils";
 
 let app = null;
-export function bindEmoteAutocompleteApp(globalEmotesCache, channelEmotesCache, currentStreamerId) {
+export function bindEmoteAutocompleteApp(options, globalEmotesCache, channelEmotesCache, currentStreamerId) {
 
     //remove previous
     if ($("#me-emote-autocomplete").length > 0) {
         $("#me-emote-autocomplete").remove();
     }
 
+    let showGlobalEmotes =
+        options.customEmotes !== false &&
+        options.globalEmotes !== false &&
+        globalEmotesCache !== null &&
+        globalEmotesCache.emotes !== null;
+
+    let showChannelEmotes =
+        options.customEmotes !== false &&
+        options.channelEmotes !== false &&
+        channelEmotesCache !== null &&
+        channelEmotesCache.emotes !== null;
+
     let globalEmotes = [];
-    if (globalEmotesCache && globalEmotesCache.emotes) {
+    if (showGlobalEmotes) {
         globalEmotes = Object.values(globalEmotesCache.emotes);
         globalEmotes.forEach(e => e.global = true);
     }
 
     let channelEmotes = [];
-    if (channelEmotesCache && channelEmotesCache.emotes) {
+    if (showChannelEmotes) {
         channelEmotes = Object.values(channelEmotesCache.emotes);
         channelEmotes.forEach(e => e.global = false);
     }
