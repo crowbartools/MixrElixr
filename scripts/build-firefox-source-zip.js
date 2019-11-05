@@ -31,7 +31,7 @@ const buildZip = (dist, zipFilename) => {
         archive
             .glob('**/*', {
                 dot: true,
-                ignore: ['dist/**', 'dist-zip/**', 'node_modules/**', '.git/**', '.gitignore']
+                ignore: ['dist/**', 'dist-zip/**', 'node_modules/**', '.git/**', '.gitignore', '.github/**']
             })
             .on('error', err => reject(err))
             .pipe(stream);
