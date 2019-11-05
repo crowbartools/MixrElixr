@@ -38,8 +38,8 @@ export default {
         addMoreFriendsCheck: function() {
             // If we scroll 80% through our current friends, add some more.
             if (this.activeTab === 'online') {
-                var obj = this.$el;
-                var percent = (obj.scrollHeight - obj.offsetHeight) * 0.8;
+                const obj = this.$el;
+                const percent = (obj.scrollHeight - obj.offsetHeight) * 0.8;
                 if (obj.scrollTop >= percent) {
                     bus.$emit('friends-scrolled');
                 }

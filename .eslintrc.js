@@ -38,6 +38,7 @@ module.exports = {
         'allow-empty-reject': true,
         allowEmptyReject: true,
         "prettier/prettier": "error",
-        "prefer-promise-reject-errors": "warn"
+        "prefer-promise-reject-errors": "warn",
+        "no-var": "error"
     }
 };
