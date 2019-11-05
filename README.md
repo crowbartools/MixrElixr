@@ -1,6 +1,9 @@
 <p align="center">
   <img src="https://i.imgur.com/LtkgWYX.png">
 </p>
+<p align="center">
+  <img src="https://api.travis-ci.com/crowbartools/MixrElixr.svg?branch=master">
+</p>
 
 A browser extension that enhances your [Mixer.com](http://mixer.com) viewing experience with custom emotes, new features, and a ton of options. Built with love by the [Firebot](https://github.com/Firebottle/Firebot) team.
 
