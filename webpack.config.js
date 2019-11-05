@@ -7,119 +7,119 @@ const { VueLoaderPlugin } = require('vue-loader');
 const { version } = require('./package.json');
 
 const config = {
-  mode: process.env.NODE_ENV,
-  context: __dirname + '/src',
-  entry: {
-    'background/background': './background/background.js',
-    'popup/popup': './popup/popup.js',
-    'injected-content/injected-content': './injected-content/mixrelixr.js'
-  },
-  output: {
-    path: __dirname + '/dist',
-    filename: '[name].js'
-  },
-  resolve: {
-    extensions: ['.js', '.vue']
-  },
-  module: {
-    rules: [
-      {
-        test: /\.vue$/,
-        loaders: 'vue-loader'
-      },
-      {
-        test: /\.js$/,
-        loader: 'babel-loader',
-        exclude: /node_modules/
-      },
-      {
-        test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader']
-      },
-      {
-        test: /\.scss$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
-      },
-      {
-        test: /\.sass$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader?indentedSyntax']
-      },
-      {
-        test: /\.(png|jpg|gif|svg|ico)$/,
-        loader: 'file-loader',
-        options: {
-          name: '[name].[ext]?emitFile=false'
-        }
-      },
-      {
-        test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'file-loader',
-        options: {
-          name: '[name].[ext]?emitFile=false',
-          outputPath: '/fonts/'
-        }
-      }
+    mode: process.env.NODE_ENV,
+    context: __dirname + '/src',
+    entry: {
+        'background/background': './background/background.js',
+        'popup/popup': './popup/popup.js',
+        'injected-content/injected-content': './injected-content/mixrelixr.js'
+    },
+    output: {
+        path: __dirname + '/dist',
+        filename: '[name].js'
+    },
+    resolve: {
+        extensions: ['.js', '.vue']
+    },
+    module: {
+        rules: [
+            {
+                test: /\.vue$/,
+                loaders: 'vue-loader'
+            },
+            {
+                test: /\.js$/,
+                loader: 'babel-loader',
+                exclude: /node_modules/
+            },
+            {
+                test: /\.css$/,
+                use: [MiniCssExtractPlugin.loader, 'css-loader']
+            },
+            {
+                test: /\.scss$/,
+                use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
+            },
+            {
+                test: /\.sass$/,
+                use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader?indentedSyntax']
+            },
+            {
+                test: /\.(png|jpg|gif|svg|ico)$/,
+                loader: 'file-loader',
+                options: {
+                    name: '[name].[ext]?emitFile=false'
+                }
+            },
+            {
+                test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
+                loader: 'file-loader',
+                options: {
+                    name: '[name].[ext]?emitFile=false',
+                    outputPath: '/fonts/'
+                }
+            }
+        ]
+    },
+    plugins: [
+        new webpack.DefinePlugin({
+            global: 'window'
+        }),
+        new VueLoaderPlugin(),
+        new MiniCssExtractPlugin({
+            filename: '[name].css'
+        }),
+        new CopyWebpackPlugin([
+            { from: 'icons', to: 'icons', ignore: ['icon.xcf'] },
+            { from: 'resources', to: 'resources', ignore: [] },
+            { from: 'popup/resources', to: 'popup/resources', ignore: [] },
+            { from: 'popup/popup.html', to: 'popup/popup.html', transform: transformHtml },
+            {
+                from: 'manifest.json',
+                to: 'manifest.json',
+                transform: content => {
+                    const jsonContent = JSON.parse(content);
+                    jsonContent.version = version;
+
+                    if (config.mode === 'development') {
+                        jsonContent['content_security_policy'] = "script-src 'self' 'unsafe-eval'; object-src 'self'";
+                    }
+
+                    let browserType = process.env.BROWSER;
+                    if (browserType !== 'firefox') {
+                        // remove the applications config section that chrome doesnt like
+                        delete jsonContent['applications'];
+                    }
+
+                    return JSON.stringify(jsonContent, null, 2);
+                }
+            }
+        ])
     ]
-  },
-  plugins: [
-    new webpack.DefinePlugin({
-      global: 'window'
-    }),
-    new VueLoaderPlugin(),
-    new MiniCssExtractPlugin({
-      filename: '[name].css'
-    }),
-    new CopyWebpackPlugin([
-      { from: 'icons', to: 'icons', ignore: ['icon.xcf'] },
-      { from: 'resources', to: 'resources', ignore: [] },
-      { from: 'popup/resources', to: 'popup/resources', ignore: [] },
-      { from: 'popup/popup.html', to: 'popup/popup.html', transform: transformHtml },
-      {
-        from: 'manifest.json',
-        to: 'manifest.json',
-        transform: content => {
-          const jsonContent = JSON.parse(content);
-          jsonContent.version = version;
-
-          if (config.mode === 'development') {
-            jsonContent['content_security_policy'] = "script-src 'self' 'unsafe-eval'; object-src 'self'";
-          }
-
-          let browserType = process.env.BROWSER;
-          if (browserType !== 'firefox') {
-            // remove the applications config section that chrome doesnt like
-            delete jsonContent['applications'];
-          }
-
-          return JSON.stringify(jsonContent, null, 2);
-        }
-      }
-    ])
-  ]
 };
 
 if (config.mode === 'production') {
-  config.plugins = (config.plugins || []).concat([
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: '"production"'
-      }
-    })
-  ]);
+    config.plugins = (config.plugins || []).concat([
+        new webpack.DefinePlugin({
+            'process.env': {
+                NODE_ENV: '"production"'
+            }
+        })
+    ]);
 }
 
 if (process.env.HMR === 'true') {
-  config.plugins = (config.plugins || []).concat([
-    new ExtensionReloader({
-      manifest: __dirname + '/src/manifest.json'
-    })
-  ]);
+    config.plugins = (config.plugins || []).concat([
+        new ExtensionReloader({
+            manifest: __dirname + '/src/manifest.json'
+        })
+    ]);
 }
 
 function transformHtml(content) {
-  return ejs.render(content.toString(), {
-    ...process.env
-  });
+    return ejs.render(content.toString(), {
+        ...process.env
+    });
 }
 
 module.exports = config;

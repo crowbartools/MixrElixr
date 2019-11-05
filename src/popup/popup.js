@@ -70,6 +70,6 @@ global.bus = new Vue();
 
 /* eslint-disable no-new */
 new Vue({
-  el: '#app',
-  render: h => h(App)
+    el: '#app',
+    render: h => h(App)
 });

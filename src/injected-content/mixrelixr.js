@@ -111,7 +111,10 @@ $(() => {
                     applyChatSettings(channelName);
                 });
             });
-        } else if ((channelBlock != null && channelBlock.length > 0) || (mobileChannelBlock != null && mobileChannelBlock.length > 0)) {
+        } else if (
+            (channelBlock != null && channelBlock.length > 0) ||
+            (mobileChannelBlock != null && mobileChannelBlock.length > 0)
+        ) {
             log('detected streamer page...');
             cache.currentPage = 'streamer';
 
@@ -168,9 +171,9 @@ $(() => {
             }
 
             // Lets keep checking to see if we find any new favorites
-            cache.highlightLoop = setInterval(function () {
+            cache.highlightLoop = setInterval(function() {
                 // Checking all streamer cards of non-favorites:
-                $('.card:not(".favoriteFriend")').each(function () {
+                $('.card:not(".favoriteFriend")').each(function() {
                     // Which streamer did we find
                     let streamer = $(this)
                         .find('.titles small')
@@ -207,7 +210,8 @@ $(() => {
         }
 
         // handle searchbar
-        const pinSearchBar = settings.homePageOptions.pinSearchToTop == null || settings.homePageOptions.pinSearchToTop === true;
+        const pinSearchBar =
+            settings.homePageOptions.pinSearchToTop == null || settings.homePageOptions.pinSearchToTop === true;
 
         let searchBar = $('b-browse-channels-header')
             .children()
@@ -233,7 +237,7 @@ $(() => {
                 .children('.bui-btn')
                 .children('span')
                 .contents()
-                .filter(function () {
+                .filter(function() {
                     return this.nodeType == 3;
                 })
                 .eq(1);
@@ -280,7 +284,7 @@ $(() => {
 
         // do checks when page scrolled
         $(window).scroll(
-            debounce(function () {
+            debounce(function() {
                 searchbarPositionCheck();
             }, 1)
         );
@@ -288,7 +292,7 @@ $(() => {
         // do checks when page resized
         $(window).on(
             'resize',
-            debounce(function () {
+            debounce(function() {
                 searchbarPositionCheck();
 
                 if (pinSearchBar) {
@@ -301,7 +305,7 @@ $(() => {
         );
 
         // do checks when a click happens anywhere in main doc
-        $(document).click(function (event) {
+        $(document).click(function(event) {
             if (cache.currentPage === 'homepage') {
                 searchbarPositionCheck();
 
@@ -387,7 +391,7 @@ $(() => {
     }
 
     // theater mode listeners
-    let infoBarShowHide = debounce(function () {
+    let infoBarShowHide = debounce(function() {
         if (theaterMode) {
             if (!infoBarShown) {
                 $('b-channel-info-bar > .info-bar').css('opacity', '1');
@@ -410,11 +414,11 @@ $(() => {
 
             let ts = new Date().getTime();
             let rootUrl = `https://crowbartools.com/user-content/emotes/global/emotes.json?cache=${ts}`;
-            $.getJSON(rootUrl, function (data) {
+            $.getJSON(rootUrl, function(data) {
                 log('Global emotes retrieved.');
                 cache.globalEmotes = data;
                 resolve();
-            }).fail(function (_, textStatus, error) {
+            }).fail(function(_, textStatus, error) {
                 log('No global emotes were found!');
                 console.log(error);
                 cache.globalEmotes = null;
@@ -441,11 +445,11 @@ $(() => {
 
             let ts = new Date().getTime();
             let rootUrl = `https://crowbartools.com/user-content/emotes/live/${channelId}/emotes.json?cache=${ts}`;
-            $.getJSON(rootUrl, function (data) {
+            $.getJSON(rootUrl, function(data) {
                 log('Custom emotes retrieved for: ' + cache.currentStreamerName);
                 cache.currentStreamerEmotes = Array.isArray(data) ? data[0] : data;
                 resolve();
-            }).fail(function (_, textStatus, error) {
+            }).fail(function(_, textStatus, error) {
                 log('No custom emotes for: ' + cache.currentStreamerName);
                 console.log(error);
                 cache.currentStreamerEmotes = null;
@@ -497,7 +501,9 @@ $(() => {
                     return resolve(true);
                 }
 
-                $.get(`https://mixer.com/api/v1/channels/${id}/users/mod?where=username:eq:${userLowerCase}&fields=username`)
+                $.get(
+                    `https://mixer.com/api/v1/channels/${id}/users/mod?where=username:eq:${userLowerCase}&fields=username`
+                )
                     .done(data => {
                         let isMod = data.length > 0;
                         resolve(isMod);
@@ -516,7 +522,7 @@ $(() => {
             let request = new XMLHttpRequest();
             request.open('GET', `https://mixer.com/api/v1/channels/${id}`, true);
 
-            request.onload = function () {
+            request.onload = function() {
                 if (request.status >= 200 && request.status < 400) {
                     // Success!
                     log('Got channel data');
@@ -533,7 +539,7 @@ $(() => {
                 }
             };
 
-            request.onerror = function () {
+            request.onerror = function() {
                 // There was a connection error of some sort
                 reject('Error getting channel details');
             };
@@ -552,9 +558,9 @@ $(() => {
             }
 
             // Lets keep checking to see if we find any new favorites
-            cache.highlightLoop = setInterval(function () {
+            cache.highlightLoop = setInterval(function() {
                 // Checking all streamer cards of non-favorites:
-                $('.card:not(".favoriteFriend")').each(function () {
+                $('.card:not(".favoriteFriend")').each(function() {
                     // Which streamer did we find
                     let streamer = $(this)
                         .find('.titles small')
@@ -641,7 +647,7 @@ $(() => {
             triggerAutomute();
         }
 
-        $('.channel-page').on('mousemove', function () {
+        $('.channel-page').on('mousemove', function() {
             infoBarShowHide();
         });
 
@@ -676,7 +682,7 @@ $(() => {
                             // We should also attach an event to the follow button that will make the favorite button appear when a streamer is followed.
                             $('bui-icon[icon="heart-full"]')
                                 .closest('div.bui-btn-raised')
-                                .click(function () {
+                                .click(function() {
                                     // log('Now following current streamer!');
                                     addFavoriteButton(streamerName, streamerIsFavorited(streamerName));
 
@@ -697,7 +703,7 @@ $(() => {
                         log('Costreamers: ' + result);
                         costreamers = result;
                         // Let's check each co-streamer
-                        $.each(costreamers, function (i) {
+                        $.each(costreamers, function(i) {
                             // This is the current co-streamer.
                             let currentStreamer = costreamers[i];
 
@@ -726,7 +732,7 @@ $(() => {
                                         .find('div.bui-btn');
 
                                     // We should also attach an event to the follow button that will make the favorite button appear when a streamer is followed.
-                                    followButtonElement.click(function () {
+                                    followButtonElement.click(function() {
                                         // Find out which streamer's follow button we are hitting.
                                         let thisStreamer = $(this)
                                             .parents('div.head')
@@ -761,7 +767,7 @@ $(() => {
                     if (minimizeInteractiveBtn != null && minimizeInteractiveBtn.hasClass('open')) {
                         let hideInteractiveTries = 0;
 
-                        let hideInteractiveInterval = setInterval(function () {
+                        let hideInteractiveInterval = setInterval(function() {
                             // click the hide button
                             minimizeInteractiveBtn.click();
 
@@ -810,7 +816,7 @@ $(() => {
                 clearInterval(cache.hostLoop);
             }
 
-            cache.hostLoop = setInterval(function () {
+            cache.hostLoop = setInterval(function() {
                 let updatedOptions = getStreamerOptionsForStreamer(streamerName);
 
                 let hosting = $('.host-name').is(':visible');
@@ -840,7 +846,7 @@ $(() => {
             clearInterval(cache.onlineInterval);
         }
 
-        cache.onlineInterval = setInterval(function () {
+        cache.onlineInterval = setInterval(function() {
             let offlineMessage = $('.offline-message');
 
             let streamerOnline = offlineMessage != null && offlineMessage.length > 0;
@@ -870,7 +876,7 @@ $(() => {
                     let fullscreenBtn;
 
                     let icons = $('i.material-icons');
-                    icons.each(function () {
+                    icons.each(function() {
                         let icon = $(this);
                         if (icon.text() == 'fullscreen') {
                             fullscreenBtn = icon.parent().parent();
@@ -897,7 +903,7 @@ $(() => {
                     theaterBtn.find('span').text('MixrElixr: Theater Mode');
 
                     // add click handler
-                    theaterBtn.on('click', function () {
+                    theaterBtn.on('click', function() {
                         toggleTheaterMode();
                     });
 
@@ -982,7 +988,7 @@ $(() => {
           </div>
         `).insertAfter(currentViewerCount);
 
-                const onQuickHostClick = function () {
+                const onQuickHostClick = function() {
                     $('b-channel-owners-block')
                         .find('.menu-btn')
                         .click();
@@ -1030,7 +1036,7 @@ $(() => {
             const profileSelector = '.costream-rollout .profile';
 
             $.deinitialize(profileSelector);
-            $.initialize(profileSelector, function () {
+            $.initialize(profileSelector, function() {
                 let streamerFeed = $(this);
                 let text = streamerFeed.text();
                 if (text && text.trim() !== streamerName.trim()) {
@@ -1071,19 +1077,19 @@ $(() => {
       <style id="elixr-chat-styles">
 
        ${
-            options.useCustomFontSize
-                ? `
+           options.useCustomFontSize
+               ? `
           b-chat-client-host-component div[class*="messageContent"] {
               font-size: ${options.textSize}px;
               line-height: ${options.textSize + 9}px;
           }
        `
-                : ''
-            }
+               : ''
+       }
     
        ${
-            options.hideChatAvatars
-                ? `               
+           options.hideChatAvatars
+               ? `               
           b-chat-client-host-component img[class*="ChatAvatar"] {
               display: none;
           }
@@ -1092,39 +1098,39 @@ $(() => {
               margin-left: .5em;
           }
         `
-                : ''
-            }
+               : ''
+       }
 
        ${
-            options.hideChannelProgression
-                ? `               
+           options.hideChannelProgression
+               ? `               
             b-chat-client-host-component div[class*="messageContent"] span[class*="badge"] {
                 display: none;
             }
        `
-                : ''
-            }
+               : ''
+       }
 
 
        ${
-            options.hideSkillEffects
-                ? `               
+           options.hideSkillEffects
+               ? `               
             #skills-chat-wrapper, b-skill-mobile-execution-host {
                 display: none !important;
             }
        `
-                : ''
-            }
+               : ''
+       }
 
        ${
-            options.hideEmberMessages
-                ? `               
+           options.hideEmberMessages
+               ? `               
             b-chat-client-host-component div[class*="stickerMessage_"] {
                 display: none;
             }
        `
-                : ''
-            }
+               : ''
+       }
 
        b-use-app-btn-host {
            display: none !important;
@@ -1156,7 +1162,7 @@ $(() => {
             .children()
             .addClass('elixr-chat-container');
 
-        let updateScrollGlue = debounce(function () {
+        let updateScrollGlue = debounce(function() {
             let chatContainer = $('.elixr-chat-container');
 
             let current = chatContainer.scrollTop();
@@ -1202,7 +1208,7 @@ $(() => {
         }
 
         // Remove prev Inline Image Links, they will be readded later if needed
-        $('img[elixr-img]').each(function () {
+        $('img[elixr-img]').each(function() {
             $(this)
                 .parent()
                 .parent()
@@ -1223,10 +1229,18 @@ $(() => {
         }
 
         const isMobileMode = $('b-channel-mobile-page-wrapper').length > 0;
-        const composerBlockSelecter = isMobileMode ? "[class*='mobileWebComposerBlock']" : "[class*='webComposerBlock']";
+        const composerBlockSelecter = isMobileMode
+            ? "[class*='mobileWebComposerBlock']"
+            : "[class*='webComposerBlock']";
         waitForElementAvailablity(composerBlockSelecter).then(composerBlock => {
             // bind custom emote auto complete app
-            autocompleteAppBinder.bindEmoteAutocompleteApp(composerBlock, options, cache.globalEmotes, cache.currentStreamerEmotes, cache.currentStreamerId);
+            autocompleteAppBinder.bindEmoteAutocompleteApp(
+                composerBlock,
+                options,
+                cache.globalEmotes,
+                cache.currentStreamerEmotes,
+                cache.currentStreamerId
+            );
 
             // bind slow chat app
             if (cache.slowChatCooldown >= 2000 && !cache.userIsMod && options.showSlowChatCooldownTimer !== false) {
@@ -1242,7 +1256,7 @@ $(() => {
         // This will run the callback for every message that already exists as well as any new ones added.
         // We can use this to do any tweaks and modifications to chat as they come in
         // message__
-        $.initialize(ElementSelector.CHAT_MESSAGE, async function () {
+        $.initialize(ElementSelector.CHAT_MESSAGE, async function() {
             let messageContainer = $(this);
 
             const messageType = determineMessageType(messageContainer);
@@ -1342,11 +1356,15 @@ $(() => {
                 cache.currentStreamerEmotes.emotes != null &&
                 chatFromCurrentChannel;
 
-            let showGlobalEmotes = options.customEmotes !== false && options.globalEmotes !== false && cache.globalEmotes != null && cache.globalEmotes.emotes != null;
+            let showGlobalEmotes =
+                options.customEmotes !== false &&
+                options.globalEmotes !== false &&
+                cache.globalEmotes != null &&
+                cache.globalEmotes.emotes != null;
 
             if (showChannelEmotes || showGlobalEmotes) {
                 let foundEmote = false;
-                messageContainer.find('span:not([class])').each(function () {
+                messageContainer.find('span:not([class])').each(function() {
                     let component = $(this);
                     // we've already replaced emotes on this, skip it
                     if (component.hasClass('me-custom-emote')) {
@@ -1418,15 +1436,21 @@ $(() => {
 
                             let url;
                             if (isGlobal) {
-                                url = `https://crowbartools.com/user-content/emotes/global/${escapeHTML(emote.filename)}`;
+                                url = `https://crowbartools.com/user-content/emotes/global/${escapeHTML(
+                                    emote.filename
+                                )}`;
                             } else {
-                                url = `https://crowbartools.com/user-content/emotes/live/${cache.currentStreamerId}/${escapeHTML(emote.filename)}`;
+                                url = `https://crowbartools.com/user-content/emotes/live/${
+                                    cache.currentStreamerId
+                                }/${escapeHTML(emote.filename)}`;
                             }
 
                             let sizeClass = mapEmoteSizeToClass(emote.maxSize);
 
                             let imgTag = `
-									<span class="elixr-custom-emote ${sizeClass} me-tooltip" title="Mixr Elixr: Custom emote '${escapeHTML(emote.name)}'" style="display: inline-block;">
+									<span class="elixr-custom-emote ${sizeClass} me-tooltip" title="Mixr Elixr: Custom emote '${escapeHTML(
+                                emote.name
+                            )}'" style="display: inline-block;">
 										<img src="${url}">
 									</span>`;
 
@@ -1442,7 +1466,7 @@ $(() => {
                         component
                             .find('.elixr-custom-emote')
                             .children('img')
-                            .on('load', function () {
+                            .on('load', function() {
                                 let username = messageContainer.find("[class*='Username']");
                                 if (username != null && username.length > 0) {
                                     let usernameTop = username.position().top;
@@ -1480,7 +1504,7 @@ $(() => {
             if (!cache.userIsMod || options.enableHideKeywordsWhenMod) {
                 // Add class on hide keyword mention.
                 if (options.hideKeywords != null && options.hideKeywords.length > 0) {
-                    messageContainer.find('span:not([class])').each(function () {
+                    messageContainer.find('span:not([class])').each(function() {
                         let component = $(this);
 
                         let text = component.text();
@@ -1532,7 +1556,8 @@ $(() => {
                 let stampsAfterCurrentMsg = parent.nextAll().find("[class*='message']").length > 0;
 
                 // check that the current message doesnt already have a native or custom timestamp
-                let msgAlreadyHasStamp = parent.prev().find("[class*='timeStamp']").length > 0 || parent.find('.elixrTime').length > 0;
+                let msgAlreadyHasStamp =
+                    parent.prev().find("[class*='timeStamp']").length > 0 || parent.find('.elixrTime').length > 0;
 
                 // should we add a timestamp?
                 if (!stampsAfterCurrentMsg && !msgAlreadyHasStamp) {
@@ -1559,7 +1584,7 @@ $(() => {
                     let links = messageContainer.find("a[target='_blank']");
 
                     if (links.length > 0) {
-                        links.each(async function () {
+                        links.each(async function() {
                             let link = $(this);
                             let url = link.attr('href');
 
@@ -1585,7 +1610,10 @@ $(() => {
                                     }
 
                                     let userTrusted = false;
-                                    if (options.inlineImgPermittedUsers != null && options.inlineImgPermittedUsers.length > 0) {
+                                    if (
+                                        options.inlineImgPermittedUsers != null &&
+                                        options.inlineImgPermittedUsers.length > 0
+                                    ) {
                                         userTrusted = options.inlineImgPermittedUsers.includes(messageAuthor);
                                     }
 
@@ -1595,7 +1623,12 @@ $(() => {
                                         // deleted
                                         let messageIsDeleted = messageContainer.is('[class^="deleted"]');
 
-                                        if ((previousImage == null || previousImage.length < 1) && (messageIsDeleted == null || messageIsDeleted === false || messageIsDeleted.length < 1)) {
+                                        if (
+                                            (previousImage == null || previousImage.length < 1) &&
+                                            (messageIsDeleted == null ||
+                                                messageIsDeleted === false ||
+                                                messageIsDeleted.length < 1)
+                                        ) {
                                             let inlineImg = $(`<span style="display:block;">
 													<span style="position: relative; display: block;">
 														<span class="hide-picture-btn" style="position:absolute; left:3px; top:3px;">x</span>
@@ -1605,7 +1638,7 @@ $(() => {
 													</span>
 												</span>`);
 
-                                            inlineImg.find('img').on('load', function () {
+                                            inlineImg.find('img').on('load', function() {
                                                 scrollChatToBottom();
                                                 $(this).off('load', '**');
                                             });
@@ -1620,7 +1653,7 @@ $(() => {
                                             $('.hide-picture-btn').off('click', '**');
 
                                             // add updated click event
-                                            $('.hide-picture-btn').click(function (event) {
+                                            $('.hide-picture-btn').click(function(event) {
                                                 event.stopPropagation();
                                                 $(this)
                                                     .parent()
@@ -1647,7 +1680,8 @@ $(() => {
     function searchbarPositionCheck() {
         if (cache.currentPage !== 'homepage') return;
 
-        const pinSearchBar = settings.homePageOptions.pinSearchToTop == null || settings.homePageOptions.pinSearchToTop === true;
+        const pinSearchBar =
+            settings.homePageOptions.pinSearchToTop == null || settings.homePageOptions.pinSearchToTop === true;
 
         if (!pinSearchBar) return;
 
@@ -1735,7 +1769,9 @@ $(() => {
         // Now we need to do the actual button and CSS insertions.
         // This adds the favorite button with either a hollow star (non-favorite), or filled star (favorite).
         // It also marks the streamer's name depending on favorite status.
-        preceedingElement.after(`<div streamer="${streamerName}" class="ME_favorite-btn me-tooltip" title="MixrElixr: Favorite"><span>&#9733;</span></div>`);
+        preceedingElement.after(
+            `<div streamer="${streamerName}" class="ME_favorite-btn me-tooltip" title="MixrElixr: Favorite"><span>&#9733;</span></div>`
+        );
         if (isFavorited) {
             userNameTarget.addClass('favoriteUsername');
             $(favoriteBtnTarget).addClass('faved');
@@ -1746,7 +1782,7 @@ $(() => {
 
         // We now set some actions to the button we just added.
         // This will toggle the favorite status of the streamer, as well the button's state.
-        $(favoriteBtnTarget).click(function () {
+        $(favoriteBtnTarget).click(function() {
             let streamer = $(this).attr('streamer');
             addOrRemoveFavorite(streamer);
             setFavoriteButtonState(streamer, streamerIsFavorited(streamer));
@@ -1922,7 +1958,7 @@ $(() => {
         return false;
     }
 
-    let urlIsAnImage = function (uri) {
+    let urlIsAnImage = function(uri) {
         let validDomain = checkValidDomain(uri);
         if (validDomain === false) {
             return false;
@@ -1971,17 +2007,20 @@ $(() => {
                 streamerData.isFollowed = false;
 
                 // Now check the API to see if this streamer is followed.
-                $.getJSON(`https://mixer.com/api/v1/users/${userId}/follows?fields=token&where=token:eq:${streamerName}`, function (data) {
-                    if (data.length > 0) {
-                        // Found the streamer in the user's followers.
-                        streamerData.isFollowed = true;
-                        resolve(streamerData);
-                    } else {
-                        // Did not find the streamer in the user's followers.
-                        streamerData.isFollowed = false;
-                        resolve(streamerData);
+                $.getJSON(
+                    `https://mixer.com/api/v1/users/${userId}/follows?fields=token&where=token:eq:${streamerName}`,
+                    function(data) {
+                        if (data.length > 0) {
+                            // Found the streamer in the user's followers.
+                            streamerData.isFollowed = true;
+                            resolve(streamerData);
+                        } else {
+                            // Did not find the streamer in the user's followers.
+                            streamerData.isFollowed = false;
+                            resolve(streamerData);
+                        }
                     }
-                });
+                );
             } else {
                 reject(false);
             }
@@ -2066,7 +2105,7 @@ $(() => {
     function getCostreamID(streamerName) {
         return new Promise(resolve => {
             // Check Mixer API to see if active streamer is currently costreaming.
-            $.getJSON(`https://mixer.com/api/v1/channels/${streamerName}?fields=costreamId`, function (data) {
+            $.getJSON(`https://mixer.com/api/v1/channels/${streamerName}?fields=costreamId`, function(data) {
                 if (data['costreamId'] != null) {
                     // If user is co-streaming, resolve with costream id.
                     resolve(data.costreamId);
@@ -2082,12 +2121,12 @@ $(() => {
     function getCostreamers(costreamID) {
         return new Promise(resolve => {
             // Check Mixer API with co-stream ID to see who is participaiting in the co-stream.
-            $.getJSON(`https://mixer.com/api/v1/costreams/${costreamID}`, function (data) {
+            $.getJSON(`https://mixer.com/api/v1/costreams/${costreamID}`, function(data) {
                 let channels = data['channels'];
                 let participants = Array();
 
                 // Check each channel from API data and insert into participants array.
-                $.each(channels, function (i) {
+                $.each(channels, function(i) {
                     participants.push(channels[i].token);
                 });
 
@@ -2103,13 +2142,13 @@ $(() => {
             // Check Mixer API with co-stream ID to see who is participaiting in the co-stream.
             let url = 'https://mixer.com/api/v1/channels/' + channelId + '/users?where=username:eq:' + username;
 
-            $.getJSON(url, function (data) {
+            $.getJSON(url, function(data) {
                 if (!data || data.length < 1) return resolve([]);
                 let groups = data[0].groups;
                 let roles = Array();
 
                 // Check each group from API data and insert into roles array.
-                $.each(groups, function (i) {
+                $.each(groups, function(i) {
                     roles.push(groups[i].name);
                 });
 
@@ -2134,7 +2173,7 @@ $(() => {
                 log('page loaded');
 
                 // Listen for url changes
-                window.addEventListener('url-change', function () {
+                window.addEventListener('url-change', function() {
                     initialPageLoad = true;
                     cache.currentStreamerName = null;
                     cache.currentStreamerId = null;
@@ -2165,7 +2204,7 @@ $(() => {
     });
 
     // escape press listener
-    $(document).keyup(function (e) {
+    $(document).keyup(function(e) {
         if (e.key === 'Escape' || e.key === 'Esc') {
             if (theaterModeEnabled()) {
                 toggleTheaterMode();
@@ -2274,7 +2313,7 @@ $(() => {
     //changeLogModalCheck();
 
     // tooltip listener
-    $.initialize('.me-tooltip', function () {
+    $.initialize('.me-tooltip', function() {
         let meTooltip = $(this);
 
         meTooltip.tooltipster({

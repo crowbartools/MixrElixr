@@ -7,50 +7,50 @@ const archiver = require('archiver');
 const DEST_ZIP_DIR = path.join(__dirname, '../dist-zip');
 
 const extractExtensionData = () => {
-  const extPackageJson = require('../package.json');
+    const extPackageJson = require('../package.json');
 
-  return {
-    name: extPackageJson.name,
-    version: extPackageJson.version
-  };
+    return {
+        name: extPackageJson.name,
+        version: extPackageJson.version
+    };
 };
 
 const makeDestZipDirIfNotExists = () => {
-  if (!fs.existsSync(DEST_ZIP_DIR)) {
-    fs.mkdirSync(DEST_ZIP_DIR);
-  }
+    if (!fs.existsSync(DEST_ZIP_DIR)) {
+        fs.mkdirSync(DEST_ZIP_DIR);
+    }
 };
 
 const buildZip = (dist, zipFilename) => {
-  console.info(`Building ${zipFilename}...`);
+    console.info(`Building ${zipFilename}...`);
 
-  const archive = archiver('zip', { zlib: { level: 9 } });
-  const stream = fs.createWriteStream(path.join(dist, zipFilename));
+    const archive = archiver('zip', { zlib: { level: 9 } });
+    const stream = fs.createWriteStream(path.join(dist, zipFilename));
 
-  return new Promise((resolve, reject) => {
-    archive
-      .glob('**/*', {
-        dot: true,
-        ignore: ['dist/**', 'dist-zip/**', 'node_modules/**', '.git/**', '.gitignore']
-      })
-      .on('error', err => reject(err))
-      .pipe(stream);
+    return new Promise((resolve, reject) => {
+        archive
+            .glob('**/*', {
+                dot: true,
+                ignore: ['dist/**', 'dist-zip/**', 'node_modules/**', '.git/**', '.gitignore']
+            })
+            .on('error', err => reject(err))
+            .pipe(stream);
 
-    stream.on('close', () => resolve());
-    archive.finalize();
-  });
+        stream.on('close', () => resolve());
+        archive.finalize();
+    });
 };
 
 const main = () => {
-  const { name, version } = extractExtensionData();
+    const { name, version } = extractExtensionData();
 
-  const zipFilename = `${name}-v${version}-firefox-source.zip`;
+    const zipFilename = `${name}-v${version}-firefox-source.zip`;
 
-  makeDestZipDirIfNotExists();
+    makeDestZipDirIfNotExists();
 
-  buildZip(DEST_ZIP_DIR, zipFilename)
-    .then(() => console.info('DONE'))
-    .catch(console.err);
+    buildZip(DEST_ZIP_DIR, zipFilename)
+        .then(() => console.info('DONE'))
+        .catch(console.err);
 };
 
 main();
