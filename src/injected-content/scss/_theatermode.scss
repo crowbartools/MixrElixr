@@ -110,4 +110,12 @@ b-channel-page-wrapper .stage:not(.aspect-16-9).me-video-stage{
     position: relative !important;
 }
 
+/* Co-Stream Theatermode top-bar fix*/
+.costream-rollout {
+	top: 59px !important;
+}
+
+.costream-rollout::before {
+	background: 0 !important;
+}
 /* End Theater Mode */
