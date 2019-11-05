@@ -21,10 +21,16 @@ module.exports = {
     },
     extends: [
         // https://github.com/standard/standard/blob/master/docs/RULES-en.md
-        'eslint:recommended'
+        'eslint:recommended',
+        // https://github.com/vuejs/eslint-plugin-vue#priority-a-essential-error-prevention
+        // consider switching to `plugin:vue/strongly-recommended` or `plugin:vue/recommended` for stricter rules.
+        'plugin:vue/essential'
     ],
+    // required to lint *.vue files
+    plugins: ['vue', 'prettier'],
     // add your custom rules here
     rules: {
+        "prettier/prettier": "error",
         // allow async-await
         'generator-star-spacing': 'off',
         // allow debugger during development
@@ -71,7 +77,7 @@ module.exports = {
 
         // Deviation from < https://eslint.org/docs/rules/#ecmascript-6 >
         'arrow-spacing': 2, // Spaces required around fat-arrow function's "=>"
-        'no-confusing-arrow': 2, // Don't use arrows functions in conditions
+        'no-confusing-arrow': 0, // Don't use arrows functions in conditions
         'no-var': 1, // Warning; Use let/const instead of var
 
         // Other deviations

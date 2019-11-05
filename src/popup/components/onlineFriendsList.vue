@@ -18,8 +18,8 @@
                 class="muted online-list-message"
                 v-if="!loadingMixerUser && mixerUserFound && savedFavoritesList.length === 0"
             >
-                No favorites set. Click the <i class="fa fa-star-o" aria-hidden="true"></i> on a streamer to add your
-                first one!
+                No favorites set. Click the
+                <i class="fa fa-star-o" aria-hidden="true"></i> on a streamer to add your first one!
             </div>
             <div class="channels-row" style="margin-bottom: 15px;">
                 <live-channel-card
@@ -49,11 +49,10 @@
             </div>
         </div>
         <div v-if="!loadingMixerUser && !mixerUserFound">
-            To see who follow, go to <a href="https://mixer.com" target="_blank">Mixer.com</a> and log in.
+            To see who follow, go to
+            <a href="https://mixer.com" target="_blank">Mixer.com</a> and log in.
         </div>
-        <div class="muted" v-if="loadingMixerUser">
-            Loading online friends...
-        </div>
+        <div class="muted" v-if="loadingMixerUser">Loading online friends...</div>
     </div>
 </template>
 
@@ -106,10 +105,10 @@ export default {
             this.friendsLimit = newLimit > friendsCount ? friendsCount : newLimit;
         },
         updateIconBadge: function() {
-            var text = '',
-                color = '#18ABE9';
-            var friends = this.friends,
-                favorites = this.favorites;
+            let text = '';
+            let color = '#18ABE9';
+            let friends = this.friends;
+            let favorites = this.favorites;
             if (this.showBadge !== false && friends != null && favorites != null) {
                 let onlineCount;
                 if (this.onlyFavoritesCount) {
@@ -128,7 +127,7 @@ export default {
             browser.browserAction.setBadgeBackgroundColor({ color: color });
         },
         loadFriends: function() {
-            var app = this;
+            let app = this;
             return new Promise((resolve, reject) => {
                 let getSettings = app.fetchSettings();
                 let getFriends = app.outputMixerFollows();
@@ -144,9 +143,9 @@ export default {
 
                         let onlineFriends = values[1];
 
-                        //seperate favorites and non favorites
-                        let favoritesOnly = [],
-                            followingOnly = [];
+                        // seperate favorites and non favorites
+                        let favoritesOnly = [];
+                        let followingOnly = [];
                         onlineFriends.forEach(f => {
                             if (favoriteFriends.includes(f.token)) {
                                 favoritesOnly.push(f);
@@ -178,7 +177,7 @@ export default {
             this.updateFavorite(name, false, true);
         },
         updateFavorite: function(name, isAdd, shouldSave) {
-            var app = this;
+            let app = this;
             if (isAdd) {
                 app.savedFavoritesList = app.savedFavoritesList.concat([name]);
 
@@ -186,7 +185,7 @@ export default {
                 if (friendFind != null && friendFind.length > 0) {
                     let friend = friendFind[0];
                     app.favorites = app.favorites.concat([friend]).sort((a, b) => b.viewersCurrent - a.viewersCurrent);
-                    app.friends = app.friends.filter(f => f.id != friend.id);
+                    app.friends = app.friends.filter(f => f.id !== friend.id);
 
                     app.friendsLimit = 10;
                 }
@@ -197,7 +196,7 @@ export default {
                 if (friendFind != null && friendFind.length > 0) {
                     let friend = friendFind[0];
                     app.friends = app.friends.concat([friend]).sort((a, b) => b.viewersCurrent - a.viewersCurrent);
-                    app.favorites = app.favorites.filter(f => f.id != friend.id);
+                    app.favorites = app.favorites.filter(f => f.id !== friend.id);
 
                     app.friendsLimit = 10;
                 }
@@ -214,15 +213,15 @@ export default {
         }
     },
     mounted: function() {
-        var app = this;
+        let app = this;
         // When Vue is ready
         app.getMixerId().then(
             () => {
-                //id found
+                // id found
                 app.mixerUserFound = true;
             },
             () => {
-                //no current user
+                // no current user
                 app.mixerUserFound = false;
             }
         );
@@ -234,7 +233,7 @@ export default {
             });
     },
     created: function() {
-        var app = this;
+        let app = this;
         bus.$on('friends-scrolled', function() {
             console.log('We found more friends!');
             if (app.friendsLimit < app.friends.length) {

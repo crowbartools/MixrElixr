@@ -42,9 +42,7 @@ export default {
         };
     },
     watch: {
-        value: function(newValue, oldValue) {
-            //console.log(newValue);
-        }
+        value: function(newValue, oldValue) {}
     },
     methods: {
         toggleChanged: function(newValue) {

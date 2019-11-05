@@ -111,9 +111,9 @@ export default {
                 }
                 this.scrollSelectedIntoView();
                 return;
-            } else {
-                targetRowIndex = currentRowIndex + 1;
             }
+
+            targetRowIndex = currentRowIndex + 1;
 
             const currentPos = rows[currentRowIndex].find(posData => posData.index === this.selectedEmoteIndex).pos;
             this.selectedEmoteIndex = rows[targetRowIndex].reduce((result, next) =>
@@ -137,9 +137,9 @@ export default {
                 }
                 this.scrollSelectedIntoView();
                 return;
-            } else {
-                targetRowIndex = currentRowIndex - 1;
             }
+
+            targetRowIndex = currentRowIndex - 1;
 
             const currentPos = rows[currentRowIndex].find(posData => posData.index === this.selectedEmoteIndex).pos;
             this.selectedEmoteIndex = rows[targetRowIndex].reduce((result, next) =>

@@ -354,7 +354,7 @@ export default {
             var app = this;
             var g = app.global;
 
-            //copy over any settings from global that dont exist yet in this override (this happens when new settings are added);
+            // copy over any settings from global that dont exist yet in this override (this happens when new settings are added);
             Object.keys(g).forEach(k => {
                 if (options[k] == null) {
                     options[k] = JSON.parse(JSON.stringify(g[k]));
@@ -410,10 +410,10 @@ export default {
             if (val) {
                 this.$nextTick(() => {
                     console.log(this.$refs);
-                    //this.$refs.textSizeSlider.refresh();
+                    // this.$refs.textSizeSlider.refresh();
                 });
             } else {
-                //reset values to default
+                // reset values to default
                 this.textSize = 15;
                 this.lineHeight = 24;
                 this.saveSettings();
@@ -479,7 +479,7 @@ export default {
         bus.$on('tab-changed', tab => {
             if (tab === 'options') {
                 this.$nextTick(() => {
-                    //this.$refs.textSizeSlider.refresh();
+                    // this.$refs.textSizeSlider.refresh();
                 });
             }
         });

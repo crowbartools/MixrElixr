@@ -4,7 +4,7 @@ import { waitForElementAvailablity } from '../../utils';
 
 let app = null;
 export function bindSlowChatTimerApp(composerBlock, slowChatMils) {
-    //remove previous
+    // remove previous
     if ($('#me-slow-chat-timer').length > 0) {
         $('#me-slow-chat-timer').remove();
     }
@@ -57,7 +57,7 @@ export function messageDetected() {
     }
 }
 
-//current text
+// current text
 let currentChatText = '';
 function inputListener() {
     let textArea = $(this);

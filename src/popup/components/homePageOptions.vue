@@ -20,9 +20,6 @@
 
 <script>
 export default {
-    data() {
-        return {};
-    },
     mixins: [settingsStorage],
     data: function() {
         var dataObj = {};

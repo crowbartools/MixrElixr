@@ -93,7 +93,7 @@ export default {
             themes: [{ value: 'default', text: 'Default' }, { value: 'elixr-dark', text: 'Dark' }]
         };
 
-        //apply our defaults
+        // apply our defaults
         var defaults = this.getDefaultOptions().generalOptions;
 
         // fill out our model
@@ -105,6 +105,9 @@ export default {
     },
     watch: {
         liveNotificationsMode: function() {
+            this.saveSettings();
+        },
+        theme: function() {
             this.saveSettings();
         }
     },
@@ -160,11 +163,6 @@ export default {
         bus.$on('favorites-updated', function(favList) {
             app.favoriteFriends = favList;
         });
-    },
-    watch: {
-        theme: function() {
-            this.saveSettings();
-        }
     }
 };
 </script>

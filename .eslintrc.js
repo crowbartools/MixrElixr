@@ -11,7 +11,11 @@ module.exports = {
         webextensions: true
     },
     globals: {
-        $: true
+        $: true,
+        bus: true,
+        settingsStorage: true,
+        friendFetcher: true,
+        scriptCommunication: true
     },
     extends: [
         // https://github.com/vuejs/eslint-plugin-vue#priority-a-essential-error-prevention
@@ -33,6 +37,7 @@ module.exports = {
         'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
         'allow-empty-reject': true,
         allowEmptyReject: true,
-        "prettier/prettier": "error"
+        "prettier/prettier": "error",
+        "prefer-promise-reject-errors": "warn"
     }
 };
