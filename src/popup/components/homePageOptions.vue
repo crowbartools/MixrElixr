@@ -4,8 +4,16 @@
             <span class="title">Homepage</span>
         </div>
         <div class="settings-section-settings" style="padding-bottom: 0;">
-            <checkbox-toggle :value.sync="removeFeatured" @changed="saveSettings()" label="Minimal Homepage"></checkbox-toggle>
-            <checkbox-toggle :value.sync="pinSearchToTop" @changed="saveSettings()" label="Pin Searchbar To Top"></checkbox-toggle>
+            <checkbox-toggle
+                :value.sync="removeFeatured"
+                @changed="saveSettings()"
+                label="Minimal Homepage"
+            ></checkbox-toggle>
+            <checkbox-toggle
+                :value.sync="pinSearchToTop"
+                @changed="saveSettings()"
+                label="Pin Searchbar To Top"
+            ></checkbox-toggle>
         </div>
     </div>
 </template>
@@ -22,7 +30,7 @@ export default {
         var defaults = this.getDefaultOptions().homePageOptions;
 
         // fill out our model
-        Object.keys(defaults).forEach((k) => {
+        Object.keys(defaults).forEach(k => {
             dataObj[k] = defaults[k];
         });
 
@@ -35,24 +43,24 @@ export default {
         },
         loadSettings: function() {
             var app = this;
-            this.fetchSettings().then((data) => {
+            this.fetchSettings().then(data => {
                 var homePageOptions = data.homePageOptions;
                 app.setModel(homePageOptions);
             });
         },
         setModel: function(options) {
             var app = this;
-            Object.keys(options).forEach((k) => {
+            Object.keys(options).forEach(k => {
                 app[k] = options[k];
             });
         },
         getModel: function() {
             var app = this;
-            
+
             var builtModel = {};
             var options = this.getDefaultOptions().homePageOptions;
-            
-            Object.keys(options).forEach((k) => {
+
+            Object.keys(options).forEach(k => {
                 builtModel[k] = app[k];
             });
 

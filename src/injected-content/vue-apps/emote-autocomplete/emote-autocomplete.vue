@@ -2,13 +2,18 @@
     <div v-cloak id="me-emote-autocomplete" class="me-autocomplete" v-show="showMenu">
         <ul role="listbox">
             <li v-for="(emote, index) in filteredEmotes" v-bind:key="emote.id" :id="getEmoteElementId(emote)">
-                <button class="me-autocomplete-emote" :class="{ selected: isSelected(index) }" style="align-items: center;display: inline-flex;" v-on:click="autocompleteEmote(emote)">
+                <button
+                    class="me-autocomplete-emote"
+                    :class="{ selected: isSelected(index) }"
+                    style="align-items: center;display: inline-flex;"
+                    v-on:click="autocompleteEmote(emote)"
+                >
                     <span class="elixr-custom-emote twentyfour me-emotes-preview">
-                        <img :src="emoteUrl(emote)">
+                        <img :src="emoteUrl(emote)" />
                     </span>
-                    <span class="emote-name">{{emote.name}}</span>
+                    <span class="emote-name">{{ emote.name }}</span>
                 </button>
-            </li>         
+            </li>
         </ul>
         <div class="me-autocomplete-footer">
             <span>Press <b>tab</b> to autocomplete.</span>
@@ -22,15 +27,15 @@ export default {
     data: function() {
         return {
             show: false,
-            query: "",
+            query: '',
             emotes: [],
             selectedEmoteIndex: 0,
             currentStreamerId: 0
-        }
+        };
     },
     computed: {
         filteredEmotes: function() {
-            return this.emotes.filter(e => e.name.toLowerCase().startsWith(this.query.toLowerCase()))
+            return this.emotes.filter(e => e.name.toLowerCase().startsWith(this.query.toLowerCase()));
         },
         showMenu: function() {
             return this.query != null && this.query.length > 0 && this.filteredEmotes.length > 0;
@@ -38,7 +43,7 @@ export default {
     },
     watch: {
         query: function() {
-            if(this.selectedEmoteIndex > this.filteredEmotes.length - 1) {
+            if (this.selectedEmoteIndex > this.filteredEmotes.length - 1) {
                 this.selectedEmoteIndex = 0;
             }
             this.scrollSelectedIntoView();
@@ -46,20 +51,20 @@ export default {
     },
     methods: {
         getEmoteElementId: function(emote) {
-            return (emote.global ? "global-" : "channel-") + emote.name;
+            return (emote.global ? 'global-' : 'channel-') + emote.name;
         },
         scrollSelectedIntoView: function() {
             let selectedEmote = this.filteredEmotes[this.selectedEmoteIndex];
-            if(selectedEmote) {
+            if (selectedEmote) {
                 const emoteElementId = this.getEmoteElementId(selectedEmote);
                 const element = document.getElementById(emoteElementId);
-                if(element) {
+                if (element) {
                     element.scrollIntoView(false);
                 }
-            }  
+            }
         },
         incrementSelectedEmote: function() {
-            if(this.selectedEmoteIndex >= this.filteredEmotes.length - 1) {
+            if (this.selectedEmoteIndex >= this.filteredEmotes.length - 1) {
                 this.selectedEmoteIndex = 0;
             } else {
                 this.selectedEmoteIndex++;
@@ -67,7 +72,7 @@ export default {
             this.scrollSelectedIntoView();
         },
         decrementSelectedEmote: function() {
-            if(this.selectedEmoteIndex <= 0) {
+            if (this.selectedEmoteIndex <= 0) {
                 this.selectedEmoteIndex = this.filteredEmotes.length - 1;
             } else {
                 this.selectedEmoteIndex--;
@@ -75,25 +80,28 @@ export default {
             this.scrollSelectedIntoView();
         },
         computeRows: function() {
-            const rects = [...this.$el.getElementsByClassName('me-autocomplete-emote')].map(el => el.getBoundingClientRect());
+            const rects = [...this.$el.getElementsByClassName('me-autocomplete-emote')].map(el =>
+                el.getBoundingClientRect()
+            );
             const rows = [[]];
             var currentRowHeight = Math.floor(rects[0].y);
-            for (let i = 0; i < rects.length; i++){
-                if (Math.floor(rects[i].y) == currentRowHeight){
-                    rows[rows.length - 1].push({index: i, pos: rects[i].x});
-                }
-                else{
+            for (let i = 0; i < rects.length; i++) {
+                if (Math.floor(rects[i].y) == currentRowHeight) {
+                    rows[rows.length - 1].push({ index: i, pos: rects[i].x });
+                } else {
                     rows.push([]);
                     currentRowHeight = Math.floor(rects[i].y);
-                    rows[rows.length - 1].push({index: i, pos: rects[i].x});
+                    rows[rows.length - 1].push({ index: i, pos: rects[i].x });
                 }
             }
             return rows;
         },
         incrementSelectedEmoteRow: function() {
             const rows = this.computeRows();
-            
-            const currentRowIndex = rows.findIndex(row => row.find(posData => posData.index === this.selectedEmoteIndex));
+
+            const currentRowIndex = rows.findIndex(row =>
+                row.find(posData => posData.index === this.selectedEmoteIndex)
+            );
             let targetRowIndex;
             if (currentRowIndex >= rows.length - 1) {
                 if (this.selectedEmoteIndex == this.filteredEmotes.length - 1) {
@@ -108,15 +116,18 @@ export default {
             }
 
             const currentPos = rows[currentRowIndex].find(posData => posData.index === this.selectedEmoteIndex).pos;
-            this.selectedEmoteIndex = rows[targetRowIndex]
-                .reduce((result, next) => Math.abs(currentPos - next.pos) < Math.abs(currentPos - result.pos) ? next : result).index;
+            this.selectedEmoteIndex = rows[targetRowIndex].reduce((result, next) =>
+                Math.abs(currentPos - next.pos) < Math.abs(currentPos - result.pos) ? next : result
+            ).index;
 
             this.scrollSelectedIntoView();
         },
         decrementSelectedEmoteRow: function() {
             const rows = this.computeRows();
 
-            const currentRowIndex = rows.findIndex(row => row.find(posData => posData.index === this.selectedEmoteIndex));
+            const currentRowIndex = rows.findIndex(row =>
+                row.find(posData => posData.index === this.selectedEmoteIndex)
+            );
             let targetRowIndex;
             if (currentRowIndex <= 0) {
                 if (this.selectedEmoteIndex == 0) {
@@ -131,8 +142,9 @@ export default {
             }
 
             const currentPos = rows[currentRowIndex].find(posData => posData.index === this.selectedEmoteIndex).pos;
-            this.selectedEmoteIndex = rows[targetRowIndex]
-                .reduce((result, next) => Math.abs(currentPos - next.pos) < Math.abs(currentPos - result.pos) ? next : result).index;
+            this.selectedEmoteIndex = rows[targetRowIndex].reduce((result, next) =>
+                Math.abs(currentPos - next.pos) < Math.abs(currentPos - result.pos) ? next : result
+            ).index;
 
             this.scrollSelectedIntoView();
         },
@@ -149,30 +161,32 @@ export default {
             if (emote.global) {
                 url = `https://crowbartools.com/user-content/emotes/global/${this.escapeHTML(emote.filename)}`;
             } else {
-                url = `https://crowbartools.com/user-content/emotes/live/${this.currentStreamerId}/${this.escapeHTML(emote.filename)}`;
+                url = `https://crowbartools.com/user-content/emotes/live/${this.currentStreamerId}/${this.escapeHTML(
+                    emote.filename
+                )}`;
             }
             return url;
         },
         autocompleteSelectedEmote: function() {
             let selectedEmote = this.filteredEmotes[this.selectedEmoteIndex];
-            if(selectedEmote) {
+            if (selectedEmote) {
                 this.autocompleteEmote(selectedEmote);
             }
         },
         autocompleteEmote: function(emote) {
-            let textArea = $("#chat-input").children("textarea");
+            let textArea = $('#chat-input').children('textarea');
 
             let currentText = textArea.val();
 
             let currentMinusQuery = currentText.substring(0, currentText.length - this.query.length);
 
-            updateChatTextfield(currentMinusQuery + emote.name + " ");
+            updateChatTextfield(currentMinusQuery + emote.name + ' ');
 
-            this.query = "";
-            
+            this.query = '';
+
             this.selectedEmoteIndex = 0;
             textArea.focus();
         }
     }
-}
+};
 </script>
