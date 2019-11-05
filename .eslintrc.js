@@ -20,10 +20,11 @@ module.exports = {
         // https://github.com/standard/standard/blob/master/docs/RULES-en.md
         'standard',
         // https://prettier.io/docs/en/index.html
-        'plugin:prettier/recommended'
+        'plugin:prettier/recommended',
+        'prettier'
     ],
     // required to lint *.vue files
-    plugins: ['vue'],
+    plugins: ['vue', 'prettier'],
     // add your custom rules here
     rules: {
         // allow async-await
@@ -31,6 +32,7 @@ module.exports = {
         // allow debugger during development
         'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
         'allow-empty-reject': true,
-        allowEmptyReject: true
+        allowEmptyReject: true,
+        "prettier/prettier": "error"
     }
 };
