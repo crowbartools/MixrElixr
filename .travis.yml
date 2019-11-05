@@ -1,24 +1,13 @@
 language: node_js
 node_js:
-  - "7"
+  - "10"
 
 cache:
   directories:
     - "node_modules"
 
 install:
-  - npm install eslint@5.16.0
-  - npm install prettier@1.17.1
-  - npm install eslint-config-prettier@4.3.0
-  - npm install eslint-config-standard@12.0.0
-  - npm install eslint-friendly-formatter@4.0.1
-  - npm install eslint-loader@2.1.2
-  - npm install eslint-plugin-import@2.16.0
-  - npm install eslint-plugin-node@7.0.1
-  - npm install eslint-plugin-prettier@3.1.0
-  - npm install eslint-plugin-promise@4.1.1
-  - npm install eslint-plugin-standard@4.0.0
-  - npm install eslint-plugin-vue@5.2.2
+  - npm install
 
 script:
-  - ./node_modules/.bin/eslint .
+  - npm run lint
