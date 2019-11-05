@@ -3,14 +3,14 @@ import SlowChatTimerApp from "./slow-chat-timer";
 import { waitForElementAvailablity } from "../../utils";
 
 let app = null;
-export function bindSlowChatTimerApp(slowChatMils) {
+export function bindSlowChatTimerApp(composerBlock, slowChatMils) {
 
     //remove previous
     if ($("#me-slow-chat-timer").length > 0) {
         $("#me-slow-chat-timer").remove();
     }
 
-    $("[class*='webComposerBlock']").prepend('<div id="me-slow-chat-timer-binder"></div>');
+    composerBlock.prepend('<div id="me-slow-chat-timer-binder"></div>');
 
     let appHost = new Vue({
         el: '#me-slow-chat-timer-binder',

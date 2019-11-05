@@ -4,7 +4,7 @@ import { waitForElementAvailablity, debounce } from "../../utils";
 
 
 let app = null;
-export function bindEmoteAutocompleteApp(options, globalEmotesCache, channelEmotesCache, currentStreamerId) {
+export function bindEmoteAutocompleteApp(composerBlock, options, globalEmotesCache, channelEmotesCache, currentStreamerId) {
 
     //clean up any previous
     if ($("#me-emote-autocomplete").length > 0) {
@@ -44,7 +44,7 @@ export function bindEmoteAutocompleteApp(options, globalEmotesCache, channelEmot
         channelEmotes.forEach(e => e.global = false);
     }
 
-    $("[class*='webComposerBlock']").prepend('<ul id="me-autocomplete-binder" role="listbox"></ul>');
+    composerBlock.prepend('<ul id="me-autocomplete-binder" role="listbox"></ul>');
 
     app = new Vue({
         el: '#me-autocomplete-binder',
