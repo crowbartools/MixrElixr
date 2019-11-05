@@ -1,8 +1,12 @@
 <template>
     <div v-cloak id="me-slow-chat-timer" class="me-slow-chat-timer-wrapper">
-        <div class="me-slow-chat-timer me-tooltip" title="MixrElixr: Slow Chat Cooldown" :class="{ hidden: this.cooldownExpired }">
-            <div>{{display}}</div>
-        </div> 
+        <div
+            class="me-slow-chat-timer me-tooltip"
+            title="MixrElixr: Slow Chat Cooldown"
+            :class="{ hidden: this.cooldownExpired }"
+        >
+            <div>{{ display }}</div>
+        </div>
     </div>
 </template>
 
@@ -10,17 +14,17 @@
 export default {
     data: function() {
         return {
-           timerIntervalId: null,
-           currentSeconds: 0,
-           cooldown: 0
-        }
+            timerIntervalId: null,
+            currentSeconds: 0,
+            cooldown: 0
+        };
     },
     methods: {
         padTime(time) {
-            return (time < 10 ? "0" : "") + time;
+            return (time < 10 ? '0' : '') + time;
         },
         startTimer() {
-            if(this.timerIntervalId) {
+            if (this.timerIntervalId) {
                 clearInterval(this.timerIntervalId);
             }
             this.currentSeconds = this.cooldown;
@@ -37,7 +41,7 @@ export default {
             return this.padTime(seconds);
         },
         display() {
-            return `${this.minutes}:${this.seconds}`
+            return `${this.minutes}:${this.seconds}`;
         },
         cooldownExpired() {
             return this.currentSeconds < 1;
@@ -46,42 +50,40 @@ export default {
     watch: {
         currentSeconds(value) {
             // stop interval if timer has finished
-            if(value === 0) {
-                clearInterval(this.timerIntervalId)
-                this.timerIntervalId = null
+            if (value === 0) {
+                clearInterval(this.timerIntervalId);
+                this.timerIntervalId = null;
             }
         }
     }
-}
+};
 </script>
 
 <style lang="scss" scoped>
-    .me-slow-chat-timer-wrapper {
-        right: 0;
-        left: 0;
-        bottom: calc(100% - 7px);
-        position: absolute;
+.me-slow-chat-timer-wrapper {
+    right: 0;
+    left: 0;
+    bottom: calc(100% - 7px);
+    position: absolute;
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 6px;
+    overflow: hidden;
+
+    .me-slow-chat-timer {
+        font-family: monospace;
+        font-size: 11px;
+        padding: 2px 5px;
+        border-radius: 12px;
         display: flex;
-        justify-content: flex-end;
-        padding-right: 6px;
-        overflow: hidden;
+        align-items: center;
+        justify-content: center;
+        background: #b54343;
+        transition: opacity 100ms ease-in-out;
 
-        .me-slow-chat-timer {
-            font-family: monospace;
-            font-size: 11px;
-            padding: 2px 5px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #b54343;
-            transition: opacity 100ms ease-in-out;
-
-            &.hidden {
-                opacity: 0;
-            }
+        &.hidden {
+            opacity: 0;
         }
     }
-
-    
+}
 </style>

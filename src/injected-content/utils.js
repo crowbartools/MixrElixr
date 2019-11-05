@@ -1,10 +1,9 @@
-import * as simulant from "simulant";
+import * as simulant from 'simulant';
 export function log(message) {
     console.log(`[MixrElixr] ${message}`);
 }
 
 export function waitForElementAvailablity(selector) {
-
     log(`Waiting for element '${selector}'...`);
 
     let promise = new Promise(resolve => {
@@ -58,18 +57,18 @@ export function determineMessageType(message) {
     }*/
 
     if (message.find("div[class*='sticker_']").length > 0) {
-        return "sticker";
+        return 'sticker';
     }
 
     if (message.find("img[class*='skillIcon_']").length > 0) {
-        return "skill-used";
+        return 'skill-used';
     }
 
-    return "regular-message";
+    return 'regular-message';
 }
 
 export function updateChatTextfield(newString) {
-    let textAreaElement = $("#chat-input").children("textarea");
+    let textAreaElement = $('#chat-input').children('textarea');
 
     simulant.fire(textAreaElement[0], simulant('focus'));
     textAreaElement.val(newString);

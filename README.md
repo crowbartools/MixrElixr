@@ -22,10 +22,10 @@ Please note that any feature in Elixr could break at any time if the Mixer site 
 Have a great idea? We want to hear it! Tell us about it over on the [Issues](https://github.com/ebiggz/MixrElixr/issues) page.
 
 ## Developers
-### Firebox Addon Review Steps
+### Firefox Addon Review Steps
 If you are a Firefox Add-on reviewer, you can follow these steps:
 1) Ensure you have Node and NPM installed and that their versions are at least `v8.11.3+` (Node) and `v6.3.0+` (NPM).
-2) Open up a terminal of your choice and `cd` to this root folder of this repo, if needed.
+2) Open up a terminal of your choice and `cd` to the root folder of this repo.
 3) Run the command: `npm run firefox-review`.
 4) That will install the required packages and build the extension, you can find the output in the `/dist` directory.
 

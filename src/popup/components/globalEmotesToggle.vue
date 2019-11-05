@@ -1,6 +1,10 @@
 <template>
     <span>
-        <checkbox-toggle :value.sync="value" @changed="valueUpdated()" label="Show Global MixrElixr Emotes"></checkbox-toggle>
+        <checkbox-toggle
+            :value.sync="value"
+            @changed="valueUpdated()"
+            label="Show Global MixrElixr Emotes"
+        ></checkbox-toggle>
     </span>
 </template>
 

@@ -1,16 +1,15 @@
-import Vue from "vue";
-import SlowChatTimerApp from "./slow-chat-timer";
-import { waitForElementAvailablity } from "../../utils";
+import Vue from 'vue';
+import SlowChatTimerApp from './slow-chat-timer';
+import { waitForElementAvailablity } from '../../utils';
 
 let app = null;
-export function bindSlowChatTimerApp(slowChatMils) {
-
-    //remove previous
-    if ($("#me-slow-chat-timer").length > 0) {
-        $("#me-slow-chat-timer").remove();
+export function bindSlowChatTimerApp(composerBlock, slowChatMils) {
+    // remove previous
+    if ($('#me-slow-chat-timer').length > 0) {
+        $('#me-slow-chat-timer').remove();
     }
 
-    $("[class*='webComposerBlock']").prepend('<div id="me-slow-chat-timer-binder"></div>');
+    composerBlock.prepend('<div id="me-slow-chat-timer-binder"></div>');
 
     let appHost = new Vue({
         el: '#me-slow-chat-timer-binder',
@@ -21,15 +20,26 @@ export function bindSlowChatTimerApp(slowChatMils) {
 
     app.cooldown = slowChatMils / 1000;
 
-    $("#chat-input").children("textarea").off("input", inputListener);
-    $("#chat-input").children("textarea").on("input", inputListener);
-    $("#chat-input").children("textarea").off("keydown", keydownListener);
-    $("#chat-input").children("textarea").on("keydown", keydownListener);
+    $('#chat-input')
+        .children('textarea')
+        .off('input', inputListener);
+    $('#chat-input')
+        .children('textarea')
+        .on('input', inputListener);
+    $('#chat-input')
+        .children('textarea')
+        .off('keydown', keydownListener);
+    $('#chat-input')
+        .children('textarea')
+        .on('keydown', keydownListener);
 
-    waitForElementAvailablity("[class*='send_']").then((sendSpan) => {
-        let sendBtn = sendSpan.parent().parent().parent();
-        sendBtn.off("click", clickListener);
-        sendBtn.on("click", clickListener);
+    waitForElementAvailablity("[class*='send_']").then(sendSpan => {
+        let sendBtn = sendSpan
+            .parent()
+            .parent()
+            .parent();
+        sendBtn.off('click', clickListener);
+        sendBtn.on('click', clickListener);
     });
 }
 
@@ -47,8 +57,8 @@ export function messageDetected() {
     }
 }
 
-//current text
-let currentChatText = "";
+// current text
+let currentChatText = '';
 function inputListener() {
     let textArea = $(this);
     currentChatText = textArea.val();
@@ -57,7 +67,7 @@ function inputListener() {
 function checkIfMessageSent() {
     if (currentChatText != null && currentChatText.length > 0) {
         expectingMessage = true;
-        currentChatText = "";
+        currentChatText = '';
 
         if (expectingTimeoutId) {
             clearTimeout(expectingTimeoutId);

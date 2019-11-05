@@ -159,4 +159,21 @@ body.elixr-dark {
     [class*="locales_"] {
         background: #0e1115 !important;
     }
+
+    b-mobile-details-bar .info-bar-wrapper {
+        background: #21242b !important;
+    }
+
+    b-mobile-header > .header {
+        background: #21242b !important;
+    }
+
+    [class^='mobileWebComposerBlock_'] [class^='composerWrapper_'] {
+        background: #14181f !important;
+    }
+
+    b-more-menu-mobile > .more-menu {
+        background: #1d1f23 !important;
+    }
+        
 }
