@@ -261,13 +261,13 @@ export default {
     mixins: [settingsStorage, scriptCommunication],
     methods: {
         overrideSelected: function(name) {
-            var selectedType = null;
+            let selectedType = null;
 
             if (name === 'Global') {
                 selectedType = name;
             } else {
                 // search for a matching override case insensitive
-                var match = this.getOverrideNames().filter(o => {
+                const match = this.getOverrideNames().filter(o => {
                     return o.toLowerCase() === name.toLowerCase();
                 });
 
@@ -284,9 +284,9 @@ export default {
         overrideAdded: function(name) {
             this.selected = name;
 
-            var defaults = this.getDefaultOptions().streamerPageOptions.global;
+            const defaults = this.getDefaultOptions().streamerPageOptions.global;
 
-            var defaultsCopy = JSON.parse(JSON.stringify(defaults));
+            const defaultsCopy = JSON.parse(JSON.stringify(defaults));
 
             this.overrides[name] = defaultsCopy;
 
@@ -307,7 +307,7 @@ export default {
             this.setModel(this.getSelectedOptions());
         },
         saveSettings: function() {
-            var model = this.getModel();
+            const model = this.getModel();
 
             if (this.selected === 'Global') {
                 this.global = model;
@@ -321,10 +321,10 @@ export default {
             });
         },
         loadSettings: function() {
-            var app = this;
+            const app = this;
             app.selected = 'Global';
             this.fetchSettings().then(data => {
-                var streamerPageOptions = data.streamerPageOptions;
+                const streamerPageOptions = data.streamerPageOptions;
                 app.setModel(streamerPageOptions.global);
                 app.global = streamerPageOptions.global;
                 app.overrides = streamerPageOptions.overrides;
@@ -332,7 +332,7 @@ export default {
             });
         },
         masterEmotesSwitchToggled: function() {
-            var app = this;
+            const app = this;
             let emotesEnabled = app.customEmotes;
             if (emotesEnabled) {
                 app.globalEmotes = true;
@@ -351,8 +351,8 @@ export default {
             }
         },
         setModel: function(options) {
-            var app = this;
-            var g = app.global;
+            const app = this;
+            const g = app.global;
 
             // copy over any settings from global that dont exist yet in this override (this happens when new settings are added);
             Object.keys(g).forEach(k => {
@@ -366,10 +366,10 @@ export default {
             });
         },
         getModel: function() {
-            var app = this;
+            const app = this;
 
-            var builtModel = {};
-            var options = app.getSelectedOptions();
+            const builtModel = {};
+            const options = app.getSelectedOptions();
 
             Object.keys(options).forEach(k => {
                 builtModel[k] = app[k];
@@ -378,7 +378,7 @@ export default {
             return builtModel;
         },
         findMixerViewers: async function(query) {
-            var app = this;
+            const app = this;
             app.isLoading = true;
 
             let response;
@@ -424,7 +424,7 @@ export default {
         }
     },
     data: function() {
-        var dataObj = {
+        const dataObj = {
             selected: 'Global',
             userRoles: [
                 { value: '', text: 'None' },
@@ -455,10 +455,10 @@ export default {
             isLoading: false
         };
 
-        var defaults = this.getDefaultOptions().streamerPageOptions;
+        const defaults = this.getDefaultOptions().streamerPageOptions;
 
         // fill out our model with the default settings
-        var global = defaults.global;
+        const global = defaults.global;
         Object.keys(global).forEach(k => {
             dataObj[k] = global[k];
         });

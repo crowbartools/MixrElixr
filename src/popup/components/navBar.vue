@@ -75,13 +75,13 @@ export default {
         },
         serviceStatus: function() {
             return new Promise(function(resolve, reject) {
-                var request = new XMLHttpRequest();
+                const request = new XMLHttpRequest();
                 request.open('GET', 'https://00qbcbkrqn0y.statuspage.io/api/v2/status.json', true);
 
                 request.onload = function() {
                     if (request.status >= 200 && request.status < 400) {
                         // Success!
-                        var data = JSON.parse(request.responseText);
+                        const data = JSON.parse(request.responseText);
 
                         resolve(data.status.indicator);
                     } else {

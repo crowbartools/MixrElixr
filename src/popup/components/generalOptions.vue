@@ -94,7 +94,7 @@ export default {
         };
 
         // apply our defaults
-        var defaults = this.getDefaultOptions().generalOptions;
+        let defaults = this.getDefaultOptions().generalOptions;
 
         // fill out our model
         Object.keys(defaults).forEach(k => {
@@ -124,26 +124,26 @@ export default {
             bus.$emit('remove-favorite', name);
         },
         saveSettings: function() {
-            var model = this.getModel();
+            const model = this.getModel();
             this.saveGeneralOptions(model);
         },
         loadSettings: function() {
-            var app = this;
+            const app = this;
             this.fetchSettings().then(data => {
                 app.setModel(data.generalOptions);
             });
         },
         setModel: function(options) {
-            var app = this;
+            const app = this;
             Object.keys(options).forEach(k => {
                 app[k] = options[k];
             });
         },
         getModel: function() {
-            var app = this;
+            const app = this;
 
-            var builtModel = {};
-            var options = this.getDefaultOptions().generalOptions;
+            const builtModel = {};
+            const options = this.getDefaultOptions().generalOptions;
 
             Object.keys(options).forEach(k => {
                 builtModel[k] = app[k];
@@ -153,7 +153,7 @@ export default {
         }
     },
     mounted: function() {
-        var app = this;
+        const app = this;
 
         app.loadSettings();
         app.outputMixerFollows(false).then(followList => {

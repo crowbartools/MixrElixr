@@ -69,7 +69,7 @@ export default {
             this.$emit('override-selected', name);
         },
         clearName: function() {
-            var app = this;
+            const app = this;
 
             app.newName = '';
 
@@ -77,7 +77,7 @@ export default {
                 name => {
                     if (name != null) {
                         // search for a matching override case insensitive
-                        var match = this.overrideNames.filter(o => {
+                        const match = this.overrideNames.filter(o => {
                             return o.toLowerCase() === name.toLowerCase();
                         });
 
@@ -109,7 +109,7 @@ export default {
             }
         },
         handleSubmit: function() {
-            var nameCopy = JSON.parse(JSON.stringify(this.newName));
+            const nameCopy = JSON.parse(JSON.stringify(this.newName));
             this.$emit('override-added', nameCopy);
 
             this.clearName();

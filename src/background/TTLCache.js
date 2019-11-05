@@ -29,7 +29,7 @@ class TTLCache {
         this._size += 1;
     }
     get(key) {
-        var rec = this._store[key];
+        let rec = this._store[key];
         if (rec) {
             if (!(rec.expire && rec.expire > now())) {
                 this.del(key);
@@ -40,7 +40,7 @@ class TTLCache {
     }
     del(key) {
         if (this._store[key]) {
-            var val = this._store[key].val;
+            let val = this._store[key].val;
             clearTimeout(this._store[key].timeout);
             delete this._store[key];
             this._size -= 1;
