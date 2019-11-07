@@ -18,8 +18,12 @@ export function apply(settings, user) {
             $("a[href='/dashboard/onboarding']").hide();
         });
 
-        waitForElementAvailablity("[class*='getEmbersButtonBackground'").then(emberBtn => {
-            emberBtn.css('background', 'transparent');
+        waitForElementAvailablity("[class*='getEmbersButton_'").then(emberBtn => {
+            emberBtn.css('margin', '0');
+            emberBtn
+                .children()
+                .first()
+                .css('background', 'transparent');
             emberBtn
                 .find("[class^='content_']")
                 .contents()

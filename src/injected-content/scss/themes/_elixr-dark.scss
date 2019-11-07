@@ -15,10 +15,6 @@ body.elixr-dark {
         background-image: none !important;
     }
 
-    b-app .view-area {
-        background: #1d243a;
-    }
-
     b-nav-host div[class^="navContainer"][class*="collapsed"] div[class^="content"] {
         background: #2E333A !important;
     }
@@ -181,5 +177,9 @@ body.elixr-dark {
     b-more-menu-mobile > .more-menu {
         background: #1d1f23 !important;
     }
-        
+
+    // keep dashboard area blue for now
+    b-app .view-area {
+        background: #1d243a;
+    }     
 }

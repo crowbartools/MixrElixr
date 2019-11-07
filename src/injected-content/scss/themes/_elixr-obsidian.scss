@@ -198,5 +198,10 @@ body.elixr-obsidian {
     b-more-menu-mobile > .more-menu {
         background: $headerSecondary !important;
     }
+
+    // keep dashboard area blue for now
+    b-app .view-area {
+        background: #1d243a;
+    }
         
 }
