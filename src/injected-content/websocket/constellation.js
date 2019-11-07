@@ -3,10 +3,7 @@ import * as infoPanel from '../pages/info-panel';
 
 let ca;
 export function start(userId) {
-    if (ca != null) {
-        stop();
-    }
-
+    stop();
     ca = new Carina({ isBot: true }).open();
     ca.subscribe(`user:${userId}:update`, data => {
         infoPanel.updateInfo(data);
@@ -14,6 +11,8 @@ export function start(userId) {
 }
 
 export function stop() {
-    ca.stop();
-    ca = null;
+    if (ca != null) {
+        ca.stop();
+        ca = null;
+    }
 }

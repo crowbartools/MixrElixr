@@ -30,8 +30,11 @@ export function apply(settings, user) {
         });
     }
 
-    if (user != null) {
+    if (user != null && settings.generalOptions.showInfoPanel !== false) {
         infoPanel.createInfoPanel(user);
         constellation.start(user.id);
+    } else {
+        constellation.stop();
+        infoPanel.removeInfoPanel();
     }
 }

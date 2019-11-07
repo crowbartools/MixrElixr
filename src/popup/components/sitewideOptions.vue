@@ -9,10 +9,17 @@
                 <b-form-select v-model="theme" :options="themes" class="mb-3 option"></b-form-select>
 
                 <checkbox-toggle
+                    :value.sync="showInfoPanel"
+                    @changed="saveSettings()"
+                    label="Show current sparks in top navbar"
+                    tooltip="Display your current sparks, user level, and user name in the top nav bar. Just like it used to <3"
+                ></checkbox-toggle>
+
+                <checkbox-toggle
                     :value.sync="declutterTopBar"
                     @changed="saveSettings()"
-                    label="Declutter The Top Navbar"
-                    tooltip="Condense nav links, simplify other buttons"
+                    label="Declutter the top navbar"
+                    tooltip="Condense nav links, simplify some buttons"
                 ></checkbox-toggle>
             </div>
         </div>

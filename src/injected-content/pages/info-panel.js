@@ -1,9 +1,13 @@
 import { waitForElementAvailablity } from '../utils';
 let panelCreated = false;
 
-export async function createInfoPanel(user) {
+export async function removeInfoPanel() {
     $('#me-info-panel').remove();
+}
+
+export async function createInfoPanel(user) {
     panelCreated = false;
+    removeInfoPanel();
 
     if (user == null) {
         return;

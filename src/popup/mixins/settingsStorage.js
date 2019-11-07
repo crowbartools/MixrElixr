@@ -106,6 +106,7 @@ global.settingsStorage = {
                 },
                 generalOptions: {
                     declutterTopBar: true,
+                    showInfoPanel: true,
                     showBadge: true,
                     onlyShowFavoritesCount: false,
                     favoriteFriends: [],
