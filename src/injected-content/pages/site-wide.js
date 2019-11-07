@@ -1,10 +1,12 @@
 import { waitForElementAvailablity } from '../utils';
+import * as constellation from '../websocket/constellation';
+import * as infoPanel from './info-panel';
 
 function clearPreviousThemes() {
     $('body').removeClass('elixr-dark');
     $('body').removeClass('elixr-obsidian');
 }
-export function apply(settings) {
+export function apply(settings, user) {
     clearPreviousThemes();
     const theme = settings.generalOptions.theme;
     if (theme != null && theme !== 'default') {
@@ -26,5 +28,10 @@ export function apply(settings) {
                 })
                 .remove();
         });
+    }
+
+    if (user != null) {
+        infoPanel.createInfoPanel(user);
+        constellation.start(user.id);
     }
 }

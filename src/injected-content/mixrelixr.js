@@ -156,7 +156,7 @@ $(() => {
         }
 
         if (!initialPageLoad) {
-            siteWide.apply(settings);
+            siteWide.apply(settings, cache.user);
         }
     }
 
@@ -2165,7 +2165,7 @@ $(() => {
         // wait for both user info and settings to load.
         Promise.all([userInfoLoad, settingsLoad])
             .then(() => {
-                siteWide.apply(settings);
+                siteWide.apply(settings, cache.user);
 
                 return waitForPageLoad();
             })
