@@ -27,10 +27,6 @@ body.elixr-dark {
         background: #2d3136 !important;
     }
 
-    b-channel-info-bar:not(.theaterMode) > .info-bar {
-        background: #2E333A !important;
-    }
-
     .info-bar .viewers {
         background: #22262C !important;
     }
@@ -46,11 +42,15 @@ body.elixr-dark {
         }
     }
 
-    [class*="chatContainer_"]:not(.theaterMode), .chat.layout-column {
+    b-channel-info-bar:not(.theaterMode) > .info-bar {
+        background: #2E333A !important;
+    }
+
+    [class*="chatContainer_"], .chat.layout-column {
         background: #262A30 !important; 
     }
 
-    [class*="chatContainer_"]:not(.theaterMode) {
+    [class*="chatContainer_"] {
         [class^="webComposerBlock"] {
             background: #262A30 !important;
         }

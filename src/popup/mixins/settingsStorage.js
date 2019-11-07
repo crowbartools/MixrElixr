@@ -95,7 +95,8 @@ global.settingsStorage = {
                         hideSkillMessages: false,
                         hideStickers: false,
                         hideEmberMessages: false,
-                        showSlowChatCooldownTimer: true
+                        showSlowChatCooldownTimer: true,
+                        lightsOutTheaterMode: false
                     },
                     overrides: {}
                 },

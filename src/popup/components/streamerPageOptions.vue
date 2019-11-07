@@ -232,12 +232,19 @@
                 <user-list class="option" :value.sync="inlineImgBlacklistedUsers" @changed="saveSettings()"></user-list>
             </div>
 
-            <span class="setting-subcategory">Video</span>
+            <span class="setting-subcategory">Page</span>
             <checkbox-toggle
                 :value.sync="largerVideo"
                 @changed="saveSettings()"
                 label="Larger Video Feed"
                 tooltip="Bumps channel content down a bit so the video feed is larger by default."
+            ></checkbox-toggle>
+
+            <checkbox-toggle
+                :value.sync="lightsOutTheaterMode"
+                @changed="saveSettings()"
+                label="Lights Out Theater Mode"
+                tooltip="Make chat in theater mode nearly pitch black."
             ></checkbox-toggle>
 
             <span class="setting-subcategory">Hosts</span>

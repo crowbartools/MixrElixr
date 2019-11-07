@@ -917,6 +917,15 @@ $(() => {
         });
 
         let urlParams = new URLSearchParams(window.location.search);
+        if (!urlParams.has('clip')) {
+            waitForElementAvailablity('[class*="chatContainer_"]').then(chatContainer => {
+                if (options.lightsOutTheaterMode) {
+                    chatContainer.addClass('me-lights-out');
+                } else {
+                    chatContainer.removeClass('me-lights-out');
+                }
+            });
+        }
         if (options.autoTheater && initialPageLoad && !urlParams.has('clip')) {
             toggleTheaterMode();
         }

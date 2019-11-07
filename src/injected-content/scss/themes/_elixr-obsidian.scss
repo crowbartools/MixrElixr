@@ -35,10 +35,6 @@ body.elixr-obsidian {
         background: $headerColor !important;
     }
 
-    b-channel-info-bar:not(.theaterMode) > .info-bar {
-        background: $headerColor !important;
-    }
-
     .info-bar .viewers {
         background: $headerSecondary !important;
     }
@@ -55,11 +51,15 @@ body.elixr-obsidian {
         }
     }
 
-    [class*="chatContainer_"]:not(.theaterMode), .chat.layout-column {
+    b-channel-info-bar:not(.theaterMode) > .info-bar {
+        background: $headerColor !important;
+    }
+
+    [class*="chatContainer_"], .chat.layout-column {
         background: $headerSecondary !important; 
     }
 
-    [class*="chatContainer_"]:not(.theaterMode) {
+    [class*="chatContainer_"] {
         [class^="webComposerBlock"] {
             background: $headerSecondary !important;
         }
