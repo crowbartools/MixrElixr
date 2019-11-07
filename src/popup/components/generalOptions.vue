@@ -21,13 +21,6 @@
                     ></checkbox-toggle>
                 </div>
 
-                <checkbox-toggle
-                    :value.sync="highlightFavorites"
-                    @changed="saveSettings()"
-                    label="Highlight Favorites"
-                    tooltip="Marks favorite streamers with green highlights while browsing Mixer."
-                ></checkbox-toggle>
-
                 <div style="padding-bottom: 5px;" class="option-title">
                     Favorite Streamers<option-tooltip
                         name="favorite"
@@ -45,6 +38,13 @@
                     @remove-entry="favoriteRemoved"
                     :auto-close="true"
                 ></edittable-list>
+
+                <checkbox-toggle
+                    :value.sync="highlightFavorites"
+                    @changed="saveSettings()"
+                    label="Highlight Favorites"
+                    tooltip="Marks favorite streamers with green highlights while browsing Mixer."
+                ></checkbox-toggle>
 
                 <span class="setting-subcategory"
                     >Live Desktop Notifications

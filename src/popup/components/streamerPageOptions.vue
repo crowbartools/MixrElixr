@@ -232,7 +232,7 @@
                 <user-list class="option" :value.sync="inlineImgBlacklistedUsers" @changed="saveSettings()"></user-list>
             </div>
 
-            <span class="setting-subcategory">Page</span>
+            <span class="setting-subcategory">Video</span>
             <checkbox-toggle
                 :value.sync="largerVideo"
                 @changed="saveSettings()"
