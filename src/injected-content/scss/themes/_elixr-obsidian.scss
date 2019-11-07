@@ -1,14 +1,18 @@
-body.elixr-dark {
+$headerColor: #212121;
+$headerSecondary: #191919;
+$darkestBg: #111111;
+
+body.elixr-obsidian {
     &:not(.app-text-dir-ltr) {
-        background: #1d2227 !important;
+        background: $darkestBg !important;
     }
 
     .is-stuck header {
-        background: #0f1215 !important;
+        background: $darkestBg !important;
     }
 
     .control.input > input {
-        background: #1d2021 !important;
+        background: $darkestBg !important;
     }
 
     b-homepage .background-full {
@@ -16,80 +20,86 @@ body.elixr-dark {
     }
 
     b-app .view-area {
-        background: #1d243a;
+        background: $darkestBg;
     }
 
     b-nav-host div[class^="navContainer"][class*="collapsed"] div[class^="content"] {
-        background: #2E333A !important;
+        background: $headerColor !important;
     }
 
     b-channel-web-page {
-        background-image: linear-gradient(to top, rgba(8, 8, 9, 0.8), rgba(25, 25, 25, 0.95)) !important;
+        background-image: linear-gradient(to top, rgba(12, 12, 12, 0.8), rgba(14, 14, 14, 0.95)) !important;
     }
 
     .game-card, .card > a, b-media-card-footer {
-        background: #2d3136 !important;
+        background: $headerColor !important;
     }
 
     b-channel-info-bar:not(.theaterMode) > .info-bar {
-        background: #2E333A !important;
+        background: $headerColor !important;
     }
 
     .info-bar .viewers {
-        background: #22262C !important;
+        background: $headerSecondary !important;
     }
 
     .profile-header, .profile-blocks {
-        background: #212429 !important;
+        background: $headerSecondary !important;
     }
 
     div[class*="container"][class*="modal"] {
-        background: #212224 !important;
+        background: $headerSecondary !important;
         h1 {
-            background: #1e1f20;
+            background: $headerColor;
+            border-top: 1px solid hsla(0,0%,100%,.1);
         }
     }
 
     [class*="chatContainer_"]:not(.theaterMode), .chat.layout-column {
-        background: #262A30 !important; 
+        background: $headerSecondary !important; 
     }
 
     [class*="chatContainer_"]:not(.theaterMode) {
         [class^="webComposerBlock"] {
-            background: #262A30 !important;
+            background: $headerSecondary !important;
         }
 
         [class*="sticker_"], [class*="attributionContents_"], [class*="stickerMessage_"], [class*="bubbleWrapper_"] {
-            background: #30343a !important;
+            background: $headerColor !important;
         }
     }
 
     .menu-area {
-        background: #1b1e22 !important;
+        background: $headerSecondary !important;
+    }
+
+    .toggle-interactive.open {
+        background-color: $headerSecondary;
     }
 
     .initial-loading-overlay {
-        background: #262A30;
+        background: $darkestBg;
         transition: opacity 300ms linear, background 300ms linear;
     }
 
     b-upsell-creative-host > div > div[class^="multiPromoWrapper"],
     b-upsell-creative-host > div > div[class^="wrapper"] {
-        background: #262A30 !important;
+        background: $headerColor !important;
     }
 
     b-channel-chat-tabs {
-        background: #22262B !important;
+        background: $headerSecondary !important;
     }
 
     .me-autocomplete {
-        background: #181b1f;
+        background: $headerColor;
     }
 
     .me-emote-tabs {
-        background: rgb(36, 38, 39);
+        background: #232324;
+        border-bottom: 1px solid hsla(0,0%,100%,.1);
         .me-emote-tab.me-tab-selected {
-            background: #171819;
+            background: #151515;
         }
     }
 
@@ -98,7 +108,7 @@ body.elixr-dark {
     }
 
     [class*="listModal_"] {
-        background: #202429 !important;
+        background: $headerColor !important;
     }
 
     [class*="moreMenuWrap_"] {
@@ -106,37 +116,44 @@ body.elixr-dark {
     }
 
     .skills-tray-container {
-        background: #24282d !important;
+        background: $headerSecondary !important;
     }
     
     [class*="dialog_"] {
-        background-color: #12151a !important;
+        background-color: $headerSecondary !important;
 
         [class*="tile_"] {
-            background-color: #2b2e36 !important;
+            background-color: $headerColor !important;
         }
 
         [class*="shadowTop_"] {
-            background: linear-gradient(0deg, rgba(33, 44, 61, 0) 0%, #090c11 100%) !important;
+            background: linear-gradient(0deg, rgba(33, 44, 61, 0) 0%, #1b1b1bd3 100%) !important;
         }
 
         [class*="shadowBottom_"] {
-            background: linear-gradient(180deg, rgba(33, 44, 61, 0) 0%, #0d1117 100%) !important;
+            background: linear-gradient(180deg, rgba(33, 44, 61, 0) 0%, #1b1b1bd3 100%) !important;
         }
     }
 
     .dialog {
-        background-color: #12151a !important;
-        border: 2px solid #1A1D21 !important;
+        background-color: $headerSecondary !important;
+        border: 2px solid $headerColor !important;
+        .footer {
+            background: $headerSecondary !important;
+        }
+        .player {
+            background: $darkestBg !important;
+        }
     }
 
     bui-dialog-actions {
-        border-top: 2px solid #1A1D21 !important;
-        background: #12151A !important;
+        border-top: 2px solid $headerColor !important;
+        background: $headerSecondary !important;
     }
 
     bui-dialog-header {
-        border-bottom: 2px solid #1A1D21 !important;
+        background: $headerSecondary !important;
+        border-bottom: 2px solid $headerColor !important;
     }
 
     b-browse-loader::before {
@@ -149,13 +166,13 @@ body.elixr-dark {
     }
 
     .dropdown.notifications {
-        background: #12151A !important;
+        background: $headerSecondary !important;
     }
 
     b-user-triggered-notification:hover, 
     b-went-live-notification:hover, 
     b-sub-anniversary-notification:hover {
-        background: #191d24 !important;
+        background: $headerSecondary !important;
     }
 
     .notification-link:hover {
@@ -163,23 +180,23 @@ body.elixr-dark {
     }
 
     [class*="locales_"] {
-        background: #0e1115 !important;
+        background: $headerSecondary !important;
     }
 
     b-mobile-details-bar .info-bar-wrapper {
-        background: #21242b !important;
+        background: $headerColor !important;
     }
 
     b-mobile-header > .header {
-        background: #21242b !important;
+        background: $headerColor !important;
     }
 
     [class^='mobileWebComposerBlock_'] [class^='composerWrapper_'] {
-        background: #14181f !important;
+        background: $headerSecondary !important;
     }
 
     b-more-menu-mobile > .more-menu {
-        background: #1d1f23 !important;
+        background: $headerSecondary !important;
     }
         
 }

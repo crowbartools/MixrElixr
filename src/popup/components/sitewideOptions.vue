@@ -32,6 +32,10 @@ export default {
                 {
                     value: 'elixr-dark',
                     text: 'Dark'
+                },
+                {
+                    value: 'elixr-obsidian',
+                    text: 'Obsidian'
                 }
             ]
         };

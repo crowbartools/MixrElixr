@@ -1,6 +1,16 @@
 import { waitForElementAvailablity } from '../utils';
 
+function clearPreviousThemes() {
+    $('body').removeClass('elixr-dark');
+    $('body').removeClass('elixr-obsidian');
+}
 export function apply(settings) {
+    clearPreviousThemes();
+    const theme = settings.generalOptions.theme;
+    if (theme != null && theme !== 'default') {
+        $('body').addClass(theme);
+    }
+
     if (settings.generalOptions.declutterTopBar !== false) {
         waitForElementAvailablity("a[href='/dashboard/onboarding']").then(() => {
             $("a[href='/dashboard/onboarding']").hide();
@@ -16,12 +26,5 @@ export function apply(settings) {
                 })
                 .remove();
         });
-    }
-
-    const theme = settings.generalOptions.theme;
-    if (theme != null && theme !== 'default') {
-        $('body').addClass(theme);
-    } else {
-        $('body').removeClass('elixr-dark');
     }
 }
