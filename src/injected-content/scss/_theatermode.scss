@@ -17,7 +17,7 @@ b-notifications {
 
 .channel-page.theaterMode,
 .channel-page > aside.theaterMode {
-    background: #0b0f15!important;
+    background: #000000 !important; 
 }
 
 .channel-page.theaterMode {
@@ -38,7 +38,19 @@ body.theaterMode {
 }
 
 .me-chat-container.theaterMode {
-    background: #181b20;
+    background: #040404 !important;  
+
+    [class^="webComposerBlock"] {
+        background: #040404 !important;
+    }
+
+    [class^="sticker_"], [class^="attributionContents_"] {
+        background: #0c0c0c !important;
+    }
+
+    [class*="striped_"] [class*="message_"][class*="odd_"] {
+        background-color: #000000;
+    }
 }
 
 b-desktop-header.theaterMode {
