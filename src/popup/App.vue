@@ -10,6 +10,7 @@
                     <online-friends-list></online-friends-list>
                 </div>
                 <div v-show="activeTab == 'options'" class="tab-content" style="padding: 20px 0;">
+                    <sitewide-options></sitewide-options>
                     <streamer-page-options></streamer-page-options>
                     <home-page-options></home-page-options>
                     <general-options></general-options>

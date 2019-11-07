@@ -6,13 +6,6 @@
         <div class="settings-section-settings" style="padding-bottom: 0;">
             <div class="option-wrapper">
                 <checkbox-toggle
-                    :value.sync="declutterTopBar"
-                    @changed="saveSettings()"
-                    label="Declutter The Top Navbar"
-                    tooltip="Condense nav links, simplify other buttons, and use the condensed Mixer logo"
-                ></checkbox-toggle>
-
-                <checkbox-toggle
                     :value.sync="showBadge"
                     @changed="badgeUpdate()"
                     label="Show Live Now Count"
@@ -71,9 +64,6 @@
                     @changed="saveSettings()"
                     label="Play Notification Sound"
                 ></checkbox-toggle>
-
-                <span class="setting-subcategory">Mixer Theme</span>
-                <b-form-select v-model="theme" :options="themes" class="mb-3 option"></b-form-select>
             </div>
         </div>
     </div>
@@ -89,8 +79,7 @@ export default {
                 { value: 'none', text: 'No one' },
                 { value: 'favorites', text: 'Favorites only' },
                 { value: 'all', text: 'All' }
-            ],
-            themes: [{ value: 'default', text: 'Default' }, { value: 'elixr-dark', text: 'Dark' }]
+            ]
         };
 
         // apply our defaults
@@ -105,9 +94,6 @@ export default {
     },
     watch: {
         liveNotificationsMode: function() {
-            this.saveSettings();
-        },
-        theme: function() {
             this.saveSettings();
         }
     },
