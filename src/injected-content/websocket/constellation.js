@@ -12,7 +12,7 @@ export function start(userId) {
 
 export function stop() {
     if (ca != null) {
-        ca.stop();
+        ca.close();
         ca = null;
     }
 }
