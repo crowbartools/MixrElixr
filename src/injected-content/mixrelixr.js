@@ -424,7 +424,11 @@ $(() => {
             let rootUrl = `https://crowbartools.com/user-content/emotes/global/emotes.json?cache=${ts}`;
             $.getJSON(rootUrl, function(data) {
                 log('Global emotes retrieved.');
-                cache.globalEmotes = data;
+                cache.globalEmotes = Object.values(data.emotes).map(e => {
+                    e.animated = e.filename.toLowerCase().endsWith('.gif');
+                    return e;
+                });
+
                 resolve();
             }).fail(function(_, textStatus, error) {
                 log('No global emotes were found!');
@@ -455,7 +459,11 @@ $(() => {
             let rootUrl = `https://crowbartools.com/user-content/emotes/live/${channelId}/emotes.json?cache=${ts}`;
             $.getJSON(rootUrl, function(data) {
                 log('Custom emotes retrieved for: ' + cache.currentStreamerName);
-                cache.currentStreamerEmotes = Array.isArray(data) ? data[0] : data;
+                const currentStreamerEmotes = Array.isArray(data) ? data[0] : data;
+                cache.currentStreamerEmotes = Object.values(currentStreamerEmotes.emotes).map(e => {
+                    e.animated = e.filename.toLowerCase().endsWith('.gif');
+                    return e;
+                });
                 resolve();
             }).fail(function(_, textStatus, error) {
                 log('No custom emotes for: ' + cache.currentStreamerName);
@@ -1382,14 +1390,14 @@ $(() => {
                 options.customEmotes !== false &&
                 options.channelEmotes !== false &&
                 cache.currentStreamerEmotes != null &&
-                cache.currentStreamerEmotes.emotes != null &&
+                cache.currentStreamerEmotes.length > 0 &&
                 chatFromCurrentChannel;
 
             let showGlobalEmotes =
                 options.customEmotes !== false &&
                 options.globalEmotes !== false &&
                 cache.globalEmotes != null &&
-                cache.globalEmotes.emotes != null;
+                cache.globalEmotes.length > 0;
 
             if (showChannelEmotes || showGlobalEmotes) {
                 let foundEmote = false;

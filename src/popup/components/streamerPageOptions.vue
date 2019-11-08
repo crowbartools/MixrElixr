@@ -57,6 +57,12 @@
                     tooltip="Channel emotes are set by the channel owner and reviewed by the MixrElixr team. They are only available in the given channel."
                 ></checkbox-toggle>
                 <checkbox-toggle
+                    :value.sync="animatedEmotes"
+                    label="Enable Animated Emotes"
+                    @changed="saveSettings()"
+                    tooltip="Show/hide animated emotes (gifs)"
+                ></checkbox-toggle>
+                <checkbox-toggle
                     :value.sync="enableEmoteAutocomplete"
                     label="Enable Emote Autocomplete Menu"
                     @changed="saveSettings()"

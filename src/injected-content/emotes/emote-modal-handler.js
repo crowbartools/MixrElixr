@@ -88,6 +88,9 @@ export function handleEmoteModal(options, cache) {
                         if (showGlobalEmotes) {
                             let header = 'MixrElixr Global Emotes';
                             let globalEmotes = Object.values(cache.globalEmotes.emotes);
+                            if (options.animatedEmotes) {
+                                globalEmotes = globalEmotes.filter(e => e.filename.toLowerCase().endsWith('.gif'));
+                            }
                             let baseUrl = 'https://crowbartools.com/user-content/emotes/global/';
 
                             let emotesSection = buildEmotesSection(header, globalEmotes, baseUrl);
