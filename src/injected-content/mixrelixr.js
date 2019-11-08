@@ -1105,7 +1105,7 @@ $(() => {
       }
 
       ${
-          options.showWhoDeletedMessage
+          options.showWhoDeletedMessage !== false
               ? `
             b-chat-client-host-component div[class*="deleted_"] {
                   text-decoration: none !important;
