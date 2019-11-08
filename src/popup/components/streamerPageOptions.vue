@@ -103,7 +103,7 @@
                 :value.sync="showWhoDeletedMessage"
                 @changed="saveSettings()"
                 label="Show Who Deleted Message"
-                tooltip="Shows who deleted a given message."
+                tooltip="Shows who deleted a given message. Only visible when you're a mod or higher for the channel."
             ></checkbox-toggle>
             <checkbox-toggle
                 :value.sync="showSlowChatCooldownTimer"

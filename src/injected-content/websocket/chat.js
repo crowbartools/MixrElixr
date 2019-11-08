@@ -5,11 +5,20 @@ import { log } from '../utils';
 
 let socket;
 let isConnectingToChat = false;
+let userIsMod = false;
+
+const MODE_ROLES = ['Mod', 'ChannelEditor', 'Owner'];
+
 export async function connectToChat(channelId, userId) {
     if (isConnectingToChat) return;
     isConnectingToChat = true;
     disconnectChat();
+
     let chatInfo = await api.getChannelChatInfo(channelId);
+
+    // check if user has mod status
+    userIsMod = chatInfo.roles.find(r => MODE_ROLES.includes(r));
+
     createChatSocket(userId, channelId, chatInfo.endpoints, chatInfo.authkey);
 }
 
@@ -55,9 +64,7 @@ function createChatSocket(userId, channelId, endpoints, authkey) {
 
     // Listen for chat messages
     socket.on('DeleteMessage', data => {
-        console.log('We got a DeleteMessage packet!');
-        console.log(data);
-        if (data && data.moderator) {
+        if (userIsMod && data && data.moderator) {
             messagedDeleted(data.id, data.moderator['user_name']);
         }
     });
