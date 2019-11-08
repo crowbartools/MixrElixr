@@ -1,19 +1,22 @@
 import { Socket } from '@mixer/chat-client-websocket';
-import ws from 'reconnecting-websocket';
 import * as api from '../api';
 import { messagedDeleted } from '../pages/chat-feed';
-import { log } from '../utils';
+import { log, debounce } from '../utils';
 
 let socket;
-
+let isConnectingToChat = false;
 export async function connectToChat(channelId, userId) {
+    if (isConnectingToChat) return;
+    isConnectingToChat = true;
     disconnectChat();
     let chatInfo = await api.getChannelChatInfo(channelId);
     createChatSocket(userId, channelId, chatInfo.endpoints, chatInfo.authkey);
 }
 
 export function disconnectChat() {
+    if (isConnectingToChat) return;
     if (socket != null) {
+        log('Disconnecting from MixerSocket!');
         socket.close();
         socket = null;
     }
@@ -28,6 +31,7 @@ export function disconnectChat() {
  * @returns {Promise.<>}
  */
 function createChatSocket(userId, channelId, endpoints, authkey) {
+    const ws = WebSocket;
     socket = new Socket(ws, endpoints).boot();
 
     // You don't need to wait for the socket to connect before calling
@@ -41,9 +45,11 @@ function createChatSocket(userId, channelId, endpoints, authkey) {
         .auth(channelId, userToConnectAs, authkey)
         .then(() => {
             log('Connected to chat!');
+            isConnectingToChat = false;
         })
         .catch(error => {
             log('Oh no! An error occurred when connecting to chat.');
+            isConnectingToChat = false;
             console.error(error);
         });
 
