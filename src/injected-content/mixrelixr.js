@@ -91,7 +91,11 @@ $(() => {
         // Window location
         let url = window.location.href;
 
-        chatApi.disconnectChat();
+        try {
+            chatApi.disconnectChat();
+        } catch (err) {
+            console.log('failed to disconnet from chat!', err);
+        }
 
         // check we if we are an embeded chat window
         let embededChatRegex = /^https?:\/\/(www\.)?mixer\.com\/embed\/chat\/(\w+)/;
@@ -111,7 +115,11 @@ $(() => {
                 let channelName = channelData.token;
                 cache.currentStreamerName = channelName;
 
-                chatApi.connectToChat(channelData.id, cache.user.id);
+                try {
+                    chatApi.connectToChat(channelData && channelData.id, cache.user && cache.user.id);
+                } catch (err) {
+                    console.log('failed to connect to chat!', err);
+                }
 
                 waitForElementAvailablity(ElementSelector.CHAT_CONTAINER).then(() => {
                     applyChatSettings(channelName);
@@ -141,7 +149,11 @@ $(() => {
                     let channelName = channelData.token;
                     cache.currentStreamerName = channelName;
 
-                    chatApi.connectToChat(channelData.id, cache.user.id);
+                    try {
+                        chatApi.connectToChat(channelData && channelData.id, cache.user && cache.user.id);
+                    } catch (err) {
+                        console.log('failed to connect to chat!', err);
+                    }
 
                     let slowChatCooldown = channelData.preferences['channel:slowchat'];
                     cache.slowChatCooldown = slowChatCooldown;
@@ -1094,15 +1106,6 @@ $(() => {
 
         $('body').prepend(`
       <style id="elixr-chat-styles">
-
-      ${
-          options.alwaysShowDeletedMessages
-              ? `
-              b-chat-client-host-component div[class*="deleted_"] {
-                    display: block !important;
-              }`
-              : ''
-      }
 
       ${
           options.showWhoDeletedMessage !== false

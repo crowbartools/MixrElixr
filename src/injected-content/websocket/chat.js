@@ -10,14 +10,18 @@ let userIsMod = false;
 const MODE_ROLES = ['Mod', 'ChannelEditor', 'Owner'];
 
 export async function connectToChat(channelId, userId) {
-    if (isConnectingToChat) return;
+    if (isConnectingToChat || channelId == null) return;
     isConnectingToChat = true;
     disconnectChat();
 
     let chatInfo = await api.getChannelChatInfo(channelId);
 
+    if (chatInfo == null) return;
+
     // check if user has mod status
-    userIsMod = chatInfo.roles.find(r => MODE_ROLES.includes(r));
+    if (chatInfo.roles) {
+        userIsMod = chatInfo.roles.find(r => MODE_ROLES.includes(r));
+    }
 
     createChatSocket(userId, channelId, chatInfo.endpoints, chatInfo.authkey);
 }
@@ -59,7 +63,7 @@ function createChatSocket(userId, channelId, endpoints, authkey) {
         .catch(error => {
             log('Oh no! An error occurred when connecting to chat.');
             isConnectingToChat = false;
-            console.error(error);
+            console.log(error);
         });
 
     // Listen for chat messages
@@ -72,6 +76,6 @@ function createChatSocket(userId, channelId, endpoints, authkey) {
     // Listen for socket errors. You will need to handle these here.
     socket.on('error', error => {
         log('Chat socket error');
-        console.error(error);
+        console.log(error);
     });
 }
