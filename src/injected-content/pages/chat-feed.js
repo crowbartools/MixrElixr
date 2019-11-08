@@ -17,5 +17,5 @@ export function messagedDeleted(messageId, moderatorName) {
 
     $(`
         <div class="me-deleted-by">(Deleted by ${moderatorName})</div>
-    `).prependTo(chatMessage);
+    `).appendTo(chatMessage);
 }

@@ -1103,6 +1103,20 @@ $(() => {
               }`
               : ''
       }
+
+      ${
+          options.showWhoDeletedMessage
+              ? `
+            b-chat-client-host-component div[class*="deleted_"] {
+                  text-decoration: none !important;
+            }
+
+            b-chat-client-host-component div[class*="deleted_"] > div[class*="messageContent_"] {
+                text-decoration: line-through;
+                padding-bottom: 0 !important;
+          }`
+              : ''
+      }
         
 
        ${
@@ -1124,7 +1138,7 @@ $(() => {
           }
 
           b-chat-client-host-component div[class*="messageContent"] {
-              margin-left: .5em;
+              margin-left: 4px;
           }
         `
                : ''
