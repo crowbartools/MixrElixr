@@ -1595,15 +1595,12 @@ $(() => {
             if (options.timestampAllMessages) {
                 let parent = messageContainer;
 
-                // verify there isnt a native timestamp sometime after this message (if so, this is an older message)
-                let stampsAfterCurrentMsg = parent.nextAll().find("[class*='message']").length > 0;
-
                 // check that the current message doesnt already have a native or custom timestamp
                 let msgAlreadyHasStamp =
-                    parent.prev().find("[class*='timeStamp']").length > 0 || parent.find('.elixrTime').length > 0;
+                    parent.parent().find("[class*='timeStamp']").length > 0 || parent.find('.elixrTime').length > 0;
 
                 // should we add a timestamp?
-                if (!stampsAfterCurrentMsg && !msgAlreadyHasStamp) {
+                if (!msgAlreadyHasStamp) {
                     let timeOptions = { hour12: true, hour: '2-digit', minute: '2-digit' };
                     let time = new Date().toLocaleString([], timeOptions);
 
