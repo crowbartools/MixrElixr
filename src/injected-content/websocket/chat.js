@@ -1,7 +1,7 @@
 import { Socket } from '@mixer/chat-client-websocket';
 import * as api from '../api';
 import { messagedDeleted } from '../pages/chat-feed';
-import { log, debounce } from '../utils';
+import { log } from '../utils';
 
 let socket;
 let isConnectingToChat = false;
