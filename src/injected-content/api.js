@@ -14,3 +14,18 @@ export function getChannelData(channelIdOrName) {
             });
     });
 }
+
+export function getChannelChatInfo(channelId) {
+    return new Promise(resolve => {
+        $.get(`https://mixer.com/api/v1/chats/${channelId}`)
+            .done(data => {
+                log('Got chat data for ' + channelId);
+                resolve(data);
+            })
+            .fail(() => {
+                // We reached our target server, but it returned an error
+                log('Failed to get chat data for ' + channelId);
+                resolve(null);
+            });
+    });
+}

@@ -14,6 +14,8 @@ import { handleEmoteModal } from './emotes/emote-modal-handler';
 import $ from 'jquery';
 
 import * as siteWide from './pages/site-wide';
+import * as chatFeed from './pages/chat-feed';
+import * as chatApi from './websocket/chat';
 
 import Bowser from 'bowser';
 const browserEnv = Bowser.getParser(window.navigator.userAgent);
@@ -89,6 +91,8 @@ $(() => {
         // Window location
         let url = window.location.href;
 
+        chatApi.disconnectChat();
+
         // check we if we are an embeded chat window
         let embededChatRegex = /^https?:\/\/(www\.)?mixer\.com\/embed\/chat\/(\w+)/;
         let result = embededChatRegex.exec(url);
@@ -106,6 +110,8 @@ $(() => {
 
                 let channelName = channelData.token;
                 cache.currentStreamerName = channelName;
+
+                chatApi.connectToChat(channelData.id, cache.user.id);
 
                 waitForElementAvailablity(ElementSelector.CHAT_CONTAINER).then(() => {
                     applyChatSettings(channelName);
@@ -134,6 +140,8 @@ $(() => {
 
                     let channelName = channelData.token;
                     cache.currentStreamerName = channelName;
+
+                    chatApi.connectToChat(channelData.id, cache.user.id);
 
                     let slowChatCooldown = channelData.preferences['channel:slowchat'];
                     cache.slowChatCooldown = slowChatCooldown;
@@ -1080,10 +1088,22 @@ $(() => {
 
         let options = getStreamerOptionsForStreamer(streamerName);
 
+        chatFeed.setup(options);
+
         $('#elixr-chat-styles').remove();
 
         $('body').prepend(`
       <style id="elixr-chat-styles">
+
+      ${
+          options.alwaysShowDeletedMessages
+              ? `
+              b-chat-client-host-component div[class*="deleted_"] {
+                    display: block !important;
+              }`
+              : ''
+      }
+        
 
        ${
            options.useCustomFontSize

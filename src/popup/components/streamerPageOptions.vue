@@ -94,6 +94,18 @@
                 tooltip="Hides the item purchase and leaderboard banners at the top of the chat view."
             ></checkbox-toggle>
             <checkbox-toggle
+                :value.sync="alwaysShowDeletedMessages"
+                @changed="saveSettings()"
+                label="Always Show Deleted Messages"
+                tooltip="Always show deleted messages, even when you are not a mod."
+            ></checkbox-toggle>
+            <checkbox-toggle
+                :value.sync="showWhoDeletedMessage"
+                @changed="saveSettings()"
+                label="Show Who Deleted Message"
+                tooltip="Shows who deleted a given message."
+            ></checkbox-toggle>
+            <checkbox-toggle
                 :value.sync="showSlowChatCooldownTimer"
                 @changed="saveSettings()"
                 label="Slow Chat Cooldown Timer"
