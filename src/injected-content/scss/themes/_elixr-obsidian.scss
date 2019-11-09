@@ -64,7 +64,11 @@ body.elixr-obsidian {
             background: $headerSecondary !important;
         }
 
-        [class*="sticker_"], [class*="attributionContents_"], [class*="stickerMessage_"], [class*="bubbleWrapper_"] {
+        [class*="sticker_"], 
+        [class*="attributionContents_"], 
+        [class*="stickerMessage_"], 
+        [class*="bubbleWrapper_"],
+        .me-mod-action-bubble {
             background: $headerColor !important;
         }
     }

@@ -1,7 +1,17 @@
 //import styles
 import './scss/injected-styles.scss';
 
-import { waitForElementAvailablity, debounce, log, escapeHTML, escapeRegExp, determineMessageType } from './utils';
+import {
+    waitForElementAvailablity,
+    debounce,
+    log,
+    escapeHTML,
+    escapeRegExp,
+    determineMessageType,
+    setupScrollGlueCheck,
+    scrollChatIfGlued,
+    scrollChatToBottom
+} from './utils';
 
 import * as api from './api';
 
@@ -45,8 +55,6 @@ $(() => {
     let cache = {};
     let initialPageLoad = true;
     let theaterMode = false;
-
-    let chatScrollGlued = true;
 
     const ElementSelector = {
         CHAT_CONTAINER: "[class*='ChatMessages']",
@@ -1208,24 +1216,7 @@ $(() => {
             .children()
             .addClass('elixr-chat-container');
 
-        let updateScrollGlue = debounce(function() {
-            let chatContainer = $('.elixr-chat-container');
-
-            let current = chatContainer.scrollTop();
-            let height = chatContainer[0].scrollHeight - chatContainer.height();
-            let percent = (current / height) * 100;
-
-            let minimumPercent = 99;
-
-            if (percent >= minimumPercent) {
-                chatScrollGlued = true;
-            } else {
-                chatScrollGlued = false;
-            }
-        }, 100);
-
-        $('.elixr-chat-container').off('scroll', updateScrollGlue);
-        $('.elixr-chat-container').on('scroll', updateScrollGlue);
+        setupScrollGlueCheck();
 
         // Mention BG Color
         if (options.mentionChatBGColor) {
@@ -1524,10 +1515,7 @@ $(() => {
                                 }
 
                                 setTimeout(() => {
-                                    if (chatScrollGlued) {
-                                        scrollChatToBottom();
-                                        log('Scrolling to bottom!');
-                                    }
+                                    scrollChatIfGlued();
                                 }, 5);
                             });
 
@@ -1682,7 +1670,7 @@ $(() => {
 												</span>`);
 
                                             inlineImg.find('img').on('load', function() {
-                                                scrollChatToBottom();
+                                                scrollChatIfGlued();
                                                 $(this).off('load', '**');
                                             });
 
@@ -1858,30 +1846,6 @@ $(() => {
             buttonTarget.removeClass('faved');
             userNameTarget.removeClass('favoriteUsername');
         }
-    }
-
-    function scrollChatIfCloseToBottom(textSize) {
-        let chatContainer = $('.elixr-chat-container');
-        let current = chatContainer.scrollTop();
-        let height = chatContainer[0].scrollHeight - chatContainer.height();
-        let percent = (current / height) * 100;
-
-        // Some dirty math to decrease our minimum percent the bigger the user
-        // has set their text to be (Because one long message could scroll things down farther)
-        let minimumPercent = 96.5;
-        if (textSize >= 16) {
-            let scaled = textSize - 16;
-            let offset = scaled / 10;
-            minimumPercent -= offset;
-        }
-        if (percent >= minimumPercent && percent < 100) {
-            scrollChatToBottom();
-        }
-    }
-
-    function scrollChatToBottom() {
-        let chatContainer = $('.elixr-chat-container');
-        chatContainer.scrollTop(chatContainer[0].scrollHeight);
     }
 
     function getStreamerOptionsForStreamer(streamerName) {

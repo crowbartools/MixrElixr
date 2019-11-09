@@ -55,7 +55,11 @@ body.elixr-dark {
             background: #262A30 !important;
         }
 
-        [class*="sticker_"], [class*="attributionContents_"], [class*="stickerMessage_"], [class*="bubbleWrapper_"] {
+        [class*="sticker_"], 
+        [class*="attributionContents_"], 
+        [class*="stickerMessage_"], 
+        [class*="bubbleWrapper_"],
+        .me-mod-action-bubble {
             background: #30343a !important;
         }
     }

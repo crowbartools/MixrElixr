@@ -94,10 +94,10 @@
                 tooltip="Hides the item purchase and leaderboard banners at the top of the chat view."
             ></checkbox-toggle>
             <checkbox-toggle
-                :value.sync="showWhoDeletedMessage"
+                :value.sync="showModActions"
                 @changed="saveSettings()"
-                label="Show Who Deletes Messages"
-                tooltip="Shows who deleted a given message. Only visible if you're a mod, channel editor, or owner for the channel."
+                label="Show Mod Actions"
+                tooltip="Shows banned, timeout, and message deletion mod actions in chat. Only visible if you're a mod, channel editor, or owner for the channel."
             ></checkbox-toggle>
             <checkbox-toggle
                 :value.sync="showSlowChatCooldownTimer"

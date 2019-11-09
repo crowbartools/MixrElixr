@@ -76,7 +76,7 @@ global.settingsStorage = {
                         hideChatHeaders: false,
                         hideDeleted: false,
                         alwaysShowDeletedMessages: false,
-                        showWhoDeletedMessage: true,
+                        showModActions: true,
                         timestampAllMessages: false,
                         showImagesInline: false,
                         lowestUserRoleLinks: 'mod',

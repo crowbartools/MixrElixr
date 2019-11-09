@@ -1,13 +1,13 @@
 import { Socket } from '@mixer/chat-client-websocket';
 import * as api from '../api';
-import { messagedDeleted } from '../pages/chat-feed';
+import { messagedDeleted, userBanned, userTimeout } from '../pages/chat-feed';
 import { log } from '../utils';
 
 let socket;
 let isConnectingToChat = false;
 let userIsMod = false;
 
-const MODE_ROLES = ['Mod', 'ChannelEditor', 'Owner'];
+const MOD_ROLES = ['Mod', 'ChannelEditor', 'Owner'];
 
 export async function connectToChat(channelId, userId) {
     if (isConnectingToChat || channelId == null) return;
@@ -20,7 +20,7 @@ export async function connectToChat(channelId, userId) {
 
     // check if user has mod status
     if (chatInfo.roles) {
-        userIsMod = chatInfo.roles.find(r => MODE_ROLES.includes(r));
+        userIsMod = chatInfo.roles.some(r => MOD_ROLES.includes(r));
     }
 
     createChatSocket(userId, channelId, chatInfo.endpoints, chatInfo.authkey);
@@ -66,10 +66,29 @@ function createChatSocket(userId, channelId, endpoints, authkey) {
             console.log(error);
         });
 
-    // Listen for chat messages
+    // Listen for deleted events
     socket.on('DeleteMessage', data => {
         if (userIsMod && data && data.moderator) {
             messagedDeleted(data.id, data.moderator['user_name']);
+        }
+    });
+
+    // Listen for purge messages
+    socket.on('PurgeMessage', async data => {
+        if (data == null) return;
+
+        if (userIsMod) {
+            let userInfo = await api.getUserInfo(data.user_id);
+
+            if (userInfo == null) return;
+
+            if (data.moderator != null) {
+                // timeout happened
+                userTimeout(userInfo.username, data.moderator.user_name);
+            } else {
+                // ban happened
+                userBanned(userInfo.username);
+            }
         }
     });
 
