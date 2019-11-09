@@ -68,7 +68,8 @@ function createChatSocket(userId, channelId, endpoints, authkey) {
 
     // Listen for deleted events
     socket.on('DeleteMessage', data => {
-        if (userIsMod && data && data.moderator) {
+        if (data == null) return;
+        if (userIsMod && data.moderator) {
             messagedDeleted(data.id, data.moderator['user_name']);
         }
     });
