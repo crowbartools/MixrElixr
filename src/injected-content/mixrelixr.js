@@ -896,52 +896,55 @@ $(() => {
         // add theater mode btn
         // wait for video controls to load
         waitForElementAvailablity('.spectre-player').then(() => {
-            if ($('[theater-mode-btn-container]').length < 1) {
-                let findFullscreenBtn = () => {
-                    log('attempting to create theater mode button...');
+            let findFullscreenBtn = () => {
+                log('attempting to create theater mode button...');
 
-                    // copy the fullscreen button so we can make it into the theater btn
-                    let fullscreenBtn;
+                // copy the fullscreen button so we can make it into the theater btn
+                let fullscreenBtn;
 
-                    let icons = $('i.material-icons');
-                    icons.each(function() {
-                        let icon = $(this);
-                        if (icon.text() == 'fullscreen') {
-                            fullscreenBtn = icon.parent().parent();
-                        }
-                    });
-
-                    if (fullscreenBtn != null && fullscreenBtn.length < 1) {
-                        log('Couldnt find fullscreen button... trying again in a bit.');
-                        setTimeout(() => findFullscreenBtn(), 500);
-                        return;
+                let icons = $('i.material-icons');
+                icons.each(function() {
+                    let icon = $(this);
+                    if (icon.text() === 'fullscreen') {
+                        fullscreenBtn = icon.parent().parent();
                     }
+                });
 
-                    log('Found fullscreen button!');
+                if (fullscreenBtn == null || fullscreenBtn.length < 1) {
+                    log('Couldnt find fullscreen button... trying again in a bit.');
+                    setTimeout(() => findFullscreenBtn(), 250);
+                    return;
+                }
 
-                    let theaterBtn = fullscreenBtn.clone();
+                const currentTheaterButton = $('[theater-mode-btn-container]');
+                if (currentTheaterButton != null && currentTheaterButton.length > 0) {
+                    log('Theater mode btn already exists.');
+                    return;
+                }
 
-                    // add an attr for us to check for it later
-                    theaterBtn.attr('theater-mode-btn-container', '');
+                log('Found fullscreen button!');
+                let theaterBtn = fullscreenBtn.clone();
 
-                    // change the icon
-                    theaterBtn.find('i').text('event_seat');
+                // add an attr for us to check for it later
+                theaterBtn.attr('theater-mode-btn-container', '');
 
-                    // change tooltip text
-                    theaterBtn.find('span').text('MixrElixr: Theater Mode');
+                // change the icon
+                theaterBtn.find('i').text('event_seat');
 
-                    // add click handler
-                    theaterBtn.on('click', function() {
-                        toggleTheaterMode();
-                    });
+                // change tooltip text
+                theaterBtn.find('span').text('MixrElixr: Theater Mode');
 
-                    theaterBtn.insertBefore(fullscreenBtn);
-                };
+                // add click handler
+                theaterBtn.on('click', function() {
+                    toggleTheaterMode();
+                });
 
-                setTimeout(() => {
-                    findFullscreenBtn();
-                }, 250);
-            }
+                theaterBtn.insertBefore(fullscreenBtn);
+            };
+
+            setTimeout(() => {
+                findFullscreenBtn();
+            }, 250);
         });
 
         let urlParams = new URLSearchParams(window.location.search);
