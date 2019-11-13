@@ -93,6 +93,11 @@ function createChatSocket(userId, channelId, endpoints, authkey) {
         }
     });
 
+    socket.on('UserTimeout', data => {
+        console.log('USER WAS TIMED OUT');
+        console.log(data);
+    });
+
     // Listen for socket errors. You will need to handle these here.
     socket.on('error', error => {
         log('Chat socket error');
