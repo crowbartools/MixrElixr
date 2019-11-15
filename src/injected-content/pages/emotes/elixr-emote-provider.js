@@ -1,4 +1,4 @@
-export async function load(channels, options) {
+export async function load(channels, loadGlobal, loadChannel) {
     return {
         id: 'elixr',
         name: 'MixrElixr',
@@ -35,4 +35,18 @@ export async function load(channels, options) {
             }
         ]
     };
+}
+
+function getEmotes(channelId) {
+    return new Promise(resolve => {
+        const GET_ELIXR_EMOTES_URL = `https://api.mixrelixr.com/v1/emotes/${channelId}`;
+        $.getJSON(GET_ELIXR_EMOTES_URL)
+            .done(function(data) {
+                resolve(data);
+            })
+            .fail(function(err) {
+                console.log(err);
+                resolve(null);
+            });
+    });
 }

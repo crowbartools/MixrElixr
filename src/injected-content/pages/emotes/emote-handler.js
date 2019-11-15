@@ -5,13 +5,7 @@ export async function setup(channels, channelPageOptions) {
     emoteProviders = [];
 
     // load elixr emotes
-    emoteProviders.push(
-        await elixrEmotes.load({
-            channels: channels,
-            loadGlobal: true,
-            loadChannel: true
-        })
-    );
+    emoteProviders.push(await elixrEmotes.load(channels, true, true));
 }
 
 export function handleEmotes(messageContainerElement, channelId, hostMode) {
