@@ -1,5 +1,5 @@
 import { mapEmoteSizeToClass } from './emote-manager';
-import { escapeHTML, updateChatTextfield } from '../utils';
+import { escapeHTML, updateChatTextfield } from '../../../utils';
 
 export function handleEmoteModal(options, cache) {
     // get rid of any previous registered callbacks for chat modals

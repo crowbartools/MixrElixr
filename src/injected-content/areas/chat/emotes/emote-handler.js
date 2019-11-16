@@ -1,4 +1,4 @@
-import * as elixrEmotes from './elixr-emote-provider';
+import * as elixrEmotes from './providers/elixr-emote-provider';
 
 let emoteProviders = [];
 export async function setup(channels, channelPageOptions) {
