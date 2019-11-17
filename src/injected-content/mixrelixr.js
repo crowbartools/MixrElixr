@@ -26,7 +26,7 @@ import * as siteWide from './areas/sitewide/site-wide';
 import * as chatFeed from './areas/chat/chat-feed';
 import * as emoteHandler from './areas/chat/emotes/emote-handler';
 import { handleEmoteModal } from './areas/chat/emotes/emote-modal-handler';
-import * as chatApi from './websocket/chat';
+import * as chatApi from './mixer-connections/chat';
 
 import Bowser from 'bowser';
 const browserEnv = Bowser.getParser(window.navigator.userAgent);

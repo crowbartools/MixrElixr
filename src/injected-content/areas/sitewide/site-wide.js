@@ -1,5 +1,5 @@
 import { waitForElementAvailablity } from '../../utils';
-import * as constellation from '../../websocket/constellation';
+import * as constellation from '../../mixer-connections/constellation';
 import * as infoPanel from './info-panel';
 
 function clearPreviousThemes() {
