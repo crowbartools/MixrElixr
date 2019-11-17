@@ -1,7 +1,11 @@
 <template>
     <div v-cloak id="me-emote-autocomplete" class="me-autocomplete" v-show="showMenu">
         <ul role="listbox">
-            <li v-for="(emote, index) in filteredEmotes" v-bind:key="emote.id" :id="getEmoteElementId(emote)">
+            <li
+                v-for="(emote, index) in filteredEmotes"
+                v-bind:key="getEmoteElementId(emote)"
+                :id="getEmoteElementId(emote)"
+            >
                 <button
                     class="me-autocomplete-emote"
                     :class="{ selected: isSelected(index) }"
@@ -9,9 +13,9 @@
                     v-on:click="autocompleteEmote(emote)"
                 >
                     <span class="elixr-custom-emote twentyfour me-emotes-preview">
-                        <img :src="emoteUrl(emote)" />
+                        <img :src="emote.url" />
                     </span>
-                    <span class="emote-name">{{ emote.name }}</span>
+                    <span class="emote-name">{{ emote.code }}</span>
                 </button>
             </li>
         </ul>
@@ -29,13 +33,12 @@ export default {
             show: false,
             query: '',
             emotes: [],
-            selectedEmoteIndex: 0,
-            currentStreamerId: 0
+            selectedEmoteIndex: 0
         };
     },
     computed: {
         filteredEmotes: function() {
-            return this.emotes.filter(e => e.name.toLowerCase().startsWith(this.query.toLowerCase()));
+            return this.emotes.filter(e => e.code.toLowerCase().startsWith(this.query.toLowerCase()));
         },
         showMenu: function() {
             return this.query != null && this.query.length > 0 && this.filteredEmotes.length > 0;
@@ -51,7 +54,7 @@ export default {
     },
     methods: {
         getEmoteElementId: function(emote) {
-            return (emote.global ? 'global-' : 'channel-') + emote.name;
+            return emote.groupId + emote.code;
         },
         scrollSelectedIntoView: function() {
             let selectedEmote = this.filteredEmotes[this.selectedEmoteIndex];
@@ -84,7 +87,7 @@ export default {
                 el.getBoundingClientRect()
             );
             const rows = [[]];
-            var currentRowHeight = Math.floor(rects[0].y);
+            let currentRowHeight = Math.floor(rects[0].y);
             for (let i = 0; i < rects.length; i++) {
                 if (Math.floor(rects[i].y) == currentRowHeight) {
                     rows[rows.length - 1].push({ index: i, pos: rects[i].x });
@@ -156,17 +159,6 @@ export default {
             div.innerText = unsafeText;
             return div.innerHTML.replace(/"/g, '&quot;');
         },
-        emoteUrl: function(emote) {
-            let url;
-            if (emote.global) {
-                url = `https://crowbartools.com/user-content/emotes/global/${this.escapeHTML(emote.filename)}`;
-            } else {
-                url = `https://crowbartools.com/user-content/emotes/live/${this.currentStreamerId}/${this.escapeHTML(
-                    emote.filename
-                )}`;
-            }
-            return url;
-        },
         autocompleteSelectedEmote: function() {
             let selectedEmote = this.filteredEmotes[this.selectedEmoteIndex];
             if (selectedEmote) {
@@ -180,7 +172,7 @@ export default {
 
             let currentMinusQuery = currentText.substring(0, currentText.length - this.query.length);
 
-            updateChatTextfield(currentMinusQuery + emote.name + ' ');
+            updateChatTextfield(currentMinusQuery + emote.code + ' ');
 
             this.query = '';
 

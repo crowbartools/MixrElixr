@@ -1176,13 +1176,7 @@ $(() => {
             : "[class*='webComposerBlock']";
         waitForElementAvailablity(composerBlockSelecter).then(composerBlock => {
             // bind custom emote auto complete app
-            autocompleteAppBinder.bindEmoteAutocompleteApp(
-                composerBlock,
-                options,
-                cache.globalEmotes,
-                cache.currentStreamerEmotes,
-                cache.currentStreamerId
-            );
+            autocompleteAppBinder.bindEmoteAutocompleteApp(composerBlock, options);
 
             // bind slow chat app
             if (cache.slowChatCooldown >= 2000 && !cache.userIsMod && options.showSlowChatCooldownTimer !== false) {

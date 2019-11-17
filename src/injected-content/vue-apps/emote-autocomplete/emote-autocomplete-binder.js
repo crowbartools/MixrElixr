@@ -1,15 +1,10 @@
 import Vue from 'vue';
 import AutocompleteApp from './emote-autocomplete';
-import { waitForElementAvailablity, debounce } from '../../utils';
+import { waitForElementAvailablity, debounce, getCurrentChatChannelName } from '../../utils';
+import * as emoteHandler from '../../areas/chat/emotes/emote-handler';
 
 let app = null;
-export function bindEmoteAutocompleteApp(
-    composerBlock,
-    options,
-    globalEmotesCache,
-    channelEmotesCache,
-    currentStreamerId
-) {
+export function bindEmoteAutocompleteApp(composerBlock, options) {
     //clean up any previous
     if ($('#me-emote-autocomplete').length > 0) {
         $('#me-emote-autocomplete').remove();
@@ -28,28 +23,19 @@ export function bindEmoteAutocompleteApp(
         return;
     }
 
-    let showGlobalEmotes =
-        options.customEmotes !== false &&
-        options.globalEmotes !== false &&
-        globalEmotesCache !== null &&
-        globalEmotesCache.emotes !== null;
-
-    let showChannelEmotes =
-        options.customEmotes !== false &&
-        options.channelEmotes !== false &&
-        channelEmotesCache !== null &&
-        channelEmotesCache.emotes !== null;
-
-    let globalEmotes = [];
-    if (showGlobalEmotes) {
-        globalEmotes = Object.values(globalEmotesCache.emotes);
-        globalEmotes.forEach(e => (e.global = true));
-    }
-
-    let channelEmotes = [];
-    if (showChannelEmotes) {
-        channelEmotes = Object.values(channelEmotesCache.emotes);
-        channelEmotes.forEach(e => (e.global = false));
+    let emotes = [];
+    if (emoteHandler.emotesAvailable) {
+        const emoteGroups = emoteHandler.getAvailableEmoteGroups(getCurrentChatChannelName());
+        for (const emoteGroup of emoteGroups) {
+            emotes = emotes.concat(
+                emoteGroup.emotes.map(e => {
+                    return {
+                        ...e,
+                        groupId: emoteGroup.id
+                    };
+                })
+            );
+        }
     }
 
     composerBlock.prepend('<ul id="me-autocomplete-binder" role="listbox"></ul>');
@@ -61,20 +47,18 @@ export function bindEmoteAutocompleteApp(
 
     let child = app.$children[0] || {};
 
-    child.emotes = globalEmotes.concat(channelEmotes).sort(function(a, b) {
-        const aName = a.name.toLowerCase(),
-            bName = b.name.toLowerCase();
+    child.emotes = emotes.sort(function(a, b) {
+        const aCode = a.code.toLowerCase(),
+            bCode = b.code.toLowerCase();
 
-        if (aName < bName) {
+        if (aCode < bCode) {
             return -1;
         }
-        if (aName > bName) {
+        if (aCode > bCode) {
             return 1;
         }
         return 0;
     });
-
-    child.currentStreamerId = currentStreamerId;
 
     let keydownListenerFunc = keydownListener;
 
