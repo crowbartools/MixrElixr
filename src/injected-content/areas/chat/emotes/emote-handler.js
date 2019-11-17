@@ -6,6 +6,7 @@ let emoteProviders = [];
 export let emotesAvailable = false;
 export async function setup(mainChannelData, channelPageOptions) {
     emoteProviders = [];
+    emotesAvailable = false;
 
     const allowCustomEmoteMasterSwitch = channelPageOptions.customEmotes !== false;
     const allowGlobal = channelPageOptions.globalEmotes !== false;
