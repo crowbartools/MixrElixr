@@ -1,6 +1,6 @@
 import { waitForElementAvailablity } from '../../utils';
 import * as constellation from '../../websocket/constellation';
-import * as infoPanel from '../info-panel';
+import * as infoPanel from './info-panel';
 
 function clearPreviousThemes() {
     $('body').removeClass('elixr-dark');

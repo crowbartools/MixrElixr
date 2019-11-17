@@ -41,3 +41,17 @@ export function getUserInfo(userId) {
             });
     });
 }
+
+export function getCostreamData(costreamId) {
+    return new Promise(resolve => {
+        $.get(`https://mixer.com/api/v1/costreams/${costreamId}`)
+            .done(data => {
+                log('Got costream data for ' + costreamId);
+                resolve(data);
+            })
+            .fail(() => {
+                log('Failed to get costream data for ' + costreamId);
+                resolve(null);
+            });
+    });
+}

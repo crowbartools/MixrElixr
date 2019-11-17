@@ -1,5 +1,5 @@
 import { Carina } from 'carina';
-import * as infoPanel from '../pages/info-panel';
+import * as infoPanel from '../areas/sitewide/info-panel';
 
 let ca;
 export function start(userId) {

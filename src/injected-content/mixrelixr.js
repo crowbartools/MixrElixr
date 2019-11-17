@@ -18,13 +18,14 @@ import * as api from './api';
 // vue apps
 import * as autocompleteAppBinder from './vue-apps/emote-autocomplete/emote-autocomplete-binder';
 import * as slowChatTimerAppBinder from './vue-apps/slow-chat-timer/slow-chat-timer-binder';
-import { handleEmoteModal } from './emotes/emote-modal-handler';
 
 //import deps
 import $ from 'jquery';
 
-import * as siteWide from './pages/site-wide';
-import * as chatFeed from './pages/chat-feed';
+import * as siteWide from './areas/sitewide/site-wide';
+import * as chatFeed from './areas/chat/chat-feed';
+import * as emoteHandler from './areas/chat/emotes/emote-handler';
+import { handleEmoteModal } from './areas/chat/emotes/emote-modal-handler';
 import * as chatApi from './websocket/chat';
 
 import Bowser from 'bowser';
@@ -88,7 +89,7 @@ $(() => {
         });
     }
 
-    function runPageLogic() {
+    async function runPageLogic() {
         // Channel dectection
         let channelBlock = $('b-channel-page-wrapper');
         let mobileChannelBlock = $('b-channel-mobile-page-wrapper');
@@ -114,14 +115,15 @@ $(() => {
 
             let channelIdOrName = result[2];
 
-            api.getChannelData(channelIdOrName).then(channelData => {
+            const channelData = await api.getChannelData(channelIdOrName);
+            if (channelData != null) {
                 cache.currentStreamerId = channelData.id;
-
-                cacheGlobalElixrEmotes();
-                cacheChannelElixrEmotes(channelData.id);
 
                 let channelName = channelData.token;
                 cache.currentStreamerName = channelName;
+
+                let channelOptions = getStreamerOptionsForStreamer(channelName);
+                await emoteHandler.setup(channelData, channelOptions);
 
                 try {
                     chatApi.connectToChat(channelData && channelData.id, cache.user && cache.user.id);
@@ -132,7 +134,7 @@ $(() => {
                 waitForElementAvailablity(ElementSelector.CHAT_CONTAINER).then(() => {
                     applyChatSettings(channelName);
                 });
-            });
+            }
         } else if (
             (channelBlock != null && channelBlock.length > 0) ||
             (mobileChannelBlock != null && mobileChannelBlock.length > 0)
@@ -145,17 +147,17 @@ $(() => {
             });
 
             // get the streamers name, this also waits for the page to load
-            getStreamerName().then(channelName => {
+            getStreamerName().then(async channelName => {
                 log('streamer page loaded...');
 
-                api.getChannelData(channelName).then(channelData => {
+                const channelData = await api.getChannelData(channelName);
+                if (channelData != null) {
                     cache.currentStreamerId = channelData.id;
 
-                    cacheGlobalElixrEmotes();
-                    cacheChannelElixrEmotes(channelData.id);
-
-                    let channelName = channelData.token;
                     cache.currentStreamerName = channelName;
+
+                    let channelOptions = getStreamerOptionsForStreamer(channelName);
+                    await emoteHandler.setup(channelData, channelOptions);
 
                     try {
                         chatApi.connectToChat(channelData && channelData.id, cache.user && cache.user.id);
@@ -171,7 +173,7 @@ $(() => {
                         log('loading streamer page options...');
                         loadStreamerPage(channelName);
                     });
-                });
+                }
             });
         } else if (homeBlock != null && homeBlock.length > 0) {
             log('looks like we are on the main page');
@@ -360,7 +362,7 @@ $(() => {
     }
 
     function getStreamerName() {
-        return new Promise((resolve, reject) => {
+        return new Promise(resolve => {
             log('Looking for streamer name...');
             if (cache.currentStreamerName != null) {
                 log('Found it in the cache: ' + cache.currentStreamerName);
@@ -430,62 +432,6 @@ $(() => {
         }
     }, 50);
 
-    function cacheGlobalElixrEmotes() {
-        return new Promise(resolve => {
-            // Gets user emotes if there are any, and caches the results.
-            log('Looking for global emotes...');
-            if (cache.globalEmotes != null) {
-                log('Found cached global emotes.');
-                resolve();
-                return;
-            }
-
-            let ts = new Date().getTime();
-            let rootUrl = `https://crowbartools.com/user-content/emotes/global/emotes.json?cache=${ts}`;
-            $.getJSON(rootUrl, function(data) {
-                log('Global emotes retrieved.');
-                cache.globalEmotes = data;
-                resolve();
-            }).fail(function(_, textStatus, error) {
-                log('No global emotes were found!');
-                console.log(error);
-                cache.globalEmotes = null;
-                resolve();
-            });
-        });
-    }
-
-    function cacheChannelElixrEmotes(channelId) {
-        return new Promise(resolve => {
-            if (channelId == null) {
-                log('Undefined channel id passed to custom emote cacher.');
-                resolve();
-                return;
-            }
-
-            // Gets user emotes if there are any, and caches the results.
-            log('Looking for custom emotes...');
-            if (cache.currentStreamerEmotes != null) {
-                log('Found cached custom emotes for: ' + cache.currentStreamerName);
-                resolve();
-                return;
-            }
-
-            let ts = new Date().getTime();
-            let rootUrl = `https://crowbartools.com/user-content/emotes/live/${channelId}/emotes.json?cache=${ts}`;
-            $.getJSON(rootUrl, function(data) {
-                log('Custom emotes retrieved for: ' + cache.currentStreamerName);
-                cache.currentStreamerEmotes = Array.isArray(data) ? data[0] : data;
-                resolve();
-            }).fail(function(_, textStatus, error) {
-                log('No custom emotes for: ' + cache.currentStreamerName);
-                console.log(error);
-                cache.currentStreamerEmotes = null;
-                resolve();
-            });
-        });
-    }
-
     // Gets channel id by name
     function getChannelId() {
         return getStreamerName().then(name => {
@@ -499,9 +445,6 @@ $(() => {
                     .done(data => {
                         cache.currentStreamerId = data.id;
                         log('Got channel id');
-
-                        cacheGlobalElixrEmotes();
-                        cacheChannelElixrEmotes(data.id);
 
                         resolve(data.id);
                     })
@@ -542,37 +485,6 @@ $(() => {
                         resolve(false);
                     });
             });
-        });
-    }
-
-    function getChannelNameById(id) {
-        return new Promise((resolve, reject) => {
-            let request = new XMLHttpRequest();
-            request.open('GET', `https://mixer.com/api/v1/channels/${id}`, true);
-
-            request.onload = function() {
-                if (request.status >= 200 && request.status < 400) {
-                    // Success!
-                    log('Got channel data');
-                    let data = JSON.parse(request.responseText);
-
-                    cache.currentStreamerId = data.id;
-
-                    cacheGlobalElixrEmotes();
-                    cacheChannelElixrEmotes(data.id);
-
-                    resolve(data.token);
-                } else {
-                    reject('Error getting channel details');
-                }
-            };
-
-            request.onerror = function() {
-                // There was a connection error of some sort
-                reject('Error getting channel details');
-            };
-
-            request.send();
         });
     }
 
@@ -1196,16 +1108,6 @@ $(() => {
       </style>
     `);
 
-        if (options.customEmotes !== false && options.channelEmotes !== false) {
-            // If custom emotes enabled, go try to get our json.
-            await cacheChannelElixrEmotes(cache.currentStreamerId);
-        }
-
-        if (options.customEmotes !== false && options.globalEmotes !== false) {
-            // If global emotes are enabled.
-            await cacheGlobalElixrEmotes();
-        }
-
         try {
             cache.userIsMod = await userIsModInCurrentChannel();
             log(`User is mod: ${cache.userIsMod}`);
@@ -1379,17 +1281,18 @@ $(() => {
                 }
             }
 
-            let chatFromCurrentChannel = true;
+            let chatChannelName = null;
             let chatTabs = $('b-channel-chat-tabs');
             if (chatTabs != null && chatTabs.length > 0) {
                 let selectedTab = chatTabs.find('.selected');
                 if (selectedTab != null && selectedTab.length > 0) {
-                    let chatChannelName = selectedTab.text().trim();
-                    chatFromCurrentChannel = chatChannelName === cache.currentStreamerName;
+                    chatChannelName = selectedTab.text().trim();
                 }
             }
 
-            let showChannelEmotes =
+            emoteHandler.handleEmotes(messageContainer, chatChannelName);
+
+            /*let showChannelEmotes =
                 options.customEmotes !== false &&
                 options.channelEmotes !== false &&
                 cache.currentStreamerEmotes != null &&
@@ -1526,7 +1429,7 @@ $(() => {
                         component.addClass('me-custom-emote');
                     }
                 });
-            }
+            }*/
 
             // highlight keywords
             if (options.keywords && options.keywords.length > 0) {

@@ -1,4 +1,4 @@
-import { waitForElementAvailablity } from '../utils';
+import { waitForElementAvailablity } from '../../utils';
 let panelCreated = false;
 
 export async function removeInfoPanel() {

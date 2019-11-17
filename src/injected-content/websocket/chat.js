@@ -1,6 +1,6 @@
 import { Socket } from '@mixer/chat-client-websocket';
 import * as api from '../api';
-import { messagedDeleted, userBanned, userTimeout } from '../pages/chat-feed';
+import { messagedDeleted, userBanned, userTimeout } from '../areas/chat/chat-feed';
 import { log } from '../utils';
 
 let socket;
