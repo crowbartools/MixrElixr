@@ -5,6 +5,8 @@ import * as utils from '../../../utils';
 let emoteProviders = [];
 export let emotesAvailable = false;
 export async function setup(mainChannelData, channelPageOptions) {
+    emoteProviders = [];
+
     const allowCustomEmoteMasterSwitch = channelPageOptions.customEmotes !== false;
     const allowGlobal = channelPageOptions.globalEmotes !== false;
     const allowChannel = channelPageOptions.channelEmotes !== false;
@@ -42,7 +44,6 @@ export async function setup(mainChannelData, channelPageOptions) {
             }
         }
     }
-    emoteProviders = [];
 
     // load elixr emotes
     emoteProviders.push(await elixrEmotes.load(emoteChannels, allowGlobal, allowChannel));
