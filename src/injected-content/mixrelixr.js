@@ -1190,7 +1190,7 @@ $(() => {
             }
         });
 
-        handleEmoteModal(options, cache);
+        handleEmoteModal();
 
         // get rid of any previous registered callbacks for chat messages
         $.deinitialize(ElementSelector.CHAT_MESSAGE);

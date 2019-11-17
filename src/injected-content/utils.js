@@ -111,3 +111,17 @@ export function setupScrollGlueCheck() {
     $('.elixr-chat-container').off('scroll', updateScrollGlue);
     $('.elixr-chat-container').on('scroll', updateScrollGlue);
 }
+
+// when viewing a channel thats hosting another channel, this will return the name of the channel that
+// the chat feed is set to
+export function getCurrentChatChannelName() {
+    let chatChannelName = null;
+    let chatTabs = $('b-channel-chat-tabs');
+    if (chatTabs != null && chatTabs.length > 0) {
+        let selectedTab = chatTabs.find('.selected');
+        if (selectedTab != null && selectedTab.length > 0) {
+            chatChannelName = selectedTab.text().trim();
+        }
+    }
+    return chatChannelName;
+}

@@ -1,46 +1,23 @@
-import { mapEmoteSizeToClass } from './emote-manager';
-import { escapeHTML, updateChatTextfield } from '../../../utils';
+import * as emoteHandler from './emote-handler';
+import { updateChatTextfield, getCurrentChatChannelName, escapeHTML } from '../../../utils';
 
-export function handleEmoteModal(options, cache) {
+export function handleEmoteModal() {
     // get rid of any previous registered callbacks for chat modals
     $.deinitialize("[class*='modal']");
 
     $.initialize("[class*='modal']", async function() {
         let modal = $(this);
 
-        let chatFromCurrentChannel = true;
-        let chatTabs = $('b-channel-chat-tabs');
-        if (chatTabs != null && chatTabs.length > 0) {
-            let selectedTab = chatTabs.find('.selected');
-            if (selectedTab != null && selectedTab.length > 0) {
-                let chatChannelName = selectedTab.text().trim();
-                chatFromCurrentChannel = chatChannelName === cache.currentStreamerName;
-            }
-        }
+        if (emoteHandler.emotesAvailable) {
+            waitForModalContainer(modal)
+                .then(emotesContainer => {
+                    let classes = emotesContainer.attr('class').split(/\s+/);
 
-        let showChannelEmotes =
-            options.customEmotes !== false &&
-            options.channelEmotes !== false &&
-            cache.currentStreamerEmotes != null &&
-            cache.currentStreamerEmotes.emotes != null &&
-            chatFromCurrentChannel;
+                    let isListModal = classes.some(c => {
+                        return c.startsWith('listModal');
+                    });
 
-        let showGlobalEmotes =
-            options.customEmotes !== false &&
-            options.globalEmotes !== false &&
-            cache.globalEmotes != null &&
-            cache.globalEmotes.emotes != null;
-
-        waitForModalContainer(modal)
-            .then(emotesContainer => {
-                let classes = emotesContainer.attr('class').split(/\s+/);
-
-                let isListModal = classes.some(c => {
-                    return c.startsWith('listModal');
-                });
-
-                if (!isListModal) {
-                    if (showChannelEmotes || showGlobalEmotes) {
+                    if (!isListModal) {
                         emotesContainer.addClass('mixer-emotes-wrapper');
                         emotesContainer.show();
 
@@ -49,15 +26,15 @@ export function handleEmoteModal(options, cache) {
                         }
 
                         $(`
-                        <div class="me-emote-tabs">
-                            <div class="me-emote-tab me-tooltip mixer  me-tab-selected" title="Mixer Emotes">
-                                <img src="${browser.runtime.getURL('resources/images/MixerMerge_Dark.svg')}">
+                            <div class="me-emote-tabs">
+                                <div class="me-emote-tab me-tooltip mixer  me-tab-selected" title="Mixer Emotes">
+                                    <img src="${browser.runtime.getURL('resources/images/MixerMerge_Dark.svg')}">
+                                </div>
+                                <div class="me-emote-tab me-tooltip elixr" title="MixrElixr Emotes">
+                                    <img src="${browser.runtime.getURL('resources/images/elixr-light-128.png')}">
+                                </div>
                             </div>
-                            <div class="me-emote-tab me-tooltip elixr" title="MixrElixr Emotes">
-                                <img src="${browser.runtime.getURL('resources/images/elixr-light-128.png')}">
-                            </div>
-                        </div>
-                    `).insertBefore(emotesContainer);
+                        `).insertBefore(emotesContainer);
 
                         $('.me-emote-tab').off('click');
                         $('.me-emote-tab').on('click', function() {
@@ -85,56 +62,50 @@ export function handleEmoteModal(options, cache) {
                         let elixrEmotesContainer = $(`<div class="me-emotes-wrapper"></div>`);
                         elixrEmotesContainer.hide();
 
-                        if (showGlobalEmotes) {
-                            let header = 'MixrElixr Global Emotes';
-                            let globalEmotes = Object.values(cache.globalEmotes.emotes);
-                            let baseUrl = 'https://crowbartools.com/user-content/emotes/global/';
+                        const chatChannelName = getCurrentChatChannelName();
 
-                            let emotesSection = buildEmotesSection(header, globalEmotes, baseUrl);
-                            elixrEmotesContainer.prepend(emotesSection);
-                        }
+                        const emoteGroups = emoteHandler.getAvailableEmoteGroups(chatChannelName);
 
-                        if (showChannelEmotes) {
-                            let header = `${cache.currentStreamerName}'s Custom Emotes`;
-                            let streamerEmotes = Object.values(cache.currentStreamerEmotes.emotes);
-                            let baseUrl = `https://crowbartools.com/user-content/emotes/live/${cache.currentStreamerId}/`;
-
-                            let emotesSection = buildEmotesSection(header, streamerEmotes, baseUrl);
-                            elixrEmotesContainer.prepend(emotesSection);
+                        for (const emoteGroup of emoteGroups) {
+                            if (emoteGroup.emotes && emoteGroup.emotes.length > 0) {
+                                const emoteGroupSection = buildEmoteGroupSection(emoteGroup);
+                                elixrEmotesContainer.append(emoteGroupSection);
+                            }
                         }
 
                         elixrEmotesContainer.insertBefore(emotesContainer);
 
                         $('.me-emote-preview').off('click');
                         $('.me-emote-preview').on('click', function() {
-                            let emoteName = $(this).attr('emote-name');
+                            let emoteCode = $(this).attr('emote-code');
                             let chatTextarea = $('#chat-input').children('textarea');
                             let currentValue = chatTextarea.val();
-                            let newValue = `${currentValue}${currentValue === '' ? ' ' : ''}${emoteName} `;
+                            let newValue = `${currentValue}${currentValue === '' ? ' ' : ''}${emoteCode} `;
                             updateChatTextfield(newValue);
                         });
                     }
-                }
-            })
-            .catch(() => {});
+                })
+                .catch(() => {});
+        }
     });
 }
 
-function buildEmotesSection(header, emotes, baseUrl) {
-    let customEmotesWrapper = $(
-        `<div><h3 class="elixrEmoteGroupHeader">${header}</h3><div class="elixrEmoteList"></div></div>`
+function buildEmoteGroupSection(emoteGroup) {
+    const customEmotesWrapper = $(
+        `<div>
+            <h3 class="elixrEmoteGroupHeader">${emoteGroup.name}</h3>
+            <div class="elixrEmoteList"></div>
+        </div>`
     );
-    let emoteList = customEmotesWrapper.children('.elixrEmoteList');
+    const emoteList = customEmotesWrapper.children('.elixrEmoteList');
 
     // loop through all emotes
-    for (let emote of emotes) {
-        let url = `${baseUrl}/${escapeHTML(emote.filename)}`;
-        let name = escapeHTML(emote.name);
-        let sizeClass = mapEmoteSizeToClass(emote.maxSize);
+    for (const emote of emoteGroup.emotes) {
+        const emoteCode = escapeHTML(emote.code);
         emoteList.append(`
-        <span class="elixr-custom-emote ${sizeClass} me-tooltip me-emote-preview" title="${name}" emote-name="${name}" style="display: inline-block;">
-            <img src="${url}">
-        </span>`);
+            <span class="me-emote-preview" style="display: inline-block; margin: 0 5px 10px 0;" emote-code="${emoteCode}">
+                ${emoteHandler.getEmoteElement(emote, emoteGroup.providerName)}
+            </span>`);
     }
 
     return customEmotesWrapper;

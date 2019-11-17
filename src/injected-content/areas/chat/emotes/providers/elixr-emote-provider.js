@@ -23,6 +23,7 @@ export async function load(channels, loadGlobal, loadChannel) {
         provider.emoteGroups.push({
             id: 'elixr-global-emotes',
             name: 'MixrElixr Global Emotes',
+            providerName: 'MixrElixr',
             global: true,
             emotes: emoteData.globalEmotes.map(em => mapElixrAPIEmote(em, emoteData.globalEmoteUrlTemplate))
         });
@@ -36,6 +37,7 @@ export async function load(channels, loadGlobal, loadChannel) {
                 name: `${channelData.name}'s Custom Emotes`,
                 channelId: channelData.id,
                 channelName: channelData.name,
+                providerName: 'MixrElixr',
                 emotes: channelEmoteData.emotes.map(em =>
                     mapElixrAPIEmote(em, channelEmoteData.channelEmoteUrlTemplate)
                 )
