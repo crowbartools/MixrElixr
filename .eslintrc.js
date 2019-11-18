@@ -29,16 +29,25 @@ module.exports = {
     ],
     // required to lint *.vue files
     plugins: ['vue', 'prettier'],
+
     // add your custom rules here
     rules: {
-        // allow async-await
-        'generator-star-spacing': 'off',
-        // allow debugger during development
-        'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-        'allow-empty-reject': true,
-        allowEmptyReject: true,
         "prettier/prettier": "error",
+
+        // allow async-await
+        "generator-star-spacing": 'off',
+
+        // allow debugger during development
+        "no-debugger": process.env.NODE_ENV === 'production' ? 'error' : 'off',
+
+        // allow promises to be rejected without an error message
+        "allowEmptyReject": true,
         "prefer-promise-reject-errors": "warn",
-        "no-var": "error"
+        
+        // require let and const
+        "no-var": "error",
+
+        // force semi colons
+        "semi": ["error", "always", { "omitLastInOneLineBlock": false}]
     }
 };
