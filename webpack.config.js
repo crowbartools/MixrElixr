@@ -6,6 +6,12 @@ const ExtensionReloader = require('webpack-extension-reloader');
 const { VueLoaderPlugin } = require('vue-loader');
 const { version } = require('./package.json');
 
+function transformHtml(content) {
+    return ejs.render(content.toString(), {
+        ...process.env
+    });
+}
+
 const config = {
     mode: process.env.NODE_ENV,
     context: __dirname + '/src',
@@ -113,12 +119,6 @@ if (process.env.HMR === 'true') {
             manifest: __dirname + '/src/manifest.json'
         })
     ]);
-}
-
-function transformHtml(content) {
-    return ejs.render(content.toString(), {
-        ...process.env
-    });
 }
 
 module.exports = config;
