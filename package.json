@@ -5,7 +5,7 @@
   "author": "Team Crowbar",
   "license": "GNU v3.0",
   "scripts": {
-    "lint": "eslint --ext .js,.vue src",
+    "lint": "eslint --ext .js,.vue src --fix",
     "lint:local:fix": "eslint --ext .js,.vue src --fix --output-file=eslint.output.html --format=html",
     "build": "cross-env NODE_ENV=production webpack --hide-modules",
     "build:firefox": "cross-env NODE_ENV=production BROWSER=firefox webpack --hide-modules",
