@@ -359,9 +359,9 @@ export default {
         getSelectedOptions: function() {
             if (this.selected === 'Global') {
                 return this.global;
-            } else {
-                return this.overrides[this.selected];
             }
+            return this.overrides[this.selected];
+
         },
         setModel: function(options) {
             const app = this;
@@ -413,10 +413,10 @@ export default {
         }
     },
     watch: {
-        lowestUserRoleLinks: function(newRole) {
+        lowestUserRoleLinks: function() {
             this.saveSettings();
         },
-        hideStyle: function(newStyle) {
+        hideStyle: function() {
             this.saveSettings();
         },
         useCustomFontSize: function(val) {

@@ -28,7 +28,7 @@ export function apply(settings, user) {
                 .find("[class^='content_']")
                 .contents()
                 .filter(function() {
-                    return this.nodeType == 3;
+                    return this.nodeType === 3;
                 })
                 .remove();
         });

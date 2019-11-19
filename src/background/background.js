@@ -35,10 +35,10 @@ async function getCurrentUserId() {
         if (response.ok) {
             let user = await response.json();
             return user && user.id;
-        } else {
-            console.log('Failed to get current user.', response.statusText);
-            return null;
         }
+        console.log('Failed to get current user.', response.statusText);
+        return null;
+
     } catch (err) {
         console.log('Unable to get current user.', err);
         return null;
@@ -90,10 +90,10 @@ async function getOnlineFollows(userId, page = 0, list) {
                 }
             }
             return list;
-        } else {
-            console.log('Failed to get user follows.', response.statusText);
-            return list;
         }
+        console.log('Failed to get user follows.', response.statusText);
+        return list;
+
     } catch (err) {
         console.log('Unable to get user follows.', err);
         return list;
@@ -120,10 +120,10 @@ async function getFollowDate(channelId, currentUserId) {
             let user = followerData[0];
 
             return user && user.followed && user.followed.createdAt;
-        } else {
-            console.log('Failed to get user follow date.', response.statusText);
-            return null;
         }
+        console.log('Failed to get user follow date.', response.statusText);
+        return null;
+
     } catch (err) {
         console.log('Unable to get user follow date.', err);
         return null;

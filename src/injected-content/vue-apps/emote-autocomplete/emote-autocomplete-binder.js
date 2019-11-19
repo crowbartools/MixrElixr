@@ -4,6 +4,75 @@ import { waitForElementAvailablity, debounce, getCurrentChatChannelName } from '
 import * as emoteHandler from '../../areas/chat/emotes/emote-handler';
 
 let app = null;
+
+function keydownListener(e) {
+    const child = app.$children[0] || {};
+
+    if (child.showMenu) {
+        switch (e.which) {
+        case 37: //left
+            child.decrementSelectedEmote();
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        case 38: // up
+            child.decrementSelectedEmoteRow();
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        case 39: // right
+            child.incrementSelectedEmote();
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        case 40: // down
+            child.incrementSelectedEmoteRow();
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        case 13: // enter
+            child.query = '';
+            break;
+        case 9: // tab
+            child.autocompleteSelectedEmote();
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            return false;
+        }
+    }
+}
+
+function keyupListener(e) {
+    let child = app.$children[0] || {};
+
+    if (e.which === 27) {
+        //esc
+        if (child.showMenu) {
+            child.query = '';
+            return;
+        }
+    }
+
+    let query = '';
+
+    let allText = $('#chat-input')
+        .children('textarea')
+        .val();
+    if (allText && allText.trim().length > 0 && !allText.endsWith(' ')) {
+        let words = allText.split(' ');
+        if (words.length > 0) {
+            let lastWord = words[words.length - 1];
+            if (lastWord != null && lastWord.trim().length >= 3) {
+                query = lastWord;
+            }
+        }
+    }
+
+    child.query = query;
+}
+
+
 export function bindEmoteAutocompleteApp(composerBlock, options) {
     //clean up any previous
     if ($('#me-emote-autocomplete').length > 0) {
@@ -11,10 +80,12 @@ export function bindEmoteAutocompleteApp(composerBlock, options) {
     }
 
     let keyupListenerFunc = debounce(keyupListener, 100);
+    let keydownListenerFunc = keydownListener;
 
     $('#chat-input')
         .children('textarea')
         .off('keyup', keyupListenerFunc);
+
     $('#chat-input')
         .children('textarea')
         .off('keydown', keydownListenerFunc);
@@ -60,8 +131,6 @@ export function bindEmoteAutocompleteApp(composerBlock, options) {
         return 0;
     });
 
-    let keydownListenerFunc = keydownListener;
-
     $('#chat-input')
         .children('textarea')
         .on('keyup', keyupListenerFunc);
@@ -82,71 +151,4 @@ export function bindEmoteAutocompleteApp(composerBlock, options) {
         sendBtn.off('click', chatSendBtnListener);
         sendBtn.on('click', chatSendBtnListener);
     });
-}
-
-function keydownListener(e) {
-    const child = app.$children[0] || {};
-
-    if (child.showMenu) {
-        switch (e.which) {
-            case 37: //left
-                child.decrementSelectedEmote();
-                e.preventDefault();
-                e.stopPropagation();
-                return false;
-            case 38: // up
-                child.decrementSelectedEmoteRow();
-                e.preventDefault();
-                e.stopPropagation();
-                return false;
-            case 39: // right
-                child.incrementSelectedEmote();
-                e.preventDefault();
-                e.stopPropagation();
-                return false;
-            case 40: // down
-                child.incrementSelectedEmoteRow();
-                e.preventDefault();
-                e.stopPropagation();
-                return false;
-            case 13: // enter
-                child.query = '';
-                break;
-            case 9: // tab
-                child.autocompleteSelectedEmote();
-                e.preventDefault();
-                e.stopPropagation();
-                e.stopImmediatePropagation();
-                return false;
-        }
-    }
-}
-
-function keyupListener(e) {
-    let child = app.$children[0] || {};
-
-    if (e.which === 27) {
-        //esc
-        if (child.showMenu) {
-            child.query = '';
-            return;
-        }
-    }
-
-    let query = '';
-
-    let allText = $('#chat-input')
-        .children('textarea')
-        .val();
-    if (allText && allText.trim().length > 0 && !allText.endsWith(' ')) {
-        let words = allText.split(' ');
-        if (words.length > 0) {
-            let lastWord = words[words.length - 1];
-            if (lastWord != null && lastWord.trim().length >= 3) {
-                query = lastWord;
-            }
-        }
-    }
-
-    child.query = query;
 }

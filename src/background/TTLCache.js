@@ -1,3 +1,7 @@
+function now() {
+    return Date.now();
+}
+
 class TTLCache {
     constructor(opts) {
         opts = opts || {};
@@ -70,10 +74,6 @@ class TTLCache {
             this._capacity = capacity;
         }
     }
-}
-
-function now() {
-    return Date.now();
 }
 
 export default TTLCache;

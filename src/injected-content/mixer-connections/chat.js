@@ -9,23 +9,6 @@ let userIsMod = false;
 
 const MOD_ROLES = ['Mod', 'ChannelEditor', 'Owner'];
 
-export async function connectToChat(channelId, userId) {
-    if (isConnectingToChat || channelId == null) return;
-    isConnectingToChat = true;
-    disconnectChat();
-
-    let chatInfo = await api.getChannelChatInfo(channelId);
-
-    if (chatInfo == null) return;
-
-    // check if user has mod status
-    if (chatInfo.roles) {
-        userIsMod = chatInfo.roles.some(r => MOD_ROLES.includes(r));
-    }
-
-    createChatSocket(userId, channelId, chatInfo.endpoints, chatInfo.authkey);
-}
-
 export function disconnectChat() {
     if (isConnectingToChat) return;
     if (socket != null) {
@@ -103,4 +86,21 @@ function createChatSocket(userId, channelId, endpoints, authkey) {
         log('Chat socket error');
         console.log(error);
     });
+}
+
+export async function connectToChat(channelId, userId) {
+    if (isConnectingToChat || channelId == null) return;
+    isConnectingToChat = true;
+    disconnectChat();
+
+    let chatInfo = await api.getChannelChatInfo(channelId);
+
+    if (chatInfo == null) return;
+
+    // check if user has mod status
+    if (chatInfo.roles) {
+        userIsMod = chatInfo.roles.some(r => MOD_ROLES.includes(r));
+    }
+
+    createChatSocket(userId, channelId, chatInfo.endpoints, chatInfo.authkey);
 }

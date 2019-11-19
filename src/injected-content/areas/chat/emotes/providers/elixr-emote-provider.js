@@ -1,3 +1,43 @@
+function mapElixrAPIEmote(elixrEmote, urlTemplate) {
+    return {
+        id: elixrEmote.id,
+        code: elixrEmote.code,
+        url: urlTemplate.replace('{{emoteId}}', elixrEmote.id),
+        animated: elixrEmote.animated,
+        width: elixrEmote.maxSize || 50,
+        height: elixrEmote.maxSize || 50
+    };
+}
+
+function getChannelEmotes(channels) {
+    return new Promise(resolve => {
+        let encodedChannels = encodeURIComponent(JSON.stringify(channels));
+        const GET_ELIXR_EMOTES_URL = `https://api.mixrelixr.com/v1/emotes?channels=${encodedChannels}`;
+        $.getJSON(GET_ELIXR_EMOTES_URL)
+            .done(function(data) {
+                resolve(data);
+            })
+            .fail(function(err) {
+                console.log(err);
+                resolve(null);
+            });
+    });
+}
+
+function getGlobalOnlyEmotes() {
+    return new Promise(resolve => {
+        const GET_ELIXR_GLOBAL_EMOTES_URL = `https://api.mixrelixr.com/v1/global`;
+        $.getJSON(GET_ELIXR_GLOBAL_EMOTES_URL)
+            .done(function(data) {
+                resolve(data);
+            })
+            .fail(function(err) {
+                console.log(err);
+                resolve(null);
+            });
+    });
+}
+
 export async function load(channels, loadGlobal, loadChannel) {
     let emoteData;
     if (!loadChannel) {
@@ -46,44 +86,4 @@ export async function load(channels, loadGlobal, loadChannel) {
     }
 
     return provider;
-}
-
-function mapElixrAPIEmote(elixrEmote, urlTemplate) {
-    return {
-        id: elixrEmote.id,
-        code: elixrEmote.code,
-        url: urlTemplate.replace('{{emoteId}}', elixrEmote.id),
-        animated: elixrEmote.animated,
-        width: elixrEmote.maxSize || 50,
-        height: elixrEmote.maxSize || 50
-    };
-}
-
-function getChannelEmotes(channels, excludeGlobals = false) {
-    return new Promise(resolve => {
-        let encodedChannels = encodeURIComponent(JSON.stringify(channels));
-        const GET_ELIXR_EMOTES_URL = `https://api.mixrelixr.com/v1/emotes?channels=${encodedChannels}`;
-        $.getJSON(GET_ELIXR_EMOTES_URL)
-            .done(function(data) {
-                resolve(data);
-            })
-            .fail(function(err) {
-                console.log(err);
-                resolve(null);
-            });
-    });
-}
-
-function getGlobalOnlyEmotes() {
-    return new Promise(resolve => {
-        const GET_ELIXR_GLOBAL_EMOTES_URL = `https://api.mixrelixr.com/v1/global`;
-        $.getJSON(GET_ELIXR_GLOBAL_EMOTES_URL)
-            .done(function(data) {
-                resolve(data);
-            })
-            .fail(function(err) {
-                console.log(err);
-                resolve(null);
-            });
-    });
 }

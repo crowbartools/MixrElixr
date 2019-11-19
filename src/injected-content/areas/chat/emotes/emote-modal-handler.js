@@ -1,6 +1,46 @@
 import * as emoteHandler from './emote-handler';
 import { updateChatTextfield, getCurrentChatChannelName, escapeHTML } from '../../../utils';
 
+function buildEmoteGroupSection(emoteGroup) {
+    const customEmotesWrapper = $(
+        `<div>
+            <h3 class="elixrEmoteGroupHeader">${emoteGroup.name}</h3>
+            <div class="elixrEmoteList"></div>
+        </div>`
+    );
+    const emoteList = customEmotesWrapper.children('.elixrEmoteList');
+
+    // loop through all emotes
+    for (const emote of emoteGroup.emotes) {
+        const emoteCode = escapeHTML(emote.code);
+        emoteList.append(`
+            <span class="me-emote-preview" style="display: inline-block; margin: 0 5px 10px 0;" emote-code="${emoteCode}">
+                ${emoteHandler.getEmoteElement(emote, emoteGroup.providerName)}
+            </span>`);
+    }
+
+    return customEmotesWrapper;
+}
+
+let waitForModalContainer = function(modal, counter = 0) {
+    return new Promise((resolve, reject) => {
+        if (counter >= 20) {
+            return reject();
+        }
+        counter++;
+
+        let emotesContainer = modal.find("[class*='container']");
+
+        if (emotesContainer == null || emotesContainer.length < 1) {
+            setTimeout(() => {
+                resolve(waitForModalContainer(modal, counter));
+            }, 100);
+        } else {
+            resolve(emotesContainer);
+        }
+    });
+};
+
 export function handleEmoteModal() {
     // get rid of any previous registered callbacks for chat modals
     $.deinitialize("[class*='modal']");
@@ -89,43 +129,3 @@ export function handleEmoteModal() {
         }
     });
 }
-
-function buildEmoteGroupSection(emoteGroup) {
-    const customEmotesWrapper = $(
-        `<div>
-            <h3 class="elixrEmoteGroupHeader">${emoteGroup.name}</h3>
-            <div class="elixrEmoteList"></div>
-        </div>`
-    );
-    const emoteList = customEmotesWrapper.children('.elixrEmoteList');
-
-    // loop through all emotes
-    for (const emote of emoteGroup.emotes) {
-        const emoteCode = escapeHTML(emote.code);
-        emoteList.append(`
-            <span class="me-emote-preview" style="display: inline-block; margin: 0 5px 10px 0;" emote-code="${emoteCode}">
-                ${emoteHandler.getEmoteElement(emote, emoteGroup.providerName)}
-            </span>`);
-    }
-
-    return customEmotesWrapper;
-}
-
-let waitForModalContainer = function(modal, counter = 0) {
-    return new Promise((resolve, reject) => {
-        if (counter >= 20) {
-            return reject();
-        }
-        counter++;
-
-        let emotesContainer = modal.find("[class*='container']");
-
-        if (emotesContainer == null || emotesContainer.length < 1) {
-            setTimeout(() => {
-                resolve(waitForModalContainer(modal, counter));
-            }, 100);
-        } else {
-            resolve(emotesContainer);
-        }
-    });
-};

@@ -3,6 +3,41 @@ import SlowChatTimerApp from './slow-chat-timer';
 import { waitForElementAvailablity } from '../../utils';
 
 let app = null;
+let expectingMessage = false;
+let expectingTimeoutId = null;
+let currentChatText = '';
+
+// current text
+function inputListener() {
+    let textArea = $(this);
+    currentChatText = textArea.val();
+}
+
+function checkIfMessageSent() {
+    if (currentChatText != null && currentChatText.length > 0) {
+        expectingMessage = true;
+        currentChatText = '';
+
+        if (expectingTimeoutId) {
+            clearTimeout(expectingTimeoutId);
+        }
+        expectingTimeoutId = setTimeout(() => {
+            expectingMessage = false;
+            expectingTimeoutId = null;
+        }, 6000);
+    }
+}
+function keydownListener(e) {
+    // if enter is pressed
+    if (e.which === 13) {
+        checkIfMessageSent();
+    }
+}
+
+function clickListener() {
+    checkIfMessageSent();
+}
+
 export function bindSlowChatTimerApp(composerBlock, slowChatMils) {
     // remove previous
     if ($('#me-slow-chat-timer').length > 0) {
@@ -43,8 +78,6 @@ export function bindSlowChatTimerApp(composerBlock, slowChatMils) {
     });
 }
 
-let expectingMessage = false;
-let expectingTimeoutId = null;
 export function messageDetected() {
     if (app == null) return;
     if (expectingMessage) {
@@ -55,36 +88,4 @@ export function messageDetected() {
         app.startTimer();
         expectingMessage = false;
     }
-}
-
-// current text
-let currentChatText = '';
-function inputListener() {
-    let textArea = $(this);
-    currentChatText = textArea.val();
-}
-
-function checkIfMessageSent() {
-    if (currentChatText != null && currentChatText.length > 0) {
-        expectingMessage = true;
-        currentChatText = '';
-
-        if (expectingTimeoutId) {
-            clearTimeout(expectingTimeoutId);
-        }
-        expectingTimeoutId = setTimeout(() => {
-            expectingMessage = false;
-            expectingTimeoutId = null;
-        }, 6000);
-    }
-}
-function keydownListener(e) {
-    // if enter is pressed
-    if (e.which === 13) {
-        checkIfMessageSent();
-    }
-}
-
-function clickListener() {
-    checkIfMessageSent();
 }

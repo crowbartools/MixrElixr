@@ -42,10 +42,10 @@ export default {
         };
     },
     watch: {
-        value: function(newValue, oldValue) {}
+        value: function() {}
     },
     methods: {
-        toggleChanged: function(newValue) {
+        toggleChanged: function() {
             if (this.value) {
                 this.value = false;
                 this.$refs.inlineImgWarning.show();
@@ -53,7 +53,7 @@ export default {
                 this.valueUpdated();
             }
         },
-        valueUpdated: function(val) {
+        valueUpdated: function() {
             this.$emit('update:value', this.value);
             this.$emit('changed', this.value);
         },

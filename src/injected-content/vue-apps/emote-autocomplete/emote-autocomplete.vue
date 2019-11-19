@@ -89,7 +89,7 @@ export default {
             const rows = [[]];
             let currentRowHeight = Math.floor(rects[0].y);
             for (let i = 0; i < rects.length; i++) {
-                if (Math.floor(rects[i].y) == currentRowHeight) {
+                if (Math.floor(rects[i].y) === currentRowHeight) {
                     rows[rows.length - 1].push({ index: i, pos: rects[i].x });
                 } else {
                     rows.push([]);
@@ -107,7 +107,7 @@ export default {
             );
             let targetRowIndex;
             if (currentRowIndex >= rows.length - 1) {
-                if (this.selectedEmoteIndex == this.filteredEmotes.length - 1) {
+                if (this.selectedEmoteIndex === this.filteredEmotes.length - 1) {
                     this.selectedEmoteIndex = 0;
                 } else {
                     this.selectedEmoteIndex = this.filteredEmotes.length - 1;
@@ -119,9 +119,9 @@ export default {
             targetRowIndex = currentRowIndex + 1;
 
             const currentPos = rows[currentRowIndex].find(posData => posData.index === this.selectedEmoteIndex).pos;
-            this.selectedEmoteIndex = rows[targetRowIndex].reduce((result, next) =>
-                Math.abs(currentPos - next.pos) < Math.abs(currentPos - result.pos) ? next : result
-            ).index;
+            this.selectedEmoteIndex = rows[targetRowIndex].reduce((result, next) => {
+                return Math.abs(currentPos - next.pos) < Math.abs(currentPos - result.pos) ? next : result;
+            }).index;
 
             this.scrollSelectedIntoView();
         },
@@ -133,7 +133,7 @@ export default {
             );
             let targetRowIndex;
             if (currentRowIndex <= 0) {
-                if (this.selectedEmoteIndex == 0) {
+                if (this.selectedEmoteIndex === 0) {
                     this.selectedEmoteIndex = this.filteredEmotes.length - 1;
                 } else {
                     this.selectedEmoteIndex = 0;
@@ -145,9 +145,9 @@ export default {
             targetRowIndex = currentRowIndex - 1;
 
             const currentPos = rows[currentRowIndex].find(posData => posData.index === this.selectedEmoteIndex).pos;
-            this.selectedEmoteIndex = rows[targetRowIndex].reduce((result, next) =>
-                Math.abs(currentPos - next.pos) < Math.abs(currentPos - result.pos) ? next : result
-            ).index;
+            this.selectedEmoteIndex = rows[targetRowIndex].reduce((result, next) => {
+                return Math.abs(currentPos - next.pos) < Math.abs(currentPos - result.pos) ? next : result;
+            }).index;
 
             this.scrollSelectedIntoView();
         },

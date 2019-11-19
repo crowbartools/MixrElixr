@@ -1,6 +1,11 @@
 import { waitForElementAvailablity } from '../../utils';
 let panelCreated = false;
 
+function formatSparks(count) {
+    if (!count == null) return 0;
+    return count.toLocaleString();
+}
+
 export async function removeInfoPanel() {
     $('#me-info-panel').remove();
 }
@@ -34,11 +39,6 @@ export async function createInfoPanel(user) {
     `).insertBefore(accountButton);
 
     panelCreated = true;
-}
-
-function formatSparks(count) {
-    if (!count == null) return 0;
-    return count.toLocaleString();
 }
 
 export function updateInfo(user) {

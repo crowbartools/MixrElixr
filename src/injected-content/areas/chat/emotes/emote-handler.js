@@ -2,7 +2,9 @@ import * as elixrEmotes from './providers/elixr-emote-provider';
 import * as api from '../../../api';
 import * as utils from '../../../utils';
 
+
 let emoteProviders = [];
+
 export let emotesAvailable = false;
 export async function setup(mainChannelData, channelPageOptions) {
     emoteProviders = [];
@@ -54,6 +56,48 @@ export async function setup(mainChannelData, channelPageOptions) {
     );
 }
 
+export function getAvailableEmoteGroups(channelName = null) {
+    let emoteGroups = [];
+    for (const emoteProvider of emoteProviders) {
+        for (const emoteGroup of emoteProvider.emoteGroups) {
+            if (channelName) {
+                // if channel name is provided we are in host mode and are looking at a specific channels chat
+                if (!emoteGroup.global && emoteGroup.channelName !== channelName) {
+                    continue;
+                }
+            }
+            emoteGroups.push(emoteGroup);
+        }
+    }
+
+    //sort global groups to the bottom
+    emoteGroups.sort((a, b) => {
+        return (a.global === b.global ? 0 : a.global ? 1 : -1);
+    });
+    return emoteGroups;
+}
+
+export function getEmoteElement(emote, providerName = 'MixrElixr') {
+    const styles = `max-height: ${emote.height}px; max-width: ${emote.width}px;`;
+    const emoteElement = `<img src="${
+        emote.url
+    }" style="${styles}" class="elixr-emote me-tooltip" title="${providerName}: Custom emote '${utils.escapeHTML(
+        emote.code
+    )}'">`;
+    return emoteElement;
+}
+
+function findAndBuildEmote(token, channelName = null) {
+    for (const emoteGroup of getAvailableEmoteGroups(channelName)) {
+        for (const emote of emoteGroup.emotes) {
+            if (token === emote.code) {
+                console.debug('found emote', emote);
+                return getEmoteElement(emote, emoteGroup.providerName);
+            }
+        }
+    }
+}
+
 export function handleEmotes(messageContainerElement, channelName) {
     if (!emotesAvailable) return;
     messageContainerElement.find('span:not([class])').each(function() {
@@ -85,43 +129,4 @@ export function handleEmotes(messageContainerElement, channelName) {
             component.addClass('me-custom-emote');
         }
     });
-}
-
-export function getAvailableEmoteGroups(channelName = null) {
-    let emoteGroups = [];
-    for (const emoteProvider of emoteProviders) {
-        for (const emoteGroup of emoteProvider.emoteGroups) {
-            if (channelName) {
-                // if channel name is provided we are in host mode and are looking at a specific channels chat
-                if (!emoteGroup.global && emoteGroup.channelName !== channelName) {
-                    continue;
-                }
-            }
-            emoteGroups.push(emoteGroup);
-        }
-    }
-    //sort global groups to the bottom
-    emoteGroups.sort((a, b) => (a.global == b.global ? 0 : a.global ? 1 : -1));
-    return emoteGroups;
-}
-
-export function getEmoteElement(emote, providerName = 'MixrElixr') {
-    const styles = `max-height: ${emote.height}px; max-width: ${emote.width}px;`;
-    const emoteElement = `<img src="${
-        emote.url
-    }" style="${styles}" class="elixr-emote me-tooltip" title="${providerName}: Custom emote '${utils.escapeHTML(
-        emote.code
-    )}'">`;
-    return emoteElement;
-}
-
-function findAndBuildEmote(token, channelName = null) {
-    for (const emoteGroup of getAvailableEmoteGroups(channelName)) {
-        for (const emote of emoteGroup.emotes) {
-            if (token === emote.code) {
-                console.debug('found emote', emote);
-                return getEmoteElement(emote, emoteGroup.providerName);
-            }
-        }
-    }
 }
