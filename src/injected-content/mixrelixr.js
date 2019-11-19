@@ -1,3 +1,5 @@
+/*eslint-disable no-use-before-define*/
+
 //import styles
 import './scss/injected-styles.scss';
 
@@ -5,7 +7,6 @@ import {
     waitForElementAvailablity,
     debounce,
     log,
-    escapeHTML,
     escapeRegExp,
     determineMessageType,
     setupScrollGlueCheck,
@@ -268,7 +269,7 @@ $(() => {
                 .children('span')
                 .contents()
                 .filter(function() {
-                    return this.nodeType == 3;
+                    return this.nodeType === 3;
                 })
                 .eq(1);
             filterText.replaceWith('');
@@ -728,9 +729,9 @@ $(() => {
                                         $('[icon="MixerBan"]').click();
                                         log('Pressed the close interactive button.');
                                     }, 200);
-                                }
+
                                 // this will be true if theres no costreamer or only one streamer in costream has interactive on
-                                else if (updatedBtn.length !== 0 && !updatedBtn.hasClass('open')) {
+                                } else if (updatedBtn.length !== 0 && !updatedBtn.hasClass('open')) {
                                     log('Hid the interactive panel successfully.');
                                     clearInterval(hideInteractiveInterval);
                                 } else if (hideInteractiveTries < 10) {
@@ -1031,8 +1032,8 @@ $(() => {
       <style id="elixr-chat-styles">
 
       ${
-          options.showWhoDeletedMessage !== false
-              ? `
+    options.showWhoDeletedMessage !== false
+        ? `
             b-chat-client-host-component div[class*="deleted_"] {
                   text-decoration: none !important;
             }
@@ -1041,24 +1042,24 @@ $(() => {
                 text-decoration: line-through;
                 padding-bottom: 0 !important;
           }`
-              : ''
-      }
+        : ''
+}
         
 
        ${
-           options.useCustomFontSize
-               ? `
+    options.useCustomFontSize
+        ? `
           b-chat-client-host-component div[class*="messageContent"] {
               font-size: ${options.textSize}px;
               line-height: ${options.textSize + 9}px;
           }
        `
-               : ''
-       }
+        : ''
+}
     
        ${
-           options.hideChatAvatars
-               ? `               
+    options.hideChatAvatars
+        ? `               
           b-chat-client-host-component img[class*="ChatAvatar"] {
               display: none;
           }
@@ -1067,39 +1068,39 @@ $(() => {
               margin-left: 4px;
           }
         `
-               : ''
-       }
+        : ''
+}
 
        ${
-           options.hideChannelProgression
-               ? `               
+    options.hideChannelProgression
+        ? `               
             b-chat-client-host-component div[class*="messageContent"] span[class*="badge"] {
                 display: none;
             }
        `
-               : ''
-       }
+        : ''
+}
 
 
        ${
-           options.hideSkillEffects
-               ? `               
+    options.hideSkillEffects
+        ? `               
             #skills-chat-wrapper, b-skill-mobile-execution-host {
                 display: none !important;
             }
        `
-               : ''
-       }
+        : ''
+}
 
        ${
-           options.hideEmberMessages
-               ? `               
+    options.hideEmberMessages
+        ? `               
             b-chat-client-host-component div[class*="stickerMessage_"] {
                 display: none;
             }
        `
-               : ''
-       }
+        : ''
+}
 
        b-use-app-btn-host {
            display: none !important;
@@ -1199,18 +1200,18 @@ $(() => {
 
             let shouldHide = false;
             switch (messageType) {
-                case 'ember-donation':
-                    shouldHide = options.hideEmberMessages;
-                    break;
-                case 'sticker':
-                    shouldHide = options.hideStickers;
-                    break;
-                case 'skill-used':
-                    shouldHide = options.hideSkillMessages;
-                    break;
-                case 'regular-message':
-                default:
-                    break;
+            case 'ember-donation':
+                shouldHide = options.hideEmberMessages;
+                break;
+            case 'sticker':
+                shouldHide = options.hideStickers;
+                break;
+            case 'skill-used':
+                shouldHide = options.hideSkillMessages;
+                break;
+            case 'regular-message':
+            default:
+                break;
             }
 
             if (shouldHide) {
@@ -1285,145 +1286,6 @@ $(() => {
             }
 
             emoteHandler.handleEmotes(messageContainer, chatChannelName);
-
-            /*let showChannelEmotes =
-                options.customEmotes !== false &&
-                options.channelEmotes !== false &&
-                cache.currentStreamerEmotes != null &&
-                cache.currentStreamerEmotes.emotes != null &&
-                chatFromCurrentChannel;
-
-            let showGlobalEmotes =
-                options.customEmotes !== false &&
-                options.globalEmotes !== false &&
-                cache.globalEmotes != null &&
-                cache.globalEmotes.emotes != null;
-
-            if (showChannelEmotes || showGlobalEmotes) {
-                let foundEmote = false;
-                messageContainer.find('span:not([class])').each(function() {
-                    let component = $(this);
-                    // we've already replaced emotes on this, skip it
-                    if (component.hasClass('me-custom-emote')) {
-                        return;
-                    }
-
-                    let text = component.text().trim();
-
-                    // loop through all emotes
-                    let channelEmotes, globalEmotes;
-
-                    let allEmoteNames = [];
-
-                    if (showChannelEmotes) {
-                        channelEmotes = Object.values(cache.currentStreamerEmotes.emotes);
-                        allEmoteNames = allEmoteNames.concat(channelEmotes.map(e => e.name));
-                    }
-
-                    if (showGlobalEmotes) {
-                        globalEmotes = Object.values(cache.globalEmotes.emotes);
-                        allEmoteNames = allEmoteNames.concat(globalEmotes.map(e => e.name));
-                    }
-
-                    // remove dupes
-                    allEmoteNames = [...new Set(allEmoteNames)];
-
-                    // build emote name group end result will look like: "emoteName1|emoteName2|emoteName3"
-                    let emoteNameRegexGroup = '';
-                    for (let emote of allEmoteNames) {
-                        if (emoteNameRegexGroup.length > 0) {
-                            emoteNameRegexGroup += '|';
-                        }
-                        emoteNameRegexGroup += escapeRegExp(emote);
-                    }
-
-                    let regexPattern = `(?:^|\\s)(?:${emoteNameRegexGroup})(?=\\s|$)`;
-
-                    // emote name regex
-                    let emoteNameRegex;
-                    try {
-                        emoteNameRegex = new RegExp(regexPattern, 'gm');
-                    } catch (err) {
-                        console.log('REGEX ERROR!', err);
-                    }
-
-                    //html escape current text
-                    text = escapeHTML(text);
-
-                    // replace emote names with img tags
-                    text = text.replace(emoteNameRegex, match => {
-                        match = match && match.trim();
-                        log('found emote match: ' + match);
-
-                        // search for channel emote first
-                        let emote;
-                        if (channelEmotes) {
-                            emote = channelEmotes.find(e => e.name === match);
-                        }
-
-                        // if we didnt find anything, search global if enabled
-                        let isGlobal = false;
-                        if (emote == null && globalEmotes) {
-                            emote = globalEmotes.find(e => e.name === match);
-                            isGlobal = true;
-                        }
-
-                        if (emote) {
-                            foundEmote = true;
-
-                            let url;
-                            if (isGlobal) {
-                                url = `https://crowbartools.com/user-content/emotes/global/${escapeHTML(
-                                    emote.filename
-                                )}`;
-                            } else {
-                                url = `https://crowbartools.com/user-content/emotes/live/${
-                                    cache.currentStreamerId
-                                }/${escapeHTML(emote.filename)}`;
-                            }
-
-                            let sizeClass = mapEmoteSizeToClass(emote.maxSize);
-
-                            let imgTag = `
-									<span class="elixr-custom-emote ${sizeClass} me-tooltip" title="Mixr Elixr: Custom emote '${escapeHTML(
-                                emote.name
-                            )}'" style="display: inline-block;">
-										<img src="${url}">
-									</span>`;
-
-                            return imgTag;
-                        }
-                        return match;
-                    });
-
-                    if (foundEmote) {
-                        // update component html with text containing img tags
-                        component.html(text.trim());
-
-                        component
-                            .find('.elixr-custom-emote')
-                            .children('img')
-                            .on('load', function() {
-                                let username = messageContainer.find("[class*='Username']");
-                                if (username != null && username.length > 0) {
-                                    let usernameTop = username.position().top;
-
-                                    let avatar = messageContainer.find("[class*='ChatAvatar']");
-                                    if (usernameTop > 6 && avatar != null && avatar.length > 0) {
-                                        avatar.css('top', usernameTop - 3 + 'px');
-                                    }
-                                }
-
-                                setTimeout(() => {
-                                    scrollChatIfGlued();
-                                }, 5);
-                            });
-
-                        // tag this component so we dont attempt to look for emotes again
-                        component.addClass('me-custom-emote');
-                    }
-                });
-            }*/
 
             // highlight keywords
             if (options.keywords && options.keywords.length > 0) {
@@ -1816,22 +1678,22 @@ $(() => {
 
     function getUserRoleRank(role = '') {
         switch (role) {
-            case '':
-                return -1;
-            case 'Owner':
-                return 1;
-            case 'ChannelEditor':
-            case 'Mod':
-                return 2;
-            case 'Subscriber':
-                return 3;
-            case 'Pro':
-                return 4;
-            case 'User':
-                return 5;
-            case 'all':
-            default:
-                return 6;
+        case '':
+            return -1;
+        case 'Owner':
+            return 1;
+        case 'ChannelEditor':
+        case 'Mod':
+            return 2;
+        case 'Subscriber':
+            return 3;
+        case 'Pro':
+            return 4;
+        case 'User':
+            return 5;
+        case 'all':
+        default:
+            return 6;
         }
     }
 
@@ -2119,18 +1981,6 @@ $(() => {
         }
     });
 
-    function mapEmoteSizeToClass(size) {
-        switch (size) {
-            case 24:
-                return 'twentyfour';
-            case 30:
-                return 'thirty';
-            case 50:
-            default:
-                return 'fifty';
-        }
-    }
-
     function triggerAutomute() {
         log('Attempting to auto mute...');
         waitForElementAvailablity('.spectre-player').then(() => {
@@ -2158,66 +2008,6 @@ $(() => {
             }
         });
     }
-
-    function getLastChangeLog() {
-        let storage = onlyLocalStorage ? browser.storage.local : browser.storage.sync;
-
-        return storage
-            .get({
-                internal: {
-                    lastChangeLog: null
-                }
-            })
-            .then(options => {
-                return options.internal.lastChangeLog;
-            });
-    }
-
-    function setLastChangeLog(version) {
-        let storage = onlyLocalStorage ? browser.storage.local : browser.storage.sync;
-        storage.set({
-            internal: {
-                lastChangeLog: version
-            }
-        });
-    }
-
-    async function changeLogModalCheck() {
-        let lastChangeLog = await getLastChangeLog();
-        if (lastChangeLog !== '2.0.0') {
-            log('***Showing change log modal***');
-            $(`
-				<div id="mixr-change-log" class="modal">
-					<div style="text-align: center;">
-						<img style="width: 175px;" src="${browser.runtime.getURL('resources/images/mixrelixr2logo.png')}">
-					</div>
-					<div style="margin-top: 30px;text-align: center;font-size: 14px;">
-						<p>Thanks for using MixrElixr! We have a big update for you and wanted to share the highlights.</p>
-					</div>
-					<div class="changelog-header">Change Log</div>
-					<h2 class="changelog-feature">All New Look and Feel</h2>
-					<p class="changelog-feature-description">To better match Mixer's current theme.</p>
-					<h2 class="changelog-feature">Custom Emotes</h2>
-					<p class="changelog-feature-description">Emotes for everyone! Head to <a href="https://crowbartools.com/emotes" target="_blank">our website</a> to learn more.</p>
-					<h2 class="changelog-feature">Desktop Notifications</h2>
-					<p class="changelog-feature-description">Get notifications when your follows and favorites go live!</p>
-					<h2 class="changelog-feature">Pinned Search</h2>
-					<p class="changelog-feature-description">The searchbar is now pinned to the top on Mixers homepage, where it has always belonged <3</p>
-					<h2 class="changelog-feature">Auto Theater Mode</h2>
-					<p class="changelog-feature-description">New option to automatically go into Theater Mode when loading a channel page.</p>
-					<div style="padding: 12px 0;text-align: center;opacity: 0.8;">
-						<span>Questions? Stop by our <a href="https://discord.gg/2CGrbA4" target="_blank">Discord</a> or send us a <a href="https://twitter.com/mixrelixr" target="_blank">tweet</a>!</span>
-					</div>
-				</div>
-		  `).modal({
-                modalClass: 'modal mixr-modal'
-            });
-
-            setLastChangeLog('2.0.0');
-        }
-    }
-
-    //changeLogModalCheck();
 
     // tooltip listener
     $.initialize('.me-tooltip', function() {
