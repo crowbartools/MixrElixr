@@ -1,57 +1,47 @@
 import { log } from './utils';
 
-export function getChannelData(channelIdOrName) {
-    return new Promise(resolve => {
-        $.get(`https://mixer.com/api/v1/channels/${channelIdOrName}`)
-            .done(data => {
-                log('Got channel data for ' + channelIdOrName);
-                resolve(data);
-            })
-            .fail(() => {
-                log('Failed to get channel data for ' + channelIdOrName);
-                resolve(null);
-            });
-    });
+async function api(uri, options) {
+    let url = `https://mixer.com/api/v1/${uri}`;
+
+    try {
+        let response = await fetch(uri, options || null);
+        if (response.ok) {
+            log('Retrieved data from: ', uri);
+            return response.json();
+        }
+
+        log('Failed to retrieve data from:', url);
+        return null;
+
+    } catch (ignore) {
+        log('Failed to retrieve data from:', url);
+        return null;
+    }
+}
+
+export async function getChannelId(channel) {
+    let data = await api(`channels/${channel}?fields=id`);
+    if (data != null) {
+        return data.id;
+    }
+    return null;
+}
+export function getChannelData(channelOrId) {
+    return api(`channels/${channelOrId}`);
 }
 
 export function getChannelChatInfo(channelId) {
-    return new Promise(resolve => {
-        $.get(`https://mixer.com/api/v1/chats/${channelId}`)
-            .done(data => {
-                log('Got chat data for ' + channelId);
-                resolve(data);
-            })
-            .fail(() => {
-                log('Failed to get chat data for ' + channelId);
-                resolve(null);
-            });
-    });
+    return api(`chats/${channelId}`);
 }
 
 export function getUserInfo(userId) {
-    return new Promise(resolve => {
-        $.get(`https://mixer.com/api/v1/users/${userId}`)
-            .done(data => {
-                log('Got user data for ' + userId);
-                resolve(data);
-            })
-            .fail(() => {
-                log('Failed to get user data for ' + userId);
-                resolve(null);
-            });
-    });
+    return api(`https://mixer.com/api/v1/users/${userId}`);
+}
+export async function userIsChannelMod(channelId, user) {
+    let data = await api(`channels/${channelId}/users/mod?where=username:eq:${user.toLowerCase()}`);
+    return data != null && data.length > 0;
 }
 
 export function getCostreamData(costreamId) {
-    return new Promise(resolve => {
-        $.get(`https://mixer.com/api/v1/costreams/${costreamId}`)
-            .done(data => {
-                log('Got costream data for ' + costreamId);
-                resolve(data);
-            })
-            .fail(() => {
-                log('Failed to get costream data for ' + costreamId);
-                resolve(null);
-            });
-    });
+    return api(`https://mixer.com/api/v1/costreams/${costreamId}`);
 }
