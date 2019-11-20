@@ -1,4 +1,5 @@
 import * as emoteHandler from './emote-handler';
+import $ from '../../../plugins/jquery-wrapper.js';
 import {
     updateChatTextfield,
     getCurrentChatChannelName,

@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import AutocompleteApp from './emote-autocomplete';
+import $ from '../../plugins/jquery-wrapper.js';
 import { debounce, getCurrentChatChannelName } from '../../utils/index.js';
 import { waitForElement } from '../../utils/wait-for.js';
 import * as emoteHandler from '../../areas/chat/emotes/emote-handler';

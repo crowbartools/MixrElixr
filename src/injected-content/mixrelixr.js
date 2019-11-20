@@ -28,7 +28,7 @@ import * as autocompleteAppBinder from './vue-apps/emote-autocomplete/emote-auto
 import * as slowChatTimerAppBinder from './vue-apps/slow-chat-timer/slow-chat-timer-binder';
 
 //import deps
-import $ from 'jquery';
+import $ from './plugins/jquery-wrapper.js';
 
 import * as siteWide from './areas/sitewide/site-wide';
 import * as chatFeed from './areas/chat/chat-feed';
@@ -46,14 +46,6 @@ const onlyLocalStorage = browserEnv.satisfies({
         Chrome: '>0'
     }
 });
-
-global.jQuery = $;
-global.$ = global.jQuery;
-
-require('tooltipster');
-require('jquery-modal');
-require('./plugins/jquery.initialize');
-require('jquery-toast-plugin');
 
 global.browser = require('webextension-polyfill');
 

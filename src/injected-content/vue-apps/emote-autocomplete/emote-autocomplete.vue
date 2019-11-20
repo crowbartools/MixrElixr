@@ -26,6 +26,7 @@
 </template>
 
 <script>
+import $ from '../../plugins/jquery-wrapper.js';
 import { updateChatTextfield } from '../../utils/index.js';
 export default {
     data: function() {

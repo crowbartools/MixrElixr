@@ -1,3 +1,4 @@
+import $ from '../../plugins/jquery-wrapper.js';
 import { waitForElement } from '../../utils/wait-for.js';
 import * as constellation from '../../mixer-connections/constellation';
 import * as infoPanel from './info-panel';

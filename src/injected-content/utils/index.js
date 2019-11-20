@@ -1,3 +1,4 @@
+import $ from '../../plugins/jquery-wrapper.js';
 import * as simulant from 'simulant';
 
 export function log(...message) {

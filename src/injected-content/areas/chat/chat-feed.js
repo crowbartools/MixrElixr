@@ -1,3 +1,4 @@
+import $ from '../../plugins/jquery-wrapper.js';
 import { scrollChatIfGlued } from '../../utils/index.js';
 
 let showModActions = true;

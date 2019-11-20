@@ -1,3 +1,4 @@
+import $ from '../../plugins/jquery-wrapper.js';
 import { waitForElement } from '../../utils/wait-for.js';
 let panelCreated = false;
 
