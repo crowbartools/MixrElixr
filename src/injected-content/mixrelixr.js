@@ -1738,21 +1738,16 @@ $(() => {
 
     // Get user info
     // This gets user info of current logged in person
-    function loadUserInfo() {
-        return new Promise(resolve => {
-            $.get('https://mixer.com/api/v1/users/current')
-                .done(data => {
-                    log('Got user settings');
-                    cache.user = data;
-                    resolve(data);
-                })
-                .fail(() => {
-                    // We reached our target server, but it returned an error
-                    log('No user logged in.');
-                    cache.user = null;
-                    resolve(null);
-                });
-        });
+    async function getCurrentUser() {
+        let user = await api.getCurrentUser();
+        if (!user) {
+            log('No user logged in.');
+            cache.user = null;
+            return;
+        }
+        log('User logged in as:', user.token);
+        cache.user = user;
+        return user;
     }
 
     // Checks Mixer API to see if streamer is followed.
@@ -1920,7 +1915,7 @@ $(() => {
     }
 
     function loadUserAndSettings() {
-        let userInfoLoad = loadUserInfo();
+        let userInfoLoad = getCurrentUser();
         let settingsLoad = loadSettings();
 
         // wait for both user info and settings to load.

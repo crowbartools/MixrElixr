@@ -38,6 +38,9 @@ export function getUserInfo(userId) {
     return api(`https://mixer.com/api/v1/users/${userId}`);
 }
 
+export function getCurrentUser() {
+    return api(`https://mixer.com/api/v1/users/current`);
+}
 export async function userIsChannelMod(channelId, user) {
     let data = await api(`channels/${channelId}/users/mod?where=username:eq:${user.toLowerCase()}`);
     return data != null && data.length > 0;
