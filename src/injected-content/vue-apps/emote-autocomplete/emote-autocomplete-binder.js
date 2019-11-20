@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import AutocompleteApp from './emote-autocomplete';
-import { waitForElementAvailablity, debounce, getCurrentChatChannelName } from '../../utils';
+import { debounce, getCurrentChatChannelName } from '../../utils/index.js';
+import { waitForElement } from '../../utils/wait-for.js';
 import * as emoteHandler from '../../areas/chat/emotes/emote-handler';
 
 let app = null;
@@ -143,7 +144,7 @@ export function bindEmoteAutocompleteApp(composerBlock, options) {
         child.query = '';
     };
 
-    waitForElementAvailablity("[class*='send_']").then(sendSpan => {
+    waitForElement("[class*='send_']").then(sendSpan => {
         let sendBtn = sendSpan
             .parent()
             .parent()

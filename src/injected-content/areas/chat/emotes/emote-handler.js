@@ -1,6 +1,6 @@
 import * as elixrEmotes from './providers/elixr-emote-provider';
 import * as api from '../../../api';
-import * as utils from '../../../utils';
+import * as utils from '../../../utils/index.js';
 
 
 let emoteProviders = [];

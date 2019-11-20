@@ -1,4 +1,4 @@
-import { scrollChatIfGlued } from '../../utils';
+import { scrollChatIfGlued } from '../../utils/index.js';
 
 let showModActions = true;
 export function setup(options) {

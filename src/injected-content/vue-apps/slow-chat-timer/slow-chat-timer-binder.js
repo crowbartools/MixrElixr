@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import SlowChatTimerApp from './slow-chat-timer';
-import { waitForElementAvailablity } from '../../utils';
+import { waitForElement } from '../../utils/wait-for.js';
 
 let app = null;
 let expectingMessage = false;
@@ -68,7 +68,7 @@ export function bindSlowChatTimerApp(composerBlock, slowChatMils) {
         .children('textarea')
         .on('keydown', keydownListener);
 
-    waitForElementAvailablity("[class*='send_']").then(sendSpan => {
+    waitForElement("[class*='send_']").then(sendSpan => {
         let sendBtn = sendSpan
             .parent()
             .parent()

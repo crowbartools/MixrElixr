@@ -1,5 +1,9 @@
 import * as emoteHandler from './emote-handler';
-import { updateChatTextfield, getCurrentChatChannelName, escapeHTML } from '../../../utils';
+import {
+    updateChatTextfield,
+    getCurrentChatChannelName,
+    escapeHTML
+} from '../../../utils/index.js';
 
 function buildEmoteGroupSection(emoteGroup) {
     const customEmotesWrapper = $(

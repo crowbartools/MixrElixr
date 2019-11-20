@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { updateChatTextfield } from '../../utils';
+import { updateChatTextfield } from '../../utils/index.js';
 export default {
     data: function() {
         return {

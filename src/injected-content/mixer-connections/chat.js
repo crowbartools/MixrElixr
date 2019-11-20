@@ -1,7 +1,7 @@
 import { Socket } from '@mixer/chat-client-websocket';
 import * as api from '../api';
 import { messagedDeleted, userBanned, userTimeout } from '../areas/chat/chat-feed';
-import { log } from '../utils';
+import { log } from '../utils/index.js';
 
 let socket;
 let isConnectingToChat = false;

@@ -11,7 +11,7 @@ import {
     setupScrollGlueCheck,
     scrollChatIfGlued,
     scrollChatToBottom
-} from './utils.js';
+} from './utils/index.js';
 
 import {
     waitForMixer,

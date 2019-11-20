@@ -1,4 +1,4 @@
-import { waitForElementAvailablity } from '../../utils';
+import { waitForElement } from '../../utils/wait-for.js';
 import * as constellation from '../../mixer-connections/constellation';
 import * as infoPanel from './info-panel';
 
@@ -14,11 +14,11 @@ export function apply(settings, user) {
     }
 
     if (settings.generalOptions.declutterTopBar !== false) {
-        waitForElementAvailablity("a[href='/dashboard/onboarding']").then(() => {
+        waitForElement("a[href='/dashboard/onboarding']").then(() => {
             $("a[href='/dashboard/onboarding']").hide();
         });
 
-        waitForElementAvailablity("[class*='getEmbersButton_'").then(emberBtn => {
+        waitForElement("[class*='getEmbersButton_'").then(emberBtn => {
             emberBtn.css('margin', '0');
             emberBtn
                 .children()

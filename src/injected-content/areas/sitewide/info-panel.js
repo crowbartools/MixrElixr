@@ -1,4 +1,4 @@
-import { waitForElementAvailablity } from '../../utils';
+import { waitForElement } from '../../utils/wait-for.js';
 let panelCreated = false;
 
 function formatSparks(count) {
@@ -18,7 +18,7 @@ export async function createInfoPanel(user) {
         return;
     }
 
-    await waitForElementAvailablity('b-nav-host [class*="right_"] [class^="chevron_"]');
+    await waitForElement('b-nav-host [class*="right_"] [class^="chevron_"]');
 
     const accountButton = $('b-nav-host')
         .find("[class*='right_']")

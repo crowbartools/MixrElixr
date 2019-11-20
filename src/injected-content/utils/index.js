@@ -1,22 +1,7 @@
 import * as simulant from 'simulant';
+
 export function log(...message) {
-    console.log('[MixrElixr', ...message);
-}
-
-export function waitForElementAvailablity(selector) {
-    log(`Waiting for element '${selector}'...`);
-
-    let promise = new Promise(resolve => {
-        $.deinitialize(selector);
-
-        $.initialize(selector, function() {
-            log(`Found element '${selector}'!`);
-            $.deinitialize(selector);
-            resolve($(this));
-        });
-    });
-
-    return promise;
+    console.log('[MixrElixr]', ...message);
 }
 
 export function debounce(func, wait, immediate) {
@@ -52,9 +37,6 @@ export function escapeRegExp(string) {
 }
 
 export function determineMessageType(message) {
-    /*if (message.find("span[class*='stickerMessage_']").length > 0) {
-        return "ember-donation";
-    }*/
 
     if (message.find("div[class*='sticker_']").length > 0) {
         return 'sticker';

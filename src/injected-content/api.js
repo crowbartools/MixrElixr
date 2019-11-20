@@ -1,4 +1,4 @@
-import { log } from './utils';
+import { log } from './utils/index.js';
 
 async function api(uri, options) {
     let url = `https://mixer.com/api/v1/${uri}`;
