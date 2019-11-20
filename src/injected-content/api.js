@@ -2,7 +2,6 @@ import { log } from './utils/index.js';
 
 async function api(uri, options) {
     let url = `https://mixer.com/api/v1/${uri}`;
-
     try {
         let response = await fetch(uri, options || null);
         if (response.ok) {
@@ -26,6 +25,7 @@ export async function getChannelId(channel) {
     }
     return null;
 }
+
 export function getChannelData(channelOrId) {
     return api(`channels/${channelOrId}`);
 }
@@ -67,6 +67,7 @@ export async function getCostreamId(channel) {
     }
     return data.costreamId;
 }
+
 export function getCostreamData(costreamId) {
     return api(`costreams/${costreamId}`);
 }
