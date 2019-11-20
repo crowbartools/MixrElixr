@@ -3,7 +3,6 @@ let previousUrl = window.location.href;
     setTimeout(pollurl, 100);
 
     let currentUrl = window.location.href;
-
     if (previousUrl === currentUrl) {
         return;
     }
@@ -12,10 +11,8 @@ let previousUrl = window.location.href;
         previous: previousUrl.toString(),
         current: currentUrl.toString()
     };
-
     let event = new CustomEvent('MixrElixr:url-changed', { detail });
     window.dispatchEvent(event);
 
     previousUrl = currentUrl;
-
 }());
