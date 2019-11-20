@@ -4,7 +4,6 @@
 import './scss/injected-styles.scss';
 
 import {
-    waitForElementAvailablity,
     debounce,
     log,
     escapeRegExp,
@@ -12,7 +11,12 @@ import {
     setupScrollGlueCheck,
     scrollChatIfGlued,
     scrollChatToBottom
-} from './utils';
+} from './utils.js';
+
+import {
+    waitForMixer,
+    waitForElement
+} from './utils/wait-for.js';
 
 import * as api from './api';
 
@@ -66,30 +70,6 @@ $(() => {
     // start the process
     log('Starting MixrElixr...');
 
-    function waitForPageLoad() {
-        return new Promise(resolve => {
-            function doPageCheck() {
-                let spinner = $('.initial-loading-overlay');
-                let spinnerExists = spinner != null && spinner.length > 0;
-
-                if (spinnerExists) {
-                    // spinner still exists, check again in a bit
-                    setTimeout(() => {
-                        doPageCheck();
-                    }, 10);
-                } else {
-                    log('Spinner is gone, the page should be loaded.');
-                    // spinner is gone, lets party
-                    setTimeout(() => {
-                        resolve();
-                    }, 10);
-                }
-            }
-
-            doPageCheck();
-        });
-    }
-
     async function runPageLogic() {
         // Channel dectection
         let channelBlock = $('b-channel-page-wrapper');
@@ -132,7 +112,7 @@ $(() => {
                     console.log('failed to connect to chat!', err);
                 }
 
-                waitForElementAvailablity(ElementSelector.CHAT_CONTAINER).then(() => {
+                waitForElement(ElementSelector.CHAT_CONTAINER).then(() => {
                     applyChatSettings(channelName);
                 });
             }
@@ -143,7 +123,7 @@ $(() => {
             log('detected streamer page...');
             cache.currentPage = 'streamer';
 
-            waitForElementAvailablity("[class*='chatContainer']").then(() => {
+            waitForElement("[class*='chatContainer']").then(() => {
                 $("[class*='chatContainer']").addClass('me-chat-container');
             });
 
@@ -170,7 +150,7 @@ $(() => {
                     cache.slowChatCooldown = slowChatCooldown;
                     log(`Set slow chat cooldown to: ${slowChatCooldown}`);
 
-                    waitForElementAvailablity(ElementSelector.CHAT_CONTAINER).then(() => {
+                    waitForElement(ElementSelector.CHAT_CONTAINER).then(() => {
                         log('loading streamer page options...');
                         loadStreamerPage(channelName);
                     });
@@ -352,7 +332,7 @@ $(() => {
         });
 
         // Remove featured streams on homepage
-        waitForElementAvailablity('b-delve-featured-carousel').then(() => {
+        waitForElement('b-delve-featured-carousel').then(() => {
             if (settings.homePageOptions && settings.homePageOptions.removeFeatured) {
                 $('b-delve-featured-carousel, b-delve-games, b-delve-oom-channels').remove();
             }
@@ -362,53 +342,49 @@ $(() => {
         initialPageLoad = false;
     }
 
-    function getStreamerName() {
+    async function getStreamerName() {
+
+        log('Looking for streamer name...');
+
+        if (cache.currentStreamerName != null) {
+            log('Found it in the cache: ' + cache.currentStreamerName);
+            return cache.currentStreamerName.trim();
+        }
+
+        let isDesktop = $('b-channel-page-wrapper').length > 0;
+        let isMobile = $('b-channel-mobile-page-wrapper').length > 0;
+
+        if (!isDesktop && !isMobile) {
+            log('Unable to get streamer name: channel area not found');
+            return;
+        }
+
+        await waitForElement('b-channel-profile');
+
         return new Promise(resolve => {
-            log('Looking for streamer name...');
-            if (cache.currentStreamerName != null) {
-                log('Found it in the cache: ' + cache.currentStreamerName);
-                return resolve(cache.currentStreamerName.trim());
-            }
-
-            let isDesktopMode = $('b-channel-page-wrapper').length > 0;
-            let isMobileMode = $('b-channel-mobile-page-wrapper').length > 0;
-
-            if (isDesktopMode) {
-                waitForElementAvailablity('b-channel-profile').then(() => {
-                    let channelBlock = $('b-channel-profile');
-                    let name = channelBlock
+            (function pollForStreamerName() {
+                let name = '';
+                if (isDesktop) {
+                    name = $('b-channel-profile')
                         .find('h2')
                         .first()
                         .text();
-                    if (name != null && name !== '') {
-                        cache.currentStreamerName = name.trim();
-                        log('Found it on the page: ' + cache.currentStreamerName);
-                        resolve(name.trim());
-                    } else {
-                        setTimeout(() => {
-                            getStreamerName().then(foundName => {
-                                resolve(foundName);
-                            });
-                        }, 10);
-                    }
-                });
-            } else if (isMobileMode) {
-                waitForElementAvailablity('b-mobile-details-bar').then(() => {
-                    let channelBlock = $('b-mobile-details-bar');
-                    let name = channelBlock.find('.name').text();
-                    if (name != null && name !== '') {
-                        cache.currentStreamerName = name.trim();
-                        log('Found it on the page: ' + cache.currentStreamerName);
-                        resolve(cache.currentStreamerName);
-                    } else {
-                        setTimeout(() => {
-                            getStreamerName().then(foundName => {
-                                resolve(foundName);
-                            });
-                        }, 10);
-                    }
-                });
-            }
+
+                } else {
+                    name = $('b-mobile-details-bar')
+                        .find('.name')
+                        .text();
+                }
+
+                if (name == null || name === '') {
+                    setTimeout(pollForStreamerName, 10);
+
+                } else {
+                    cache.currentStreamerName = name.trim();
+                    log('Found streamer name on the page: ' + cache.currentStreamerName);
+                    resolve(cache.currentStreamerName);
+                }
+            }());
         });
     }
 
@@ -556,7 +532,7 @@ $(() => {
             }
         }
 
-        waitForElementAvailablity('.stage').then(() => {
+        waitForElement('.stage').then(() => {
             if (options.largerVideo === false) {
                 $('.stage').removeClass('me-video-stage');
             } else {
@@ -693,7 +669,7 @@ $(() => {
 
         // Auto close interactive
         if (options.autoCloseInteractive && initialPageLoad) {
-            waitForElementAvailablity('.toggle-interactive')
+            waitForElement('.toggle-interactive')
                 .then(() => {
                     let minimizeInteractiveBtn = $('.toggle-interactive');
 
@@ -800,7 +776,7 @@ $(() => {
 
         // add theater mode btn
         // wait for video controls to load
-        waitForElementAvailablity('.spectre-player').then(() => {
+        waitForElement('.spectre-player').then(() => {
             let findFullscreenBtn = () => {
                 log('attempting to create theater mode button...');
 
@@ -854,7 +830,7 @@ $(() => {
 
         let urlParams = new URLSearchParams(window.location.search);
         if (!urlParams.has('clip')) {
-            waitForElementAvailablity('[class*="chatContainer_"]').then(chatContainer => {
+            waitForElement('[class*="chatContainer_"]').then(chatContainer => {
                 if (options.lightsOutTheaterMode) {
                     chatContainer.addClass('me-lights-out');
                 } else {
@@ -866,7 +842,7 @@ $(() => {
             toggleTheaterMode();
         }
 
-        waitForElementAvailablity(ElementSelector.CHAT_CONTAINER).then(() => {
+        waitForElement(ElementSelector.CHAT_CONTAINER).then(() => {
             applyChatSettings(streamerName);
         });
     }
@@ -1167,7 +1143,7 @@ $(() => {
         const composerBlockSelecter = isMobileMode
             ? "[class*='mobileWebComposerBlock']"
             : "[class*='webComposerBlock']";
-        waitForElementAvailablity(composerBlockSelecter).then(composerBlock => {
+        waitForElement(composerBlockSelecter).then(composerBlock => {
             // bind custom emote auto complete app
             autocompleteAppBinder.bindEmoteAutocompleteApp(composerBlock, options);
 
@@ -1645,27 +1621,6 @@ $(() => {
         });
     }
 
-    function runUrlWatcher() {
-        let interval = null;
-        let previousUrl = window.location.href;
-
-        if (interval != null) {
-            clearInterval(interval);
-        }
-
-        interval = setInterval(() => {
-            let currentUrl = window.location.href;
-            if (previousUrl !== currentUrl) {
-                // fire event
-                let detail = { current: currentUrl.toString(), previous: previousUrl.toString() };
-                let event = new CustomEvent('url-change', { detail: detail });
-                window.dispatchEvent(event);
-
-                previousUrl = currentUrl;
-            }
-        }, 500);
-    }
-
     /* Helpers */
 
     function getUserRoleRank(role = '') {
@@ -1851,36 +1806,30 @@ $(() => {
         return data.channels.map(channel => channel.token);
     }
 
-    function loadUserAndSettings() {
+    async function loadUserAndSettings() {
         let userInfoLoad = getCurrentUser();
         let settingsLoad = loadSettings();
 
         // wait for both user info and settings to load.
-        Promise.all([userInfoLoad, settingsLoad])
-            .then(() => {
-                siteWide.apply(settings, cache.user);
+        await Promise.all([userInfoLoad, settingsLoad]);
+        siteWide.apply(settings, cache.user);
 
-                return waitForPageLoad();
-            })
-            .then(() => {
-                log('page loaded');
+        // wait for mixer to load
+        await waitForMixer();
 
-                // Listen for url changes
-                window.addEventListener('url-change', function() {
-                    initialPageLoad = true;
-                    cache.currentStreamerName = null;
-                    cache.currentStreamerId = null;
-                    runPageLogic();
-                });
+        log('page loaded');
 
-                // run page logic for the first load
-                runPageLogic();
+        // Listen for url changes
+        window.addEventListener('MixrElixr:url-changed', function() {
+            initialPageLoad = true;
+            cache.currentStreamerName = null;
+            cache.currentStreamerId = null;
+            runPageLogic();
+        });
 
-                // then let the url watcher trigger it from then on
-                runUrlWatcher();
-            });
+        // run page logic for the first load
+        runPageLogic();
     }
-
     loadUserAndSettings();
 
     // listen for an event from the Options page. This fires everytime the user updates a setting
@@ -1907,7 +1856,7 @@ $(() => {
 
     function triggerAutomute() {
         log('Attempting to auto mute...');
-        waitForElementAvailablity('.spectre-player').then(() => {
+        waitForElement('.spectre-player').then(() => {
             log('Found video toolbar!');
             let muteButton = $('.spectre-player')
                 .children('div')
