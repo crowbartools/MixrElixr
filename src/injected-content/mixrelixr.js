@@ -434,59 +434,51 @@ $(() => {
     }, 50);
 
     // Gets channel id by name
-    function getChannelId() {
-        return getStreamerName().then(name => {
-            return new Promise(resolve => {
-                log(`current id cache: ${cache.currentStreamerId}`);
-                if (cache.currentStreamerId != null) {
-                    resolve(cache.currentStreamerId);
-                }
+    async function getChannelId() {
+        if (cache.currentStreamerId !== null) {
+            log('Using cached id:', cache.currentStreamerId);
+            return cache.currentStreamerId;
+        }
 
-                $.get(`https://mixer.com/api/v1/channels/${name}?fields=id`)
-                    .done(data => {
-                        cache.currentStreamerId = data.id;
-                        log('Got channel id');
-
-                        resolve(data.id);
-                    })
-                    .fail(() => {
-                        // We reached our target server, but it returned an error
-                        log('Failed to get channel id');
-                        resolve(null);
-                    });
-            });
-        });
+        let channel = await getStreamerName();
+        if (!channel) {
+            return null;
+        }
+        cache.currentStreamerId = await api.getChannelId(channel);
+        return cache.currentStreamerId;
     }
 
     // Gets channel id by name
-    function userIsModInCurrentChannel() {
-        return getChannelId().then(id => {
-            return new Promise(resolve => {
-                if (!cache.user || !cache.currentStreamerName) {
-                    return resolve(false);
-                }
+    async function userIsModInCurrentChannel() {
 
-                let userLowerCase = cache.user.username.toLowerCase();
-                log(`${userLowerCase} == ${cache.currentStreamerName.toLowerCase()}`);
-                if (userLowerCase === cache.currentStreamerName.toLowerCase()) {
-                    log('User is streamer so is mod');
-                    return resolve(true);
-                }
+        // user isn't logged in
+        if (!cache.user) {
+            return false;
+        }
 
-                $.get(
-                    `https://mixer.com/api/v1/channels/${id}/users/mod?where=username:eq:${userLowerCase}&fields=username`
-                )
-                    .done(data => {
-                        let isMod = data.length > 0;
-                        resolve(isMod);
-                    })
-                    .fail(() => {
-                        // We reached our target server, but it returned an error
-                        log('Failed to check mod status');
-                        resolve(false);
-                    });
-            });
-        });
+        // not on streamer page(?)
+        if (!cache.currentStreamerName) {
+            await getStreamerName();
+            if (!cache.getStreamerName) {
+                return false;
+            }
+        }
+
+        // retriever channel id for current stream
+        let channelId;
+        if (!cache.currentStreamerId) {
+            let channelId = await getChannelId();
+            if (!channelId) {
+                return false;
+            }
+        }
+
+        // streamer is obviously a mod
+        if (cache.user.username.toLowerCase() === cache.currentStreamerName.toLowerCase()) {
+            return true;
+        }
+
+        return api.userIsChannelMod(channelId, cache.user.username);
     }
 
     function loadOtherPage() {
