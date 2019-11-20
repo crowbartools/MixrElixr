@@ -1841,22 +1841,14 @@ $(() => {
     }
 
     // Gets list of costreamers via Mixer API
-    function getCostreamers(costreamID) {
-        return new Promise(resolve => {
-            // Check Mixer API with co-stream ID to see who is participaiting in the co-stream.
-            $.getJSON(`https://mixer.com/api/v1/costreams/${costreamID}`, function(data) {
-                let channels = data['channels'];
-                let participants = Array();
+    async function getCostreamers(costreamId) {
+        let data = await api.getCostreamData(costreamId);
 
-                // Check each channel from API data and insert into participants array.
-                $.each(channels, function(i) {
-                    participants.push(channels[i].token);
-                });
+        if (data == null || data.channels == null) {
+            return [];
+        }
 
-                // Resolve array of co-stream participants
-                resolve(participants);
-            });
-        });
+        return data.channels.map(channel => channel.token);
     }
 
     // Gets user roles from api.
