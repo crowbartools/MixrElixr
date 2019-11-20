@@ -35,7 +35,7 @@ export function getChannelChatInfo(channelId) {
 }
 
 export function getUserInfo(userId) {
-    return api(`https://mixer.com/api/v1/users/${userId}`);
+    return api(`users/${userId}`);
 }
 
 export async function getUserFollowsChannel(userId, channel) {
@@ -44,7 +44,7 @@ export async function getUserFollowsChannel(userId, channel) {
 }
 
 export function getCurrentUser() {
-    return api(`https://mixer.com/api/v1/users/current`);
+    return api(`users/current`);
 }
 
 export async function userIsChannelMod(channelId, user) {
@@ -68,5 +68,5 @@ export async function getCostreamId(channel) {
     return data.costreamId;
 }
 export function getCostreamData(costreamId) {
-    return api(`https://mixer.com/api/v1/costreams/${costreamId}`);
+    return api(`costreams/${costreamId}`);
 }
