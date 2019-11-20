@@ -1380,7 +1380,7 @@ $(() => {
                                 let currentStreamerName = await getStreamerName();
 
                                 // Get the author roles in an array.
-                                getUserRoles(cache.currentStreamerId, messageAuthor).then(roles => {
+                                api.getUserRolesForChannel(cache.currentStreamerId, messageAuthor).then(roles => {
                                     // Check to make sure the correct role is in the user array.
 
                                     if (currentStreamerName === messageAuthor) {
@@ -1849,28 +1849,6 @@ $(() => {
         }
 
         return data.channels.map(channel => channel.token);
-    }
-
-    // Gets user roles from api.
-    function getUserRoles(channelId, username) {
-        return new Promise(resolve => {
-            // Check Mixer API with co-stream ID to see who is participaiting in the co-stream.
-            let url = 'https://mixer.com/api/v1/channels/' + channelId + '/users?where=username:eq:' + username;
-
-            $.getJSON(url, function(data) {
-                if (!data || data.length < 1) return resolve([]);
-                let groups = data[0].groups;
-                let roles = Array();
-
-                // Check each group from API data and insert into roles array.
-                $.each(groups, function(i) {
-                    roles.push(groups[i].name);
-                });
-
-                // Resolve array of co-stream participants
-                resolve(roles);
-            });
-        });
     }
 
     function loadUserAndSettings() {

@@ -52,6 +52,14 @@ export async function userIsChannelMod(channelId, user) {
     return data != null && data.length > 0;
 }
 
+export async function getUserRolesForChannel(channelId, user) {
+    let data = await api(`channels/${channelId}/users?where=username:eq:${user.toLowerCase()}`);
+    if (data == null || data.length < 1) {
+        return [];
+    }
+    return data[0].groups.map(role => role.name);
+}
+
 export async function getCostreamId(channel) {
     let data = await api(`channels/${channel}?fields=costreamId`);
     if (data == null || data.costreamId == null) {
