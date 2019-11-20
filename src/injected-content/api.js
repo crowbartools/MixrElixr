@@ -38,6 +38,11 @@ export function getUserInfo(userId) {
     return api(`https://mixer.com/api/v1/users/${userId}`);
 }
 
+export async function getUserFollowsChannel(userId, channel) {
+    let data = await api(`users/${userId}/follows?fields=token&where=token:eq:${channel.toLowerCase()}`);
+    return data != null && data.length > 0;
+}
+
 export function getCurrentUser() {
     return api(`https://mixer.com/api/v1/users/current`);
 }

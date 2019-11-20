@@ -1752,35 +1752,18 @@ $(() => {
 
     // Checks Mixer API to see if streamer is followed.
     // Returns object with following status and streamer name.
-    function streamerIsFollowed(streamerName) {
-        return new Promise((resolve, reject) => {
-            if (cache.user != null) {
-                let userId = cache.user.id;
+    async function streamerIsFollowed(streamerName) {
 
-                // Let's create the data we want to return
-                let streamerData = {};
-                streamerData.streamerName = streamerName;
-                streamerData.isFollowed = false;
+        // user not logged in
+        if (!cache.user) {
+            return false;
+        }
 
-                // Now check the API to see if this streamer is followed.
-                $.getJSON(
-                    `https://mixer.com/api/v1/users/${userId}/follows?fields=token&where=token:eq:${streamerName}`,
-                    function(data) {
-                        if (data.length > 0) {
-                            // Found the streamer in the user's followers.
-                            streamerData.isFollowed = true;
-                            resolve(streamerData);
-                        } else {
-                            // Did not find the streamer in the user's followers.
-                            streamerData.isFollowed = false;
-                            resolve(streamerData);
-                        }
-                    }
-                );
-            } else {
-                reject(false);
-            }
-        });
+        let isFollowed = await api.getUserFollowsChannel(cache.user.id, streamerName);
+        return {
+            streamerName,
+            isFollowed
+        };
     }
 
     // Returns boolean based on whether or not a streamer is favorited.
