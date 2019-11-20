@@ -18,6 +18,9 @@ import {
     waitForElement
 } from './utils/wait-for.js';
 
+// import for side effects
+import './utils/url-changed-event.js';
+
 import * as api from './api';
 
 // vue apps
