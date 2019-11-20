@@ -586,7 +586,7 @@ $(() => {
 
         if (settings.generalOptions.highlightFavorites) {
             // Let's get the Costream ID via API call
-            let costreamID = getCostreamID(streamerName);
+            let costreamID = api.getCostreamId(streamerName);
             costreamID.then(result => {
                 if (result == null) {
                     // If result is null, then this is not a costream.
@@ -1837,22 +1837,6 @@ $(() => {
 
         storage.set({
             generalOptions: generalOptions
-        });
-    }
-
-    // Checks the Mixer API to find a co-stream id.
-    function getCostreamID(streamerName) {
-        return new Promise(resolve => {
-            // Check Mixer API to see if active streamer is currently costreaming.
-            $.getJSON(`https://mixer.com/api/v1/channels/${streamerName}?fields=costreamId`, function(data) {
-                if (data['costreamId'] != null) {
-                    // If user is co-streaming, resolve with costream id.
-                    resolve(data.costreamId);
-                } else {
-                    // If user is co-streaming, resolve with null.
-                    resolve(null);
-                }
-            });
         });
     }
 

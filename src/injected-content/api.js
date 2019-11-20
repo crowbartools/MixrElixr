@@ -46,11 +46,19 @@ export async function getUserFollowsChannel(userId, channel) {
 export function getCurrentUser() {
     return api(`https://mixer.com/api/v1/users/current`);
 }
+
 export async function userIsChannelMod(channelId, user) {
     let data = await api(`channels/${channelId}/users/mod?where=username:eq:${user.toLowerCase()}`);
     return data != null && data.length > 0;
 }
 
+export async function getCostreamId(channel) {
+    let data = await api(`channels/${channel}?fields=costreamId`);
+    if (data == null || data.costreamId == null) {
+        return null;
+    }
+    return data.costreamId;
+}
 export function getCostreamData(costreamId) {
     return api(`https://mixer.com/api/v1/costreams/${costreamId}`);
 }
