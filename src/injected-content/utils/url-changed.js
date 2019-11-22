@@ -1,3 +1,5 @@
+import {emit} from './index.js';
+
 let pending = [],
     previousURI = window.location.href;
 
@@ -26,16 +28,16 @@ let pending = [],
     });
     pending = [];
 
+
     // create a new event
     let detail = {
-            previous: previousURI.toString(),
-            current: currentURI.toString()
-        },
-        event = new CustomEvent('elixr:url-changed', { detail });
+        previous: previousURI.toString(),
+        current: currentURI.toString()
+    };
 
     // update url var, and emit event
     previousURI = currentURI;
-    window.dispatchEvent(event);
+    emit('url-changed', detail);
 }());
 
 export function urlDependentPromise(executer, opts = {}) {

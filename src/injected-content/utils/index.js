@@ -5,6 +5,11 @@ export function log(...message) {
     console.log('[MixrElixr]', ...message);
 }
 
+export function emit(name, detail, target) {
+    let event = new CustomEvent('elixr:' + name, { detail });
+    (target || window).dispatchEvent(event);
+}
+
 export function debounce(func, wait, immediate) {
     let timeout;
 

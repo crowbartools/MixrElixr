@@ -1,7 +1,7 @@
 import { Socket } from '@mixer/chat-client-websocket';
 import * as api from '../api';
 import { messagedDeleted, userBanned, userTimeout } from '../areas/chat/chat-feed';
-import { log } from '../utils/index.js';
+import { log, emit } from '../utils/index.js';
 
 let socket;
 let isConnectingToChat = false;
@@ -30,13 +30,81 @@ function createChatSocket(userId, channelId, endpoints, authkey) {
     const ws = WebSocket;
     socket = new Socket(ws, endpoints).boot();
 
+    // hook chat events
+    socket.on('WelcomeEvent', data => {
+        emit('chat:welcome', data);
+    });
+    socket.on('ChatMessage', data => {
+        emit('chat:chat-message', data);
+    });
+    socket.on('UserJoin', data => {
+        emit('chat:user-join', data);
+    });
+    socket.on('UserUpdate', data => {
+        emit('chat:user-update', data);
+    });
+    socket.on('UserLeave', data => {
+        emit('chat:user-leave', data);
+    });
+    socket.on('PollStart', data => {
+        emit('chat:poll-update', data);
+    });
+    socket.on('PollEnd', data => {
+        data.end = true;
+        emit('chat:poll-update', data);
+    });
+    socket.on('DeleteMessage', data => {
+        if (data != null) {
+            if (userIsMod && data.moderator) {
+                messagedDeleted(data.id, data.moderator['user_name']);
+            }
+        }
+        emit('chat:delete-message', data);
+    });
+    socket.on('PurgeMessage', async data => {
+        if (data != null) {
+            if (userIsMod) {
+                let userInfo = await api.getUserInfo(data.user_id);
+
+                if (userInfo == null) return;
+
+                if (data.moderator != null) {
+                // timeout happened
+                    userTimeout(userInfo.username, data.moderator.user_name);
+                } else {
+                // ban happened
+                    userBanned(userInfo.username);
+                }
+            }
+        }
+        emit('chat:purge-message', data);
+        if (data.moderator == null) {
+            emit('chat:user-banned', data);
+        }
+    });
+    socket.on('ClearMessages', data => {
+        emit('chat:clear-message', data);
+    });
+    socket.on('UserTimeout', data => {
+        emit('chat:user-timeout', data);
+    });
+    socket.on('SkillAttribution', data => {
+        emit('chat:skill-attribution', data);
+    });
+    socket.on('DeleteSkillAttribution', data => {
+        emit('chat:delete-skill-attribution', data);
+    });
+    socket.on('error', data => {
+        emit('chat:connection-error', data);
+    });
+
+
     // You don't need to wait for the socket to connect before calling
     // methods. We spool them and run them when connected automatically.
     let userToConnectAs = userId;
     if (authkey == null) {
         userToConnectAs = null;
     }
-
     socket
         .auth(channelId, userToConnectAs, authkey)
         .then(() => {
@@ -49,58 +117,6 @@ function createChatSocket(userId, channelId, endpoints, authkey) {
             console.log(error);
         });
 
-    socket.on('UserUpdate', data => {
-        let event = new CustomEvent('elixr:chat:user-update', { detail: data });
-        window.dispatchEvent(event);
-    });
-
-    // Listen for deleted events
-    socket.on('DeleteMessage', data => {
-        if (data == null) return;
-        if (userIsMod && data.moderator) {
-            messagedDeleted(data.id, data.moderator['user_name']);
-        }
-
-        let event = new CustomEvent('elixr:chat:delete-message', { detail: data });
-        window.dispatchEvent(event);
-    });
-
-    // Listen for purge messages
-    socket.on('PurgeMessage', async data => {
-        if (data == null) return;
-
-        if (userIsMod) {
-            let userInfo = await api.getUserInfo(data.user_id);
-
-            if (userInfo == null) return;
-
-            if (data.moderator != null) {
-                // timeout happened
-                userTimeout(userInfo.username, data.moderator.user_name);
-            } else {
-                // ban happened
-                userBanned(userInfo.username);
-            }
-        }
-
-        let event = new CustomEvent('elixr:chat:purge-message', { detail: data });
-        window.dispatchEvent(event);
-    });
-
-    socket.on('UserTimeout', data => {
-        log('USER WAS TIMED OUT', data);
-
-        let event = new CustomEvent('elixr:chat:user-timeout', { detail: data });
-        window.dispatchEvent(event);
-    });
-
-    // Listen for socket errors. You will need to handle these here.
-    socket.on('error', data => {
-        log('Chat socket error', data);
-
-        let event = new CustomEvent('elixr:chat:error', { detail: data });
-        window.dispatchEvent(event);
-    });
 }
 
 export async function connectToChat(channelId, userId) {
