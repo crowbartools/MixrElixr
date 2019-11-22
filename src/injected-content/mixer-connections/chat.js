@@ -49,12 +49,20 @@ function createChatSocket(userId, channelId, endpoints, authkey) {
             console.log(error);
         });
 
+    socket.on('UserUpdate', data => {
+        let event = new CustomEvent('elixr:chat:user-update', { detail: data });
+        window.dispatchEvent(event);
+    });
+
     // Listen for deleted events
     socket.on('DeleteMessage', data => {
         if (data == null) return;
         if (userIsMod && data.moderator) {
             messagedDeleted(data.id, data.moderator['user_name']);
         }
+
+        let event = new CustomEvent('elixr:chat:delete-message', { detail: data });
+        window.dispatchEvent(event);
     });
 
     // Listen for purge messages
@@ -74,17 +82,24 @@ function createChatSocket(userId, channelId, endpoints, authkey) {
                 userBanned(userInfo.username);
             }
         }
+
+        let event = new CustomEvent('elixr:chat:purge-message', { detail: data });
+        window.dispatchEvent(event);
     });
 
     socket.on('UserTimeout', data => {
-        console.log('USER WAS TIMED OUT');
-        console.log(data);
+        log('USER WAS TIMED OUT', data);
+
+        let event = new CustomEvent('elixr:chat:user-timeout', { detail: data });
+        window.dispatchEvent(event);
     });
 
     // Listen for socket errors. You will need to handle these here.
-    socket.on('error', error => {
-        log('Chat socket error');
-        console.log(error);
+    socket.on('error', data => {
+        log('Chat socket error', data);
+
+        let event = new CustomEvent('elixr:chat:error', { detail: data });
+        window.dispatchEvent(event);
     });
 }
 
