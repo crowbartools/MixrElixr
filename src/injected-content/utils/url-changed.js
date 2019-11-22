@@ -13,7 +13,7 @@ let pending = [],
     }
 
     // fullfill all pending promises that depend on the previous URI
-    let error = new Error('url-changed');
+    let error = new Error('elixr:url-changed');
     pending.forEach(pending => {
         let opts = pending.opts || {};
         if (!opts.reject) {
