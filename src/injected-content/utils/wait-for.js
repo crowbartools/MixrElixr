@@ -27,8 +27,9 @@ export let waitForElement = (function () {
     let waitingForElements = [];
     let observer = new MutationObserver(function () {
         waitingForElements = waitingForElements.filter(waitingForElement => {
-            if (document.querySelector(waitingForElement.selector) != null) {
-                waitingForElement.resolve();
+            let ele = document.querySelector(waitingForElement.selector);
+            if (ele != null) {
+                waitingForElement.resolve(ele);
                 return false;
             }
             return true;
