@@ -3,9 +3,10 @@
 //import styles
 import './scss/injected-styles.scss';
 
-// import state manager to ensure its modules get to hook events first
+// import state manager early to ensure it's modules get to hook events first
 import state from './state.js'; //eslint-disable-line no-unused-vars
 
+// import jquery wrapper early so it can apply jQuery plugins
 import $ from './plugins/jquery-wrapper.js';
 
 import {
