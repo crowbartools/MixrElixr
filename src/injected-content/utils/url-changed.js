@@ -1,18 +1,18 @@
 let pending = [],
-    previousUrl = window.location.href;
+    previousURI = window.location.href;
 
 
 (function pollurl() {
     setTimeout(pollurl, 50);
 
-    let currentUrl = window.location.href.replace(/#.*$/, '');
+    let currentURI = window.location.href;
 
     // uri hasn't changed
-    if (previousUrl === currentUrl) {
+    if (previousURI === currentURI) {
         return;
     }
 
-    // fullfill any pending promises that depend on the current page
+    // fullfill all pending promises that depend on the previous URI
     let error = new Error('url-changed');
     pending.forEach(pending => {
         let opts = pending.opts || {};
@@ -28,17 +28,17 @@ let pending = [],
 
     // create a new event
     let detail = {
-        previous: previousUrl.toString(),
-        current: currentUrl.toString()
-    };
-    let event = new CustomEvent('elixr:url-changed', { detail });
+            previous: previousURI.toString(),
+            current: currentURI.toString()
+        },
+        event = new CustomEvent('elixr:url-changed', { detail });
 
     // update url var, and emit event
-    previousUrl = currentUrl;
+    previousURI = currentURI;
     window.dispatchEvent(event);
 }());
 
-export function urlChangePromise(executer, opts = {}) {
+export function urlDependantPromise(executer, opts = {}) {
     let fullfilled = false,
         resolve,
         reject,
