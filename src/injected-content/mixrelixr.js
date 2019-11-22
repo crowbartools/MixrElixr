@@ -3,6 +3,16 @@
 //import styles
 import './scss/injected-styles.scss';
 
+// import state manager to ensure its modules get to hook events first
+import state from './state.js'; //eslint-disable-line no-unused-vars
+
+import $ from './plugins/jquery-wrapper.js';
+
+import {
+    waitForMixer,
+    waitForElement
+} from './utils/wait-for.js';
+
 import {
     debounce,
     log,
@@ -13,22 +23,11 @@ import {
     scrollChatToBottom
 } from './utils/index.js';
 
-import {
-    waitForMixer,
-    waitForElement
-} from './utils/wait-for.js';
-
-// import for side effects
-import './utils/url-changed-event.js';
-
 import * as api from './api';
 
 // vue apps
 import * as autocompleteAppBinder from './vue-apps/emote-autocomplete/emote-autocomplete-binder';
 import * as slowChatTimerAppBinder from './vue-apps/slow-chat-timer/slow-chat-timer-binder';
-
-//import deps
-import $ from './plugins/jquery-wrapper.js';
 
 import * as siteWide from './areas/sitewide/site-wide';
 import * as chatFeed from './areas/chat/chat-feed';
