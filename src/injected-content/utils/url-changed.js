@@ -38,7 +38,7 @@ let pending = [],
     window.dispatchEvent(event);
 }());
 
-export function urlDependantPromise(executer, opts = {}) {
+export function urlDependentPromise(executer, opts = {}) {
     let fullfilled = false,
         resolve,
         reject,
