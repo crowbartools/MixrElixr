@@ -1815,7 +1815,7 @@ $(() => {
         log('page loaded');
 
         // Listen for url changes
-        window.addEventListener('MixrElixr:url-changed', function() {
+        window.addEventListener('elixr:url-changed', function() {
             initialPageLoad = true;
             cache.currentStreamerName = null;
             cache.currentStreamerId = null;
