@@ -23,14 +23,14 @@ export default function () {
                     // not a channel page
                     if (
                         page == null ||
-                        (page.type !== 'embed-chat' && page.type !== 'channel') ||
-                        (page.id == null && page.channel == null)
+                        (page.type !== 'embedded-chat' && page.type !== 'channel') ||
+                        (page.identifier == null)
                     ) {
                         return resolve(null);
                     }
 
                     // get data from api
-                    api.getChannelData(page.id != null ? page.id : page.channel)
+                    api.getChannelData(page.identifier)
                         .then(channel => {
                             if (!channelCache || channelCache.fullfilled) {
                                 return;
