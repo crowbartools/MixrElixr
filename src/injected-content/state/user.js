@@ -7,7 +7,7 @@ let user,
     userIsMod;
 
 window.addEventListener('elixr:url-changed', function () {
-    user = null;
+    // user = null;
     userRoles = null;
     userIsMod = null;
 });
