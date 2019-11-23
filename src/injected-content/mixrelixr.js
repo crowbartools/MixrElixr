@@ -36,18 +36,7 @@ import * as emoteHandler from './areas/chat/emotes/emote-handler';
 import { handleEmoteModal } from './areas/chat/emotes/emote-modal-handler';
 import * as chatApi from './mixer-connections/chat';
 
-import Bowser from 'bowser';
-const browserEnv = Bowser.getParser(window.navigator.userAgent);
-const onlyLocalStorage = browserEnv.satisfies({
-    Linux: {
-        Chrome: '>0'
-    },
-    'Chrome OS': {
-        Chrome: '>0'
-    }
-});
-
-global.browser = require('webextension-polyfill');
+import browser, { storage } from './plugins/browser.js';
 
 // on document ready
 $(() => {
@@ -1438,8 +1427,6 @@ $(() => {
     }
 
     function getSettings() {
-        let storage = onlyLocalStorage ? browser.storage.local : browser.storage.sync;
-
         return storage.get({
             streamerPageOptions: { channelEmotes: true, globalEmotes: true },
             homePageOptions: { pinSearchToTop: true },
@@ -1471,8 +1458,8 @@ $(() => {
     }
 
     function checkValidDomain(url) {
+        // url checks not supported in this browser
         if (typeof URL !== 'function') {
-            // url checks not supported in this browser
             return false;
         }
 
@@ -1593,9 +1580,6 @@ $(() => {
 
     async function syncFavorites(favorites) {
         log('Syncing Favorites list: ' + favorites);
-
-        let storage = onlyLocalStorage ? browser.storage.local : browser.storage.sync;
-
         if (!settings) {
             await loadSettings();
         }

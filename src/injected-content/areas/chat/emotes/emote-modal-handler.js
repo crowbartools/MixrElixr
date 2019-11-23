@@ -6,6 +6,8 @@ import {
     escapeHTML
 } from '../../../utils/index.js';
 
+import browser from '../../../plugins/browser.js';
+
 function buildEmoteGroupSection(emoteGroup) {
     const customEmotesWrapper = $(
         `<div>
