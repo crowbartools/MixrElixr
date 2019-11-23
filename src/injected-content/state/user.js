@@ -16,7 +16,8 @@ window.addEventListener('elixr:chat:user-update', async () => {
     // update user based on result from chat?
 });
 
-export function current() {
+// state.user()
+function current() {
     if (!user) {
         user = urlDependentPromise(async resolve => {
             let details = await api.getCurrentUser();
@@ -29,7 +30,16 @@ export function current() {
     return user;
 }
 
-export function roles() {
+// state.user.cached()
+current.cached = function cached() {
+    if (!user || !user.fullfilled) {
+        return;
+    }
+    return user.result;
+};
+
+// state.user.roles()
+current.roles = function () {
     if (!userRoles) {
         userRoles = urlDependentPromise(async resolve => {
             let [userDetails, channel] = await Promise.all([current(), state.channel()]);
@@ -50,12 +60,13 @@ export function roles() {
         });
     }
     return userRoles;
-}
+};
 
-export function isMod() {
+// state.user.isMod()
+current.isMod = function () {
     if (!userIsMod) {
         userIsMod = urlDependentPromise(async resolve => {
-            let userRoles = await roles();
+            let userRoles = await current.roles();
             if (userIsMod.fullfilled) {
                 return;
             }
@@ -63,4 +74,6 @@ export function isMod() {
         });
     }
     return userIsMod;
-}
+};
+
+export default current;

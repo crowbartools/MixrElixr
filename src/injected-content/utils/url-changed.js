@@ -61,6 +61,7 @@ export function urlDependentPromise(executer, opts = {}) {
                 if (!fullfilled) {
                     fullfilled = true;
                     pending = pending.filter(pending => !pending.promise.fullfilled);
+                    this.result = value;
                     resolve(value);
                 }
             }

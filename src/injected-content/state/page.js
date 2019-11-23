@@ -6,14 +6,14 @@ import $ from './plugins/jquery-wrapper.js';
 const embedChatMatch = /^https?:\/\/(?:www\.)?mixer\.com\/embed\/chat\/(\w+)/;
 const channelMatch = /^https?:\/\/(?:www\.)mixer\.com\/([^(){}%\\/?#]+)(?:\(hub:.*)?$/i;
 
-let pageCache;
+let page;
 
 window.addEventListener('elixr:url-changed', function () {
-    pageCache = null;
+    page = null;
 });
 
-export default function () {
-    if (!pageCache) {
+function current() {
+    if (!page) {
         // remove query parameters and hash from uri
         // remove /mobile suffix from uri
         let uri = window.location.uri.replace(/[?#].*$/, '').replace(/\/mobile\/?$/, '');
@@ -21,18 +21,18 @@ export default function () {
         // Page: embedded chat
         let isEmbedChat = embedChatMatch.exec(uri);
         if (isEmbedChat != null) {
-            pageCache = Promise.resolve({
+            page = Promise.resolve({
                 type: 'embedded-chat',
                 channel: isEmbedChat[1]
             });
 
         // page deduction needs to wait for mixer to load
         } else {
-            pageCache = urlDependentPromise(async resolve => {
+            page = urlDependentPromise(async resolve => {
                 await waitForMixer();
 
                 // fullfilled due to url change
-                if (pageCache.fullfilled) {
+                if (page.fullfilled) {
                     return;
                 }
 
@@ -64,7 +64,6 @@ export default function () {
                     details.identifier = channelInUri[1];
                     return resolve(details);
                 }
-
 
                 // Attempt to get channel name from dom
                 let pollPageForChannel = urlDependentPromise(resolve => {
@@ -99,7 +98,7 @@ export default function () {
                 let identifier = await pollPageForChannel;
 
                 // promise fullfilled due to url change
-                if (!pageCache || pageCache.fullfilled) {
+                if (!page || page.fullfilled) {
                     return;
                 }
                 if (identifier != null) {
@@ -109,5 +108,13 @@ export default function () {
             });
         }
     }
-    return pageCache;
+    return page;
 }
+current.cached = function () {
+    if (!page || !page.fullfilled) {
+        return;
+    }
+    return page.result;
+};
+
+export default current;

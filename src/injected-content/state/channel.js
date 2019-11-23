@@ -2,21 +2,21 @@ import * as api from '../api.js';
 import pageInfo from './page.js';
 import {urlDependentPromise} from '../utils/url-changed.js';
 
-let channelCache = null;
+let channel = null;
 
 window.addEventListener('elixr:url-changed', () => {
-    channelCache = null;
+    channel = null;
 });
 
 // state.channel()
-export default function () {
-    if (!channelCache) {
-        channelCache = urlDependentPromise(resolve => {
+function current() {
+    if (!channel) {
+        channel = urlDependentPromise(resolve => {
             pageInfo()
                 .then(page => {
 
                     // promise fullfilled due to URL change
-                    if (!channelCache || channelCache.fullfilled) {
+                    if (!channel || channel.fullfilled) {
                         return;
                     }
 
@@ -31,15 +31,25 @@ export default function () {
 
                     // get data from api
                     api.getChannelData(page.identifier)
-                        .then(channel => {
-                            if (!channelCache || channelCache.fullfilled) {
+                        .then(channelDetails => {
+                            if (!channel || channel.fullfilled) {
                                 return;
                             }
-                            resolve(channel);
+                            resolve(channelDetails);
                         });
 
                 });
         });
     }
-    return channelCache;
+    return channel;
 }
+
+// state.channel.cached()
+current.cached = function cached() {
+    if (!channel || !channel.fullfilled) {
+        return;
+    }
+    return channel.result;
+};
+
+export default current;
