@@ -2,6 +2,9 @@ import state from './state/index.js';
 import emit from './utils/index.js';
 import { waitForDom } from './utils/wait-for.js';
 
+// imported for side effects;
+import './page/';
+
 let initialLoad = true;
 async function init() {
     let detail = {initialLoad};
