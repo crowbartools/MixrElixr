@@ -90,6 +90,7 @@ export async function connectToChat() {
         .auth(channel.id, chat.authkey ? user.id : null, chat.authkey)
         .then(() => {
             isConnectingToChat = false;
+            emit('chat:connected');
         })
         .catch(error => {
             disconnectChat();
