@@ -33,7 +33,7 @@ import * as chatApi from './mixer-connections/chat';
 
 import browser, { storage } from './plugins/browser.js';
 
-// Pre-emptively start to get the current user as retrievely such info doesn't depend on the page
+// Pre-emptively start to get the current user as retrieving such info doesn't depend on the page
 state.user();
 
 // on document ready

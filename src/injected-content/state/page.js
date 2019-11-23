@@ -12,6 +12,7 @@ window.addEventListener('elixr:url-changed', function () {
     page = null;
 });
 
+// state.page();
 function current() {
     if (!page) {
         // remove query parameters and hash from uri
@@ -110,6 +111,8 @@ function current() {
     }
     return page;
 }
+
+// state.page.cached();
 current.cached = function () {
     if (!page || !page.fullfilled) {
         return;
