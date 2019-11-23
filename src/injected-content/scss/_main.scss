@@ -51,7 +51,7 @@
     font-weight: bold;             
 }
 
-.me-emote-preview {
+.elixr-emote-preview {
     cursor: pointer;
     margin-right: 5px;
     margin-bottom: 5px; 
@@ -112,7 +112,7 @@
 }
 
 /* Dropdown */
-.me-dropbtn {
+.elixr-dropbtn {
     background-color: transparent;
     color: #9fa4ae;
     height: 60px;
@@ -122,18 +122,18 @@
     cursor: pointer;
   }
   
-  .me-dropbtn:hover,
-  .me-dropdown:hover > .me-dropbtn {
+  .elixr-dropbtn:hover,
+  .elixr-dropdown:hover > .elixr-dropbtn {
     background-color: #43526D;
     color: white;
   }
   
-  .me-dropdown {
+  .elixr-dropdown {
     position: relative;
     display: inline-block;
   }
   
-  .me-dropdown-content {
+  .elixr-dropdown-content {
     display: none;
     position: absolute;
     background-color: #43526D;
@@ -142,7 +142,7 @@
     z-index: 1;
   }
   
-  .me-dropdown-content a {
+  .elixr-dropdown-content a {
     color: #9fa4ae;
     padding: 12px 16px;
     height: 50px;
@@ -153,9 +153,9 @@
     font-family: "Industrywf",sans-serif !important;
   }
   
-  .me-dropdown a:hover {color:white;}
+  .elixr-dropdown a:hover {color:white;}
 
-  .me-dropdown-show {display: block;}
+  .elixr-dropdown-show {display: block;}
 
   /* end dropdown */
 
@@ -171,7 +171,7 @@
     opacity: 1;
 }
 
-.ME_favorite-btn {
+.elixr-favorite-btn {
     font-size: 18px;
     cursor: pointer;
     display: flex;
@@ -186,16 +186,16 @@
     background: #364163;
 }
 
-.ME_favorite-btn span {
+.elixr-favorite-btn span {
     transform: translateY(-1px);
 }
 
-.ME_favorite-btn.faved {
+.elixr-favorite-btn.faved {
     /*color: rgb(4,117,213);*/
 }
 
-.ME_favorite-btn:hover,
-.ME_favorite-btn.faved:hover {
+.elixr-favorite-btn:hover,
+.elixr-favorite-btn.faved:hover {
     background: #2e3958;
 }
 /** End Highlights CSS **/
@@ -260,29 +260,29 @@ b-desktop-header.searchPinned.collapsed {
     opacity: 1;
 }
 
-b-browse-channels-header > div > .me-pinned-search,
-b-browse-channels-header > div > .input.me-pinned-search,
-b-browse-channels-header > div > .control-filter.me-pinned-search {
+b-browse-channels-header > div > .elixr-pinned-search,
+b-browse-channels-header > div > .input.elixr-pinned-search,
+b-browse-channels-header > div > .control-filter.elixr-pinned-search {
     position: fixed;
     z-index: 10;     
     transition: top 300ms cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-b-browse-channels-header > div > .me-pinned-search.me-searchbar {
+b-browse-channels-header > div > .elixr-pinned-search.elixr-searchbar {
     top: 23px;
     left: 50%;
     transform: translateX(-50%);
     z-index:50;
 }
 
-b-browse-channels-header > div > .me-pinned-search.me-filterbtn {
+b-browse-channels-header > div > .elixr-pinned-search.elixr-filterbtn {
     top: 31px;
     left: 50%;
     transform: translateX(calc(-50% + 215px));
     z-index:50;
 }
 
-b-browse-filters.me-filterspanel {
+b-browse-filters.elixr-filterspanel {
     position: fixed;
     top: 79px;
     z-index: 100;
@@ -299,8 +299,8 @@ b-browse-framework > header.searchPinned {
     background: transparent !important;
 }
 
-.me-searchbar {
-    &:not(.me-nav-collapsed) > input {
+.elixr-searchbar {
+    &:not(.elixr-nav-collapsed) > input {
         border: 2px #1a2d57 solid !important;
     }
 }
@@ -328,10 +328,6 @@ b-browse-framework > header.searchPinned {
     z-index: 99999999;
 }
 
-.mixr-modal {
-    background: #29374A;
-}
-
 .changelog-header {
     margin-top: 30px;
     margin-bottom: 13px;
@@ -352,64 +348,64 @@ b-browse-framework > header.searchPinned {
     opacity: 0.8;
 }
 
-.me-simplified-topbar {
+.elixr-simplified-topbar {
     margin-right: 0 !important;
 }
 
-.me-simplified-topbar > b-language-selector > button > span {
+.elixr-simplified-topbar > b-language-selector > button > span {
     display: none;
 }
 
-.me-simplified-topbar > b-language-selector > button > bui-icon:not(.icon-web) {
+.elixr-simplified-topbar > b-language-selector > button > bui-icon:not(.icon-web) {
     display: none;
 }
 
 
-.me-simplified-topbar .icon-InternetWithController {
+.elixr-simplified-topbar .icon-InternetWithController {
     line-height: 1.2;
 }
 
-b-notifications.me-simplified-topbar {
+b-notifications.elixr-simplified-topbar {
     margin: 0 3px 0 5px !important;
 }
 
-.me-simplified-topbar .flyout-menu {
+.elixr-simplified-topbar .flyout-menu {
     background: #364558;
     border-radius: 20px;
     margin-right: 0 !important;
 }
 
-b-embers-button.me-simplified-topbar > div > div {
+b-embers-button.elixr-simplified-topbar > div > div {
     margin-left: 0 !important;
     border: none !important;
     padding: none !important;
 }
 
-b-embers-button.me-simplified-topbar > div > div:hover {
+b-embers-button.elixr-simplified-topbar > div > div:hover {
     margin-left: 0 !important;
     background: transparent !important;
     border: none !important;
     opacity: 0.7;
 }
 
-b-embers-button.me-simplified-topbar > div > div > div {
+b-embers-button.elixr-simplified-topbar > div > div > div {
     display: none;
 }
 
-.logo.me-simplified-topbar {
+.logo.elixr-simplified-topbar {
     margin: 0 0 0px 20px !important;
     min-width: 0 !important;
 }
 
-.logo.me-simplified-topbar > .full {
+.logo.elixr-simplified-topbar > .full {
     display: none !important;
 }
 
-.logo.me-simplified-topbar > .merge {
+.logo.elixr-simplified-topbar > .merge {
     display: block !important;
 }
 
-#me-quick-host-button {
+#elixr-quick-host-button {
     font-size: 13px;
     color: #09afff;
     margin-left: 10px;

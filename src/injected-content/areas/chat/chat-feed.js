@@ -5,11 +5,11 @@ let showModActions = true;
 export function setup(options) {
     showModActions = options.showModActions !== false;
     if (showModActions) {
-        $('.me-deleted-action').show();
-        $('.me-mod-action-wrapper').show();
+        $('.elixr-deleted-action').show();
+        $('.elixr-mod-action-wrapper').show();
     } else {
-        $('.me-deleted-action').hide();
-        $('.me-mod-action-wrapper').hide();
+        $('.elixr-deleted-action').hide();
+        $('.elixr-mod-action-wrapper').hide();
     }
 }
 
@@ -20,11 +20,11 @@ export function messagedDeleted(messageId, moderatorName) {
     if (chatMessage == null || chatMessage.length < 1) return;
 
     //we already have a deleted message here... this shouldnt happen
-    if (chatMessage.find('.me-deleted-action').length > 0) return;
+    if (chatMessage.find('.elixr-deleted-action').length > 0) return;
 
     $(`
-        <div class="me-deleted-action">
-            <span class=" me-tooltip" title="MixrElixr: Deleted message mod action">(Deleted by ${moderatorName})</span>
+        <div class="elixr-deleted-action">
+            <span class=" elixr-tooltip" title="MixrElixr: Deleted message mod action">(Deleted by ${moderatorName})</span>
         </div>
     `).appendTo(chatMessage);
 
@@ -36,9 +36,9 @@ export function userBanned(username) {
 
     const chatContainer = $('[class*="scrollWrapper_"]');
     $(
-        `<div class="me-mod-action-wrapper">
-            <div class="me-mod-action-bubble me-tooltip" title="MixrElixr: Ban mod action">
-                <span class="me-icon me-banned-icon"></span>
+        `<div class="elixr-mod-action-wrapper">
+            <div class="elixr-mod-action-bubble elixr-tooltip" title="MixrElixr: Ban mod action">
+                <span class="elixr-icon elixr-banned-icon"></span>
                 <span><b>${username}</b> has been banned.</span>
             </div>
         </div>`
@@ -50,9 +50,9 @@ export function userTimeout(username, modName) {
 
     const chatContainer = $('[class*="scrollWrapper_"]');
     $(
-        `<div class="me-mod-action-wrapper" >
-            <div class="me-mod-action-bubble me-tooltip" title="MixrElixr: Timeout mod action">
-                <span class="me-icon me-timeout-icon"></span>
+        `<div class="elixr-mod-action-wrapper" >
+            <div class="elixr-mod-action-bubble elixr-tooltip" title="MixrElixr: Timeout mod action">
+                <span class="elixr-icon elixr-timeout-icon"></span>
                 <span><b>${username}</b> has been timed out by <b>${modName}</b>.</span>
             </div>
         </div>`

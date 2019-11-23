@@ -119,7 +119,7 @@ $(() => {
             cache.currentPage = 'streamer';
 
             waitForElement("[class*='chatContainer']").then(() => {
-                $("[class*='chatContainer']").addClass('me-chat-container');
+                $("[class*='chatContainer']").addClass('elixr-chat-container');
             });
 
             // get the streamers name, this also waits for the page to load
@@ -271,16 +271,16 @@ $(() => {
 
             pageHeader.addClass('searchPinned');
             searchHeader.addClass('searchPinned');
-            searchBar.addClass('me-pinned-search me-searchbar');
-            filterButton.addClass('me-pinned-search me-filterbtn');
-            filterPanel.addClass('me-filterspanel');
+            searchBar.addClass('elixr-pinned-search elixr-searchbar');
+            filterButton.addClass('elixr-pinned-search elixr-filterbtn');
+            filterPanel.addClass('elixr-filterspanel');
         } else {
-            $('.me-pinned-search').css('top', '');
+            $('.elixr-pinned-search').css('top', '');
             pageHeader.removeClass('searchPinned');
             searchHeader.removeClass('searchPinned');
-            searchBar.removeClass('me-pinned-search me-searchbar');
-            filterButton.removeClass('me-pinned-search me-filterbtn');
-            filterPanel.removeClass('me-filterspanel');
+            searchBar.removeClass('elixr-pinned-search elixr-searchbar');
+            filterButton.removeClass('elixr-pinned-search elixr-filterbtn');
+            filterPanel.removeClass('elixr-filterspanel');
             filterPanel.css('top', '');
             $('.elixr-badge-wrapper').remove();
         }
@@ -529,9 +529,9 @@ $(() => {
 
         waitForElement('.stage').then(() => {
             if (options.largerVideo === false) {
-                $('.stage').removeClass('me-video-stage');
+                $('.stage').removeClass('elixr-video-stage');
             } else {
-                $('.stage').addClass('me-video-stage');
+                $('.stage').addClass('elixr-video-stage');
             }
         });
 
@@ -659,7 +659,7 @@ $(() => {
         } else {
             log("Highlights not active. So we don't do this.");
             $('div.owner-block h2:first-of-type').removeClass('favoriteUsername');
-            $('#ME_favorite-btn').removeClass('faved');
+            $('.elixr-favorite-btn').removeClass('faved');
         }
 
         // Auto close interactive
@@ -827,9 +827,9 @@ $(() => {
         if (!urlParams.has('clip')) {
             waitForElement('[class*="chatContainer_"]').then(chatContainer => {
                 if (options.lightsOutTheaterMode) {
-                    chatContainer.addClass('me-lights-out');
+                    chatContainer.addClass('elixr-lights-out');
                 } else {
-                    chatContainer.removeClass('me-lights-out');
+                    chatContainer.removeClass('elixr-lights-out');
                 }
             });
         }
@@ -856,12 +856,12 @@ $(() => {
             infoBarShown = true;
             $('b-channel-info-bar > .info-bar').css('opacity', '1');
             theaterElements.removeClass('theaterMode');
-            $('.stage').addClass('me-video-stage');
+            $('.stage').addClass('elixr-video-stage');
 
-            $('.me-chat-container').removeClass('theaterMode');
+            $('.elixr-chat-container').removeClass('theaterMode');
 
-            if ($('#me-quick-host-button').length > 0) {
-                $('#me-quick-host-button').remove();
+            if ($('#elixr-quick-host-button').length > 0) {
+                $('#elixr-quick-host-button').remove();
             }
 
             // hacky way to toggle "position: relative" on and off to force the chat element to rerender with proper positioning
@@ -893,13 +893,13 @@ $(() => {
                     }
                 }
 
-                if ($('#me-quick-host-button').length > 0) {
-                    $('#me-quick-host-button').remove();
+                if ($('#elixr-quick-host-button').length > 0) {
+                    $('#elixr-quick-host-button').remove();
                 }
 
                 const currentViewerCount = $('b-channel-info-bar').find('.viewers.layout-row');
                 $(`
-          <div id="me-quick-host-button">
+          <div id="elixr-quick-host-button">
             <div>Host</div>
           </div>
         `).insertAfter(currentViewerCount);
@@ -913,8 +913,8 @@ $(() => {
                         .click();
                 };
 
-                $('#me-quick-host-button').off('click', onQuickHostClick);
-                $('#me-quick-host-button').on('click', onQuickHostClick);
+                $('#elixr-quick-host-button').off('click', onQuickHostClick);
+                $('#elixr-quick-host-button').on('click', onQuickHostClick);
 
                 setTimeout(() => {
                     theaterElements.addClass('theaterMode');
@@ -937,8 +937,8 @@ $(() => {
 
                 $('b-stage').addClass('bui-arContent addedBuiAr');
                 $('.stage').addClass('aspect-16-9 theaterMode');
-                $('.stage').removeClass('me-video-stage');
-                $('.me-chat-container').addClass('theaterMode');
+                $('.stage').removeClass('elixr-video-stage');
+                $('.elixr-chat-container').addClass('theaterMode');
             }
         }
     }
@@ -1447,13 +1447,13 @@ $(() => {
         let collapsedChanged = topNavCollapsed !== cachedCollapsed;
 
         if (topNavCollapsed) {
-            $('.me-searchbar').addClass('me-nav-collapsed');
+            $('.elixr-searchbar').addClass('elixr-nav-collapsed');
         } else {
-            $('.me-searchbar').removeClass('me-nav-collapsed');
+            $('.elixr-searchbar').removeClass('elixr-nav-collapsed');
         }
 
         let logoAndNavBtnsWidth = $('a.logo').outerWidth() + $('nav').outerWidth() + 15;
-        let searchbarPosition = $('.me-searchbar').position();
+        let searchbarPosition = $('.elixr-searchbar').position();
         let searchbarStartsAt = searchbarPosition ? searchbarPosition.left : 0;
 
         let browserCompact = logoAndNavBtnsWidth >= searchbarStartsAt;
@@ -1468,26 +1468,26 @@ $(() => {
         cache.browserCompact = browserCompact;
 
         // find searchbar
-        let pinnedItems = $('.me-pinned-search');
+        let pinnedItems = $('.elixr-pinned-search');
         if (pinnedItems) {
             // update searchbar css
             let searchTopAmount = topNavCollapsed ? 4 : 23;
             if (browserCompact) {
                 searchTopAmount = searchTopAmount + (topNavCollapsed ? 60 : 65);
             }
-            $('.me-searchbar').css('top', searchTopAmount + 'px');
+            $('.elixr-searchbar').css('top', searchTopAmount + 'px');
 
             let filterTopAmount = topNavCollapsed ? 12 : 31;
             if (browserCompact) {
                 filterTopAmount = filterTopAmount + (topNavCollapsed ? 60 : 65);
             }
-            $('.me-filterbtn').css('top', filterTopAmount + 'px');
+            $('.elixr-filterbtn').css('top', filterTopAmount + 'px');
 
             let filterPanelTopAmount = topNavCollapsed ? 60 : 79;
             if (browserCompact) {
                 filterPanelTopAmount = filterPanelTopAmount + (topNavCollapsed ? 60 : 65);
             }
-            $('.me-filterspanel').css('top', filterPanelTopAmount + 'px');
+            $('.elixr-filterspanel').css('top', filterPanelTopAmount + 'px');
 
             // add or remove box shadow if needed
             if (compactChanged) {
@@ -1503,12 +1503,12 @@ $(() => {
     // This inserts a button that toggles favorite status of the specified streamer.
     // This also modifies the coloration on the user name.
     function addFavoriteButton(streamerName, isFavorited = false, isCostream = false) {
-        let favoriteBtnTarget = `.ME_favorite-btn[streamer='${streamerName}']`;
+        let favoriteBtnTarget = `.elixr-favorite-btn[streamer='${streamerName}']`;
 
         // Removing the favorite button to avoid any duplication
         // we dont want to filter to the streamer name here so we also remove any
         // favorite buttons from other streamers pages
-        $('.ME_favorite-btn').remove();
+        $('.elixr-favorite-btn').remove();
 
         // Before we add any button, we need to find the DOM objects that will be impacted by our insertions.
         let avatarBlock, preceedingElement, userNameTarget;
@@ -1526,7 +1526,7 @@ $(() => {
         // This adds the favorite button with either a hollow star (non-favorite), or filled star (favorite).
         // It also marks the streamer's name depending on favorite status.
         preceedingElement.after(
-            `<div streamer="${streamerName}" class="ME_favorite-btn me-tooltip" title="MixrElixr: Favorite"><span>&#9733;</span></div>`
+            `<div streamer="${streamerName}" class="elixr-favorite-btn elixr-tooltip" title="MixrElixr: Favorite"><span>&#9733;</span></div>`
         );
         if (isFavorited) {
             userNameTarget.addClass('favoriteUsername');
@@ -1548,7 +1548,7 @@ $(() => {
     // This toggles on-screen DOM elements based on the specified streamer's favorite status.
     function setFavoriteButtonState(streamerName, isFavorited = false, isCostream = false) {
         // First, let's find out which streamer we're working on.
-        let buttonTarget = $(".ME_favorite-btn[streamer='" + streamerName + "']");
+        let buttonTarget = $(".elixr-favorite-btn[streamer='" + streamerName + "']");
 
         // Now we need to find the user name element so we can modifiy it.
         let userNameTarget;
@@ -1878,7 +1878,7 @@ $(() => {
     }
 
     // tooltip listener
-    $.initialize('.me-tooltip', function() {
+    $.initialize('.elixr-tooltip', function() {
         let meTooltip = $(this);
 
         meTooltip.tooltipster({

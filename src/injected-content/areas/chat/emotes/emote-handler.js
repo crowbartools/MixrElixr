@@ -82,7 +82,7 @@ export function getEmoteElement(emote, providerName = 'MixrElixr') {
     const styles = `max-height: ${emote.height}px; max-width: ${emote.width}px;`;
     const emoteElement = `<img src="${
         emote.url
-    }" style="${styles}" class="elixr-emote me-tooltip" title="${providerName}: Custom emote '${utils.escapeHTML(
+    }" style="${styles}" class="elixr-emote elixr-tooltip" title="${providerName}: Custom emote '${utils.escapeHTML(
         emote.code
     )}'">`;
     return emoteElement;
@@ -105,7 +105,7 @@ export function handleEmotes(messageContainerElement, channelName) {
         let component = $(this);
 
         // we've already replaced emotes on this, skip it
-        if (component.hasClass('me-custom-emote')) {
+        if (component.hasClass('elixr-custom-emote')) {
             return;
         }
 
@@ -127,7 +127,7 @@ export function handleEmotes(messageContainerElement, channelName) {
         if (foundEmote) {
             component.html(text);
 
-            component.addClass('me-custom-emote');
+            component.addClass('elixr-custom-emote');
         }
     });
 }

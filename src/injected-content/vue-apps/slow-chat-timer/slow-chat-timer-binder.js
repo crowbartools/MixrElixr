@@ -41,14 +41,14 @@ function clickListener() {
 
 export function bindSlowChatTimerApp(composerBlock, slowChatMils) {
     // remove previous
-    if ($('#me-slow-chat-timer').length > 0) {
-        $('#me-slow-chat-timer').remove();
+    if ($('#elixr-slow-chat-timer').length > 0) {
+        $('#elixr-slow-chat-timer').remove();
     }
 
-    composerBlock.prepend('<div id="me-slow-chat-timer-binder"></div>');
+    composerBlock.prepend('<div id="elixr-slow-chat-timer-binder"></div>');
 
     let appHost = new Vue({
-        el: '#me-slow-chat-timer-binder',
+        el: '#elixr-slow-chat-timer-binder',
         render: h => h(SlowChatTimerApp)
     });
 

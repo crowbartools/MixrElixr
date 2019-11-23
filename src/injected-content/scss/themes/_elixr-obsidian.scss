@@ -68,7 +68,7 @@ body.elixr-obsidian {
         [class*="attributionContents_"], 
         [class*="stickerMessage_"], 
         [class*="bubbleWrapper_"],
-        .me-mod-action-bubble {
+        .elixr-mod-action-bubble {
             background: $headerColor !important;
         }
     }
@@ -95,19 +95,19 @@ body.elixr-obsidian {
         background: $headerSecondary !important;
     }
 
-    .me-autocomplete {
+    .elixr-autocomplete {
         background: $headerColor;
     }
 
-    .me-emote-tabs {
+    .elixr-emote-tabs {
         background: #232324;
         border-bottom: 1px solid hsla(0,0%,100%,.1);
-        .me-emote-tab.me-tab-selected {
+        .elixr-emote-tab.elixr-tab-selected {
             background: #151515;
         }
     }
 
-    .me-searchbar:not(.me-nav-collapsed) > input {
+    .elixr-searchbar:not(.elixr-nav-collapsed) > input {
         border-color: #313131 !important;
     }
 

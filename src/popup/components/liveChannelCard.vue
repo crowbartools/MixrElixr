@@ -1,5 +1,5 @@
 <template>
-    <div class="me-card" @mouseover="hover = true" @mouseleave="(hover = false), (videoReady = false)">
+    <div class="elixr-card" @mouseover="hover = true" @mouseleave="(hover = false), (videoReady = false)">
         <a v-bind:href="channelLink" target="_blank">
             <span class="sr-only">{{ friend.token }}</span>
             <span class="sr-only"> streaming {{ channelGame }}</span>

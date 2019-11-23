@@ -1,5 +1,5 @@
 <template>
-    <div v-cloak id="me-emote-autocomplete" class="me-autocomplete" v-show="showMenu">
+    <div v-cloak id="elixr-emote-autocomplete" class="elixr-autocomplete" v-show="showMenu">
         <ul role="listbox">
             <li
                 v-for="(emote, index) in filteredEmotes"
@@ -7,19 +7,19 @@
                 :id="getEmoteElementId(emote)"
             >
                 <button
-                    class="me-autocomplete-emote"
+                    class="elixr-autocomplete-emote"
                     :class="{ selected: isSelected(index) }"
                     style="align-items: center;display: inline-flex;"
                     v-on:click="autocompleteEmote(emote)"
                 >
-                    <span class="elixr-custom-emote twentyfour me-emotes-preview">
+                    <span class="elixr-custom-emote twentyfour elixr-emotes-preview">
                         <img :src="emote.url" />
                     </span>
                     <span class="emote-name">{{ emote.code }}</span>
                 </button>
             </li>
         </ul>
-        <div class="me-autocomplete-footer">
+        <div class="elixr-autocomplete-footer">
             <span>Press <b>tab</b> to autocomplete.</span>
         </div>
     </div>
@@ -84,7 +84,7 @@ export default {
             this.scrollSelectedIntoView();
         },
         computeRows: function() {
-            const rects = [...this.$el.getElementsByClassName('me-autocomplete-emote')].map(el =>
+            const rects = [...this.$el.getElementsByClassName('elixr-autocomplete-emote')].map(el =>
                 el.getBoundingClientRect()
             );
             const rows = [[]];

@@ -59,7 +59,7 @@ body.elixr-dark {
         [class*="attributionContents_"], 
         [class*="stickerMessage_"], 
         [class*="bubbleWrapper_"],
-        .me-mod-action-bubble {
+        .elixr-mod-action-bubble {
             background: #30343a !important;
         }
     }
@@ -82,18 +82,18 @@ body.elixr-dark {
         background: #22262B !important;
     }
 
-    .me-autocomplete {
+    .elixr-autocomplete {
         background: #181b1f;
     }
 
-    .me-emote-tabs {
+    .elixr-emote-tabs {
         background: rgb(36, 38, 39);
-        .me-emote-tab.me-tab-selected {
+        .elixr-emote-tab.elixr-tab-selected {
             background: #171819;
         }
     }
 
-    .me-searchbar:not(.me-nav-collapsed) > input {
+    .elixr-searchbar:not(.elixr-nav-collapsed) > input {
         border-color: #313131 !important;
     }
 

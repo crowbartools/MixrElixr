@@ -1,7 +1,7 @@
 <template>
-    <div v-cloak id="me-slow-chat-timer" class="me-slow-chat-timer-wrapper">
+    <div v-cloak id="elixr-slow-chat-timer" class="elixr-slow-chat-timer-wrapper">
         <div
-            class="me-slow-chat-timer me-tooltip"
+            class="elixr-slow-chat-timer elixr-tooltip"
             title="MixrElixr: Slow Chat Cooldown"
             :class="{ hidden: this.cooldownExpired }"
         >
@@ -60,7 +60,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.me-slow-chat-timer-wrapper {
+.elixr-slow-chat-timer-wrapper {
     right: 0;
     left: 0;
     bottom: calc(100% - 7px);
@@ -70,7 +70,7 @@ export default {
     padding-right: 6px;
     overflow: hidden;
 
-    .me-slow-chat-timer {
+    .elixr-slow-chat-timer {
         font-family: monospace;
         font-size: 11px;
         padding: 2px 5px;

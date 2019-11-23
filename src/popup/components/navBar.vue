@@ -6,7 +6,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mr-auto">
                 <li
-                    class="nav-item clickable me-nav-item"
+                    class="nav-item clickable elixr-nav-item"
                     :class="{ active: onlineActive }"
                     @click="changeTab('online')"
                 >

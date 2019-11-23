@@ -19,7 +19,7 @@ function buildEmoteGroupSection(emoteGroup) {
     for (const emote of emoteGroup.emotes) {
         const emoteCode = escapeHTML(emote.code);
         emoteList.append(`
-            <span class="me-emote-preview" style="display: inline-block; margin: 0 5px 10px 0;" emote-code="${emoteCode}">
+            <span class="elixr-emote-preview" style="display: inline-block; margin: 0 5px 10px 0;" emote-code="${emoteCode}">
                 ${emoteHandler.getEmoteElement(emote, emoteGroup.providerName)}
             </span>`);
     }
@@ -66,29 +66,29 @@ export function handleEmoteModal() {
                         emotesContainer.addClass('mixer-emotes-wrapper');
                         emotesContainer.show();
 
-                        if ($('.me-emote-tabs').length > 0) {
-                            $('.me-emote-tabs').remove();
+                        if ($('.elixr-emote-tabs').length > 0) {
+                            $('.elixr-emote-tabs').remove();
                         }
 
                         $(`
-                            <div class="me-emote-tabs">
-                                <div class="me-emote-tab me-tooltip mixer  me-tab-selected" title="Mixer Emotes">
+                            <div class="elixr-emote-tabs">
+                                <div class="elixr-emote-tab elixr-tooltip mixer  elixr-tab-selected" title="Mixer Emotes">
                                     <img src="${browser.runtime.getURL('resources/images/MixerMerge_Dark.svg')}">
                                 </div>
-                                <div class="me-emote-tab me-tooltip elixr" title="MixrElixr Emotes">
+                                <div class="elixr-emote-tab elixr-tooltip elixr" title="MixrElixr Emotes">
                                     <img src="${browser.runtime.getURL('resources/images/elixr-light-128.png')}">
                                 </div>
                             </div>
                         `).insertBefore(emotesContainer);
 
-                        $('.me-emote-tab').off('click');
-                        $('.me-emote-tab').on('click', function() {
+                        $('.elixr-emote-tab').off('click');
+                        $('.elixr-emote-tab').on('click', function() {
                             let clickedTab = $(this);
-                            if (!clickedTab.hasClass('me-tab-selected')) {
-                                clickedTab.addClass('me-tab-selected');
+                            if (!clickedTab.hasClass('elixr-tab-selected')) {
+                                clickedTab.addClass('elixr-tab-selected');
                                 let otherTabType = clickedTab.hasClass('elixr') ? 'mixer' : 'elixr';
-                                $(`.${otherTabType}`).removeClass('me-tab-selected');
-                                let elixrEmotes = $('.me-emotes-wrapper');
+                                $(`.${otherTabType}`).removeClass('elixr-tab-selected');
+                                let elixrEmotes = $('.elixr-emotes-wrapper');
                                 let mixerEmotes = $('.mixer-emotes-wrapper');
                                 if (otherTabType === 'mixer') {
                                     mixerEmotes.hide();
@@ -100,11 +100,11 @@ export function handleEmoteModal() {
                             }
                         });
 
-                        if ($('.me-emotes-wrapper').length > 0) {
-                            $('.me-emotes-wrapper').remove();
+                        if ($('.elixr-emotes-wrapper').length > 0) {
+                            $('.elixr-emotes-wrapper').remove();
                         }
 
-                        let elixrEmotesContainer = $(`<div class="me-emotes-wrapper"></div>`);
+                        let elixrEmotesContainer = $(`<div class="elixr-emotes-wrapper"></div>`);
                         elixrEmotesContainer.hide();
 
                         const chatChannelName = getCurrentChatChannelName();
@@ -120,8 +120,8 @@ export function handleEmoteModal() {
 
                         elixrEmotesContainer.insertBefore(emotesContainer);
 
-                        $('.me-emote-preview').off('click');
-                        $('.me-emote-preview').on('click', function() {
+                        $('.elixr-emote-preview').off('click');
+                        $('.elixr-emote-preview').on('click', function() {
                             let emoteCode = $(this).attr('emote-code');
                             let chatTextarea = $('#chat-input').children('textarea');
                             let currentValue = chatTextarea.val();

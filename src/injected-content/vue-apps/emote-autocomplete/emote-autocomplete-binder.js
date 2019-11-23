@@ -77,8 +77,8 @@ function keyupListener(e) {
 
 export function bindEmoteAutocompleteApp(composerBlock, options) {
     //clean up any previous
-    if ($('#me-emote-autocomplete').length > 0) {
-        $('#me-emote-autocomplete').remove();
+    if ($('#elixr-emote-autocomplete').length > 0) {
+        $('#elixr-emote-autocomplete').remove();
     }
 
     let keyupListenerFunc = debounce(keyupListener, 100);
@@ -111,10 +111,10 @@ export function bindEmoteAutocompleteApp(composerBlock, options) {
         }
     }
 
-    composerBlock.prepend('<ul id="me-autocomplete-binder" role="listbox"></ul>');
+    composerBlock.prepend('<ul id="elixr-autocomplete-binder" role="listbox"></ul>');
 
     app = new Vue({
-        el: '#me-autocomplete-binder',
+        el: '#elixr-autocomplete-binder',
         render: h => h(AutocompleteApp)
     });
 

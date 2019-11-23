@@ -1,24 +1,24 @@
-#me-info-panel {
+#elixr-info-panel {
     display: flex;
     flex-direction: column;
     height: 100%;
     margin: auto 10px auto 5px;
     font-size: 14px;
     font-family: Industrywf, "Segoe UI", sans-serif !important;
-    #me-username {
+    #elixr-username {
         text-align: right;
         margin-bottom: 7px;
     }
-    #me-user-level, #me-user-sparks {
+    #elixr-user-level, #elixr-user-sparks {
         opacity: 0.7;
     }
-    #me-user-level {
+    #elixr-user-level {
         margin-right: 10px;
     }
-    #me-user-sparks {
+    #elixr-user-sparks {
         margin-left: 2px;
     }
-    .me-info-data {
+    .elixr-info-data {
         display: flex;
         align-items: center;
     }

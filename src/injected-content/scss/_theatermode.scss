@@ -37,7 +37,7 @@ body.theaterMode {
     background: #0b0f15;
 }
 
-.me-chat-container.theaterMode.me-lights-out {
+.elixr-chat-container.theaterMode.elixr-lights-out {
     background: #040404 !important;  
 
     [class^="webComposerBlock"] {
@@ -48,7 +48,7 @@ body.theaterMode {
     [class*="attributionContents_"], 
     [class*="stickerMessage_"], 
     [class*="bubbleWrapper_"],
-    .me-mod-action-bubble {
+    .elixr-mod-action-bubble {
         background: #0c0c0c !important;
     }
 
@@ -128,9 +128,9 @@ b-nav-host > div.theaterMode {
     top: 70px !important;
 }
 
-b-channel-page-wrapper .stage.aspect-16-9.me-video-stage, 
-b-channel-page-wrapper .stage.me-video-stage, 
-b-channel-page-wrapper .stage:not(.aspect-16-9).me-video-stage{
+b-channel-page-wrapper .stage.aspect-16-9.elixr-video-stage, 
+b-channel-page-wrapper .stage.elixr-video-stage, 
+b-channel-page-wrapper .stage:not(.aspect-16-9).elixr-video-stage{
     height: calc(100vh - 120px);
     max-height: calc(100vh - 120px);
 }

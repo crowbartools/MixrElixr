@@ -164,7 +164,7 @@
 /* end of mixer checkbox */
 
 
-input.me-search {
+input.elixr-search {
     background: #131d2c;
     border-radius: 2px;
     outline: 0 !important;
@@ -182,7 +182,7 @@ input.me-search {
     transform: translateY(-50%);
 }
 
-input.me-search:focus {
+input.elixr-search:focus {
     border: 2px solid #00bcf2;
 }
 
@@ -202,13 +202,13 @@ input.me-search:focus {
     align-items: center;
 }
 
-.me-card {
+.elixr-card {
     flex-grow: 0;
     width: 0;
     flex-basis: 50%
 }
 
-.me-card > a {
+.elixr-card > a {
     position: relative;
     border-radius: 6px;
     background: #29374a;
@@ -220,12 +220,12 @@ input.me-search:focus {
     text-decoration: none;
 }
 
-.me-card > a:hover, .me-card > a:focus {
+.elixr-card > a:hover, .elixr-card > a:focus {
     background: #43526d;
     outline: 0;
 }
 
-.me-card > a::before {
+.elixr-card > a::before {
     content: '';
     position: absolute;
     top: 0;

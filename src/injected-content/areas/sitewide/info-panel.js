@@ -8,7 +8,7 @@ function formatSparks(count) {
 }
 
 export async function removeInfoPanel() {
-    $('#me-info-panel').remove();
+    $('#elixr-info-panel').remove();
 }
 
 export async function createInfoPanel(user) {
@@ -27,14 +27,14 @@ export async function createInfoPanel(user) {
         .last();
 
     $(`
-        <div id="me-info-panel">
-            <div id="me-username">${user.username}</div>
-            <div class="me-info-data">
-                <div id="me-user-level">LVL ${user.level}</div>
+        <div id="elixr-info-panel">
+            <div id="elixr-username">${user.username}</div>
+            <div class="elixr-info-data">
+                <div id="elixr-user-level">LVL ${user.level}</div>
                 <div>
                     <img aria-label="spark" class="spark-coin" style="height: 14px;vertical-align: text-top;" src="_static/img/design/ui/spark-coin/spark-coin.svg">
                 </div>     
-                <div id="me-user-sparks">${formatSparks(user.sparks)}</div>
+                <div id="elixr-user-sparks">${formatSparks(user.sparks)}</div>
             </div>
         </div>
     `).insertBefore(accountButton);
@@ -45,9 +45,9 @@ export async function createInfoPanel(user) {
 export function updateInfo(user) {
     if (!panelCreated || user == null) return;
     if (user.sparks) {
-        $('#me-user-sparks').text(formatSparks(user.sparks));
+        $('#elixr-user-sparks').text(formatSparks(user.sparks));
     }
     if (user.level) {
-        $('#me-user-level').text(`LVL ${user.level}`);
+        $('#elixr-user-level').text(`LVL ${user.level}`);
     }
 }

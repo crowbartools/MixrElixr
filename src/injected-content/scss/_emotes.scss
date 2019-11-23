@@ -1,4 +1,4 @@
-.me-autocomplete {
+.elixr-autocomplete {
     position: absolute;
     z-index: 1;
     left: 16px;
@@ -35,7 +35,7 @@
                 &:hover, &.selected {
                     background: #0065dc;
                 }
-                .me-emotes-preview {
+                .elixr-emotes-preview {
                     position: relative;
                     display: inline-flex;
                 }
@@ -46,7 +46,7 @@
             } 
         }
     }
-    .me-autocomplete-footer {
+    .elixr-autocomplete-footer {
         height: 20px;
         border-top: 1px solid #333333;
         font-size: 10px;
@@ -62,35 +62,35 @@
     }   
 }
 
-.me-emote-tabs {
+.elixr-emote-tabs {
     line-height: 50px;
     width: 100%;
     display: flex;
     background: #222d3c;
     border-bottom: 1px solid #3E4A5B;
-    .me-emote-tab {
+    .elixr-emote-tab {
         padding: 10px 0;
         width: 50%;
         display:flex;
         align-items: center;
         justify-content: center;
-        &.me-tab-selected {
+        &.elixr-tab-selected {
             background: #16202e;
         }
         img {
             width: 35px;
         }
-        &:not(.me-tab-selected):hover {
+        &:not(.elixr-tab-selected):hover {
             cursor: pointer;
             opacity: 0.6;
         }
     }
-    .me-emote-tab:first-child {
+    .elixr-emote-tab:first-child {
         border-right: 1px solid #3E4A5B;
     }
 }
 
-.me-emotes-wrapper {
+.elixr-emotes-wrapper {
     overflow-y: auto;
     padding: 16px;
 }
