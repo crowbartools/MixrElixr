@@ -1,4 +1,4 @@
-export async function waitForDom() {
+export async function dom() {
     if (document.readyState === 'complete') {
         return;
     }
@@ -10,8 +10,8 @@ export async function waitForDom() {
     });
 }
 
-export async function waitForMixer() {
-    await waitForDom();
+export async function mixer() {
+    await dom();
     return await new Promise(resolve => {
         (function mixerReadyCheck() {
             if (document.querySelectorAll('.initial-loading-overlay').length === 0) {
@@ -23,7 +23,7 @@ export async function waitForMixer() {
     });
 }
 
-export let waitForElement = (function () {
+export let element = (function () {
     let waitingForElements = [];
     let observer = new MutationObserver(function () {
         waitingForElements = waitingForElements.filter(waitingForElement => {
