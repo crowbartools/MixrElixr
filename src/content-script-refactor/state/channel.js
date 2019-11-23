@@ -1,6 +1,6 @@
 import * as api from '../api.js';
-import pageInfo from './page.js';
-import {urlDependentPromise} from '../utils/url-changed.js';
+import page from './page.js';
+import {urlChangedPromise} from '../utils/';
 
 let channel = null;
 
@@ -11,8 +11,8 @@ window.addEventListener('elixr:url-changed', () => {
 // state.channel()
 function current() {
     if (!channel) {
-        channel = urlDependentPromise(resolve => {
-            pageInfo()
+        channel = urlChangedPromise(resolve => {
+            page()
                 .then(page => {
 
                     // promise fullfilled due to URL change

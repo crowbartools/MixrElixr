@@ -1,4 +1,5 @@
-import '../utils/url-changed.js';
+import '../utils/url-changed/';
+
 import page from './page.js';
 import channel from './channel.js';
 import user from './user.js';

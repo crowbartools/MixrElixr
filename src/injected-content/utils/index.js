@@ -1,46 +1,11 @@
 import $ from '../../plugins/jquery-wrapper.js';
 import * as simulant from 'simulant';
 
+// moved but left to keep the lint-man happy
 export function log(...message) {
     console.log('[MixrElixr]', ...message);
 }
 
-export function emit(name, detail, target) {
-    let event = new CustomEvent('elixr:' + name, { detail });
-    (target || window).dispatchEvent(event);
-}
-
-export function debounce(func, wait, immediate) {
-    let timeout;
-
-    return function executedFunction() {
-        let context = this;
-        let args = arguments;
-
-        let later = function() {
-            timeout = null;
-            if (!immediate) func.apply(context, args);
-        };
-
-        let callNow = immediate && !timeout;
-
-        clearTimeout(timeout);
-
-        timeout = setTimeout(later, wait);
-
-        if (callNow) func.apply(context, args);
-    };
-}
-
-export function escapeHTML(unsafeText) {
-    let div = document.createElement('div');
-    div.innerText = unsafeText;
-    return div.innerHTML.replace(/"/g, '&quot;');
-}
-
-export function escapeRegExp(string) {
-    return string.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&');
-}
 
 export function determineMessageType(message) {
 

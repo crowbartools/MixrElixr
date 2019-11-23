@@ -1,4 +1,4 @@
-import {emit} from './index.js.js';
+import {emit} from './index.js';
 
 let pending = [],
     previousURI = window.location.href;
@@ -40,7 +40,7 @@ let pending = [],
     emit('url-changed', detail);
 }());
 
-export function urlDependentPromise(executer, opts = {}) {
+export default function urlDependentPromise(executer, opts = {}) {
     let fullfilled = false,
         resolve,
         reject,

@@ -1,7 +1,7 @@
 import { Carina } from 'carina';
 
-import {emit} from '../index.js';
-import state from '../../state/index.js';
+import state from '../state/';
+import { emit } from '../util/';
 
 let ca;
 

@@ -1,7 +1,7 @@
 import { Socket } from '@mixer/chat-client-websocket';
-import * as api from '../api';
-import state from '../../state/index.js';
-import { log, emit } from '../utils/index.js';
+import * as api from './api';
+import state from '../state/';
+import { log, emit } from '../utils/';
 
 const MOD_ROLES = ['Owner', 'Mod', 'ChannelEditor'];
 

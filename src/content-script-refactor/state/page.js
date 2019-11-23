@@ -1,7 +1,5 @@
 import { log } from '../utils/index.js';
-import { waitForMixer } from '../utils/wait-for.js';
-import { urlDependentPromise } from '../utils/url-changed.js';
-import $ from './plugins/jquery-wrapper.js';
+import { $, waitFor, urlChangedPromise } from '../utils/';
 
 const embedChatMatch = /^https?:\/\/(?:www\.)?mixer\.com\/embed\/chat\/(\w+)/;
 const channelMatch = /^https?:\/\/(?:www\.)mixer\.com\/([^(){}%\\/?#]+)(?:\(hub:.*)?$/i;
@@ -15,8 +13,8 @@ window.addEventListener('elixr:url-changed', function () {
 // state.page();
 function current() {
     if (!page) {
-        page = urlDependentPromise(async resolve => {
-            await waitForMixer();
+        page = urlChangedPromise(async resolve => {
+            await waitFor.mixer();
 
             // fullfilled due to url change
             if (page.fullfilled) {
@@ -67,7 +65,7 @@ function current() {
             }
 
             // Attempt to get channel name from dom
-            let pollPageForChannel = urlDependentPromise(resolve => {
+            let pollPageForChannel = urlChangedPromise(resolve => {
                 (function pollForChannelName() {
                     if (pollPageForChannel.fullfilled) {
                         return;

@@ -1,13 +1,12 @@
 import * as api from '../api.js';
-import state from './index.js';
-import {urlDependentPromise} from '../utils/url-changed.js';
+import channel from './channel.js';
+import { urlChangedPromise } from '../utils/';
 
 let user,
     userRoles,
     userIsMod;
 
 window.addEventListener('elixr:url-changed', function () {
-    // user = null;
     userRoles = null;
     userIsMod = null;
 });
@@ -19,7 +18,7 @@ window.addEventListener('elixr:chat:user-update', async () => {
 // state.user()
 function current() {
     if (!user) {
-        user = urlDependentPromise(async resolve => {
+        user = urlChangedPromise(async resolve => {
             let details = await api.getCurrentUser();
             if (user.fullfilled) {
                 return;
@@ -41,15 +40,15 @@ current.cached = function cached() {
 // state.user.roles()
 current.roles = function () {
     if (!userRoles) {
-        userRoles = urlDependentPromise(async resolve => {
-            let [userDetails, channel] = await Promise.all([current(), state.channel()]);
+        userRoles = urlChangedPromise(async resolve => {
+            let [userDetails, channelDetails] = await Promise.all([current(), channel()]);
             if (userRoles.fullfilled) {
                 return;
             }
-            if (userDetails == null || channel == null) {
+            if (userDetails == null || channelDetails == null) {
                 return resolve([]);
             }
-            let roles = await api.getUserRolesForChannel(channel.id, userDetails.username);
+            let roles = await api.getUserRolesForChannel(channelDetails.id, userDetails.username);
             if (userRoles.fullfilled) {
                 return;
             }
@@ -65,7 +64,7 @@ current.roles = function () {
 // state.user.isMod()
 current.isMod = function () {
     if (!userIsMod) {
-        userIsMod = urlDependentPromise(async resolve => {
+        userIsMod = urlChangedPromise(async resolve => {
             let userRoles = await current.roles();
             if (userIsMod.fullfilled) {
                 return;
