@@ -66,15 +66,15 @@ $(() => {
     log('Starting MixrElixr...');
 
     async function runPageLogic() {
-        // Channel dectection
-        let channelBlock = $('b-channel-page-wrapper');
-        let mobileChannelBlock = $('b-channel-mobile-page-wrapper');
 
-        // Home detection
-        let homeBlock = $('b-homepage');
+        // get current user and apply site-wide settings
+        let user = await state.user();
+        if (!initialPageLoad) {
+            siteWide.apply(settings, user);
+        }
 
-        // Window location
-        let url = window.location.href;
+        // deduce page and get channel details
+        let [page, channel] = await Promise.all([state.page(), state.channel()]);
 
         try {
             chatApi.disconnectChat();
@@ -83,90 +83,57 @@ $(() => {
         }
 
         // check we if we are an embeded chat window
-        let embededChatRegex = /^https?:\/\/(www\.)?mixer\.com\/embed\/chat\/(\w+)/;
-        let result = embededChatRegex.exec(url);
-        if (result != null) {
-            log('Detected embeded chat window');
-            cache.currentPage = 'embedded-chat';
-
-            let channelIdOrName = result[2];
-
-            const channelData = await api.getChannelData(channelIdOrName);
-            if (channelData != null) {
-                cache.currentStreamerId = channelData.id;
-
-                let channelName = channelData.token;
-                cache.currentStreamerName = channelName;
-
-                let channelOptions = getStreamerOptionsForStreamer(channelName);
-                await emoteHandler.setup(channelData, channelOptions);
+        if (page.type === 'embedded-chat') {
+            if (channel != null) {
+                let channelOptions = getStreamerOptionsForStreamer(channel.token);
+                await emoteHandler.setup(channel, channelOptions);
 
                 try {
-                    chatApi.connectToChat(channelData && channelData.id, cache.user && cache.user.id);
+                    chatApi.connectToChat(channel.id, user && user.id);
                 } catch (err) {
                     console.log('failed to connect to chat!', err);
                 }
 
                 waitForElement(ElementSelector.CHAT_CONTAINER).then(() => {
-                    applyChatSettings(channelName);
+                    applyChatSettings(channel.token);
                 });
             }
-        } else if (
-            (channelBlock != null && channelBlock.length > 0) ||
-            (mobileChannelBlock != null && mobileChannelBlock.length > 0)
-        ) {
-            log('detected streamer page...');
-            cache.currentPage = 'streamer';
 
+        // channel page
+        } else if (page.type === 'channel') {
             waitForElement("[class*='chatContainer']").then(() => {
                 $("[class*='chatContainer']").addClass('elixr-chat-container');
             });
 
-            // get the streamers name, this also waits for the page to load
-            getStreamerName().then(async channelName => {
-                log('streamer page loaded...');
+            if (channel) {
+                let channelOptions = getStreamerOptionsForStreamer(channel.token);
+                await emoteHandler.setup(channel, channelOptions);
 
-                const channelData = await api.getChannelData(channelName);
-                if (channelData != null) {
-                    cache.currentStreamerId = channelData.id;
-
-                    cache.currentStreamerName = channelName;
-
-                    let channelOptions = getStreamerOptionsForStreamer(channelName);
-                    await emoteHandler.setup(channelData, channelOptions);
-
-                    try {
-                        chatApi.connectToChat(channelData && channelData.id, cache.user && cache.user.id);
-                    } catch (err) {
-                        console.log('failed to connect to chat!', err);
-                    }
-
-                    let slowChatCooldown = channelData.preferences['channel:slowchat'];
-                    cache.slowChatCooldown = slowChatCooldown;
-                    log(`Set slow chat cooldown to: ${slowChatCooldown}`);
-
-                    waitForElement(ElementSelector.CHAT_CONTAINER).then(() => {
-                        log('loading streamer page options...');
-                        loadStreamerPage(channelName);
-                    });
+                try {
+                    chatApi.connectToChat(channel.id, user && user.id);
+                } catch (err) {
+                    console.log('failed to connect to chat!', err);
                 }
-            });
-        } else if (homeBlock != null && homeBlock.length > 0) {
+
+                let slowChatCooldown = channel.preferences['channel:slowchat'];
+                cache.slowChatCooldown = slowChatCooldown;
+                log(`Set slow chat cooldown to: ${slowChatCooldown}`);
+
+                waitForElement(ElementSelector.CHAT_CONTAINER).then(() => {
+                    log('loading streamer page options...');
+                    loadStreamerPage(channel.token);
+                });
+            }
+        } else if (page.type === 'homepage') {
             log('looks like we are on the main page');
-            cache.currentPage = 'homepage';
             loadHomepage();
         } else {
-            cache.currentPage = 'other';
             loadOtherPage();
             log("looks like we're on some other page");
         }
-
-        if (!initialPageLoad) {
-            siteWide.apply(settings, cache.user);
-        }
     }
 
-    function loadHomepage() {
+    async function loadHomepage() {
         log('Loading up settings for homepage');
 
         // If the user desires to have favorites highlighted:
@@ -311,8 +278,9 @@ $(() => {
         );
 
         // do checks when a click happens anywhere in main doc
-        $(document).click(function(event) {
-            if (cache.currentPage === 'homepage') {
+        $(document).click(async function (event) {
+            let page = await state.page();
+            if (page && page.type === 'homepage') {
                 searchbarPositionCheck();
 
                 let filtersPanel = $('b-browse-filters');
@@ -337,52 +305,6 @@ $(() => {
         initialPageLoad = false;
     }
 
-    async function getStreamerName() {
-
-        log('Looking for streamer name...');
-
-        if (cache.currentStreamerName != null) {
-            log('Found it in the cache: ' + cache.currentStreamerName);
-            return cache.currentStreamerName.trim();
-        }
-
-        let isDesktop = $('b-channel-page-wrapper').length > 0;
-        let isMobile = $('b-channel-mobile-page-wrapper').length > 0;
-
-        if (!isDesktop && !isMobile) {
-            log('Unable to get streamer name: channel area not found');
-            return;
-        }
-
-        await waitForElement('b-channel-profile');
-
-        return new Promise(resolve => {
-            (function pollForStreamerName() {
-                let name = '';
-                if (isDesktop) {
-                    name = $('b-channel-profile')
-                        .find('h2')
-                        .first()
-                        .text();
-
-                } else {
-                    name = $('b-mobile-details-bar')
-                        .find('.name')
-                        .text();
-                }
-
-                if (name == null || name === '') {
-                    setTimeout(pollForStreamerName, 10);
-
-                } else {
-                    cache.currentStreamerName = name.trim();
-                    log('Found streamer name on the page: ' + cache.currentStreamerName);
-                    resolve(cache.currentStreamerName);
-                }
-            }());
-        });
-    }
-
     let hideTimeout;
     let infoBarShown = false;
     function hideInfoBar() {
@@ -403,54 +325,6 @@ $(() => {
             hideTimeout = setTimeout(hideInfoBar, 3000);
         }
     }, 50);
-
-    // Gets channel id by name
-    async function getChannelId() {
-        if (cache.currentStreamerId !== null) {
-            log('Using cached id:', cache.currentStreamerId);
-            return cache.currentStreamerId;
-        }
-
-        let channel = await getStreamerName();
-        if (!channel) {
-            return null;
-        }
-        cache.currentStreamerId = await api.getChannelId(channel);
-        return cache.currentStreamerId;
-    }
-
-    // Gets channel id by name
-    async function userIsModInCurrentChannel() {
-
-        // user isn't logged in
-        if (!cache.user) {
-            return false;
-        }
-
-        // not on streamer page(?)
-        if (!cache.currentStreamerName) {
-            await getStreamerName();
-            if (!cache.getStreamerName) {
-                return false;
-            }
-        }
-
-        // retriever channel id for current stream
-        let channelId;
-        if (!cache.currentStreamerId) {
-            let channelId = await getChannelId();
-            if (!channelId) {
-                return false;
-            }
-        }
-
-        // streamer is obviously a mod
-        if (cache.user.username.toLowerCase() === cache.currentStreamerName.toLowerCase()) {
-            return true;
-        }
-
-        return api.userIsChannelMod(channelId, cache.user.username);
-    }
 
     function loadOtherPage() {
         log('Loading up other page settings.');
@@ -983,6 +857,8 @@ $(() => {
             return;
         }
 
+        let userIsMod = await state.user.isMod();
+
         log('Applying chat settings...');
 
         let options = getStreamerOptionsForStreamer(streamerName);
@@ -992,93 +868,44 @@ $(() => {
         $('#elixr-chat-styles').remove();
 
         $('body').prepend(`
-      <style id="elixr-chat-styles">
-
-      ${
-    options.showWhoDeletedMessage !== false
-        ? `
-            b-chat-client-host-component div[class*="deleted_"] {
-                  text-decoration: none !important;
-            }
-
-            b-chat-client-host-component div[class*="deleted_"] > div[class*="messageContent_"] {
-                text-decoration: line-through;
-                padding-bottom: 0 !important;
-          }`
-        : ''
-}
-        
-
-       ${
-    options.useCustomFontSize
-        ? `
-          b-chat-client-host-component div[class*="messageContent"] {
-              font-size: ${options.textSize}px;
-              line-height: ${options.textSize + 9}px;
-          }
-       `
-        : ''
-}
-    
-       ${
-    options.hideChatAvatars
-        ? `               
-          b-chat-client-host-component img[class*="ChatAvatar"] {
-              display: none;
-          }
-
-          b-chat-client-host-component div[class*="messageContent"] {
-              margin-left: 4px;
-          }
-        `
-        : ''
-}
-
-       ${
-    options.hideChannelProgression
-        ? `               
-            b-chat-client-host-component div[class*="messageContent"] span[class*="badge"] {
-                display: none;
-            }
-       `
-        : ''
-}
-
-
-       ${
-    options.hideSkillEffects
-        ? `               
-            #skills-chat-wrapper, b-skill-mobile-execution-host {
-                display: none !important;
-            }
-       `
-        : ''
-}
-
-       ${
-    options.hideEmberMessages
-        ? `               
-            b-chat-client-host-component div[class*="stickerMessage_"] {
-                display: none;
-            }
-       `
-        : ''
-}
-
-       b-use-app-btn-host {
-           display: none !important;
-       }
-       
-      </style>
-    `);
-
-        try {
-            cache.userIsMod = await userIsModInCurrentChannel();
-            log(`User is mod: ${cache.userIsMod}`);
-        } catch (err) {
-            log('Error getting user mod status');
-            console.log(err);
-        }
+            <style id="elixr-chat-styles">
+                ${options.showWhoDeletedMessage !== false ? `
+                    b-chat-client-host-component div[class*="deleted_"] {
+                        text-decoration: none !important;
+                    }
+                    b-chat-client-host-component div[class*="deleted_"] > div[class*="messageContent_"] {
+                        text-decoration: line-through;
+                        padding-bottom: 0 !important;
+                    }` : ''}
+                ${options.useCustomFontSize ? `
+                    b-chat-client-host-component div[class*="messageContent"] {
+                        font-size: ${options.textSize}px;
+                        line-height: ${options.textSize + 9}px;
+                    }` : ''}
+                ${options.hideChatAvatars ? `               
+                    b-chat-client-host-component img[class*="ChatAvatar"] {
+                        display: none;
+                    }
+                    b-chat-client-host-component div[class*="messageContent"] {
+                        margin-left: 4px;
+                    }` : ''}
+                ${options.hideChannelProgression ? `               
+                    b-chat-client-host-component div[class*="messageContent"] span[class*="badge"] {
+                        display: none;
+                    }` : ''}
+                ${options.hideSkillEffects ? `               
+                    #skills-chat-wrapper, b-skill-mobile-execution-host {
+                        display: none !important;
+                    }` : ''}
+                ${options.hideEmberMessages ? `               
+                    b-chat-client-host-component div[class*="stickerMessage_"] {
+                        display: none;
+                    }` : ''}
+                b-use-app-btn-host {
+                    display: none !important;
+                }
+            </style>
+        `);
 
         // add custom css class to chat message container so its easier for us to query
         $(ElementSelector.CHAT_CONTAINER)
@@ -1143,7 +970,7 @@ $(() => {
             autocompleteAppBinder.bindEmoteAutocompleteApp(composerBlock, options);
 
             // bind slow chat app
-            if (cache.slowChatCooldown >= 2000 && !cache.userIsMod && options.showSlowChatCooldownTimer !== false) {
+            if (cache.slowChatCooldown >= 2000 && !userIsMod && options.showSlowChatCooldownTimer !== false) {
                 slowChatTimerAppBinder.bindSlowChatTimerApp(composerBlock, cache.slowChatCooldown);
             }
         });
@@ -1187,6 +1014,7 @@ $(() => {
             }
 
             let alreadyChecked = messageContainer.attr('elixrfied');
+
             // check to see if we have already looked at this chat messsage.
             if (alreadyChecked) {
                 return;
@@ -1203,8 +1031,10 @@ $(() => {
                 .trim()
                 .split(' ')[0]; // we do this to cut out the progression level
 
-            if (cache.user != null) {
-                if (messageType === 'regular-message' && messageAuthor === cache.user.username && !cache.userIsMod) {
+            let user = await state.user();
+
+            if (user != null) {
+                if (messageType === 'regular-message' && messageAuthor === user.username && !user.isMod()) {
                     slowChatTimerAppBinder.messageDetected();
                 }
             }
@@ -1230,8 +1060,9 @@ $(() => {
                 .toLowerCase()
                 .trim()
                 .replace('@', '');
-            if (cache.user != null) {
-                let userLowerCase = cache.user.username.toLowerCase();
+
+            if (user != null) {
+                let userLowerCase = user.username.toLowerCase();
 
                 let userRegex = new RegExp(`\\b${escapeRegExp(userLowerCase)}\\b`, 'i');
                 if (userRegex.test(messageText) || userRegex.test(userTagged)) {
@@ -1260,7 +1091,7 @@ $(() => {
                 });
             }
 
-            if (!cache.userIsMod || options.enableHideKeywordsWhenMod) {
+            if (!user.isMod || options.enableHideKeywordsWhenMod) {
                 // Add class on hide keyword mention.
                 if (options.hideKeywords != null && options.hideKeywords.length > 0) {
                     messageContainer.find('span:not([class])').each(function() {
@@ -1338,6 +1169,7 @@ $(() => {
 
                 if (!userBlacklisted) {
                     let links = messageContainer.find("a[target='_blank']");
+                    let channel = await state.channel();
 
                     if (links.length > 0) {
                         links.each(async function() {
@@ -1348,13 +1180,11 @@ $(() => {
                                 let lowestPermittedRoleRank = getUserRoleRank(options.lowestUserRoleLinks);
                                 let rolePermitted = false;
 
-                                let currentStreamerName = await getStreamerName();
-
                                 // Get the author roles in an array.
-                                api.getUserRolesForChannel(cache.currentStreamerId, messageAuthor).then(roles => {
+                                api.getUserRolesForChannel(channel.id, messageAuthor).then(roles => {
                                     // Check to make sure the correct role is in the user array.
 
-                                    if (currentStreamerName === messageAuthor) {
+                                    if (channel.token === messageAuthor) {
                                         roles.push('Owner');
                                     }
 
@@ -1433,8 +1263,9 @@ $(() => {
         initialPageLoad = false;
     }
 
-    function searchbarPositionCheck() {
-        if (cache.currentPage !== 'homepage') return;
+    async function searchbarPositionCheck() {
+        let page = await state.page();
+        if (page.type !== 'homepage') return;
 
         const pinSearchBar =
             settings.homePageOptions.pinSearchToTop == null || settings.homePageOptions.pinSearchToTop === true;
@@ -1686,30 +1517,17 @@ $(() => {
         }
     };
 
-    // Get user info
-    // This gets user info of current logged in person
-    async function getCurrentUser() {
-        let user = await api.getCurrentUser();
-        if (!user) {
-            log('No user logged in.');
-            cache.user = null;
-            return;
-        }
-        log('User logged in as:', user.token);
-        cache.user = user;
-        return user;
-    }
-
     // Checks Mixer API to see if streamer is followed.
     // Returns object with following status and streamer name.
     async function streamerIsFollowed(streamerName) {
+        let user = await state.user();
 
         // user not logged in
-        if (!cache.user) {
+        if (!user) {
             return false;
         }
 
-        let isFollowed = await api.getUserFollowsChannel(cache.user.id, streamerName);
+        let isFollowed = await api.getUserFollowsChannel(user.id, streamerName);
         return {
             streamerName,
             isFollowed
@@ -1802,12 +1620,10 @@ $(() => {
     }
 
     async function loadUserAndSettings() {
-        let userInfoLoad = getCurrentUser();
-        let settingsLoad = loadSettings();
 
         // wait for both user info and settings to load.
-        await Promise.all([userInfoLoad, settingsLoad]);
-        siteWide.apply(settings, cache.user);
+        let [user] = await Promise.all([state.user(), loadSettings()]);
+        siteWide.apply(settings, user);
 
         // wait for mixer to load
         await waitForMixer();
@@ -1817,8 +1633,6 @@ $(() => {
         // Listen for url changes
         window.addEventListener('elixr:url-changed', function() {
             initialPageLoad = true;
-            cache.currentStreamerName = null;
-            cache.currentStreamerId = null;
             runPageLogic();
         });
 
@@ -1828,14 +1642,17 @@ $(() => {
     loadUserAndSettings();
 
     // listen for an event from the Options page. This fires everytime the user updates a setting
-    browser.runtime.onMessage.addListener((request, _, sendResponse) => {
+    browser.runtime.onMessage.addListener(async (request, _, sendResponse) => {
         if (request.settingsUpdated) {
             loadSettings().then(() => {
                 runPageLogic();
             });
         } else if (request.query === 'currentStreamerName') {
-            if (cache.currentPage === 'streamer') {
-                sendResponse({ streamerName: cache.currentStreamerName });
+            let page = await state.page();
+
+            if (page.type === 'channel') {
+                let channel = await state.channel();
+                sendResponse({ streamerName: channel.token });
             }
         }
     });
