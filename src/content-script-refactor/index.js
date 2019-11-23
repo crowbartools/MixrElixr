@@ -28,8 +28,7 @@ async function processPage() {
     }
 
     emit('state:mixer-ready', { detail });
-
     initialLoad = false;
-    window.addEventListener('url-changed', processPage);
 }
+window.addEventListener('url-changed', processPage);
 processPage();
