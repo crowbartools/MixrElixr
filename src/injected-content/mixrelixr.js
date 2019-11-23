@@ -1091,7 +1091,7 @@ $(() => {
                 });
             }
 
-            if (!user.isMod || options.enableHideKeywordsWhenMod) {
+            if (!userIsMod || options.enableHideKeywordsWhenMod) {
                 // Add class on hide keyword mention.
                 if (options.hideKeywords != null && options.hideKeywords.length > 0) {
                     messageContainer.find('span:not([class])').each(function() {
@@ -1641,19 +1641,21 @@ $(() => {
     }
     loadUserAndSettings();
 
-    // listen for an event from the Options page. This fires everytime the user updates a setting
     browser.runtime.onMessage.addListener(async (request, _, sendResponse) => {
+
+        // listen for an event from the Options page. This fires everytime the user updates a setting
         if (request.settingsUpdated) {
             loadSettings().then(() => {
                 runPageLogic();
             });
         } else if (request.query === 'currentStreamerName') {
-            let page = await state.page();
-
-            if (page.type === 'channel') {
-                let channel = await state.channel();
-                sendResponse({ streamerName: channel.token });
-            }
+            state.page().then(async page => {
+                if (page.type === 'channel') {
+                    let channel = await state.channel();
+                    sendResponse({ streamerName: channel.token });
+                }
+            });
+            return true;
         }
     });
 
