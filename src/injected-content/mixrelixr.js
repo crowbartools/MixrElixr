@@ -9,11 +9,7 @@ import state from './state.js'; //eslint-disable-line no-unused-vars
 // import jquery wrapper early so it can apply jQuery plugins
 import $ from './plugins/jquery-wrapper.js';
 
-import {
-    waitForMixer,
-    waitForElement
-} from './utils/wait-for.js';
-
+import { waitForMixer, waitForElement } from './utils/wait-for.js';
 import {
     debounce,
     log,
@@ -29,7 +25,6 @@ import * as api from './api';
 // vue apps
 import * as autocompleteAppBinder from './vue-apps/emote-autocomplete/emote-autocomplete-binder';
 import * as slowChatTimerAppBinder from './vue-apps/slow-chat-timer/slow-chat-timer-binder';
-
 import * as siteWide from './areas/sitewide/site-wide';
 import * as chatFeed from './areas/chat/chat-feed';
 import * as emoteHandler from './areas/chat/emotes/emote-handler';
@@ -37,6 +32,9 @@ import { handleEmoteModal } from './areas/chat/emotes/emote-modal-handler';
 import * as chatApi from './mixer-connections/chat';
 
 import browser, { storage } from './plugins/browser.js';
+
+// Pre-emptively start to get the current user as retrievely such info doesn't depend on the page
+state.user();
 
 // on document ready
 $(() => {
