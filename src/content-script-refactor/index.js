@@ -3,21 +3,25 @@ import emit from './utils/index.js';
 import { waitForDom } from './utils/wait-for.js';
 
 let initialLoad = true;
-async function processPage() {
+async function init() {
+    let detail = {initialLoad};
 
     // wait on the retrieval of current user info and settings
-    let res = await Promise.all([state.user(), state.settings()]),
-
-        // Build events detail object
-        detail = { initialLoad, user: res[0], settings: res[1] };
-
-    if (!initialLoad) {
+    if (initialLoad) {
+        let res = await Promise.all([state.user(), state.settings()]);
+        detail.user = res[0];
+        detail.settings = res[1];
         emit('state:init', { detail });
-    }
 
-    // wait for the dom to load
-    await waitForDom();
-    emit('state:document-ready', { detail });
+
+        await waitForDom();
+        emit('state:document-ready', { detail });
+
+    // otherwise retrieved info from cache
+    } else {
+        detail.user = state.user.cached();
+        detail.settings = state.settings.cached();
+    }
 
     // get the current page's info (will wait on mixer to load)
     detail.page = await state.page();
@@ -30,5 +34,7 @@ async function processPage() {
     emit('state:mixer-ready', { detail });
     initialLoad = false;
 }
-window.addEventListener('url-changed', processPage);
-processPage();
+init()
+    .then(() => {
+        window.addEventListener('url-changed', init);
+    });
