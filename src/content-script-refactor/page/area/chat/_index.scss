@@ -1,0 +1,37 @@
+.elixr-chat-container {
+    .chat-message {
+        position: relative;
+    }
+
+    /* Timestamps */
+    .elixr-timestamp {
+        position: absolute;
+        top: 0;
+        right: 0;
+        display: none;
+    }
+    .elixr-timestamp span {
+        line-height:1;
+        display: block;
+        margin: 1px 5px 0 13px;
+        opacity: 0.6;
+        font-size:11px;
+    }
+
+    /* Highlighted Messages */
+    &.chat-mention-bg .user-mentioned,
+    &.chat-keyword-bg .keyword-mentioned {
+        background-color: #20293f;
+        background-image:linear-gradient(45deg, rgba(0, 117, 213, 0.25) 40px, rgba(12, 91, 178, 0.25) 40px, rgba(12, 91, 178, 0.25) 80px, rgba(24, 62, 141, 0.25) 80px, rgba(24, 62, 141, 0.25) 120px, rgba(12, 47, 111, 0.25) 120px, rgba(12, 47, 111, 0.25) 160px, rgba(0, 32, 80, 0.25) 160px), linear-gradient(-45deg, rgba(0, 117, 213, 0.25) 40px, rgba(12, 91, 178, 0.25) 40px, rgba(12, 91, 178, 0.25) 80px, rgba(24, 62, 141, 0.25) 80px, rgba(24, 62, 141, 0.25) 120px, rgba(12, 47, 111, 0.25) 120px, rgba(12, 47, 111, 0.25) 160px, rgba(0, 32, 80, 0.25) 160px) !important;
+    }
+}
+
+/* toggle message timestamps */
+body[data-elixr-chat-showTimestamps="always"] .elixr-chat-container {
+    .elixr-timestamp {
+        display: block;
+    }
+}
+body[data-elixr-chat-showTimestamps="never"] .elixr-chat-container > div > div[class*="timestamp_"] {
+    display: none !important;
+}
