@@ -2,8 +2,6 @@ import defaults from './defaults';
 import convert from './convert/';
 import { storage } from '../../util/browser';
 
-
-
 let settings,
     cache;
 
@@ -32,13 +30,12 @@ function wrap(subject) {
     });
 }
 
-
 function current() {
     if (!settings) {
         settings = storage
             .get()
             .then(settings => {
-                if (settings.version !== 2) {
+                if (settings !== null && settings.version !== 2) {
                     return convert(settings);
                 }
                 return storage.get(defaults);
@@ -52,6 +49,7 @@ function current() {
     }
     return settings;
 }
+
 current.cached = function () {
     if (settings && settings.fullfilled) {
         return settings.result;

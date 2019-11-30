@@ -1,4 +1,5 @@
 /*
 import page/area scripts here
 */
-import './area/';
+import './areas/';
+import './channel/';
