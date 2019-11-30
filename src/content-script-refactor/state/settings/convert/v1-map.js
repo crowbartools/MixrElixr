@@ -1,0 +1,121 @@
+export const defaults = {
+    streamerPageOptions: {
+        global: {
+            autoCloseInteractive: false,
+            autoCloseCostreams: false,
+            autoTheater: false,
+            separateChat: false,
+            alternateChatBGColor: false,
+            mentionChatBGColor: false,
+            customEmotes: true,
+            globalEmotes: true,
+            channelEmotes: true,
+            enableEmoteAutocomplete: true,
+            hideChatAvatars: false,
+            hideChannelProgression: false,
+            hideChatHeaders: false,
+            hideDeleted: false,
+            alwaysShowDeletedMessages: false,
+            showModActions: true,
+            timestampAllMessages: false,
+            showImagesInline: false,
+            lowestUserRoleLinks: 'mod',
+            inlineImgPermittedUsers: [],
+            inlineImgBlacklistedUsers: [],
+            autoForwardOnHost: false,
+            autoMute: false,
+            autoMuteOnHost: false,
+            ignoredUsers: [],
+            keywords: [],
+            hideKeywords: [],
+            hideStyle: 'blur',
+            enableHideKeywordsWhenMod: false,
+            useCustomFontSize: false,
+            textSize: 15,
+            largerVideo: true,
+            hideSkillEffects: false,
+            hideSkillMessages: false,
+            hideStickers: false,
+            hideEmberMessages: false,
+            showSlowChatCooldownTimer: true,
+            lightsOutTheaterMode: false
+        },
+        overrides: {}
+    },
+    homePageOptions: {
+        removeFeatured: false,
+        autoMute: false,
+        pinSearchToTop: true
+    },
+    generalOptions: {
+        declutterTopBar: true,
+        showInfoPanel: true,
+        showBadge: true,
+        onlyShowFavoritesCount: false,
+        favoriteFriends: [],
+        highlightFavorites: true,
+        liveNotificationsMode: 'favorites',
+        playLiveNotificationSound: false,
+        liveNotificationSoundType: 'default',
+        theme: 'default'
+    }
+};
+
+export const map = {
+    streamerPageOptions: {
+        global: {
+            autoCloseInteractive: ['channel', 'closeInteractive'],
+            autoCloseCostreams: ['channel', 'closeCostreams'],
+            autoTheater: ['channel', 'autoTheater'],
+            customEmotes: ['chat', 'customEmotes', 'enable'],
+            enableEmoteAutocomplete: ['chat', 'customEmotes', 'autoComplete'],
+            globalEmotes: ['chat', 'customEmotes', 'globalEmotes'],
+            channelEmotes: ['chat', 'customEmotes', 'channelEmotes'],
+            hideChatAvatars: ['chat', 'hideAvatars'],
+            hideChannelProgression: ['chat', 'hideLevelProgression'],
+            hideChatHeaders: ['chat', 'hideChatHeaders'],
+            hideDeleted: ['chat', 'hideDeleted'],
+            alwaysShowDeletedMessages: ['chat', 'modActions', 'showDeleted'],
+            showModActions: ['chat', 'modActions', 'showActions'],
+            timestampAllMessages: ['chat', 'timestampMessage'],
+            showImagesInline: ['chat', 'inlineImages', 'enable'],
+            lowestUserRoleLinks: ['chat', 'inlineImages', 'minrole'],
+            inlineImgPermittedUsers: ['chat', 'inlineImages', 'users', 'whitelist'],
+            inlineImgBlacklistedUsers: ['chat', 'inlineImages', 'users', 'blacklist'],
+            autoForwardOnHost: ['channel', 'onHost', 'forward'],
+            autoMute: ['stream', 'autoMute'],
+            autoMuteOnHost: ['channel', 'onHost', 'mute'],
+            hideKeywords: ['chat', 'blacklistWords', 'words'],
+            hideStyle: ['chat', 'blacklistWords', 'style'],
+            enableHideKeywordsWhenMod: ['chat', 'blacklistWords', 'enableWhenMod'],
+            ignoredUsers: ['chat', 'ignoreUsers', 'users'],
+            keywords: ['chat', 'highlightWords'],
+            useCustomFontSize: ['chat', 'fontSize', 'enable'],
+            textSize: ['chat', 'fontSize', 'size'],
+            largerVideo: ['channel', 'largeVideo'],
+            lightsOutTheaterMode: ['chat', 'lightsOutTheater'],
+            hideSkillEffects: ['chat', 'hideSkillEffects'],
+            hideSkillMessages: ['chat', 'hideSkillMessages'],
+            hideStickers: ['chat', 'hideStickers'],
+            hideEmberMessages: ['chat', 'hideEmberMessages'],
+            showSlowChatCooldownTimer: ['chat', 'slowChatCooldownTimer']
+        }
+    },
+    homePageOptions: {
+        autoMute: ['homepage', 'mute'],
+        removeFeatured: ['homepage', 'removeFeatures'],
+        pinSearchToTop: ['homepage', 'automute']
+    },
+    generalOptions: {
+        declutterTopBar: ['sitewide', 'navbar', 'declutter'],
+        showInfoPanel: ['sitewide', 'navbar', 'infoPanel'],
+        showBadge: ['global', 'liveCount', 'show'],
+        onlyShowFavoritesCount: ['global', 'liveCount', 'favoritesOnly'],
+        favoriteFriends: ['global', 'favoriteChannels'],
+        liveNotificationsMode: ['global', 'notifications', 'enable'],
+        playLiveNotificationSound: ['global', 'notifications', 'playSound'],
+        liveNotificationSoundType: ['global', 'notifications', 'sound'],
+        theme: ['sitewide', 'theme'],
+        highlightFavorites: ['browse-page', 'highlightFavorites']
+    }
+};
