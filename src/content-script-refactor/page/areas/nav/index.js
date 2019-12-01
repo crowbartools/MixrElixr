@@ -28,37 +28,39 @@ function togglePanel() {
 }
 
 function updatePanel(user) {
-    if (!user) {
+    if (user == null) {
+        togglePanel();
         ipUsername.text('');
         ipLevel.text('0');
         ipSparks.text('0');
-        $(document.body).attr('data-elixr-showInfoPanel', 'false');
+
     } else {
         if (user.username) {
             ipUsername.text(user.username);
         }
         ipLevel.text(user.level);
         ipSparks.text(user.sparks);
+        togglePanel();
     }
-    togglePanel();
 }
 
-
+// Wait for settings, user, and element to load
 Promise.all(
     state.settings(),
     state.user(),
     waitForElement('b-nav-host [class*="right_"] [class^="chevron_"]')
 ).then(results => {
-    let user = results[1],
-        acctButton = $('b-nav-host')
+
+    // Insert info panel before the account button
+    infoPanel.insertBefore(
+        $('b-nav-host')
             .find('[class*="right_"]')
             .children()
-            .last();
-
-    infoPanel.insertBefore(acctButton);
+            .last()
+    );
 
     // Update panel based on current user
-    updatePanel(user);
+    updatePanel(results[1]);
 
     // Toggle panel based on settings settings change
     window.addEventListener('MixrElixr:state:settings-updated', togglePanel);
