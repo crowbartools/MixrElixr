@@ -16,14 +16,14 @@ let infoPanel = $(`
         </div>
     `),
     ipUsername = infoPanel.find('#elixr-infopanel-username'),
-    ipLevel    = infoPanel.find('#elixr-infopanel-level'),
-    ipSparks   = infoPanel.find('#elixr-infopanel-sparks'),
+    ipLevel = infoPanel.find('#elixr-infopanel-level'),
+    ipSparks = infoPanel.find('#elixr-infopanel-sparks'),
     acctButton;
 
 function togglePanel() {
-    let user     = state.user.cached(),
+    let user = state.user.cached(),
         settings = state.settings.cached(),
-        show     = user != null && settings.sitewide.navbar.infoPanel;
+        show = user != null && settings.sitewide.navbar.infoPanel;
 
     $(document.body).attr('data-elixr-showInfoPanel', show);
 }
