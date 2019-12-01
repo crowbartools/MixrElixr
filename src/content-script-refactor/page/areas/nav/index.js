@@ -17,8 +17,7 @@ let infoPanel = $(`
     `),
     ipUsername = infoPanel.find('#elixr-infopanel-username'),
     ipLevel = infoPanel.find('#elixr-infopanel-level'),
-    ipSparks = infoPanel.find('#elixr-infopanel-sparks'),
-    acctButton;
+    ipSparks = infoPanel.find('#elixr-infopanel-sparks');
 
 function togglePanel() {
     let user = state.user.cached(),
@@ -50,26 +49,26 @@ Promise.all(
     state.user(),
     waitForElement('b-nav-host [class*="right_"] [class^="chevron_"]')
 ).then(results => {
-    let user = results[1];
-
-    acctButton = $('b-nav-host')
-        .find('[class*="right_"]')
-        .children()
-        .last();
+    let user = results[1],
+        acctButton = $('b-nav-host')
+            .find('[class*="right_"]')
+            .children()
+            .last();
 
     infoPanel.insertBefore(acctButton);
 
+    // Update panel based on current user
     updatePanel(user);
 
-    // only show the info panel if user is logged in and settings dictate the info panel should be shown
+    // Toggle panel based on settings settings change
     window.addEventListener('MixrElixr:state:settings-updated', togglePanel);
 
-    // update info panel on user changed
+    // Update panel when the user login state changes
     window.addEventListener('MixrElixr:current-user:changed', data => {
         updatePanel(data.details);
     });
 
-    // update info panel when the user's sparks or level changes
+    // Update info panel when the user's sparks or level changes
     window.addEventListener('MixrElixr:current-user:update', data => {
         updatePanel(data.details);
     });
