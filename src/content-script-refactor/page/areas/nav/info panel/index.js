@@ -63,7 +63,7 @@ Promise.all(
     updatePanel(results[1]);
 
     // Toggle panel based on settings settings change
-    window.addEventListener('MixrElixr:state:settings-updated', togglePanel);
+    window.addEventListener('MixrElixr:settings:updated', togglePanel);
 
     // Update panel when the user login state changes
     window.addEventListener('MixrElixr:current-user:changed', data => {
