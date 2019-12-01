@@ -1,0 +1,29 @@
+#elixr-infopanel {
+    display: none;
+    flex-direction: column;
+    height: 100%;
+    margin: auto 10px auto 5px;
+    font-size: 14px;
+    font-family: Industrywf, "Segoe UI", sans-serif !important;
+    #elixr-infopanel-username {
+        text-align: right;
+        margin-bottom: 7px;
+    }
+    #elixr-infopanel-level, #elixr-infopanel-sparks {
+        opacity: 0.7;
+    }
+    #elixr-infopanel-level {
+        margin-right: 10px;
+    }
+    #elixr-infopanel-sparks {
+        margin-left: 2px;
+    }
+    .elixr-infopanel-data {
+        display: flex;
+        align-items: center;
+    }
+}
+
+body[data-elixr-showInfoPanel='true'] #elixr-infopanel {
+    display: flex;
+}
