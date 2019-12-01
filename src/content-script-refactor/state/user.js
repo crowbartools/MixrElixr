@@ -6,12 +6,12 @@ let user,
     userRoles,
     userIsMod;
 
-window.addEventListener('elixr:url-changed', function () {
+window.addEventListener('MixrElixr:url-changed', function () {
     userRoles = null;
     userIsMod = null;
 });
 
-window.addEventListener('elixr:chat:user-update', async () => {
+window.addEventListener('MixrElixr:chat:user-update', async () => {
     // update user based on result from chat?
 });
 

@@ -1613,7 +1613,7 @@ $(() => {
         log('page loaded');
 
         // Listen for url changes
-        window.addEventListener('elixr:url-changed', function() {
+        window.addEventListener('MixrElixr:url-changed', function() {
             initialPageLoad = true;
             runPageLogic();
         });

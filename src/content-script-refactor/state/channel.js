@@ -4,7 +4,7 @@ import {urlChangedPromise} from '../utils/';
 
 let channel = null;
 
-window.addEventListener('elixr:url-changed', () => {
+window.addEventListener('MixrElixr:url-changed', () => {
     channel = null;
 });
 

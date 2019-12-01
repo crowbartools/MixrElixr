@@ -25,7 +25,7 @@ function debounce(func, wait, immediate) {
 }
 
 function emit(name, detail, target) {
-    let event = new CustomEvent('elixr:' + name, { detail });
+    let event = new CustomEvent('MixrElixr:' + name, { detail });
     (target || window).dispatchEvent(event);
 }
 
