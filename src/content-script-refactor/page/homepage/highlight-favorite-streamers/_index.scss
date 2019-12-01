@@ -1,0 +1,3 @@
+body[data-elixr-highlightFavorites] .card[data-elixr-favorited='true'] a::before {
+    border: 2px solid green;
+}

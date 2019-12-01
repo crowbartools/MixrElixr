@@ -70,9 +70,10 @@ export default {
         timestampMessages: false
     },
     homepage: {
-        removeFeatured: false,
+        automute: false,
+        highlightFavorites: false,
         pinsearch: false,
-        automute: false
+        removeFeatured: false
     },
     browsepage: {
         highlightFavorites: true
