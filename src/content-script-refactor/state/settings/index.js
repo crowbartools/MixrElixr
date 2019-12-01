@@ -1,6 +1,6 @@
 import defaults from './defaults';
 import convert from './convert/';
-import { storage } from '../../util/browser';
+import browser, { storage } from '../../util/browser';
 
 import { emit } from '../../util/index.js';
 
@@ -34,22 +34,39 @@ function wrap(subject) {
     });
 }
 
+function getSettings() {
+    return storage
+        .get()
+        .then(settings => {
+            if (settings !== null && settings.version !== 2) {
+                return convert(settings);
+            }
+            return storage.get(defaults);
+        })
+        .then(values => {
+            cache = values;
+            settings.result = wrap(values);
+            settings.fullfilled = true;
+            return Promise.resolve(settings.result);
+        });
+}
+
+// All elixr messages are prefixed as { MixrElixr: { event: name, data: ... } }
+browser.runtime.onMessage.addEventListener(function (message) {
+    if (message.MixrElixr == null) {
+        return false;
+    }
+    if (message.MixrElixr.event === 'settingsChanged') {
+        settings = getSettings();
+        settings.then(() => {
+            emit('settings:changed');
+        });
+    }
+});
+
 function current() {
     if (!settings) {
-        settings = storage
-            .get()
-            .then(settings => {
-                if (settings !== null && settings.version !== 2) {
-                    return convert(settings);
-                }
-                return storage.get(defaults);
-            })
-            .then(values => {
-                cache = values;
-                settings.result = wrap(values);
-                settings.fullfilled = true;
-                return Promise.resolve(settings.result);
-            });
+        settings = getSettings();
     }
     return settings;
 }
