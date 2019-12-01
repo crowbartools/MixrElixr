@@ -123,51 +123,6 @@ $(() => {
     async function loadHomepage() {
         log('Loading up settings for homepage');
 
-        // If the user desires to have favorites highlighted:
-        if (settings.generalOptions.highlightFavorites) {
-            // clear the loop so were aren't trying to run it constantly!
-            if (cache.highlightLoop != null) {
-                clearInterval(cache.highlightLoop);
-            }
-
-            // Lets keep checking to see if we find any new favorites
-            cache.highlightLoop = setInterval(function() {
-                // Checking all streamer cards of non-favorites:
-                $('.card:not(".favoriteFriend")').each(function() {
-                    // Which streamer did we find
-                    let streamer = $(this)
-                        .find('.titles small')
-                        .first()
-                        .text()
-                        .trim()
-                        .replace(/ /g, '')
-                        .replace(/\r?\n|\r/g, '');
-                    if (streamerIsFavorited(streamer)) {
-                        // If streamer is a favorite, let's highlight the window
-                        $(this)
-                            .find('.titles small')
-                            .first()
-                            .addClass('favoriteUsername');
-                        $(this).addClass('favoriteFriend');
-                    } else {
-                        $(this)
-                            .find('.titles small')
-                            .first()
-                            .removeClass('favoriteUsername');
-                        $(this).removeClass('favoriteFriend');
-                    }
-                });
-            }, 500);
-        } else {
-            log('Highlighting Favorites is off');
-            // If highlights are off, then let's remove any active highlights.
-            $('.card.favoriteFriend').removeClass('favoriteFriend');
-
-            // clear the loop so were aren't trying to run it constantly!
-            if (cache.highlightLoop != null) {
-                clearInterval(cache.highlightLoop);
-            }
-        }
 
         // handle searchbar
         const pinSearchBar =
