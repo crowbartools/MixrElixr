@@ -2,6 +2,8 @@ import defaults from './defaults';
 import convert from './convert/';
 import { storage } from '../../util/browser';
 
+import { emit } from '../../util/index.js';
+
 let settings,
     cache;
 
@@ -24,7 +26,9 @@ function wrap(subject) {
         },
         set(target, property, value) {
             target[property] = value;
-            storage.set(cache);
+            storage.set(cache).then(() => {
+                emit('settings:updated');
+            });
             return true;
         }
     });
