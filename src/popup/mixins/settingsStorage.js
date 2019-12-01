@@ -124,7 +124,7 @@ global.settingsStorage = {
         emitSettingUpdatedEvent: function() {
             // let the content script on whatever tab know the settings have been updated
             browser.tabs.query({}).then(tabs => {
-                const message = { settingsUpdated: true };
+                const message = { MixrElixr: { event: 'settingsChanged' } };
                 for (let tab of tabs) {
                     browser.tabs.sendMessage(tab.id, message).catch(reason => {
                         console.log('couldnt send message to tab: ' + reason, tab);
