@@ -1,0 +1,20 @@
+body[data-elixr-navbarDeclutter="true"] {
+    a[href="/dashboard/onboarding"] {
+        display: none !important;
+    }
+    *[class*="getEmbersButton_"] {
+        margin: 0;
+        & > *:first-child {
+            background: transparent;
+        }
+        [class^="content_"] {
+            visibility: collapse;
+            span {
+                display: none;
+            }
+            img {
+                visibility: visible;
+            }
+        }
+    }
+}
