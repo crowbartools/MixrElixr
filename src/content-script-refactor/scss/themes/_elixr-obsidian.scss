@@ -2,7 +2,7 @@ $headerColor: #212121;
 $headerSecondary: #191919;
 $darkestBg: #111111;
 
-body.elixr-obsidian {
+body[data-elixr-theme="obsidian"] {
     &:not(.app-text-dir-ltr) {
         background: $darkestBg !important;
     }

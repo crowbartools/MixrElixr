@@ -1,4 +1,4 @@
-body.elixr-dark {
+body[data-elixr-theme="dark"] {
     &:not(.app-text-dir-ltr) {
         background: #1d2227 !important;
     }
