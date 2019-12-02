@@ -96,13 +96,14 @@ Promise.all([
 
     if (page.type !== 'homepage' || !pinSearch) {
         $('.elixr-pinned-search').css('top', '');
-        pageHeader.removeClass('searchPinned');
-        searchHeader.removeClass('searchPinned');
+        pageHeader.removeClass('elixr-search-pinned');
+        searchHeader.removeClass('elixr-search-pinned');
         searchBar.removeClass('elixr-pinned-search elixr-searchbar');
         filterButton.removeClass('elixr-pinned-search elixr-filterbtn');
         filterPanel.removeClass('elixr-filterspanel');
         filterPanel.css('top', '');
         $('.elixr-badge-wrapper').remove();
+
     } else {
         // remove button text from language dropdown
         $('.language-button')
@@ -140,8 +141,8 @@ Promise.all([
             .children('.bui-btn')
             .on('click', filterBtnHandler);
 
-        pageHeader.addClass('searchPinned');
-        searchHeader.addClass('searchPinned');
+        pageHeader.addClass('elixr-search-pinned');
+        searchHeader.addClass('elixr-search-pinned');
         searchBar.addClass('elixr-pinned-search elixr-searchbar');
         filterButton.addClass('elixr-pinned-search elixr-filterbtn');
         filterPanel.addClass('elixr-filterspanel');
@@ -159,7 +160,7 @@ Promise.all([
             let settings = state.settings.cached().homepage;
 
             if (settings != null && settings.pinSearch) {
-                $('b-nav-host').addClass('searchPinned');
+                $('b-nav-host').addClass('elixr-search-pinned');
             }
         }, 100)
     );
