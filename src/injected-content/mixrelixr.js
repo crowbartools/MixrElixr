@@ -113,14 +113,11 @@ $(() => {
             }
         } else if (page.type === 'homepage') {
             log('looks like we are on the main page');
-            loadHomepage();
+            // loadHomepage();
         } else {
             loadOtherPage();
             log("looks like we're on some other page");
         }
-    }
-
-    async function loadHomepage() {
     }
 
     let hideTimeout;
