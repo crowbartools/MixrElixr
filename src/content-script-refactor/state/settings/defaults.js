@@ -72,7 +72,7 @@ export default {
     homepage: {
         automute: false,
         highlightFavorites: false,
-        pinsearch: false,
+        pinSearch: false,
         removeFeatured: false
     },
     browsepage: {
