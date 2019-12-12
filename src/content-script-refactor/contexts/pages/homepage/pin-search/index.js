@@ -1,6 +1,6 @@
-import $ from '../../../util/jquery';
-import {debounce} from '../../../util/';
-import state from '../../../state/';
+import $ from '../../../../util/jquery/';
+import {debounce} from '../../../../utils/';
+import state from '../../../../state/';
 
 let cachedCollapsed = false;
 let cachedCompact = false;
@@ -67,11 +67,43 @@ function searchbarPositionCheck() {
     }
 }
 
-Promise.all([
-    state.settings(),
-    state.page()
-]).then(function () {
+function onClick(evt) {
+    let settings = state.settings.cached();
 
+    searchbarPositionCheck();
+
+    let filtersPanel = $('b-browse-filters');
+    if (filtersPanel.length > 0 && !filtersPanel[0].contains(evt.target)) {
+        if (settings.homepage.pinSearch) {
+            if (filtersPanel.hasClass('visible')) {
+                filtersPanel.removeClass('visible');
+            }
+        }
+    }
+}
+
+function onScroll() {
+    debounce(searchbarPositionCheck, 100);
+}
+
+function onResize() {
+    debounce(function () {
+        searchbarPositionCheck();
+
+        let settings = state.settings.cached().homepage;
+
+        if (settings != null && settings.pinSearch) {
+            $('b-nav-host').addClass('elixr-search-pinned');
+        }
+    }, 100);
+}
+
+async function pinSearch() {
+
+    // remove event listeners, they will be re-added if applicable
+    $(window).off('scroll', onScroll);
+    $(window).off('resize', onResize);
+    $(document).on('click', onClick);
 
     let settings = state.settings.cached(),
 
@@ -94,6 +126,7 @@ Promise.all([
 
         filterPanel = $('b-browse-filters');
 
+    // search no logner needs pinned
     if (page.type !== 'homepage' || !pinSearch) {
         $('.elixr-pinned-search').css('top', '');
         pageHeader.removeClass('elixr-search-pinned');
@@ -103,83 +136,58 @@ Promise.all([
         filterPanel.removeClass('elixr-filterspanel');
         filterPanel.css('top', '');
         $('.elixr-badge-wrapper').remove();
-
-    } else {
-        // remove button text from language dropdown
-        $('.language-button')
-            .children('span')
-            .text('');
-
-        // remove button text from filter button
-        let filterText = $('.control-filter')
-            .children('.bui-btn')
-            .children('span')
-            .contents()
-            .filter(function() {
-                return this.nodeType === 3;
-            })
-            .eq(1);
-        filterText.replaceWith('');
-
-        // block click events on filter button, handle show/hide of filter panel on our own
-        let filterBtnHandler = () => {
-            if (pinSearch) {
-                let filtersPanel = $('b-browse-filters');
-                if (filtersPanel.hasClass('visible')) {
-                    filtersPanel.removeClass('visible');
-                } else {
-                    filtersPanel.addClass('visible');
-                }
-                return false;
-            }
-            return true;
-        };
-        $('.control-filter')
-            .children('.bui-btn')
-            .off('click');
-        $('.control-filter')
-            .children('.bui-btn')
-            .on('click', filterBtnHandler);
-
-        pageHeader.addClass('elixr-search-pinned');
-        searchHeader.addClass('elixr-search-pinned');
-        searchBar.addClass('elixr-pinned-search elixr-searchbar');
-        filterButton.addClass('elixr-pinned-search elixr-filterbtn');
-        filterPanel.addClass('elixr-filterspanel');
+        return;
     }
+
+    // remove button text from language dropdown
+    $('.language-button')
+        .children('span')
+        .text('');
+
+    // remove button text from filter button
+    let filterText = $('.control-filter')
+        .children('.bui-btn')
+        .children('span')
+        .contents()
+        .filter(function() {
+            return this.nodeType === 3;
+        })
+        .eq(1);
+    filterText.replaceWith('');
+
+    // block click events on filter button, handle show/hide of filter panel on our own
+    let filterBtnHandler = () => {
+        if (pinSearch) {
+            let filtersPanel = $('b-browse-filters');
+            if (filtersPanel.hasClass('visible')) {
+                filtersPanel.removeClass('visible');
+            } else {
+                filtersPanel.addClass('visible');
+            }
+            return false;
+        }
+        return true;
+    };
+    $('.control-filter')
+        .children('.bui-btn')
+        .off('click');
+    $('.control-filter')
+        .children('.bui-btn')
+        .on('click', filterBtnHandler);
+
+    pageHeader.addClass('elixr-search-pinned');
+    searchHeader.addClass('elixr-search-pinned');
+    searchBar.addClass('elixr-pinned-search elixr-searchbar');
+    filterButton.addClass('elixr-pinned-search elixr-filterbtn');
+    filterPanel.addClass('elixr-filterspanel');
 
     searchbarPositionCheck();
 
-    $(window).scroll(debounce(searchbarPositionCheck, 1));
+    $(window).on('scroll', onScroll);
+    $(window).on('resize', onResize);
+    $(document.body).on('click', onClick);
+}
 
-    $(window).on(
-        'resize',
-        debounce(function () {
-            searchbarPositionCheck();
-
-            let settings = state.settings.cached().homepage;
-
-            if (settings != null && settings.pinSearch) {
-                $('b-nav-host').addClass('elixr-search-pinned');
-            }
-        }, 100)
-    );
-
-    $(document).click(async function (event) {
-        let settings = await state.settings(),
-            page = await state.page();
-
-        if (page && page.type === 'homepage') {
-            searchbarPositionCheck();
-
-            let filtersPanel = $('b-browse-filters');
-            if (filtersPanel.length > 0 && !filtersPanel[0].contains(event.target)) {
-                if (settings.homepage.pinSearch) {
-                    if (filtersPanel.hasClass('visible')) {
-                        filtersPanel.removeClass('visible');
-                    }
-                }
-            }
-        }
-    });
-});
+window.addEventListener('MixrElixr:load:page', pinSearch);
+window.addEventListener('MixrElixr:state:url-changed', pinSearch);
+window.addEventListener('MixrElixr:state:settings-changed', pinSearch);
