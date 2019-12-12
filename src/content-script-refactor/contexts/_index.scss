@@ -1,3 +1,24 @@
-/*@import 'areas/';*/
+/* import node module styles */
+@import '../../../node_modules/tooltipster/dist/css/tooltipster.bundle.min.css';
+@import '../../../node_modules/tooltipster/dist/css/plugins/tooltipster/sideTip/themes/tooltipster-sideTip-borderless.min.css';
+@import '../../../node_modules/jquery-toast-plugin/dist/jquery.toast.min.css';
+@import '../../../node_modules/jquery-modal/jquery.modal.min.css';
+
+/* import content styles */
+@import 'areas/';
 @import 'pages/';
-/*@import 'sitewide/';*/
+@import 'sitewide/';
+
+/* Begin global styles */
+.thumbnail .icon,
+.thumbnail .viewers,
+.thumbnail b-live-indicator-host,
+.thumbnail .liveAndViewers,
+.thumbnail .interactive,
+.thumbnail .costream {
+    z-index: 8 !important;
+}
+
+b-nav-host a {
+    font-family: "Industrywf", sans-serif !important;
+}
