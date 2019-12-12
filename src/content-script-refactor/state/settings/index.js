@@ -25,7 +25,7 @@ function wrap(subject) {
         set(target, property, value) {
             target[property] = value;
             storage.set(cache).then(() => {
-                emit('settings:updated');
+                emit('state:settings-changed', { detail: settings });
             });
             return true;
         }
