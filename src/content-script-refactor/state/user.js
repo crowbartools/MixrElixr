@@ -1,12 +1,12 @@
-import * as api from '../api.js';
-import channel from './channel.js';
+import * as api from '../mixer/api';
+import channel from './channel';
 import { urlChangedPromise } from '../utils/';
 
 let user,
     userRoles,
     userIsMod;
 
-window.addEventListener('MixrElixr:url-changed', function () {
+window.addEventListener('MixrElixr:state:url-changed', function () {
     userRoles = null;
     userIsMod = null;
 });

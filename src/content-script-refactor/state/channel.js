@@ -1,5 +1,5 @@
-import * as api from '../api.js';
-import page from './page.js';
+import * as api from '../mixer/api';
+import page from './page';
 import {urlChangedPromise} from '../utils/';
 
 let channel = null;

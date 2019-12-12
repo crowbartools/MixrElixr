@@ -6,7 +6,7 @@ const channelMatch = /^https?:\/\/(?:www\.)mixer\.com\/([^(){}%\\/?#]+)(?:\(hub:
 
 let page;
 
-window.addEventListener('MixrElixr:url-changed', function () {
+window.addEventListener('MixrElixr:state:url-changed', function () {
     page = null;
 });
 
