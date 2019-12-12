@@ -1,3 +1,3 @@
-import './hide-featured';
-import './highlight-favorite-streamers';
-import './pin-search';
+import './hide-featured/';
+import './highlight-favorite-streamers/';
+import './pin-search/';

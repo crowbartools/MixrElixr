@@ -1,4 +1,4 @@
-import $ from '../../../../utils/jquery';
+import $ from '../../../../utils/jquery/';
 
 function hideFeatured(evt) {
     let settings = evt.details.settings,

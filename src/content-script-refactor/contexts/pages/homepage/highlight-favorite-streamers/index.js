@@ -1,5 +1,5 @@
-import $ from '../../../../util/jquery';
-import state from '../../../../state';
+import $ from '../../../../util/jquery/';
+import state from '../../../../state/';
 
 function highlightFavorites() {
     let settings = state.settings.cached(),
