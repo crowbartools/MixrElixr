@@ -1,4 +1,4 @@
-import state from './state/index.js';
+import state from './state/';
 
 // import all of util for side effects
 import * as utils from './utils/';
