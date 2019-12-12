@@ -12,5 +12,4 @@ const storage = Bowser
         }
     }) ? browser.storage.local : browser.storage.sync;
 
-export default browser;
-export { storage };
+export { browser, storage };

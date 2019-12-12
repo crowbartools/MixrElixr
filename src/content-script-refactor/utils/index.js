@@ -1,6 +1,6 @@
-import browser from './browser/';
+import { browser, storage } from './browser/';
 import $ from './jquery/';
-import mixer from '../mixer';
+import mixer from '../mixer/';
 import urlChangedPromise from './url-changed/';
 import * as escape from './escape/';
 import * as waitFor from './waitfor/';
@@ -31,6 +31,7 @@ function emit(name, detail, target) {
 
 export default {
     browser,
+    storage,
     $,
     mixer,
     urlChangedPromise,

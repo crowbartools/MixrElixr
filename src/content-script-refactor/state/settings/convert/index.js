@@ -1,6 +1,6 @@
-import * as v1 from './v1-map.js';
-import defaults from '../defaults.js';
-import {storage} from '../../../util/browser';
+import * as v1 from './v1-map';
+import defaults from '../defaults';
+import {storage} from '../../../utils/';
 
 function walk (subject, cb, path = []) {
     if (subject == null) {

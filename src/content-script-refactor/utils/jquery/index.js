@@ -5,7 +5,7 @@ import jQuery from 'jQuery';
 require('tooltipster');
 require('jquery-modal');
 require('jquery-toast-plugin');
-require('./jquery.initialize.js');
+require('./jquery.initialize.js.js');
 
 // remove jQuery from global
 jQuery.noConflict(true);

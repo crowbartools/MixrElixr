@@ -1,8 +1,6 @@
 import defaults from './defaults';
 import convert from './convert/';
-import browser, { storage } from '../../util/browser';
-
-import { emit } from '../../util/index.js';
+import {browser, emit, storage} from '../../utils/';
 
 let settings,
     cache;

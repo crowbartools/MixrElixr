@@ -1,4 +1,4 @@
-import {emit} from './index.js';
+import {emit} from '../';
 
 let pending = [],
     previousURI = window.location.href;

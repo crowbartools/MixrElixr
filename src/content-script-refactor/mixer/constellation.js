@@ -1,7 +1,7 @@
 import { Carina } from 'carina';
 
 import state from '../state/';
-import { emit } from '../util/';
+import { emit } from '../utils/';
 
 let ca;
 
