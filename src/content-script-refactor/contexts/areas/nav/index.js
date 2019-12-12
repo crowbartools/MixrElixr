@@ -1,2 +1,2 @@
 import './declutter/';
-import './info panel/';
+import './info-panel/';

@@ -1,7 +1,5 @@
-import state from '../../../../state';
-import $ from '../../../../util/jquery';
-
-import { waitForElement } from '../../../../util/wait-for';
+import state from '../../../../state/';
+import {$, waitFor} from '../../../../utils/';
 
 let infoPanel = $(`
         <div id="elixr-infopanel">
@@ -44,12 +42,10 @@ function updatePanel(user) {
     }
 }
 
-// Wait for settings, user, and element to load
-Promise.all(
-    state.settings(),
-    state.user(),
-    waitForElement('b-nav-host [class*="right_"] [class^="chevron_"]')
-).then(results => {
+window.addEventListener('MixrElixr:page:load', async function (evt) {
+
+    // wait for navbar to load
+    await waitFor.element('b-nav-host [class*="right_"] [class^="chevron_"]');
 
     // Insert info panel before the account button
     infoPanel.insertBefore(
@@ -59,11 +55,11 @@ Promise.all(
             .last()
     );
 
-    // Update panel based on current user
-    updatePanel(results[1]);
+    // update the panel with the current user's details
+    updatePanel(evt.details.user);
 
-    // Toggle panel based on settings settings change
-    window.addEventListener('MixrElixr:settings:updated', togglePanel);
+    // Toggle panel based on updated settings
+    window.addEventListener('MixrElixr:state:settings-changed', togglePanel);
 
     // Update panel when the user login state changes
     window.addEventListener('MixrElixr:current-user:changed', data => {
