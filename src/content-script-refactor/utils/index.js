@@ -1,6 +1,7 @@
-import { browser, storage } from './browser/';
 import $ from './jquery/';
-import mixer from '../mixer/';
+import { browser, storage } from './browser/';
+
+import merge from './merge/';
 import urlChangedPromise from './url-changed/';
 import * as escape from './escape/';
 import * as waitFor from './waitfor/';
@@ -29,11 +30,11 @@ function emit(name, detail, target) {
     (target || window).dispatchEvent(event);
 }
 
-export default {
+export {
     browser,
     storage,
     $,
-    mixer,
+    merge,
     urlChangedPromise,
     escape,
     waitFor,
