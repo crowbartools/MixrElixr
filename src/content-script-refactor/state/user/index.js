@@ -3,8 +3,40 @@ import '../mixer/constellation';
 
 import * as api from '../mixer/api';
 import { emit, merge, urlChangedPromise } from '../utils/';
+import monitorCookie from './monitor-cookie.js';
+
 
 let user;
+
+async function cookieMonitorHandler() {
+    let details = await api.getCurrentUser();
+    details = details != null ? details : null;
+
+    // no change in state
+    if (details == null && user == null) {
+        return;
+    }
+
+    // user logged out
+    if (details == null && user != null) {
+        user = null;
+        emit('user:logout');
+
+    // user logged in
+    } else if (details != null && user == null) {
+        user = Promise.resolve(details);
+        user.result = details;
+        user.fullfilled = true;
+        emit('user:login', details);
+
+    // User switched
+    } else if (details.id !== user.result.id) {
+        user = Promise.resolve(details);
+        user.result = details;
+        user.fullfilled = true;
+        emit('user:switch', details);
+    }
+}
 
 // state.user()
 function current() {
@@ -27,6 +59,8 @@ current.cached = function cached() {
     }
     return user.result;
 };
+
+window.addEventListener('MixrElixr:load:init', () => monitorCookie('uvts', cookieMonitorHandler));
 
 // When the user's info updates, update the cache and emit: MixrElixr:user:update
 window.addEventListener('MixrElixr:constellation:user-update', data => {
