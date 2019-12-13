@@ -1,6 +1,6 @@
 import * as api from '../mixer/api';
 import page from './page';
-import {urlChangedPromise} from '../utils/';
+import { urlChangedPromise } from '../utils/';
 
 let channel = null;
 
