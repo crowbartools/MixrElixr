@@ -1,10 +1,7 @@
-// import for side effects
-import '../mixer/constellation';
-
 import * as api from '../mixer/api';
+import settings from '../settings/';
 import { emit, merge, urlChangedPromise } from '../utils/';
 import monitorCookie from './monitor-cookie.js';
-
 
 let user;
 
@@ -13,28 +10,25 @@ async function cookieMonitorHandler() {
     details = details != null ? details : null;
 
     // no change in state
-    if (details == null && user == null) {
+    if (
+        (details == null && user == null) ||
+        (user.result && details && user.result.id === details.id)
+    ) {
         return;
     }
 
-    // user logged out
-    if (details == null && user != null) {
+    // user logged out or switched accounts
+    if (details == null) {
         user = null;
-        emit('user:logout');
+        emit('user:logout', { settings: settings.cached() });
+    }
 
-    // user logged in
-    } else if (details != null && user == null) {
+    // user logged in or switched accounts
+    if (details != null) {
         user = Promise.resolve(details);
         user.result = details;
         user.fullfilled = true;
-        emit('user:login', details);
-
-    // User switched
-    } else if (details.id !== user.result.id) {
-        user = Promise.resolve(details);
-        user.result = details;
-        user.fullfilled = true;
-        emit('user:switch', details);
+        emit('user:login', { settings: settings.cached(), user: details });
     }
 }
 
