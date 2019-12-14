@@ -4,42 +4,10 @@ import { urlChangedPromise } from '../utils/';
 
 let channel = null;
 
-window.addEventListener('MixrElixr:url-changed', () => {
-    channel = null;
-});
-
 // state.channel()
 function current() {
     if (!channel) {
-        channel = urlChangedPromise(resolve => {
-            page()
-                .then(page => {
-
-                    // promise fullfilled due to URL change
-                    if (!channel || channel.fullfilled) {
-                        return;
-                    }
-
-                    // not a channel page
-                    if (
-                        page == null ||
-                        (page.type !== 'embedded-chat' && page.type !== 'channel') ||
-                        (page.identifier == null)
-                    ) {
-                        return resolve(null);
-                    }
-
-                    // get data from api
-                    api.getChannelData(page.identifier)
-                        .then(channelDetails => {
-                            if (!channel || channel.fullfilled) {
-                                return;
-                            }
-                            resolve(channelDetails);
-                        });
-
-                });
-        });
+        channel = current.update();
     }
     return channel;
 }
@@ -51,5 +19,41 @@ current.cached = function cached() {
     }
     return channel.result;
 };
+
+current.update = function update() {
+    channel = urlChangedPromise(resolve => {
+
+        page().then(page => {
+
+            // promise fullfilled due to URL change
+            if (!channel || channel.fullfilled) {
+                return;
+            }
+
+            // not a channel page
+            if (
+                page == null ||
+                (page.type !== 'embedded-chat' && page.type !== 'channel') ||
+                page.identifier == null
+            ) {
+                return resolve(null);
+            }
+
+            // get data from api
+            api.getChannelData(page.identifier)
+                .then(channelDetails => {
+                    if (!channel || channel.fullfilled) {
+                        return;
+                    }
+                    resolve(channelDetails);
+                });
+
+        });
+    });
+};
+
+window.addEventListener('MixrElixr:state:url-changed', () => {
+    channel = null;
+});
 
 export default current;

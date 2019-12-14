@@ -3,8 +3,10 @@ import state from './state/';
 // import all of util for side effects
 import * as utils from './utils/';
 
-// import contexts for side effects
+// import for side effects
 import './contexts/';
+import './mixer/constellation';
+import './mixer/chat';
 
 // aliases for easy referencing
 let { emit, waitFor } = utils;
@@ -27,7 +29,7 @@ let { emit, waitFor } = utils;
     await proms.dom;
     emit('load:dom', { settings, user });
 
-    // Event: MixrElixr:load:page
-    let page = await proms.page;
-    emit('load:page', { settings, user, page });
+    // Triggered by state/page.js
+    //   Event: MixrElixr:page
+    //   Event: MixrElixr:page:<specific-page>
 }());

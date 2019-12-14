@@ -6,33 +6,36 @@ import { log, emit } from '../utils/';
 const MOD_ROLES = ['Owner', 'Mod', 'ChannelEditor'];
 
 let socket;
-let isConnectingToChat = false;
+let connState = 0;
 let userRoles = [];
 
-export function disconnectChat() {
-    if (isConnectingToChat) {
-        return;
-    }
-    if (socket != null) {
-        socket.close();
-    }
+function disconnect() {
+    socket.close();
     socket = null;
     userRoles = [];
+    connState = 0;
+
 }
 
-export async function connectToChat() {
-    if (isConnectingToChat) return;
-    disconnectChat();
+async function connect() {
+    disconnect();
 
-    isConnectingToChat = true;
+    let user = state.user.cached(),
+        channel = state.channel.cached();
 
-    let [user, channel] = await Promise.all([state.user(), state.channel()]);
     if (!channel) {
         return;
     }
 
+    connState = 1;
+
     let chat = await api.getChannelChatInfo(channel.id);
-    if (chat == null) return;
+    if (chat == null) {
+        connState = 0;
+        return;
+    }
+
+    connState = 3;
 
     userRoles = chat.roles;
     socket = new Socket(WebSocket, chat.endpoints).boot();
@@ -89,23 +92,28 @@ export async function connectToChat() {
     socket
         .auth(channel.id, chat.authkey ? user.id : null, chat.authkey)
         .then(() => {
-            isConnectingToChat = false;
+            connState = 4;
             emit('chat:connected');
         })
         .catch(error => {
-            disconnectChat();
+            disconnect();
             log(error);
         });
 }
+
 export function isMod() {
-    return MOD_ROLES.find(role => userRoles.includes(role)) != null;
+    if (connState >= 3) {
+        return MOD_ROLES.find(role => userRoles.includes(role)) != null;
+    }
+    return false;
 }
+
 export function readyState() {
-    if (isConnectingToChat) {
-        return 1;
-    }
-    if (socket) {
-        return 2;
-    }
-    return 0;
+    return connState;
 }
+
+window.addEventListener('MixrElixr:page:channel', connect);
+window.addEventListener('MixrElixr:page:embedded-chat', connect);
+window.addEventListener('MixrElixr:user:login', connect);
+window.addEventListener('MixrElixr:user:logout', connect);
+window.addEventListener('MixrElixr:state:url-changed', disconnect);
