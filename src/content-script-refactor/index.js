@@ -5,8 +5,7 @@ import * as utils from './utils/';
 
 // import for side effects
 import './contexts/';
-import './mixer/constellation';
-import './mixer/chat';
+import './mixer/';
 
 // aliases for easy referencing
 let { emit, waitFor } = utils;
@@ -30,6 +29,6 @@ let { emit, waitFor } = utils;
     emit('load:dom', { settings, user });
 
     // Triggered by state/page.js
-    //   Event: MixrElixr:page
+    //   Event: MixrElixr:load:page
     //   Event: MixrElixr:page:<specific-page>
 }());
