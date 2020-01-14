@@ -152,4 +152,10 @@ b-channel-page-wrapper .stage:not(.aspect-16-9).me-video-stage{
 .stage.theaterMode .costream-rollout::before {
 	background: rgba(0, 0, 0, 0.25) !important;
 }
+
+body.theaterMode {
+    .content.permanentCollapsedHeader {
+        margin-top: 0px !important;
+    }
+}
 /* End Theater Mode */
