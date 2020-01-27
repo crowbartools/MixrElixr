@@ -1407,7 +1407,7 @@ $(() => {
                 messageContainer.find('span:not([class])').each(function() {
                     let component = $(this);
                     // we've already replaced emotes on this, skip it
-                    if (component.hasClass('me-custom-emote')) {
+                    if (component.attr('me-custom-emote')) {
                         return;
                     }
 
@@ -1504,6 +1504,13 @@ $(() => {
                         component.html(text.trim());
 
                         component
+                            .contents()
+                            .filter(function() {
+                                return this.nodeType === 3;
+                            })
+                            .wrap('<span></span>');
+
+                        component
                             .find('.elixr-custom-emote')
                             .children('img')
                             .on('load', function() {
@@ -1523,7 +1530,7 @@ $(() => {
                             });
 
                         // tag this component so we dont attempt to look for emotes again
-                        component.addClass('me-custom-emote');
+                        component.attr('me-custom-emote', '');
                     }
                 });
             }
