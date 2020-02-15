@@ -1504,6 +1504,13 @@ $(() => {
                         component.html(text.trim());
 
                         component
+                            .contents()
+                            .filter(function() {
+                                return this.nodeType === 3;
+                            })
+                            .wrap('<span></span>');
+
+                        component
                             .find('.elixr-custom-emote')
                             .children('img')
                             .on('load', function() {
