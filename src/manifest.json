@@ -39,6 +39,12 @@
         "all_frames": true
     }
   ],
+  "externally_connectable": {
+    "matches": [
+      "*://mixer.com/*",
+      "*://*.mixerusercontent.com/*"
+    ]
+  },
   "permissions": [
     "storage",
     "cookies",

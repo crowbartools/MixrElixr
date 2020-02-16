@@ -155,7 +155,8 @@ function getGeneralOptions() {
                 highlightFavories: false,
                 liveNotificationsMode: 'favorites',
                 playLiveNotificationSound: true,
-                liveNotificationSoundType: 'default'
+                liveNotificationSoundType: 'default',
+                theme: 'default'
             }
         })
         .then(data => {
@@ -289,3 +290,13 @@ console.log('Starting online check interval...');
 run();
 // run every 15 secs thereafter
 setInterval(run, 15000);
+
+browser.runtime.onMessageExternal.addListener(async request => {
+    if (request.query === 'getElixrTheme') {
+        let generalOptions = await getGeneralOptions();
+        return {
+            theme: generalOptions.theme
+        };
+    }
+    return null;
+});
