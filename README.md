@@ -31,6 +31,7 @@ If you are a Firefox Add-on reviewer, you can follow these steps:
 2) Open up a terminal of your choice and `cd` to the root folder of this repo.
 3) Run the command: `npm run firefox-review`.
 4) That will install the required packages and build the extension, you can find the output in the `/dist` directory.
+Note: Mixer.com test user creds are available in the Whiteboard on the extension dashboard in Firefox.
 
 ## License
 This code (everything in the repository) is provided under the GNU General Public License v3.0. This means that you're free to take the code in this repository and modify it in whatever way you like and distribute this code for any purpose. However, if you release it then it must be under this same license, make it open source, and provide documentation of changes made. All versions must have copyright credit pointing back to this source.
