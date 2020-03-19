@@ -241,18 +241,13 @@ $(() => {
         const pinSearchBar =
             settings.homePageOptions.pinSearchToTop == null || settings.homePageOptions.pinSearchToTop === true;
 
-        let searchBar = $('b-browse-channels-header')
-            .children()
-            .find('.control.input');
+        let searchBar = $("[class*='searchAndFilters_']").find("[class*='search_']");
+
         let pageHeader = $('b-nav-host');
 
-        let searchHeader = $('b-browse-framework').children('header');
-
-        let filterButton = $('b-browse-channels-header')
-            .children()
-            .find('.control.control-filter');
-
-        let filterPanel = $('b-browse-filters');
+        let searchHeader = $('b-browse-channels-host')
+            .find("[class*='headerContainer_']")
+            .children('header');
 
         // add or remove our css classes
         if (pinSearchBar) {
@@ -260,50 +255,14 @@ $(() => {
             $('.language-button')
                 .children('span')
                 .text('');
-            // remove button text from filter button
-            let filterText = $('.control-filter')
-                .children('.bui-btn')
-                .children('span')
-                .contents()
-                .filter(function() {
-                    return this.nodeType == 3;
-                })
-                .eq(1);
-            filterText.replaceWith('');
-
-            // block click events on filter button, handle show/hide of filter panel on our own
-            let filterBtnHandler = () => {
-                if (pinSearchBar) {
-                    let filtersPanel = $('b-browse-filters');
-                    if (filtersPanel.hasClass('visible')) {
-                        filtersPanel.removeClass('visible');
-                    } else {
-                        filtersPanel.addClass('visible');
-                    }
-                    return false;
-                }
-                return true;
-            };
-            $('.control-filter')
-                .children('.bui-btn')
-                .off('click');
-            $('.control-filter')
-                .children('.bui-btn')
-                .on('click', filterBtnHandler);
-
             pageHeader.addClass('searchPinned');
             searchHeader.addClass('searchPinned');
             searchBar.addClass('me-pinned-search me-searchbar');
-            filterButton.addClass('me-pinned-search me-filterbtn');
-            filterPanel.addClass('me-filterspanel');
         } else {
             $('.me-pinned-search').css('top', '');
             pageHeader.removeClass('searchPinned');
             searchHeader.removeClass('searchPinned');
             searchBar.removeClass('me-pinned-search me-searchbar');
-            filterButton.removeClass('me-pinned-search me-filterbtn');
-            filterPanel.removeClass('me-filterspanel');
-            filterPanel.css('top', '');
             $('.elixr-badge-wrapper').remove();
         }
 
@@ -346,14 +305,6 @@ $(() => {
                     }
                 }
             }
-        });
-
-        // Remove featured streams on homepage
-        waitForElementAvailablity('b-delve-featured-carousel').then(() => {
-            if (settings.homePageOptions && settings.homePageOptions.removeFeatured) {
-                $('b-delve-featured-carousel, b-delve-games, b-delve-oom-channels').remove();
-            }
-            log('Homepage carousel is loaded.');
         });
 
         initialPageLoad = false;
@@ -1756,23 +1707,11 @@ $(() => {
         let pinnedItems = $('.me-pinned-search');
         if (pinnedItems) {
             // update searchbar css
-            let searchTopAmount = topNavCollapsed ? 4 : 23;
+            let searchTopAmount = topNavCollapsed ? 12 : 23;
             if (browserCompact) {
                 searchTopAmount = searchTopAmount + (topNavCollapsed ? 60 : 65);
             }
             $('.me-searchbar').css('top', searchTopAmount + 'px');
-
-            let filterTopAmount = topNavCollapsed ? 12 : 31;
-            if (browserCompact) {
-                filterTopAmount = filterTopAmount + (topNavCollapsed ? 60 : 65);
-            }
-            $('.me-filterbtn').css('top', filterTopAmount + 'px');
-
-            let filterPanelTopAmount = topNavCollapsed ? 60 : 79;
-            if (browserCompact) {
-                filterPanelTopAmount = filterPanelTopAmount + (topNavCollapsed ? 60 : 65);
-            }
-            $('.me-filterspanel').css('top', filterPanelTopAmount + 'px');
 
             // add or remove box shadow if needed
             if (compactChanged) {
@@ -1800,10 +1739,13 @@ $(() => {
         if (isCostream) {
             // The avatar block is the key to finding out which co-streamer we are working with
             avatarBlock = $('a.avatar-block[href="/' + streamerName + '"]');
-            preceedingElement = avatarBlock.siblings('div.owner-block').find('div.follow-block');
+            preceedingElement = avatarBlock
+                .siblings('div.owner-block')
+                .find('b-follow-button-host')
+                .parent();
             userNameTarget = avatarBlock.siblings('div.owner-block').find('h2:first-of-type');
         } else {
-            preceedingElement = $('div.follow-block');
+            preceedingElement = $('b-follow-button-host').parent();
             userNameTarget = $('div.owner-block h2:first-of-type');
         }
 

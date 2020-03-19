@@ -256,33 +256,39 @@ b-desktop-header.searchPinned.collapsed {
     z-index: 1;
 }
 
+.searchPinned {
+    [class*='navContainer_'] {
+        z-index: 9 !important;
+    }
+}
+
 .searchPinned.collapsed::after  {
     opacity: 1;
 }
 
-b-browse-channels-header > div > .me-pinned-search,
-b-browse-channels-header > div > .input.me-pinned-search,
-b-browse-channels-header > div > .control-filter.me-pinned-search {
+.me-searchbar,
+.me-filterbtn,
+.me-filterspanel {
     position: fixed;
     z-index: 10;     
     transition: top 300ms cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-b-browse-channels-header > div > .me-pinned-search.me-searchbar {
+.me-searchbar {
     top: 23px;
     left: 50%;
     transform: translateX(-50%);
     z-index:50;
 }
 
-b-browse-channels-header > div > .me-pinned-search.me-filterbtn {
+.me-filterbtn {
     top: 31px;
     left: 50%;
     transform: translateX(calc(-50% + 215px));
     z-index:50;
 }
 
-b-browse-filters.me-filterspanel {
+.me-filterspanel {
     position: fixed;
     top: 79px;
     z-index: 100;

@@ -23,7 +23,19 @@ body.elixr-dark {
         background-image: linear-gradient(to top, rgba(8, 8, 9, 0.8), rgba(25, 25, 25, 0.95)) !important;
     }
 
-    .game-card, .card > a, b-media-card-footer {
+    b-delve-home-host > [class*='background_'] {
+        background-image: none !important;
+    }
+
+    b-browse-channels-host [class*='headerContainer_'] {
+        background-color: #2E333A !important;
+    }
+
+    [class^='searchAndFilters_'] [class*='search_'] [class^='background'] {
+        background: #414751 !important;
+    }
+
+    .game-card, a[class*='card_'], a[class*='channelCard_'], a[class*='cardStyle_'] {
         background: #2d3136 !important;
     }
 
