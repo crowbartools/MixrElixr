@@ -5,11 +5,6 @@
         </div>
         <div class="settings-section-settings" style="padding-bottom: 0;">
             <checkbox-toggle
-                :value.sync="removeFeatured"
-                @changed="saveSettings()"
-                label="Minimal Homepage"
-            ></checkbox-toggle>
-            <checkbox-toggle
                 :value.sync="pinSearchToTop"
                 @changed="saveSettings()"
                 label="Pin Searchbar To Top"
