@@ -1502,7 +1502,7 @@ $(() => {
                     messageContainer.find('span:not([class])').each(function() {
                         let component = $(this);
 
-                        let text = component.text();
+                        let text = escapeHTML(component.text());
 
                         function generateReplaceText(count) {
                             let buffer = '';
@@ -1524,8 +1524,14 @@ $(() => {
                                     messageContainer.addClass('hide-word-mentioned hide-remove');
                                 }
                             } else {
+                                let foundMatch = false;
                                 text = text.replace(keywordRegex, match => {
                                     log('found match: ' + match + ' style: ' + hideStyle);
+
+                                    foundMatch = true;
+
+                                    match = escapeHTML(match);
+
                                     let text = null;
                                     if (hideStyle === 'asterisk') {
                                         let replaced = generateReplaceText(match.length);
@@ -1536,7 +1542,9 @@ $(() => {
                                     return text;
                                 });
 
-                                component.html(text);
+                                if (foundMatch) {
+                                    component.html(text);
+                                }
                             }
                         });
                     });
