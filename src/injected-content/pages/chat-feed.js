@@ -30,7 +30,7 @@ export function messagedDeleted(messageId, moderatorName) {
     scrollChatIfGlued();
 }
 
-export function userBanned(username) {
+export function userBanned(username, modName) {
     if (!showModActions) return;
 
     const chatContainer = $('[class*="scrollWrapper_"]');
@@ -38,13 +38,13 @@ export function userBanned(username) {
         `<div class="me-mod-action-wrapper">
             <div class="me-mod-action-bubble me-tooltip" title="MixrElixr: Ban mod action">
                 <span class="me-icon me-banned-icon"></span>
-                <span><b>${username}</b> has been banned.</span>
+                <span><b>${username}</b> has been banned by <b>${modName}</b>.</span>
             </div>
         </div>`
     ).appendTo(chatContainer);
 }
 
-export function userTimeout(username, modName) {
+export function userTimeout(username, modName, duration) {
     if (!showModActions) return;
 
     const chatContainer = $('[class*="scrollWrapper_"]');
@@ -52,7 +52,7 @@ export function userTimeout(username, modName) {
         `<div class="me-mod-action-wrapper" >
             <div class="me-mod-action-bubble me-tooltip" title="MixrElixr: Timeout mod action">
                 <span class="me-icon me-timeout-icon"></span>
-                <span><b>${username}</b> has been timed out by <b>${modName}</b>.</span>
+                <span><b>${username}</b> has been timed out by <b>${modName}</b> for <b>${duration}</b>.</span>
             </div>
         </div>`
     ).appendTo(chatContainer);

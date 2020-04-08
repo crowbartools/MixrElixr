@@ -79,16 +79,18 @@ function createChatSocket(userId, channelId, endpoints, authkey) {
         if (data == null) return;
 
         if (userIsMod) {
+            if (!data.cause) return;
+
             let userInfo = await api.getUserInfo(data.user_id);
 
             if (userInfo == null) return;
 
-            if (data.moderator != null) {
+            if (data.cause.type === 'timeout') {
                 // timeout happened
-                userTimeout(userInfo.username, data.moderator.user_name);
-            } else {
+                userTimeout(userInfo.username, data.moderator.user_name, data.cause.durationString);
+            } else if (data.cause.type === 'ban') {
                 // ban happened
-                userBanned(userInfo.username);
+                userBanned(userInfo.username, data.moderator.user_name);
             }
         }
     });
