@@ -33,22 +33,15 @@ export function handleEmoteModal(options, cache) {
 
         waitForModalContainer(modal)
             .then(emotesContainer => {
-                let classes = emotesContainer.attr('class').split(/\s+/);
+                if (showChannelEmotes || showGlobalEmotes) {
+                    emotesContainer.addClass('mixer-emotes-wrapper');
+                    emotesContainer.show();
 
-                let isListModal = classes.some(c => {
-                    return c.startsWith('listModal');
-                });
+                    if ($('.me-emote-tabs').length > 0) {
+                        $('.me-emote-tabs').remove();
+                    }
 
-                if (!isListModal) {
-                    if (showChannelEmotes || showGlobalEmotes) {
-                        emotesContainer.addClass('mixer-emotes-wrapper');
-                        emotesContainer.show();
-
-                        if ($('.me-emote-tabs').length > 0) {
-                            $('.me-emote-tabs').remove();
-                        }
-
-                        $(`
+                    $(`
                         <div class="me-emote-tabs">
                             <div class="me-emote-tab me-tooltip mixer  me-tab-selected" title="Mixer Emotes">
                                 <img src="${browser.runtime.getURL('resources/images/MixerMerge_Dark.svg')}">
@@ -59,61 +52,60 @@ export function handleEmoteModal(options, cache) {
                         </div>
                     `).insertBefore(emotesContainer);
 
-                        $('.me-emote-tab').off('click');
-                        $('.me-emote-tab').on('click', function() {
-                            let clickedTab = $(this);
-                            if (!clickedTab.hasClass('me-tab-selected')) {
-                                clickedTab.addClass('me-tab-selected');
-                                let otherTabType = clickedTab.hasClass('elixr') ? 'mixer' : 'elixr';
-                                $(`.${otherTabType}`).removeClass('me-tab-selected');
-                                let elixrEmotes = $('.me-emotes-wrapper');
-                                let mixerEmotes = $('.mixer-emotes-wrapper');
-                                if (otherTabType === 'mixer') {
-                                    mixerEmotes.hide();
-                                    elixrEmotes.show();
-                                } else {
-                                    elixrEmotes.hide();
-                                    mixerEmotes.show();
-                                }
+                    $('.me-emote-tab').off('click');
+                    $('.me-emote-tab').on('click', function() {
+                        let clickedTab = $(this);
+                        if (!clickedTab.hasClass('me-tab-selected')) {
+                            clickedTab.addClass('me-tab-selected');
+                            let otherTabType = clickedTab.hasClass('elixr') ? 'mixer' : 'elixr';
+                            $(`.${otherTabType}`).removeClass('me-tab-selected');
+                            let elixrEmotes = $('.me-emotes-wrapper');
+                            let mixerEmotes = $('.mixer-emotes-wrapper');
+                            if (otherTabType === 'mixer') {
+                                mixerEmotes.hide();
+                                elixrEmotes.show();
+                            } else {
+                                elixrEmotes.hide();
+                                mixerEmotes.show();
                             }
-                        });
-
-                        if ($('.me-emotes-wrapper').length > 0) {
-                            $('.me-emotes-wrapper').remove();
                         }
+                    });
 
-                        let elixrEmotesContainer = $(`<div class="me-emotes-wrapper"></div>`);
-                        elixrEmotesContainer.hide();
-
-                        if (showGlobalEmotes) {
-                            let header = 'MixrElixr Global Emotes';
-                            let globalEmotes = Object.values(cache.globalEmotes.emotes);
-                            let baseUrl = 'https://crowbartools.com/user-content/emotes/global/';
-
-                            let emotesSection = buildEmotesSection(header, globalEmotes, baseUrl);
-                            elixrEmotesContainer.prepend(emotesSection);
-                        }
-
-                        if (showChannelEmotes) {
-                            let header = `${cache.currentStreamerName}'s Custom Emotes`;
-                            let streamerEmotes = Object.values(cache.currentStreamerEmotes.emotes);
-                            let baseUrl = `https://crowbartools.com/user-content/emotes/live/${cache.currentStreamerId}/`;
-
-                            let emotesSection = buildEmotesSection(header, streamerEmotes, baseUrl);
-                            elixrEmotesContainer.prepend(emotesSection);
-                        }
-
-                        elixrEmotesContainer.insertBefore(emotesContainer);
-
-                        $('.me-emote-preview').off('click');
-                        $('.me-emote-preview').on('click', function() {
-                            let emoteName = $(this).attr('emote-name');
-                            let chatTextarea = $('#chat-input').children('textarea');
-                            let currentValue = chatTextarea.val();
-                            let newValue = `${currentValue}${currentValue === '' ? ' ' : ''}${emoteName} `;
-                            updateChatTextfield(newValue);
-                        });
+                    if ($('.me-emotes-wrapper').length > 0) {
+                        $('.me-emotes-wrapper').remove();
                     }
+
+                    let elixrEmotesContainer = $(`<div class="me-emotes-wrapper"></div>`);
+                    elixrEmotesContainer.hide();
+
+                    if (showGlobalEmotes) {
+                        let header = 'MixrElixr Global Emotes';
+                        let globalEmotes = Object.values(cache.globalEmotes.emotes);
+                        let baseUrl = 'https://crowbartools.com/user-content/emotes/global/';
+
+                        let emotesSection = buildEmotesSection(header, globalEmotes, baseUrl);
+                        elixrEmotesContainer.prepend(emotesSection);
+                    }
+
+                    if (showChannelEmotes) {
+                        let header = `${cache.currentStreamerName}'s Custom Emotes`;
+                        let streamerEmotes = Object.values(cache.currentStreamerEmotes.emotes);
+                        let baseUrl = `https://crowbartools.com/user-content/emotes/live/${cache.currentStreamerId}/`;
+
+                        let emotesSection = buildEmotesSection(header, streamerEmotes, baseUrl);
+                        elixrEmotesContainer.prepend(emotesSection);
+                    }
+
+                    elixrEmotesContainer.insertBefore(emotesContainer);
+
+                    $('.me-emote-preview').off('click');
+                    $('.me-emote-preview').on('click', function() {
+                        let emoteName = $(this).attr('emote-name');
+                        let chatTextarea = $('#chat-input').children('textarea');
+                        let currentValue = chatTextarea.val();
+                        let newValue = `${currentValue}${currentValue === '' ? ' ' : ''}${emoteName} `;
+                        updateChatTextfield(newValue);
+                    });
                 }
             })
             .catch(() => {});
@@ -140,6 +132,26 @@ function buildEmotesSection(header, emotes, baseUrl) {
     return customEmotesWrapper;
 }
 
+// look for class identifying modal as emote modal, three times with 50 milisecond intervals inbetween
+let lookForEmoteClass = function(modalContainer, counter = 0) {
+    return new Promise(resolve => {
+        if (counter >= 4) {
+            return resolve(false);
+        }
+        counter++;
+
+        let foundEmoteClass = modalContainer.find("[class*='emoteGroupHeader']").length > 0;
+
+        if (!foundEmoteClass) {
+            setTimeout(() => {
+                resolve(lookForEmoteClass(modalContainer, counter));
+            }, 100);
+        } else {
+            resolve(true);
+        }
+    });
+};
+
 let waitForModalContainer = function(modal, counter = 0) {
     return new Promise((resolve, reject) => {
         if (counter >= 20) {
@@ -154,7 +166,13 @@ let waitForModalContainer = function(modal, counter = 0) {
                 resolve(waitForModalContainer(modal, counter));
             }, 100);
         } else {
-            resolve(emotesContainer);
+            lookForEmoteClass(emotesContainer).then(isEmoteModal => {
+                if (isEmoteModal) {
+                    resolve(emotesContainer);
+                } else {
+                    reject();
+                }
+            });
         }
     });
 };
