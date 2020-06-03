@@ -37,6 +37,12 @@
                 label="Auto Theater Mode"
                 tooltip="Automatically enters Theater Mode when loading a channel."
             ></checkbox-toggle>
+            <checkbox-toggle
+                :value.sync="autoDisableFTL"
+                @changed="saveSettings()"
+                label="Auto Disable FTL"
+                tooltip="Automatically turns Low Latency (FTL) mode off when loading a channel."
+            ></checkbox-toggle>
 
             <span class="setting-subcategory">Emotes</span>
             <custom-emotes-toggle

@@ -35,4 +35,4 @@ Before creating bug reports, please check [this list]() as you might find out th
   1. Google Chrome: Head to chrome://extensions, enable Developer Mode if necessary, then click "Load Unpacked". Navigate to the `/dist` folder created earlier and select it. The addon will appear in your addons list.
   2. New Microsoft Edge: Largely the same as Google Chrome, but go to edge://extensions instead of chrome://extensions.
   3. Firefox: TO-DO
-4. TODO when you make changes you probably have to rebuild?
+4. After making changes, if you'd like to test in the browser, re-run `npm run build:dev` and then reload the extension from your browser's extension page.

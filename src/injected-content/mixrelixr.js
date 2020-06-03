@@ -908,8 +908,14 @@ $(() => {
                 }
             });
         }
-        if (options.autoTheater && initialPageLoad && !urlParams.has('clip')) {
-            toggleTheaterMode();
+        if (initialPageLoad && !urlParams.has('clip')) {
+            if (options.autoTheater) {
+                toggleTheaterMode();
+            }
+            
+            if (options.autoDisableFTL) {
+                toggleFTLMode();
+            }
         }
 
         waitForElementAvailablity(ElementSelector.CHAT_CONTAINER).then(() => {
@@ -1016,6 +1022,12 @@ $(() => {
                 $('.me-chat-container').addClass('theaterMode');
             }
         }
+    }
+
+    function toggleFTLMode() {
+        waitForElementAvailablity('button[aria-label="Low Latency"]').then(button => {
+            button.click();
+        });
     }
 
     function closeCostreams(streamerName) {
