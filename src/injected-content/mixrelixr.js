@@ -912,7 +912,7 @@ $(() => {
             if (options.autoTheater) {
                 toggleTheaterMode();
             }
-            
+
             if (options.autoDisableFTL) {
                 toggleFTLMode();
             }
