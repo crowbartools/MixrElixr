@@ -1028,7 +1028,7 @@ $(() => {
         waitForElementAvailablity('button[aria-label="Low Latency"]').then(button => {
             let lowLatencyStatus = $('button[aria-label="Low Latency"] > div.material-icons').text();
             // Only toggle FTL mode if it's currently disabled, i.e. the icon is a check box
-            if (lowLatencyStatus == "check_box") {
+            if (lowLatencyStatus == 'check_box') {
                 button.click();
             }
         });
