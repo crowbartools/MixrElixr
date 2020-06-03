@@ -47,7 +47,6 @@
   },
   "permissions": [
     "storage",
-    "cookies",
     "notifications",
     "background",
     "*://mixer.com/*",
