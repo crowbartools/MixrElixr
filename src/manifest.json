@@ -47,7 +47,6 @@
   },
   "permissions": [
     "storage",
-    "notifications",
     "background",
     "*://mixer.com/*",
     "*://crowbartools.com/*",
