@@ -46,7 +46,7 @@
             <checkbox-toggle
                 :value.sync="autoAudioOnly"
                 @changed="saveSettings()"
-                label="Auto Activate AudioOnly"
+                label="Auto Audio Only Mode"
                 tooltip="Automatically turns Audio Only mode on when loading a channel."
             ></checkbox-toggle>
 
