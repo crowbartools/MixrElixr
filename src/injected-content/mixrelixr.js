@@ -916,6 +916,10 @@ $(() => {
             if (options.autoDisableFTL) {
                 disableFTLMode();
             }
+
+            if (options.autoAudioOnly) {
+                toggleAudioOnly();
+            }
         }
 
         waitForElementAvailablity(ElementSelector.CHAT_CONTAINER).then(() => {
@@ -1034,6 +1038,12 @@ $(() => {
         });
     }
 
+    function toggleAudioOnly() {
+        waitForElementAvailablity('button[aria-label="Audio Only"]').then(button => {
+            button.click();
+        });
+    }
+
     function closeCostreams(streamerName) {
         return new Promise(async resolve => {
             if (streamerName == null) return resolve();
@@ -1098,7 +1108,6 @@ $(() => {
           }`
               : ''
       }
-        
 
        ${
            options.useCustomFontSize
@@ -1110,10 +1119,10 @@ $(() => {
        `
                : ''
        }
-    
+
        ${
            options.hideChatAvatars
-               ? `               
+               ? `
           b-chat-client-host-component img[class*="ChatAvatar"] {
               display: none;
           }
@@ -1127,7 +1136,7 @@ $(() => {
 
        ${
            options.hideChannelProgression
-               ? `               
+               ? `
             b-chat-client-host-component div[class*="messageContent"] span[class*="badge"] {
                 display: none;
             }
@@ -1138,7 +1147,7 @@ $(() => {
 
        ${
            options.hideSkillEffects
-               ? `               
+               ? `
             #skills-chat-wrapper, b-skill-mobile-execution-host {
                 display: none !important;
             }
@@ -1148,7 +1157,7 @@ $(() => {
 
        ${
            options.hideEmberMessages
-               ? `               
+               ? `
             b-chat-client-host-component div[class*="stickerMessage_"] {
                 display: none;
             }
@@ -1159,7 +1168,7 @@ $(() => {
        b-use-app-btn-host {
            display: none !important;
        }
-       
+
       </style>
     `);
 

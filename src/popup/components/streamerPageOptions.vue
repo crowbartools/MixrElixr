@@ -43,6 +43,12 @@
                 label="Auto Disable FTL"
                 tooltip="Automatically turns Low Latency (FTL) mode off when loading a channel."
             ></checkbox-toggle>
+            <checkbox-toggle
+                :value.sync="autoAudioOnly"
+                @changed="saveSettings()"
+                label="Auto Activate AudioOnly"
+                tooltip="Automatically turns Audio Only mode on when loading a channel."
+            ></checkbox-toggle>
 
             <span class="setting-subcategory">Emotes</span>
             <custom-emotes-toggle

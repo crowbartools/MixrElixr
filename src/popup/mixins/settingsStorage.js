@@ -64,6 +64,7 @@ global.settingsStorage = {
                         autoCloseInteractive: false,
                         autoCloseCostreams: false,
                         autoDisableFTL: false,
+                        autoAudioOnly: false,
                         autoTheater: false,
                         separateChat: false,
                         alternateChatBGColor: false,
