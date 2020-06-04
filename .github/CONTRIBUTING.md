@@ -10,6 +10,7 @@ The following is a set of guidelines for contributing to Elixr. These are mostly
   * [Reporting Bugs](#reporting-bugs)
   * [Suggesting Enhancements](#suggesting-enhancements)
   * [Pull Requests](#pull-requests)
+    * [Setting Up your Environment](#setting-up-your-environment)
 
 ## Code of Conduct
 
@@ -24,4 +25,14 @@ Before creating bug reports, please check [this list]() as you might find out th
 
 > **Note:** If you find a **Closed** issue that seems like it is the same thing that you're experiencing, open a new issue and include a link to the original issue in the body of your new one.
 ### Suggesting Enhancements
+
 ### Pull Requests
+
+#### Setting Up your Environment
+1. After cloning the repository, check out the `master` branch (the `dev` branch is currently on hold for refactoring).
+2. Install all packages by running `npm install`.
+3. Build the extension by running `npm run build:dev`. This will create a `/dist` folder containing the compiled extension. From here you will want to load the extension into your browser:
+  1. Google Chrome: Head to chrome://extensions, enable Developer Mode if necessary, then click "Load Unpacked". Navigate to the `/dist` folder created earlier and select it. The addon will appear in your addons list.
+  2. New Microsoft Edge: Largely the same as Google Chrome, but go to edge://extensions instead of chrome://extensions.
+  3. Firefox: TO-DO
+4. After making changes, if you'd like to test in the browser, re-run `npm run build:dev` and then reload the extension from your browser's extension page.

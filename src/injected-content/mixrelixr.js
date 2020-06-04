@@ -908,8 +908,14 @@ $(() => {
                 }
             });
         }
-        if (options.autoTheater && initialPageLoad && !urlParams.has('clip')) {
-            toggleTheaterMode();
+        if (initialPageLoad && !urlParams.has('clip')) {
+            if (options.autoTheater) {
+                toggleTheaterMode();
+            }
+
+            if (options.autoDisableFTL) {
+                disableFTLMode();
+            }
         }
 
         waitForElementAvailablity(ElementSelector.CHAT_CONTAINER).then(() => {
@@ -1016,6 +1022,16 @@ $(() => {
                 $('.me-chat-container').addClass('theaterMode');
             }
         }
+    }
+
+    function disableFTLMode() {
+        waitForElementAvailablity('button[aria-label="Low Latency"]').then(button => {
+            let lowLatencyStatus = $('button[aria-label="Low Latency"] > div.material-icons').text();
+            // Only toggle FTL mode if it's currently disabled, i.e. the icon is a check box
+            if (lowLatencyStatus == 'check_box') {
+                button.click();
+            }
+        });
     }
 
     function closeCostreams(streamerName) {
