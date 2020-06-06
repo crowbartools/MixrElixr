@@ -1341,7 +1341,7 @@ $(() => {
                 .trim();
 
             let userTagged = messageContainer
-                .find('.tagComponent')
+                .find("[class*='tagComponent_']")
                 .text()
                 .toLowerCase()
                 .trim()
