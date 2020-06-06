@@ -1,7 +1,9 @@
 <template>
     <span>
         <span class="made-with-love-wrapper">
-            Made with <i class="fa fa-heart pound"></i> by the <a @click="showModal">Mixer community</a>
+            Made with
+            <i class="fa fa-heart pound"></i> by the
+            <a @click="showModal">Mixer community</a>
         </span>
         <b-modal
             id="teamModal"
@@ -17,15 +19,9 @@
             @ok="hideModal"
         >
             <h5 class="modal-title">Contributors</h5>
-            <div class="teammember">ebiggz</div>
-            <div class="teammember">TheLastMage</div>
-            <div class="teammember">ThePerry</div>
-            <div class="teammember">Carlyndra</div>
-            <div class="teammember">Buttercup</div>
-            <div class="teammember">murfGUY</div>
-            <div class="teammember">FierySama</div>
-            <div class="teammember">PhantomThiefZero</div>
-            <div class="teammember">Unlocked</div>
+            <div v-for="contributor in contributors" :key="contributor.channelId">
+                <a :href="'https:mixer.com/' + contributor.channelId" target="_blank">{{ contributor.name }}</a>
+            </div>
             <h5 class="modal-title" style="padding-top: 20px">Need Help?</h5>
             <div style="font-size:16px">
                 If you have questions, please reach out to us
@@ -47,7 +43,46 @@
 <script>
 export default {
     data() {
-        return {};
+        return {
+            contributors: [
+                {
+                    name: 'ebiggz',
+                    channelId: 2989516
+                },
+                {
+                    name: 'TheLastMage',
+                    channelId: 40812
+                },
+                {
+                    name: 'ThePerry',
+                    channelId: 43565
+                },
+                {
+                    name: 'Carlyndra',
+                    channelId: 73626
+                },
+                {
+                    name: 'murfGUY',
+                    channelId: 217203
+                },
+                {
+                    name: 'FierySama',
+                    channelId: 194587
+                },
+                {
+                    name: 'PhantomThiefZero',
+                    channelId: 23548324
+                },
+                {
+                    name: 'Unlocked',
+                    channelId: 6068
+                },
+                {
+                    name: 'Argus9Z',
+                    channelId: 7755885
+                }
+            ]
+        };
     },
     methods: {
         showModal: function() {
